@@ -15,19 +15,29 @@ Item {
 
     property bool showPomodoro: pomodoroEnabled && GlobalConfig.dashboard.pomodoro.defaultToPomodoro
 
+    readonly property color pomodoroColour: {
+        switch (Pomodoro.mode) {
+        case Pomodoro.Mode.ShortBreak:
+            return Colours.palette.m3tertiary;
+        case Pomodoro.Mode.LongBreak:
+            return Colours.palette.m3secondary;
+        default:
+            return Colours.palette.m3primary;
+        }
+    }
+
     anchors.top: parent.top
     anchors.bottom: parent.bottom
     implicitWidth: Tokens.sizes.dashboard.dateTimeWidth
 
-    // Switcher button in top-right
+    // Switcher button in top-right (available across both views)
     IconButton {
         id: switchBtn
 
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.margins: Tokens.padding.extraSmall
-        z: 10
-
+        z: 20
         visible: root.pomodoroEnabled
 
         type: IconButton.Text
@@ -43,40 +53,38 @@ Item {
     Item {
         id: pomodoroView
 
-        readonly property color pomodoroColour: {
-            switch (Pomodoro.mode) {
-            case Pomodoro.Mode.ShortBreak:
-                return Colours.palette.m3tertiary;
-            case Pomodoro.Mode.LongBreak:
-                return Colours.palette.m3secondary;
-            default:
-                return Colours.palette.m3primary;
-            }
-        }
-
         anchors.fill: parent
         visible: opacity > 0
         opacity: root.showPomodoro ? 1 : 0
         scale: root.showPomodoro ? 1 : 0.95
 
         Behavior on opacity {
-            Anim { type: Anim.FastEffects }
+            Anim {
+                type: Anim.FastEffects
+            }
         }
         Behavior on scale {
-            Anim { type: Anim.DefaultSpatial }
+            Anim {
+                type: Anim.DefaultSpatial
+            }
         }
 
-        ColumnLayout {
-            anchors.fill: parent
-            anchors.margins: Tokens.padding.small
-            anchors.topMargin: Tokens.padding.medium
-            anchors.bottomMargin: Tokens.padding.medium
-            spacing: Tokens.spacing.extraSmall
+        // Top bar with mode switcher
+        Item {
+            id: topBar
 
-            // Mode header (clickable to cycle mode)
+            anchors.top: parent.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.rightMargin: switchBtn.width + Tokens.padding.extraSmall
+            anchors.margins: Tokens.padding.extraSmall
+            height: 24
+            z: 10
+
             CustomMouseArea {
-                Layout.alignment: Qt.AlignHCenter
-                implicitHeight: modeRow.implicitHeight + Tokens.padding.extraSmall * 2
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                implicitHeight: 22
                 implicitWidth: modeRow.implicitWidth + Tokens.padding.small * 2
 
                 onClicked: {
@@ -87,69 +95,86 @@ Item {
                 StyledRect {
                     anchors.fill: parent
                     radius: Tokens.rounding.full
-                    color: Qt.alpha(pomodoroView.pomodoroColour, 0.15)
+                    color: Qt.alpha(root.pomodoroColour, 0.16)
 
                     RowLayout {
                         id: modeRow
 
                         anchors.centerIn: parent
-                        spacing: Tokens.spacing.extraSmall / 2
+                        spacing: 3
 
                         MaterialIcon {
                             text: Pomodoro.modeIcon
-                            fontStyle: Tokens.font.icon.small
-                            color: pomodoroView.pomodoroColour
+                            color: root.pomodoroColour
                         }
 
                         StyledText {
                             text: Pomodoro.modeName
                             font: Tokens.font.label.small
-                            color: pomodoroView.pomodoroColour
+                            color: root.pomodoroColour
                         }
                     }
                 }
             }
+        }
 
-            // Circular progress with stacked timer inside
-            Item {
-                Layout.alignment: Qt.AlignHCenter
-                Layout.fillHeight: true
-                Layout.maximumHeight: 90
-                Layout.preferredHeight: 80
-                implicitWidth: 80
-                implicitHeight: 80
+        // Middle Vessel: Background Timer Digits submerged by rising translucent M3 shapes
+        Item {
+            id: vesselArea
 
-                CircularProgress {
-                    id: progressArc
+            anchors.top: topBar.bottom
+            anchors.bottom: bottomControls.top
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.topMargin: Tokens.padding.extraSmall
+            anchors.bottomMargin: Tokens.padding.extraSmall
+            clip: true
 
-                    anchors.centerIn: parent
-                    implicitSize: 76
-                    value: Pomodoro.progress
-                    wavy: Pomodoro.running
-                    strokeWidth: 4
-                    fgColour: pomodoroView.pomodoroColour
-                    bgColour: Qt.alpha(pomodoroView.pomodoroColour, 0.2)
+            // Layer 1: Background Timer Digits
+            ColumnLayout {
+                anchors.centerIn: parent
+                anchors.verticalCenterOffset: -Tokens.padding.extraSmall
+                spacing: -6
+                z: 1
+
+                StyledText {
+                    Layout.alignment: Qt.AlignHCenter
+                    text: Pomodoro.minutesStr
+                    color: Colours.palette.m3onSurface
+                    font: Tokens.font.clock.size(34).weight(Font.Bold).build()
                 }
 
-                ColumnLayout {
-                    anchors.centerIn: parent
-                    spacing: -2
+                StyledText {
+                    Layout.alignment: Qt.AlignHCenter
+                    text: "••"
+                    color: Qt.alpha(root.pomodoroColour, 0.45)
+                    font: Tokens.font.clock.size(15).weight(Font.Bold).build()
+                }
 
-                    StyledText {
-                        Layout.alignment: Qt.AlignHCenter
-                        text: Pomodoro.minutesStr
-                        color: Colours.palette.m3onSurface
-                        font: Tokens.font.clock.size(19).weight(Font.Bold).build()
-                    }
-
-                    StyledText {
-                        Layout.alignment: Qt.AlignHCenter
-                        text: Pomodoro.secondsStr
-                        color: Qt.alpha(Colours.palette.m3onSurface, 0.7)
-                        font: Tokens.font.clock.size(14).weight(Font.Medium).build()
-                    }
+                StyledText {
+                    Layout.alignment: Qt.AlignHCenter
+                    text: Pomodoro.secondsStr
+                    color: Qt.alpha(Colours.palette.m3onSurface, 0.78)
+                    font: Tokens.font.clock.size(24).weight(Font.DemiBold).build()
                 }
             }
+
+            // Layer 2: Rising Heap of Translucent Material 3 Shapes
+            PomodoroShapes {
+                anchors.fill: parent
+                z: 2
+            }
+        }
+
+        // Bottom Controls: Elevated above shapes
+        ColumnLayout {
+            id: bottomControls
+
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottomMargin: Tokens.padding.extraSmall
+            spacing: Tokens.spacing.extraSmall
+            z: 10
 
             // Cycle progress dots
             Row {
@@ -165,11 +190,7 @@ Item {
                         width: 6
                         height: 6
                         radius: 3
-                        color: index < Pomodoro.cycleCount
-                            ? Colours.palette.m3primary
-                            : (index === Pomodoro.cycleCount && Pomodoro.mode === Pomodoro.Mode.Focus
-                                ? Qt.alpha(Colours.palette.m3primary, 0.6)
-                                : Colours.tPalette.m3outline)
+                        color: index < Pomodoro.cycleCount ? Colours.palette.m3primary : (index === Pomodoro.cycleCount && Pomodoro.mode === Pomodoro.Mode.Focus ? Qt.alpha(Colours.palette.m3primary, 0.6) : Colours.tPalette.m3outline)
 
                         Behavior on color {
                             CAnim {}
@@ -186,7 +207,7 @@ Item {
                 IconButton {
                     type: IconButton.Filled
                     icon: Pomodoro.running ? "pause" : "play_arrow"
-                    activeColour: pomodoroView.pomodoroColour
+                    activeColour: root.pomodoroColour
                     font: Tokens.font.icon.small
                     implicitWidth: 28
                     implicitHeight: 28
@@ -224,10 +245,14 @@ Item {
         scale: root.showPomodoro ? 0.95 : 1
 
         Behavior on opacity {
-            Anim { type: Anim.FastEffects }
+            Anim {
+                type: Anim.FastEffects
+            }
         }
         Behavior on scale {
-            Anim { type: Anim.DefaultSpatial }
+            Anim {
+                type: Anim.DefaultSpatial
+            }
         }
 
         ColumnLayout {
@@ -324,7 +349,6 @@ Item {
                         MaterialIcon {
                             text: Pomodoro.modeIcon
                             color: Colours.palette.m3primary
-                            fontStyle: Tokens.font.icon.small
                         }
 
                         StyledText {
