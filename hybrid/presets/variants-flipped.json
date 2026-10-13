@@ -17,7 +17,8 @@
       "hotspot": true,
       "themeManager": true,
       "btAgent": false,
-      "lockPowerConfirm": true
+      "lockPowerConfirm": true,
+      "pomodoro": true
     },
     "variants": {
       "lockCentre": "op",

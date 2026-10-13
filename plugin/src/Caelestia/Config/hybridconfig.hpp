@@ -53,6 +53,7 @@ class HybridFeatures : public settings::ObjectNode {
     FEATURE(hotspot)
     FEATURE(btAgent)
     FEATURE(themeManager)
+    FEATURE(pomodoro)
     FEATURE(lockPowerConfirm)
 };
 

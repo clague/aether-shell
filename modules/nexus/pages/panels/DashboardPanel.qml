@@ -467,6 +467,84 @@ PageBase {
             text: Tr.tr("Behaviour")
         }
 
+        // Pomodoro
+        SectionHeader {
+            text: Tr.tr("Pomodoro")
+        }
+
+        ToggleRow {
+            first: true
+            Layout.fillWidth: true
+            text: Tr.tr("Default to Pomodoro")
+            subtext: Tr.tr("Show the timer instead of the clock when the dashboard opens")
+            configNode: root.targetConfig.dashboard.pomodoro
+            propertyName: "defaultToPomodoro"
+            checked: root.targetConfig.dashboard.pomodoro.defaultToPomodoro
+            onToggled: {
+                root.targetConfig.dashboard.pomodoro.defaultToPomodoro = checked;
+            }
+        }
+
+        StepperRow {
+            Layout.fillWidth: true
+            label: Tr.tr("Focus duration")
+            subtext: Tr.tr("Minutes per focus session")
+            configNode: root.targetConfig.dashboard.pomodoro
+            propertyName: "focusDuration"
+            value: root.targetConfig.dashboard.pomodoro.focusDuration
+            from: 1
+            to: 120
+            stepSize: 1
+            onMoved: v => {
+                root.targetConfig.dashboard.pomodoro.focusDuration = v;
+            }
+        }
+
+        StepperRow {
+            Layout.fillWidth: true
+            label: Tr.tr("Short break")
+            subtext: Tr.tr("Minutes per short break")
+            configNode: root.targetConfig.dashboard.pomodoro
+            propertyName: "shortBreakDuration"
+            value: root.targetConfig.dashboard.pomodoro.shortBreakDuration
+            from: 1
+            to: 60
+            stepSize: 1
+            onMoved: v => {
+                root.targetConfig.dashboard.pomodoro.shortBreakDuration = v;
+            }
+        }
+
+        StepperRow {
+            Layout.fillWidth: true
+            label: Tr.tr("Long break")
+            subtext: Tr.tr("Minutes per long break")
+            configNode: root.targetConfig.dashboard.pomodoro
+            propertyName: "longBreakDuration"
+            value: root.targetConfig.dashboard.pomodoro.longBreakDuration
+            from: 1
+            to: 120
+            stepSize: 1
+            onMoved: v => {
+                root.targetConfig.dashboard.pomodoro.longBreakDuration = v;
+            }
+        }
+
+        StepperRow {
+            Layout.fillWidth: true
+            last: true
+            label: Tr.tr("Sessions before a long break")
+            configNode: root.targetConfig.dashboard.pomodoro
+            propertyName: "sessionsBeforeLongBreak"
+            value: root.targetConfig.dashboard.pomodoro.sessionsBeforeLongBreak
+            from: 1
+            to: 12
+            stepSize: 1
+            onMoved: v => {
+                root.targetConfig.dashboard.pomodoro.sessionsBeforeLongBreak = v;
+            }
+        }
+
         StepperRow {
             first: true
             last: true

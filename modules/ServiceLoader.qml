@@ -15,9 +15,13 @@ Scope {
         Players;
         Brightness;
         Weather.reload();
+        Pomodoro;
 
         if (GlobalConfig.hybrid.variants.dock === HybridVariant.Op)
             DockPins;
+
+        if (GlobalConfig.hybrid.features.pomodoro)
+            Pomodoro;
 
         if (GlobalConfig.utilities.vpn.enabled)
             VPN;
