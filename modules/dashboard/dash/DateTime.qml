@@ -27,7 +27,9 @@ Item {
     }
 
     anchors.top: parent.top
+
     anchors.bottom: parent.bottom
+
     implicitWidth: Tokens.sizes.dashboard.dateTimeWidth
 
     // Switcher button in top-right (available across both views)
@@ -54,19 +56,19 @@ Item {
         id: pomodoroView
 
         anchors.fill: parent
+
         visible: opacity > 0
+
         opacity: root.showPomodoro ? 1 : 0
+
         scale: root.showPomodoro ? 1 : 0.95
 
         Behavior on opacity {
-            Anim {
-                type: Anim.FastEffects
-            }
+            Anim { type: Anim.FastEffects }
         }
+
         Behavior on scale {
-            Anim {
-                type: Anim.DefaultSpatial
-            }
+            Anim { type: Anim.DefaultSpatial }
         }
 
         // Top bar with mode switcher
@@ -74,18 +76,21 @@ Item {
             id: topBar
 
             anchors.top: parent.top
+
             anchors.left: parent.left
+
             anchors.right: parent.right
-            anchors.rightMargin: switchBtn.width + Tokens.padding.extraSmall
+
+            anchors.rightMargin: switchBtn.width + Tokens.padding.extraSmall * 2
+
             anchors.margins: Tokens.padding.extraSmall
+
             height: 24
+
             z: 10
 
             CustomMouseArea {
-                anchors.left: parent.left
-                anchors.verticalCenter: parent.verticalCenter
-                implicitHeight: 22
-                implicitWidth: modeRow.implicitWidth + Tokens.padding.small * 2
+                anchors.fill: parent
 
                 onClicked: {
                     const nextMode = (Pomodoro.mode + 1) % 3;
@@ -94,92 +99,98 @@ Item {
 
                 StyledRect {
                     anchors.fill: parent
+
                     radius: Tokens.rounding.full
+
                     color: Qt.alpha(root.pomodoroColour, 0.16)
 
                     RowLayout {
-                        id: modeRow
-
                         anchors.centerIn: parent
-                        spacing: 3
+
+                        spacing: 4
 
                         MaterialIcon {
                             text: Pomodoro.modeIcon
+
                             color: root.pomodoroColour
                         }
 
                         StyledText {
-                            text: Pomodoro.modeName
+                            text: Pomodoro.shortModeName
                             font: Tokens.font.label.small
                             color: root.pomodoroColour
+                            elide: Text.ElideRight
                         }
                     }
                 }
             }
         }
 
-        // Middle Vessel: Background Timer Digits submerged by rising translucent M3 shapes
+        // Middle Vessel: Big Vertical Background Timer Digits submerged by falling translucent M3 shapes
         Item {
             id: vesselArea
 
             anchors.top: topBar.bottom
+
             anchors.bottom: bottomControls.top
+
             anchors.left: parent.left
+
             anchors.right: parent.right
-            anchors.topMargin: Tokens.padding.extraSmall
-            anchors.bottomMargin: Tokens.padding.extraSmall
+
+            anchors.topMargin: Tokens.padding.small
+
+            anchors.bottomMargin: Tokens.padding.small
+
             clip: true
 
-            // Layer 1: Background Timer Digits
-            ColumnLayout {
+            // Layer 1: Big Vertical Graphic Timer Digits
+            StyledText {
+                id: verticalTimerText
+
                 anchors.centerIn: parent
-                anchors.verticalCenterOffset: -Tokens.padding.extraSmall
-                spacing: -6
+
+                rotation: 90
+
+                text: Pomodoro.formattedTime
+
+                color: Qt.alpha(Colours.palette.m3onSurface, 0.75)
+
+                font: Tokens.font.clock.size(38).weight(Font.Bold).build()
+
                 z: 1
 
-                StyledText {
-                    Layout.alignment: Qt.AlignHCenter
-                    text: Pomodoro.minutesStr
-                    color: Colours.palette.m3onSurface
-                    font: Tokens.font.clock.size(34).weight(Font.Bold).build()
-                }
-
-                StyledText {
-                    Layout.alignment: Qt.AlignHCenter
-                    text: "••"
-                    color: Qt.alpha(root.pomodoroColour, 0.45)
-                    font: Tokens.font.clock.size(15).weight(Font.Bold).build()
-                }
-
-                StyledText {
-                    Layout.alignment: Qt.AlignHCenter
-                    text: Pomodoro.secondsStr
-                    color: Qt.alpha(Colours.palette.m3onSurface, 0.78)
-                    font: Tokens.font.clock.size(24).weight(Font.DemiBold).build()
+                Behavior on color {
+                    CAnim {}
                 }
             }
 
-            // Layer 2: Rising Heap of Translucent Material 3 Shapes
+            // Layer 2: Falling & Settling Heap of Translucent Material 3 Shapes
             PomodoroShapes {
                 anchors.fill: parent
                 z: 2
             }
         }
 
-        // Bottom Controls: Elevated above shapes
+        // Bottom Controls: Elevated above shapes with generous breathing room
         ColumnLayout {
             id: bottomControls
 
             anchors.bottom: parent.bottom
+
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottomMargin: Tokens.padding.extraSmall
-            spacing: Tokens.spacing.extraSmall
+
+            anchors.bottomMargin: Tokens.padding.medium
+
+            spacing: Tokens.spacing.small
+
             z: 10
 
             // Cycle progress dots
             Row {
                 Layout.alignment: Qt.AlignHCenter
-                spacing: 4
+
+                spacing: 5
 
                 Repeater {
                     model: Pomodoro.sessionsBeforeLongBreak
@@ -187,10 +198,17 @@ Item {
                     StyledRect {
                         required property int index
 
-                        width: 6
-                        height: 6
-                        radius: 3
-                        color: index < Pomodoro.cycleCount ? Colours.palette.m3primary : (index === Pomodoro.cycleCount && Pomodoro.mode === Pomodoro.Mode.Focus ? Qt.alpha(Colours.palette.m3primary, 0.6) : Colours.tPalette.m3outline)
+                        width: 5
+
+                        height: 5
+
+                        radius: 2.5
+
+                        color: index < Pomodoro.cycleCount
+                            ? Colours.palette.m3primary
+                            : (index === Pomodoro.cycleCount && Pomodoro.mode === Pomodoro.Mode.Focus
+                                ? Qt.alpha(Colours.palette.m3primary, 0.6)
+                                : Colours.tPalette.m3outline)
 
                         Behavior on color {
                             CAnim {}
@@ -202,15 +220,15 @@ Item {
             // Control buttons
             RowLayout {
                 Layout.alignment: Qt.AlignHCenter
-                spacing: Tokens.spacing.extraSmall / 2
+                spacing: Tokens.spacing.extraSmall
 
                 IconButton {
                     type: IconButton.Filled
                     icon: Pomodoro.running ? "pause" : "play_arrow"
                     activeColour: root.pomodoroColour
                     font: Tokens.font.icon.small
-                    implicitWidth: 28
-                    implicitHeight: 28
+                    implicitWidth: 30
+                    implicitHeight: 30
                     onClicked: Pomodoro.toggle()
                 }
 
@@ -240,87 +258,118 @@ Item {
         id: clockView
 
         anchors.fill: parent
+
         visible: opacity > 0
+
         opacity: root.showPomodoro ? 0 : 1
+
         scale: root.showPomodoro ? 0.95 : 1
 
         Behavior on opacity {
-            Anim {
-                type: Anim.FastEffects
-            }
+            Anim { type: Anim.FastEffects }
         }
+
         Behavior on scale {
-            Anim {
-                type: Anim.DefaultSpatial
-            }
+            Anim { type: Anim.DefaultSpatial }
         }
 
         ColumnLayout {
             anchors.left: parent.left
+
             anchors.right: parent.right
+
             anchors.verticalCenter: parent.verticalCenter
+
             spacing: 0
 
             StyledText {
                 Layout.bottomMargin: -(font.pointSize * 0.4)
+
                 Layout.alignment: Qt.AlignHCenter
+
                 text: Time.hourStr
+
                 color: Colours.palette.m3secondary
+
                 font: Tokens.font.clock.size(28).weight(Font.DemiBold).build()
             }
 
             StyledText {
                 Layout.alignment: Qt.AlignHCenter
+
                 text: "•••"
+
                 color: Colours.palette.m3primary
+
                 font: Tokens.font.clock.size(28 * 0.9).build()
             }
 
             StyledText {
                 Layout.topMargin: -(font.pointSize * 0.4)
+
                 Layout.alignment: Qt.AlignHCenter
+
                 text: Time.minuteStr
+
                 color: Colours.palette.m3secondary
+
                 font: Tokens.font.clock.size(28).weight(Font.DemiBold).build()
             }
 
             Loader {
                 Layout.topMargin: -(((item as StyledText)?.font.pointSize ?? 0) * 0.4)
+
                 Layout.alignment: Qt.AlignHCenter
+
                 asynchronous: true
+
                 active: Config.dashboard.showClockSeconds
+
                 visible: active
 
                 sourceComponent: StyledText {
                     text: "•••"
+
                     color: Colours.palette.m3primary
+
                     font: Tokens.font.clock.size(28 * 0.9).build()
                 }
             }
+
             Loader {
                 Layout.topMargin: -(((item as StyledText)?.font.pointSize ?? 0) * 0.4)
+
                 Layout.alignment: Qt.AlignHCenter
+
                 asynchronous: true
+
                 active: Config.dashboard.showClockSeconds
+
                 visible: active
 
                 sourceComponent: StyledText {
                     text: Time.format("ss")
+
                     color: Colours.palette.m3secondary
+
                     font: Tokens.font.clock.size(28).weight(Font.DemiBold).build()
                 }
             }
 
             Loader {
                 asynchronous: true
+
                 Layout.alignment: Qt.AlignHCenter
 
                 active: Units.twelveHourClock
+
                 visible: active
 
                 sourceComponent: StyledText {
                     text: Time.amPmStr
+
                     color: Colours.palette.m3primary
+
                     font: Tokens.font.clock.size(18).weight(Font.DemiBold).build()
                 }
             }
@@ -328,16 +377,22 @@ Item {
             // Running Pomodoro badge at bottom if timer active while viewing clock
             CustomMouseArea {
                 Layout.topMargin: Tokens.padding.extraSmall
+
                 Layout.alignment: Qt.AlignHCenter
+
                 visible: Pomodoro.running
+
                 implicitWidth: badgeRow.implicitWidth + Tokens.padding.small * 2
+
                 implicitHeight: badgeRow.implicitHeight + Tokens.padding.extraSmall
 
                 onClicked: root.showPomodoro = true
 
                 StyledRect {
                     anchors.fill: parent
+
                     radius: Tokens.rounding.full
+
                     color: Qt.alpha(Colours.palette.m3primary, 0.2)
 
                     RowLayout {
