@@ -25,6 +25,8 @@ Scope {
 
         if (GlobalConfig.hybrid.features.doctorWatchdog)
             DoctorWatchdog;
+        Density;
+        Glass;
 
         if (GlobalConfig.utilities.vpn.enabled)
             VPN;

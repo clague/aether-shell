@@ -98,6 +98,15 @@ QtObject {
             }
         },
 
+        Component {
+            // Look & feel
+            StackPage {
+                Component {
+                    LookAndFeelPage {}
+                }
+            }
+        },
+
         // Connectivity
         Component {
             // Display
