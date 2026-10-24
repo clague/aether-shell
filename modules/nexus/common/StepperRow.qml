@@ -106,6 +106,8 @@ ConnectedRect {
         }
 
         StyledSpinBox {
+            id: spin
+
             enabled: !root.disabled
             from: root.from
             to: root.to
@@ -113,6 +115,13 @@ ConnectedRect {
             value: root.value
             cLayer: 2
             onValueModified: root.moved(value)
+
+            // Editing the box replaces the binding above; this keeps following `value`
+            Binding {
+                target: spin
+                property: "value"
+                value: root.value
+            }
         }
     }
 }
