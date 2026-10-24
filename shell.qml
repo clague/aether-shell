@@ -16,6 +16,7 @@ import qs.utils
 import qs.modules
 import qs.modules.areapicker
 import qs.modules.background
+import qs.modules.displays
 import qs.modules.drawers
 import qs.modules.lock
 import qs.modules.overview
@@ -89,6 +90,7 @@ ShellRoot {
         sourceComponent: QuickNote {}
     }
 
+    DisplayConfirm {}
     Lock {
         id: lock
     }
