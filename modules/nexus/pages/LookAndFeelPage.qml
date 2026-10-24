@@ -346,6 +346,32 @@ PageBase {
             }
         }
 
+        StepperRow {
+            id: textSizeRow
+
+            label: Tr.tr("Text size")
+            subtext: Tr.tr("Fonts are scaled to read like the default ones (×%1 for the sans font, ×%2 for the monospace font). Change this to taste, in %").arg(AppFonts.autoSans.toFixed(2)).arg(AppFonts.autoMono.toFixed(2))
+            disabled: !AppFonts.enabled
+            from: 70
+            to: 160
+            stepSize: 5
+            onMoved: v => AppFonts.setSizeAdjust(v)
+
+            Binding {
+                target: textSizeRow
+                property: "value"
+                value: AppFonts.sizeAdjust
+            }
+        }
+
+        RowButton {
+            visible: AppFonts.needsRestart
+            icon: "restart_alt"
+            text: Tr.tr("Restart the shell to use your new font")
+            subtext: Tr.tr("The shell only sees fonts that were installed when it started. Until then it shows another font")
+            onClicked: AppFonts.restartShell()
+        }
+
         ToggleRow {
             id: shellFontRow
 
