@@ -103,13 +103,15 @@ Singleton {
 
     function reloadHyprRules(): void {
         let rule, trEnabled;
-        const ignoreAlpha = Math.max(0, transparency.base - 0.03);
+        const ignoreAlpha = Math.min(0.57, Math.max(0, transparency.base - 0.03));
         let messages = [];
         if (Hypr.usingLua) {
             rule = `eval hl.layer_rule({ match = { namespace = "%1" }, %2 = %3 })`;
             trEnabled = transparency.enabled;
             messages.push(rule.arg("caelestia-drawers").arg("blur").arg(trEnabled));
             messages.push(rule.arg("caelestia-drawers").arg("ignore_alpha").arg(ignoreAlpha));
+            messages.push(rule.arg("caelestia-quicknote").arg("blur").arg(trEnabled));
+            messages.push(rule.arg("caelestia-quicknote").arg("ignore_alpha").arg(ignoreAlpha));
             messages.push(rule.arg("caelestia-polkit").arg("blur").arg(trEnabled));
             messages.push(rule.arg("caelestia-polkit").arg("ignore_alpha").arg(ignoreAlpha));
             messages.push(rule.arg("caelestia-desktopLyricsOverlay").arg("blur").arg(trEnabled));
@@ -120,6 +122,8 @@ Singleton {
             trEnabled = transparency.enabled ? 1 : 0;
             messages.push(rule.arg("caelestia-drawers").arg("blur").arg(trEnabled));
             messages.push(rule.arg("caelestia-drawers").arg("ignore_alpha").arg(ignoreAlpha));
+            messages.push(rule.arg("caelestia-quicknote").arg("blur").arg(trEnabled));
+            messages.push(rule.arg("caelestia-quicknote").arg("ignore_alpha").arg(ignoreAlpha));
             messages.push(rule.arg("caelestia-polkit").arg("blur").arg(trEnabled));
             messages.push(rule.arg("caelestia-polkit").arg("ignore_alpha").arg(ignoreAlpha));
             messages.push(rule.arg("caelestia-desktopLyricsOverlay").arg("blur").arg(trEnabled));

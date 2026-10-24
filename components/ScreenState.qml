@@ -5,18 +5,29 @@ PersistentProperties {
 
     // Drawer visibilities
     property bool bar
+
     property bool osd
+
     property bool session
+
     property bool launcher
+
     property bool dashboard
+
     property bool utilities
+
     property bool sidebar
+
     property bool workspaceDrawer
 
     // OP's overview is a separate top-level Scope with its own visibility flag, rather than a
     // panel inside modules/drawers. Both implementations of hybrid.variants.overview therefore
     // have their own state; the shortcut and IPC set whichever the variant selects.
     property bool overview
+
+    property bool quicknote
+
+    property var launcherPickCallback: undefined
 
     // OP's dock is a drawer panel with its own visibility, like the others here. MiDnight's is a
     // bar section and has none -- it is simply part of the bar. hybrid.variants.dock selects
@@ -25,5 +36,51 @@ PersistentProperties {
 
     // Dashboard state
     property int dashboardTab
+
     property date dashboardDate: new Date()
+
+    onQuicknoteChanged: {
+        if (quicknote) {
+            dock = false;
+            overview = false;
+            launcher = false;
+            dashboard = false;
+            session = false;
+        }
+    }
+
+    onLauncherChanged: {
+        if (launcher) {
+            dock = false;
+            overview = false;
+            quicknote = false;
+            dashboard = false;
+            session = false;
+        }
+    }
+
+    onOverviewChanged: {
+        if (overview) {
+            launcher = false;
+            quicknote = false;
+            dashboard = false;
+            session = false;
+        }
+    }
+
+    onDashboardChanged: {
+        if (dashboard) {
+            launcher = false;
+            overview = false;
+            session = false;
+        }
+    }
+
+    onSessionChanged: {
+        if (session) {
+            launcher = false;
+            overview = false;
+            dashboard = false;
+        }
+    }
 }

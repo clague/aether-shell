@@ -20,6 +20,7 @@ import qs.modules.drawers
 import qs.modules.lock
 import qs.modules.overview
 import qs.modules.polkit
+import qs.modules.quicknote
 import qs.modules.shimeji
 import qs.daemons
 
@@ -80,6 +81,13 @@ ShellRoot {
         sourceComponent: Overview {}
     }
     AreaPicker {}
+    // OP's scratchpad overlay. Its window is lazy per screen; the feature gate decides
+    // whether the scope exists at all, the per-screen ScreenState.quicknote whether it opens.
+    Loader {
+        active: GlobalConfig.hybrid.features.quicknote
+
+        sourceComponent: QuickNote {}
+    }
 
     Lock {
         id: lock

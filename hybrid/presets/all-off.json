@@ -18,7 +18,8 @@
       "themeManager": false,
       "btAgent": false,
       "lockPowerConfirm": false,
-      "pomodoro": false
+      "pomodoro": false,
+      "quicknote": false
     },
     "variants": {
       "lockCentre": "midnight",

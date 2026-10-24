@@ -44,11 +44,39 @@ PageBase {
         }
 
         NavRow {
-            last: true
             icon: "construction"
             text: Tr.tr("Utilities")
             subtext: Config.utilities.enabled ? Tr.trCtx("Enabled", "panel status") : Tr.trCtx("Disabled", "panel status")
             onClicked: root.nState.openSubPage(5)
+        }
+
+        NavRow {
+            icon: "branding_watermark"
+            text: Tr.tr("On-screen display")
+            subtext: Config.osd.enabled ? Tr.trCtx("Enabled", "panel status") : Tr.trCtx("Disabled", "panel status")
+            onClicked: root.nState.openSubPage(6)
+        }
+
+        NavRow {
+            icon: "view_carousel"
+            text: Tr.tr("Taskview (Overview)")
+            subtext: Tr.tr("Workspaces & window overview")
+            onClicked: root.nState.openSubPage(7)
+        }
+
+        NavRow {
+            icon: "dock"
+            text: Tr.tr("Dock")
+            subtext: Config.dock.enabled ? Tr.trCtx("Enabled", "panel status") : Tr.trCtx("Disabled", "panel status")
+            onClicked: root.nState.openSubPage(8)
+        }
+
+        NavRow {
+            last: true
+            icon: "sticky_note_2"
+            text: Tr.tr("Scratchpad & Notes")
+            subtext: Tr.tr("Scratchpad directory & custom tags")
+            onClicked: root.nState.openSubPage(18)
         }
     }
 }

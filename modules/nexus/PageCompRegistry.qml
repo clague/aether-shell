@@ -222,6 +222,9 @@ QtObject {
                 Component {
                     BarSpotify {}
                 }
+                Component {
+                    ScratchpadPanel {}
+                }
             }
         },
         Component {

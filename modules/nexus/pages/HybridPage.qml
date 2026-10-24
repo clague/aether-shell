@@ -168,6 +168,24 @@ PageBase {
         }
 
         ToggleRow {
+            text: Tr.tr("Pomodoro timer")
+            subtext: Tr.tr("A focus/break timer next to the dashboard clock")
+            configNode: GlobalConfig.hybrid.features
+            propertyName: "pomodoro"
+            checked: GlobalConfig.hybrid.features.pomodoro
+            onToggled: GlobalConfig.hybrid.features.pomodoro = checked
+        }
+
+        ToggleRow {
+            text: Tr.tr("Scratchpad")
+            subtext: Tr.tr("A keyboard-driven notes overlay with tags")
+            configNode: GlobalConfig.hybrid.features
+            propertyName: "quicknote"
+            checked: GlobalConfig.hybrid.features.quicknote
+            onToggled: GlobalConfig.hybrid.features.quicknote = checked
+        }
+
+        ToggleRow {
             last: true
             text: Tr.tr("Confirm power actions on the lock screen")
             subtext: Tr.tr("Ask before shutdown, reboot or logout from the lock screen")
