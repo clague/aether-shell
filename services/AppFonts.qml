@@ -30,67 +30,16 @@ Singleton {
     // Text size. Fonts differ a lot in how big their letters are at the same nominal size, so each
     // font is scaled to look as big as the reference (Adwaita Sans, JetBrains Mono) by comparing
     // the height of its lowercase letters. `sizeAdjust` (percent) is the user's own change on top.
+    readonly property string script: Quickshell.shellPath("scripts/app-fonts.py")
+
+    // One script call at a time; later ones wait their turn
+    property var queue: []
+
     property int sizeAdjust: 100
     readonly property real autoSans: autoFactor(sans, refSans.xHeight)
     readonly property real autoMono: autoFactor(mono, refMono.xHeight)
     readonly property real sansScale: autoSans * sizeAdjust / 100
     readonly property real monoScale: autoMono * sizeAdjust / 100
-
-    function autoFactor(family: string, refX: real): real {
-        // A font Qt does not know yet is drawn as another one, so measuring it would mislead
-        if (!Qt.fontFamilies().includes(family))
-            return 1;
-        const x = family === sans ? sansMetrics.xHeight : monoMetrics.xHeight;
-        return x > 0 && refX > 0 ? Math.min(1.6, Math.max(0.8, refX / x)) : 1;
-    }
-
-    FontMetrics {
-        id: refSans
-
-        font.family: "Adwaita Sans"
-        font.pixelSize: 100
-    }
-
-    FontMetrics {
-        id: refMono
-
-        font.family: "JetBrains Mono"
-        font.pixelSize: 100
-    }
-
-    FontMetrics {
-        id: sansMetrics
-
-        font.family: root.sans
-        font.pixelSize: 100
-    }
-
-    FontMetrics {
-        id: monoMetrics
-
-        font.family: root.mono
-        font.pixelSize: 100
-    }
-
-    function setSizeAdjust(percent: int): void {
-        sizeAdjust = percent;
-        saveState();
-    }
-
-    // Writes the sizes to the apps and the shell once the numbers settle
-    onSansScaleChanged: rescale.restart()
-    onMonoScaleChanged: rescale.restart()
-
-    Timer {
-        id: rescale
-
-        interval: 500
-        onTriggered: {
-            if (root.enabled)
-                root.run(["set", root.sans, root.mono, root.sansScale.toFixed(3), root.monoScale.toFixed(3)]);
-            root.applyShell();
-        }
-    }
 
     // Qt reads the installed fonts once, when the shell starts, so a font added since then is
     // unknown to it (text falls back to another font) until the shell restarts
@@ -100,14 +49,22 @@ Singleton {
         return enabled && (!known.includes(sans) || !known.includes(mono));
     }
 
+    function autoFactor(family: string, refX: real): real {
+        // A font Qt does not know yet is drawn as another one, so measuring it would mislead
+        if (!Qt.fontFamilies().includes(family))
+            return 1;
+        const x = family === sans ? sansMetrics.xHeight : monoMetrics.xHeight;
+        return x > 0 && refX > 0 ? Math.min(1.6, Math.max(0.8, refX / x)) : 1;
+    }
+
     function restartShell(): void {
         Quickshell.execDetached(["setsid", "-f", "sh", "-c", `sleep 0.5; exec "${Quickshell.shellPath("scripts/startup-shell.sh")}" -r`]);
     }
 
-    readonly property string script: Quickshell.shellPath("scripts/app-fonts.py")
-
-    // One script call at a time; later ones wait their turn
-    property var queue: []
+    function setSizeAdjust(percent: int): void {
+        sizeAdjust = percent;
+        saveState();
+    }
 
     function refresh(): void {
         statusProc.running = true;
@@ -220,6 +177,49 @@ Singleton {
     }
 
     Component.onCompleted: refresh()
+
+    // Writes the sizes to the apps and the shell once the numbers settle
+    onSansScaleChanged: rescale.restart()
+    onMonoScaleChanged: rescale.restart()
+
+    Timer {
+        id: rescale
+
+        interval: 500
+        onTriggered: {
+            if (root.enabled)
+                root.run(["set", root.sans, root.mono, root.sansScale.toFixed(3), root.monoScale.toFixed(3)]);
+            root.applyShell();
+        }
+    }
+
+    FontMetrics {
+        id: refSans
+
+        font.family: "Adwaita Sans"
+        font.pixelSize: 100
+    }
+
+    FontMetrics {
+        id: refMono
+
+        font.family: "JetBrains Mono"
+        font.pixelSize: 100
+    }
+
+    FontMetrics {
+        id: sansMetrics
+
+        font.family: root.sans
+        font.pixelSize: 100
+    }
+
+    FontMetrics {
+        id: monoMetrics
+
+        font.family: root.mono
+        font.pixelSize: 100
+    }
 
     FileView {
         id: stateFile
