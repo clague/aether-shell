@@ -169,6 +169,14 @@ QtObject {
         Component {
             PlaceholderComp {}
         },
+        Component {
+            // Doctor
+            StackPage {
+                Component {
+                    DoctorPage {}
+                }
+            }
+        },
 
         // Shell
         Component {
