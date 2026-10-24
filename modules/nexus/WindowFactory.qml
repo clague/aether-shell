@@ -46,6 +46,7 @@ Singleton {
             property int page: 0
 
             color: Colours.tPalette.m3surface
+
             surfaceFormat.opaque: false
 
             onVisibleChanged: {
@@ -59,7 +60,18 @@ Singleton {
             }
 
             implicitWidth: nexus.implicitWidth
+
             implicitHeight: nexus.implicitHeight
+
+            minimumSize.width: contentItem.Tokens.sizes.nexus.minWidth
+
+            minimumSize.height: contentItem.Tokens.sizes.nexus.minHeight
+
+            contentItem.Config.screen: screen.name
+
+            contentItem.Tokens.screen: screen.name
+
+            title: Tr.tr("Nexus — %1").arg(PageRegistry.pages[nexus.nState.currentPageIdx]?.label ?? "")
 
             // The size follows the screen, but the compositor only reads the implicit size when the
             // window is created. When the screen changes (e.g. a new display scale), resize and
@@ -80,6 +92,7 @@ Singleton {
                 id: resizeTimer
 
                 interval: 150
+
                 onTriggered: {
                     // Hyprland has to be told which window; match this one by its title
                     const toplevel = Hypr.toplevels.values.find(t => t.title === win.title);
@@ -98,21 +111,17 @@ Singleton {
                 }
             }
 
-            minimumSize.width: contentItem.Tokens.sizes.nexus.minWidth
-            minimumSize.height: contentItem.Tokens.sizes.nexus.minHeight
-
-            contentItem.Config.screen: screen.name
-            contentItem.Tokens.screen: screen.name
-
-            title: Tr.tr("Nexus — %1").arg(PageRegistry.pages[nexus.nState.currentPageIdx]?.label ?? "")
-
             Nexus {
                 id: nexus
 
                 anchors.fill: parent
+
                 nState.screen: win.screen
+
                 nState.isWindow: true
+
                 nState.currentPageIdx: win.page
+
                 onClose: win.destroy()
             }
 
