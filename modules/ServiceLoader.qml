@@ -16,6 +16,9 @@ Scope {
         Brightness;
         Weather.reload();
 
+        if (GlobalConfig.hybrid.variants.dock === HybridVariant.Op)
+            DockPins;;
+
         if (GlobalConfig.utilities.vpn.enabled)
             VPN;
     }
