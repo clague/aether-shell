@@ -91,6 +91,7 @@ ShellRoot {
     }
 
     DisplayConfirm {}
+    DisplayChooser {}
     Lock {
         id: lock
     }
