@@ -1426,6 +1426,189 @@ Singleton {
         });
     }
 
+    // Ported from OP: ethernet connection lookup and IPv6 read/write for the detail page.
+    function ensureEthernetConnection(interfaceName: string, callback: var): void {
+        if (!interfaceName || interfaceName.length === 0) {
+            if (callback)
+                callback("");
+            return;
+        }
+
+        const device = root.ethernetDevices.find(d => d.iface === interfaceName);
+        if (device && device.connection && device.connection.length > 0) {
+            if (callback)
+                callback(device.connection);
+            return;
+        }
+
+        executeCommand(["-t", "-f", "NAME,TYPE,DEVICE", root.nmcliCommandConnection, "show"], result => {
+            if (result.success && result.output) {
+                const lines = result.output.trim().split("\n");
+                let matchedName = "";
+                for (const line of lines) {
+                    const parts = line.split(":");
+                    if (parts.length >= 2 && parts[1] === "802-3-ethernet") {
+                        const name = parts[0];
+                        const dev = parts[2] || "";
+                        if (dev === interfaceName) {
+                            matchedName = name;
+                            break;
+                        } else if (!matchedName && (!dev || dev === "--")) {
+                            matchedName = name;
+                        }
+                    }
+                }
+
+                if (matchedName) {
+                    if (callback)
+                        callback(matchedName);
+                    return;
+                }
+            }
+
+            const newConnName = `Wired connection ${interfaceName}`;
+            executeCommand([root.nmcliCommandConnection, "add", root.connectionParamType, root.deviceTypeEthernet, root.connectionParamConName, newConnName, root.connectionParamIfname, interfaceName], addResult => {
+                loadSavedConnections(() => {});
+                getEthernetInterfaces(() => {});
+                if (callback)
+                    callback(addResult.success ? newConnName : "");
+            });
+        });
+    }
+
+    function getIpv6Config(connectionName: string, callback: var): void {
+        if (!connectionName || connectionName.length === 0) {
+            if (callback)
+                callback(null);
+            return;
+        }
+
+        executeCommand(["-t", "-f", "ipv6.method,ipv6.addresses,ipv6.gateway,ipv6.dns,ipv6.ignore-auto-dns,connection.autoconnect", root.nmcliCommandConnection, "show", connectionName], result => {
+            if (!result.success) {
+                if (callback)
+                    callback(null);
+                return;
+            }
+
+            const cfg = {
+                method: "auto",
+                address: "",
+                gateway: "",
+                dns: "",
+                ignoreAutoDns: false,
+                autoconnect: true
+            };
+
+            const lines = result.output.trim().split("\n");
+            for (const line of lines) {
+                const idx = line.indexOf(":");
+                if (idx < 0)
+                    continue;
+                const key = line.slice(0, idx).trim();
+                const value = line.slice(idx + 1).trim();
+
+                if (key === "ipv6.ignore-auto-dns")
+                    cfg.ignoreAutoDns = value === "yes";
+                else if (key === "connection.autoconnect")
+                    cfg.autoconnect = value !== "no";
+
+                if (value === "" || value === "--")
+                    continue;
+
+                if (key === "ipv6.method")
+                    cfg.method = value;
+                else if (key === "ipv6.addresses")
+                    cfg.address = value.split(",")[0].trim();
+                else if (key === "ipv6.gateway")
+                    cfg.gateway = value;
+                else if (key === "ipv6.dns")
+                    cfg.dns = value.replace(/;\s*$/, "").split(/[;,]/).map(d => d.trim()).filter(d => d.length > 0).join(", ");
+            }
+
+            // Distinguish "automatic + custom DNS only" from plain DHCPv6/SLAAC.
+            if (cfg.method === "auto" && cfg.ignoreAutoDns)
+                cfg.method = "auto-dns";
+
+            if (callback)
+                callback(cfg);
+        });
+    }
+
+    function setIpv6Config(connectionName: string, config: var, callback: var): void {
+        if (!connectionName || connectionName.length === 0) {
+            if (callback)
+                callback({
+                    success: false,
+                    output: "",
+                    error: "No connection specified",
+                    exitCode: -1
+                });
+            return;
+        }
+
+        const dnsList = (config.dns ?? "").split(",").map(d => d.trim()).filter(d => d.length > 0).join(" ");
+        let cmd = [root.nmcliCommandConnection, "modify", connectionName];
+
+        if (config.method === "manual") {
+            cmd.push("ipv6.method", "manual");
+            cmd.push("ipv6.addresses", config.address ?? "");
+            cmd.push("ipv6.gateway", config.gateway ?? "");
+            cmd.push("ipv6.dns", dnsList);
+            cmd.push("ipv6.ignore-auto-dns", "yes");
+        } else if (config.method === "auto-dns") {
+            // SLAAC/DHCPv6 addressing, custom DNS only.
+            cmd.push("ipv6.method", "auto");
+            cmd.push("ipv6.addresses", "");
+            cmd.push("ipv6.gateway", "");
+            cmd.push("ipv6.dns", dnsList);
+            cmd.push("ipv6.ignore-auto-dns", "yes");
+        } else if (config.method === "link-local") {
+            cmd.push("ipv6.method", "link-local");
+            cmd.push("ipv6.addresses", "");
+            cmd.push("ipv6.gateway", "");
+            cmd.push("ipv6.dns", "");
+            cmd.push("ipv6.ignore-auto-dns", "no");
+        } else if (config.method === "disabled") {
+            cmd.push("ipv6.method", "disabled");
+            cmd.push("ipv6.addresses", "");
+            cmd.push("ipv6.gateway", "");
+            cmd.push("ipv6.dns", "");
+            cmd.push("ipv6.ignore-auto-dns", "no");
+        } else {
+            // Full auto (SLAAC / DHCPv6)
+            cmd.push("ipv6.method", "auto");
+            cmd.push("ipv6.addresses", "");
+            cmd.push("ipv6.gateway", "");
+            cmd.push("ipv6.dns", "");
+            cmd.push("ipv6.ignore-auto-dns", "no");
+        }
+
+        executeCommand(cmd, result => {
+            if (!result.success) {
+                if (callback)
+                    callback(result);
+                return;
+            }
+            // If connection is active, reactivate so changes take effect immediately.
+            const isActive = root.ethernetDevices.some(d => d.connection === connectionName && d.connected);
+            if (isActive) {
+                executeCommand([root.nmcliCommandConnection, "up", connectionName], upResult => {
+                    Qt.callLater(() => {
+                        refreshOnConnectionChange();
+                    });
+                    if (callback)
+                        callback(upResult);
+                });
+            } else {
+                Qt.callLater(() => {
+                    refreshOnConnectionChange();
+                });
+                if (callback)
+                    callback(result);
+            }
+        });
+    }
+
     Component.onCompleted: {
         getWifiStatus(() => {});
         getNetworks(() => {});
