@@ -186,6 +186,15 @@ PageBase {
         }
 
         ToggleRow {
+            text: Tr.tr("Background doctor")
+            subtext: Tr.tr("Run the health checks periodically and toast when something changes")
+            configNode: GlobalConfig.hybrid.features
+            propertyName: "doctorWatchdog"
+            checked: GlobalConfig.hybrid.features.doctorWatchdog
+            onToggled: GlobalConfig.hybrid.features.doctorWatchdog = checked
+        }
+
+        ToggleRow {
             last: true
             text: Tr.tr("Confirm power actions on the lock screen")
             subtext: Tr.tr("Ask before shutdown, reboot or logout from the lock screen")

@@ -55,6 +55,7 @@ class HybridFeatures : public settings::ObjectNode {
     FEATURE(themeManager)
     FEATURE(pomodoro)
     FEATURE(quicknote)
+    FEATURE(doctorWatchdog)
     FEATURE(lockPowerConfirm)
 };
 

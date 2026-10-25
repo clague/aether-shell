@@ -19,9 +19,12 @@ ConnectedRect {
     property alias fallbackIcon: splitButton.fallbackIcon
     property alias menuOnTop: splitButton.menuOnTop
 
+    property bool disabled: false
+
     signal selected(item: MenuItem)
 
     Layout.fillWidth: true
+    enabled: !disabled
     implicitHeight: rowLayout.implicitHeight + rowLayout.anchors.margins * 2
     clip: false
     z: splitButton.expanded ? 1 : 0

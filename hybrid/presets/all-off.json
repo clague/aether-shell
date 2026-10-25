@@ -19,7 +19,8 @@
       "btAgent": false,
       "lockPowerConfirm": false,
       "pomodoro": false,
-      "quicknote": false
+      "quicknote": false,
+      "doctorWatchdog": false
     },
     "variants": {
       "lockCentre": "midnight",

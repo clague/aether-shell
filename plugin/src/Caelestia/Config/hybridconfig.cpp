@@ -37,6 +37,7 @@ const Preset& presetFor(HybridPreset::Enum which) {
                                          { u"themeManager"_s, true },
                                          { u"pomodoro"_s, true },
                                          { u"quicknote"_s, true },
+                                         { u"doctorWatchdog"_s, true },
                                          { u"lockPowerConfirm"_s, true },
                                      },
 
@@ -62,6 +63,7 @@ const Preset& presetFor(HybridPreset::Enum which) {
                                       { u"themeManager"_s, false },
                                       { u"pomodoro"_s, false },
                                       { u"quicknote"_s, false },
+                                      { u"doctorWatchdog"_s, false },
                                       { u"lockPowerConfirm"_s, false },
                                   },
 
@@ -87,6 +89,7 @@ const Preset& presetFor(HybridPreset::Enum which) {
                                 { u"themeManager"_s, true },
                                 { u"pomodoro"_s, true },
                                 { u"quicknote"_s, true },
+                                { u"doctorWatchdog"_s, true },
                                 { u"lockPowerConfirm"_s, true },
                             },
 
