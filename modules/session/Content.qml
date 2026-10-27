@@ -52,27 +52,9 @@ Column {
         }
     }
 
-<<<<<<< HEAD
-    AnimatedImage {
-        width: Tokens.sizes.session.button
-        height: Tokens.sizes.session.button
-        sourceSize.width: width * ((QsWindow.window as QsWindow)?.devicePixelRatio ?? 1)
-
-        playing: visible
-        asynchronous: true
-        speed: Config.general.sessionGifSpeed
-        source: Paths.absolutePath(Config.paths.sessionGif)
-        fillMode: AnimatedImage.PreserveAspectFit
-        visible: Config.paths.sessionGif !== ""
-=======
     SessionButton {
-        id: shutdown
-
         icon: Config.session.icons.shutdown
         command: Config.session.commands.shutdown
-
-        KeyNavigation.up: logout
-        KeyNavigation.down: hibernate
     }
 
     Loader {
@@ -89,7 +71,6 @@ Column {
             source: Paths.absolutePath(Config.paths.sessionGif)
             fillMode: AnimatedImage.PreserveAspectFit
         }
->>>>>>> caelestia/main
     }
 
     Repeater {

@@ -68,7 +68,6 @@ Item {
 
             anchors.fill: parent
 
-<<<<<<< HEAD
             captureSource: {
                 const client = root.client;
                 if (!client || !client.wayland) // qmllint disable unresolved-type
@@ -83,11 +82,6 @@ Item {
                 return client.wayland; // qmllint disable unresolved-type
             }
             live: visible
-=======
-            captureSource: root.client?.wayland ?? null
-            live: true
->>>>>>> caelestia/main
-
             constraintSize.width: (root.client && root.client.lastIpcObject.size && root.client.lastIpcObject.size[1] > 0) ? parent.height * Math.min(root.screen.width / root.screen.height, root.client.lastIpcObject.size[0] / root.client.lastIpcObject.size[1]) : parent.height
             constraintSize.height: parent.height
         }

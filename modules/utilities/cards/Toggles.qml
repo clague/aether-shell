@@ -25,15 +25,9 @@ StyledRect {
         return Config.utilities.quickToggles.values.filter(item => {
             if (!item.enabled || seenIds.has(item.id))
                 return false;
-<<<<<<< HEAD
             if (seenIds.has(item.id))
                 return false;
             seenIds.add(item.id);
-=======
-
-            // TODO: hide wallpaper playing toggle if wallpaper is live
->>>>>>> caelestia/main
-
             if (item.id === "vpn")
                 return GlobalConfig.utilities.vpn.selectedProvider.length > 0;
 
@@ -135,14 +129,9 @@ StyledRect {
                         onClicked: RuntimeState.gameMode = !RuntimeState.gameMode
                     }
                 }
-                DelegateChoice {
-                    roleValue: "wallpaperPlaying"
-                    delegate: Toggle {
-                        icon: "smart_display"
-                        checked: PersistentState.wallpaperPlaying
-                        onClicked: PersistentState.wallpaperPlaying = !PersistentState.wallpaperPlaying
-                    }
-                }
+                // TODO(T7-deferred): upstream's wallpaperPlaying toggle pauses the C++ Visual
+                // engine that this tree does not ship yet; until the MiDnight video wallpaper
+                // engine is replaced upstream's entry is not offered.
                 DelegateChoice {
                     roleValue: "dnd"
                     delegate: Toggle {

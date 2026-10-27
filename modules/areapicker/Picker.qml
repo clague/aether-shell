@@ -39,19 +39,12 @@ MouseArea {
         if (!mon)
             return [];
 
-<<<<<<< HEAD
         // A monitor object can exist with an empty lastIpcObject -- during startup before
         // the first IPC reply, and for the whole run under a compositor that is not
         // Hyprland. The `!mon` check above does not cover that.
         const special = mon.lastIpcObject?.specialWorkspace;
         const wsId = special?.name ? special.id : mon.activeWorkspace?.id;
-        if (wsId === undefined || wsId === null)
-=======
-        const special = mon.lastIpcObject?.specialWorkspace;
-        const wsId = special?.name ? special.id : mon.activeWorkspace?.id;
-        if (wsId === undefined)
->>>>>>> caelestia/main
-            return [];
+        if (wsId === undefined || wsId === null)            return [];
 
         return Hypr.toplevelsForWs(wsId).sort((a, b) => {
             // Pinned first, then fullscreen, then floating, then any other
@@ -93,17 +86,10 @@ MouseArea {
         const isSearch = root.loader.searchMode;
         const tmpfile = isSearch ? Qt.resolvedUrl("/tmp/caelestia-search.png") : Qt.resolvedUrl(`/tmp/caelestia-picker-${Quickshell.processId}-${Date.now()}.png`);
         CUtils.saveItem(screencopy, tmpfile, Qt.rect(Math.ceil(rsx), Math.ceil(rsy), Math.floor(sw), Math.floor(sh)), path => {
-<<<<<<< HEAD
             if (isSearch) {
                 Quickshell.execDetached(["touch", "/tmp/caelestia-search.done"]);
             } else if (root.loader.clipboardOnly) {
-                Quickshell.execDetached(["caelestia", "screenshot", "--copy", "--file", path]);
-=======
-            if (root.loader.clipboardOnly) {
-                Quickshell.execDetached(["sh", "-c", "wl-copy --type image/png < " + path]);
-                Quickshell.execDetached(["notify-send", "-a", "caelestia-cli", "-i", path, Tr.tr("Screenshot taken"), Tr.tr("Screenshot copied to clipboard")]);
->>>>>>> caelestia/main
-            } else {
+                Quickshell.execDetached(["caelestia", "screenshot", "--copy", "--file", path]);            } else {
                 Quickshell.execDetached(["caelestia", "screenshot", "--file", path]);
             }
             Audio.playCameraClick();

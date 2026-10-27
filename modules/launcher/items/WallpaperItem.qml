@@ -1,11 +1,7 @@
 import QtQuick
-<<<<<<< HEAD
 import Quickshell
 import Quickshell.Io
-import Caelestia
-=======
->>>>>>> caelestia/main
-import Caelestia.Config
+import Caelestiaimport Caelestia.Config
 import Caelestia.Models
 import Caelestia.Multimedia
 import Caelestia.State
@@ -87,7 +83,6 @@ Item {
             visible: thumbImg.status !== Image.Ready
         }
 
-<<<<<<< HEAD
         CachingImage {
             id: thumbImg
 
@@ -104,14 +99,7 @@ Item {
                         thumbGenerator.running = true;
                     }
                 }
-            }
-=======
-        Visual {
-            anchors.fill: parent
-            source: root.modelData.path
-            playing: (root.PathView.isCurrentItem && PersistentState.wallpaperPlaying) || stateLayer.containsMouse
->>>>>>> caelestia/main
-        }
+            }        }
     }
 
     StyledText {

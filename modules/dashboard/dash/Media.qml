@@ -173,7 +173,6 @@ Item {
         anchors.bottomMargin: Tokens.padding.large
         anchors.margins: Tokens.padding.extraLargeIncreased
 
-<<<<<<< HEAD
         AnimatedImage {
             id: gif
 
@@ -199,13 +198,5 @@ Item {
         MediaShapes {
             anchors.fill: parent
             visible: Config.dashboard.useMediaShapes
-        }
-=======
-        playing: Players.active?.isPlaying ?? false
-        speed: Audio.beatTracker.bpm / Config.general.mediaGifSpeedAdjustment
-        source: Paths.absolutePath(Config.paths.mediaGif)
-        asynchronous: true
-        fillMode: AnimatedImage.PreserveAspectFit
->>>>>>> caelestia/main
-    }
+        }    }
 }

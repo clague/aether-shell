@@ -155,7 +155,6 @@ Item {
         }
     ]
 
-<<<<<<< HEAD
     Connections {
         function onActiveChanged() {
             root.reloadTrack();
@@ -180,9 +179,6 @@ Item {
 
         target: Lyrics
     }
-
-=======
->>>>>>> caelestia/main
     Loader {
         id: loadingIndicator
 

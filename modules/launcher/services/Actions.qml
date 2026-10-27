@@ -47,14 +47,10 @@ Searcher {
     Variants {
         id: variants
 
-<<<<<<< HEAD
-        model: GlobalConfig.launcher.actions.filter(a => (a.enabled ?? true) && (GlobalConfig.launcher.enableDangerousActions || !(a.dangerous ?? false)) && root.featureEnabled(a))
-=======
         model: {
             const enableDangerous = GlobalConfig.launcher.enableDangerousActions;
-            return GlobalConfig.launcher.actions.values.filter(a => a.enabled && (enableDangerous || !a.dangerous));
+            return GlobalConfig.launcher.actions.values.filter(a => a.enabled && (enableDangerous || !a.dangerous) && root.featureEnabled(a));
         }
->>>>>>> caelestia/main
 
         Action {}
     }

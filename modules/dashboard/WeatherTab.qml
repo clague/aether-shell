@@ -30,27 +30,15 @@ Item {
                 spacing: Tokens.spacing.extraSmall
 
                 StyledText {
-<<<<<<< HEAD
                     visible: Config.dashboard.showWeatherLocation !== false
-                    text: Weather.city || qsTr("Loading...")
-=======
-                    text: Weather.city || Tr.tr("Loading...")
->>>>>>> caelestia/main
-                    font: Tokens.font.body.builders.large.size(28).weight(Font.DemiBold).build()
+                    text: Weather.city || Tr.tr("Loading...")                    font: Tokens.font.body.builders.large.size(28).weight(Font.DemiBold).build()
                     color: Colours.palette.m3onSurface
                 }
 
                 StyledText {
-<<<<<<< HEAD
                     text: new Date().toLocaleDateString(Qt.locale(), "dddd, MMMM d")
                     font: Config.dashboard.showWeatherLocation !== false ? Tokens.font.body.small : Tokens.font.body.builders.large.size(28).weight(Font.DemiBold).build()
-                    color: Config.dashboard.showWeatherLocation !== false ? Colours.palette.m3onSurfaceVariant : Colours.palette.m3onSurface
-=======
-                    text: Tr.formatDateTime(new Date(), "dddd, MMMM d")
-                    font: Tokens.font.body.small
-                    color: Colours.palette.m3onSurfaceVariant
->>>>>>> caelestia/main
-                }
+                    color: Config.dashboard.showWeatherLocation !== false ? Colours.palette.m3onSurfaceVariant : Colours.palette.m3onSurface                }
             }
 
             Item {

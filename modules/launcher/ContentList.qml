@@ -413,38 +413,28 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
 
             StyledText {
-<<<<<<< HEAD
                 text: {
                     if (root.state === "wallpapers")
-                        return qsTr("No wallpapers found");
+                        return Tr.tr("No wallpapers found");
                     if (root.state === "keybinds")
-                        return qsTr("No keybinds found");
+                        return Tr.tr("No keybinds found");
                     if (root.state === "animations")
-                        return qsTr("No animations found");
-                    return qsTr("No results");
-                }
-=======
-                text: root.state === "wallpapers" ? Tr.tr("No wallpapers found") : Tr.tr("No results")
->>>>>>> caelestia/main
-                color: Colours.palette.m3onSurfaceVariant
+                        return Tr.tr("No animations found");
+                    return Tr.tr("No results");
+                }                color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.body.builders.large.weight(Font.Medium).build()
             }
 
             StyledText {
-<<<<<<< HEAD
                 text: {
                     if (root.state === "wallpapers")
-                        return Wallpapers.list.length === 0 ? qsTr("Try putting some wallpapers in %1").arg(Paths.shortenHome(Paths.wallsdir)) : qsTr("Try searching for something else");
+                        return Wallpapers.list.length === 0 ? Tr.tr("Try putting some wallpapers in %1").arg(Paths.shortenHome(Paths.wallsdir)) : Tr.tr("Try searching for something else");
                     if (root.state === "keybinds")
-                        return qsTr("No keybinds match your search");
+                        return Tr.tr("No keybinds match your search");
                     if (root.state === "animations")
-                        return qsTr("Try adding .lua files to\n~/.config/caelestia/animations/");
-                    return qsTr("Try searching for something else");
-                }
-=======
-                text: root.state === "wallpapers" && Wallpapers.list.length === 0 ? Tr.tr("Try putting some wallpapers in %1").arg(Paths.shortenHome(Paths.wallsdir)) : Tr.tr("Try searching for something else")
->>>>>>> caelestia/main
-                color: Colours.palette.m3onSurfaceVariant
+                        return Tr.tr("Try adding .lua files to\n~/.config/caelestia/animations/");
+                    return Tr.tr("Try searching for something else");
+                }                color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.body.medium
             }
         }
