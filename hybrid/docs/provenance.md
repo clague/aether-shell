@@ -178,3 +178,23 @@ edit -- worth knowing before it is needed rather than after.
 
 `assets/themes/nebula/` is the exception and stays: it is a new feature's content rather than a
 substitute for anything, and no fork has an equivalent.
+
+## Phase 2/9 catch-up — `caelestia` `750e67d9..4b1dae84` (2026-09-02..2026-10-25, 102 commits)
+
+Sync branch `sync/caelestia/2026-10-28`. Merge commit plus resolution commits; `git rerere`
+recorded 85 conflict resolutions for replay. Upstream kill range and the decisions taken:
+
+| Area (source commits) | Decision | Kind | Notes |
+|---|---|---|---|
+| namespace `caelestia` → `caelestia::shell` (`0b0beb52`) + CachingImage/iutils/filesystemmodel reshuffles (`35f3d210`, `e62207a3`) | taken; our files re-namespaced | `adapted` | mechanical rename over our plugin files; ours' iutils consumer state restored (imagecacher, cachingimageprovider re-added to `Images/CMakeLists.txt`; `usagefmt` to `Services/CMakeLists.txt`) |
+| i18n framework (`83c72efa`, `4b1dae84`) | taken | `adapted` | ours' strings moved to `Tr.tr/trN/trCtx`; ours' extra launcher actions (Emoji/Clipboard/Windows/Keybinds/Animations) wrapped in `markCtx` |
+| typed config lists (`CONFIG_GLOBAL_LIST`, `LauncherActionList`, `PlayerAliasList`, `EntryList`) | taken; ours' QML updated | `adapted` | `launcher.actions` filters read `.values`; MiDnight's per-monitor targetConfig semantics preserved on the panels |
+| schema static defaults (`934c359e`-series) | taken; ours' dynamic mechanisms re-homed | `reimplemented` | preset feature/variant resolution and themed paths moved from callable defaults to static defaults + `reresolve()` on load/preset/theme change (`hybridconfig`, `userpaths`, rootnodes `detail::loaded`) |
+| T62 empty-screen guard (`SETTINGS_SINGLETON_IMPL`) | re-added | `adapted` | upstream's rewrite dropped it again; two lines in `Settings/singleton.hpp`, ours' custom macro deleted |
+| workspaces v2 (`f435b2c1` 系列, `124b3f6f`, `ddabf5fb`) | **not taken** | *(none)* | the recorded phase-2 decision stands: MiDnight renders workspaces itself; `Workspace/Workspaces/SpecialWorkspaces/ActiveIndicator/OccupiedBg` stay ours' whole versions; upstream's `GapMarkers.qml` removed; `perMonitor`/`showUnoccupied`/`ignoredTags` keys allowlisted in dead-config with a written reason |
+| video wallpapers native (`1c406e4e`, `d6cc0d5d`, `b7959294`, `28fc7d3` previews) | **deferred (T7)** | *(none)* | upstream's C++ Visual engine renders ours obsolete once landed, but the swap touches `hybrid.features.videoWallpaper`, `WallpaperPauser`, `Wallpapers.getWallpaperThumb`, the WE workshop model and the Nexus pages; keeping the MiDnight engine for this sync and recording the stale keys (`wallpaperPlaying` toggle not offered) is the honest middle. Do the swap as its own phase. |
+| clock seconds (`e54de60b`), Units service | taken; ours' dual-orientation clock kept | `adapted` | `Clock.qml` merge produced `fontFor` on ours' both layouts + `showSeconds` |
+| gpu detecting flow (`c4abc387`, `90ef9e1c`) | taken | `adapted` | ours' Intel `skipNvidiaProbe` retained on upstream's setDetecting flow |
+| mime video filter (`17fa999e`, filesystemmodel) | taken | `superseded` | ours' hardcoded video-extension list replaced by QMediaFormat/`QMimeDatabase` detection |
+| recorder state machine | taken; ours' sounds re-added | `adapted` | `commandProc` reconcile flow from upstream; `Audio.playVideoRecord/Stop()` ours |
+| nix flake inputs, CI workflows, issue templates, README (`e40cc08e` etc.) | **not taken** | *(none)* | ours owns these; upstream's image CI is the one the bootstrap script says stays off |

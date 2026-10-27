@@ -17,6 +17,8 @@ Singleton {
     id: root
 
     property list<NotifData> list: []
+    readonly property bool dnd: PersistentState.doNotDisturb
+
     readonly property list<NotifData> notClosed: list.filter(n => !n.closed)
     readonly property list<NotifData> popups: list.filter(n => n.popup)
 
@@ -60,8 +62,6 @@ Singleton {
         root.list = [notif, ...root.list];
         return notif;
     }
-
-    readonly property bool dnd: PersistentState.doNotDisturb
 
     onListChanged: {
         if (loaded)

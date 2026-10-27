@@ -31,6 +31,7 @@ qml_module(caelestia-services
         memory.cpp
         diskinfo.cpp
         storage.cpp
+        usagefmt.cpp
         lyriccandidate.cpp
         lyrics.cpp
         sessionmanager.cpp

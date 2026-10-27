@@ -14,16 +14,19 @@ import qs.utils
 Scope {
     id: root
 
-    property alias enabled: props.enabled
-
     property bool _autoEnabled: false
+
+    // The shared source of truth is upstream's state module (Toggles.qml reads
+    // RuntimeState.gameMode); this property keeps MiDnight's `GameMode.enabled`
+    // read API working for the consumers wired into it.
+    property bool enabled: RuntimeState.gameMode
 
     function evaluateAutoEnable(): void {
         const regexes = GlobalConfig.utilities.gameMode.autoEnableRegexes;
         if (!GlobalConfig.utilities.gameMode.autoEnable || regexes.length === 0) {
             if (_autoEnabled) {
                 _autoEnabled = false;
-                props.enabled = false;
+                RuntimeState.gameMode = false;
             }
             return;
         }
@@ -38,8 +41,14 @@ Scope {
 
         if (_autoEnabled !== isRunning) {
             _autoEnabled = isRunning;
-            props.enabled = isRunning;
+            RuntimeState.gameMode = isRunning;
         }
+    }
+
+    // Upstream's name for what MiDnight called setDynamicConfs: re-apply the
+    // configured options while game mode is on.
+    function applyGameMode(): void {
+        setDynamicConfs();
     }
 
     function setDynamicConfs(): void {
@@ -109,6 +118,11 @@ Scope {
 
     PersistentProperties {
         id: props
+
+        // Legacy slot kept so existing configs carrying `gameMode.enabled` still load.
+        property bool enabled: RuntimeState.gameMode
+
+        reloadableId: "gameMode"
     }
 
     Connections {

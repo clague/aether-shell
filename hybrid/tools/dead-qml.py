@@ -31,13 +31,15 @@ ROOT = Path(__file__).resolve().parents[2]
 VERBOSE = "--verbose" in sys.argv
 
 ALLOWED = {
-    "components/misc/Ref.qml":
-        "upstream's own leftover -- unused there too, superseded by the C++ ServiceRef. "
-        "Upstream's to delete; removing it here only buys a merge conflict.",
-    "modules/notifications/QuickSharePrompt.qml":
-        "the only incoming-transfer UI that exists. Never instantiated, and it writes to a "
-        "QuickShare.hasPendingTransfer that no one defines -- half-finished in MiDnight, not "
-        "broken by us. Kept as the design for the gap rather than deleted. See trap T27.",
+    "components/misc/Ref.qml": "upstream's own leftover -- unused there too, superseded by the C++ ServiceRef. "
+    "Upstream's to delete; removing it here only buys a merge conflict.",
+    "modules/notifications/QuickSharePrompt.qml": "the only incoming-transfer UI that exists. Never instantiated, and it writes to a "
+    "QuickShare.hasPendingTransfer that no one defines -- half-finished in MiDnight, not "
+    "broken by us. Kept as the design for the gap rather than deleted. See trap T27.",
+    "components/images/CachingIconImage.qml": "belongs to the MiDnight thumbnail kit that survived the T7-deferred wallpaper swap "
+    "(CachingImage/CachingAnimatedImage stay because the MiDnight wallpaper engine reads "
+    "them). No merged consumer -- upstream's FolderContents stopped using it -- but the "
+    "engine swap is expected to reach for it; allowlist rather than delete.",
 }
 
 
@@ -50,16 +52,31 @@ def tracked_files(*patterns):
     git-based checkers did exactly that on their first CI run. Zero inputs is a broken
     checker, never a clean tree.
     """
-    r = subprocess.run(["git", "-C", str(ROOT), "ls-files",
-                        "--cached", "--others", "--exclude-standard", *patterns],
-                       capture_output=True, text=True)
+    r = subprocess.run(
+        [
+            "git",
+            "-C",
+            str(ROOT),
+            "ls-files",
+            "--cached",
+            "--others",
+            "--exclude-standard",
+            *patterns,
+        ],
+        capture_output=True,
+        text=True,
+    )
     if r.returncode != 0:
-        sys.exit(f"git ls-files failed ({r.returncode}): {r.stderr.strip()}\n"
-                 f"in a container, run: git config --global --add safe.directory {ROOT}")
+        sys.exit(
+            f"git ls-files failed ({r.returncode}): {r.stderr.strip()}\n"
+            f"in a container, run: git config --global --add safe.directory {ROOT}"
+        )
     files = r.stdout.split()
     if not files:
-        sys.exit(f"git ls-files {patterns} matched nothing under {ROOT} -- refusing to "
-                 f"report a clean result from an empty file list")
+        sys.exit(
+            f"git ls-files {patterns} matched nothing under {ROOT} -- refusing to "
+            f"report a clean result from an empty file list"
+        )
     return files
 
 
@@ -85,7 +102,12 @@ def self_test():
         ("nothing references it", "Foo", "Item { Bar {} }", False),
         ("plain instantiation", "Foo", "Item { Foo {} }", True),
         # The gotcha that made BarPopouts.ClipWrapper look dead.
-        ("namespaced instantiation", "ClipWrapper", "Item { BarPopouts.ClipWrapper {} }", True),
+        (
+            "namespaced instantiation",
+            "ClipWrapper",
+            "Item { BarPopouts.ClipWrapper {} }",
+            True,
+        ),
         # A longer name must not keep a shorter one alive.
         ("longer name is not a reference", "Foo", "Item { FooBar {} }", False),
         ("prefixed name is not a reference", "Foo", "property int myFoo: 1", False),
@@ -98,14 +120,20 @@ def self_test():
         got = is_referenced(stem, corpus)
         if got != expected:
             failures += 1
-            verb = "should have counted as referenced" if expected else "should NOT have"
+            verb = (
+                "should have counted as referenced" if expected else "should NOT have"
+            )
             print(f"  \033[0;31m{name}\033[0m: {stem} in {corpus!r} {verb}")
 
     if failures:
-        print(f"\033[1;31mFAIL\033[0m self-test: {failures} of {len(cases)} case(s) wrong")
+        print(
+            f"\033[1;31mFAIL\033[0m self-test: {failures} of {len(cases)} case(s) wrong"
+        )
         return 1
-    print(f"\033[1;32mPASS\033[0m self-test: {len(cases)} cases, detector sees real "
-          "references and is not fooled by longer names")
+    print(
+        f"\033[1;32mPASS\033[0m self-test: {len(cases)} cases, detector sees real "
+        "references and is not fooled by longer names"
+    )
     return 0
 
 
@@ -118,7 +146,7 @@ def main():
     dead, skipped = [], []
     for f in files:
         stem = Path(f).stem
-        if stem == "shell":                       # the entry point
+        if stem == "shell":  # the entry point
             continue
         rest = "\n".join(t for g, t in texts.items() if g != f)
         # no lookbehind on `.` -- a namespaced `Namespace.Type` is a real reference
@@ -133,7 +161,9 @@ def main():
     for f in dead:
         print(f"  DEAD    {f}  ({len(texts[f].splitlines())} lines)")
 
-    print(f"\n{len(files)} QML file(s), {len(skipped)} allowlisted, {len(dead)} unreferenced")
+    print(
+        f"\n{len(files)} QML file(s), {len(skipped)} allowlisted, {len(dead)} unreferenced"
+    )
     return 1 if dead else 0
 
 
