@@ -5,7 +5,11 @@ import QtQuick.Layouts
 import Quickshell
 import Caelestia.Components
 import Caelestia.Config
+<<<<<<< HEAD
 import Caelestia.Images
+=======
+import Caelestia.I18n
+>>>>>>> caelestia/main
 import Caelestia.Models
 import qs.components
 import qs.components.controls
@@ -17,6 +21,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
+<<<<<<< HEAD
     property color sortColor: "transparent"
 
     property var colorDistances: ({})
@@ -65,6 +70,9 @@ PageBase {
     }
 
     title: qsTr("Select wallpaper")
+=======
+    title: Tr.tr("Wallpapers")
+>>>>>>> caelestia/main
     isSubPage: true
 
     onSortColorChanged: {
@@ -92,7 +100,7 @@ PageBase {
 
             IconTextButton {
                 icon: "photo_library"
-                text: qsTr("Browse")
+                text: Tr.tr("Browse")
                 font: Tokens.font.body.large
                 isRound: true
                 shapeMorph: true
@@ -103,8 +111,8 @@ PageBase {
                 FileDialog {
                     id: browseDialog
 
-                    title: qsTr("Select an image")
-                    filterLabel: qsTr("Image files")
+                    title: Tr.tr("Select an image")
+                    filterLabel: Tr.tr("Image files")
                     filters: Images.validImageExtensions
                     onAccepted: path => {
                         Wallpapers.setWallpaper(path);
@@ -142,7 +150,7 @@ PageBase {
 
             IconTextButton {
                 icon: "shuffle"
-                text: qsTr("Random")
+                text: Tr.tr("Random")
                 font: Tokens.font.body.large
                 isRound: true
                 shapeMorph: true
@@ -157,6 +165,7 @@ PageBase {
             }
         }
 
+<<<<<<< HEAD
         StyledText {
             Layout.topMargin: Tokens.spacing.medium
             text: qsTr("Featured wallpapers")
@@ -432,12 +441,23 @@ PageBase {
                     const f = root.nState ? root.nState.wallpaperFilterType : "all";
                     return menuItems.find(m => m.filterValue === f) ?? menuItems[0];
                 }
+=======
+        WallItem {
+            imgHeight: Math.round(width * 0.3)
+            radius: Tokens.rounding.extraLarge
+            source: Quickshell.shellPath("assets/wallpaper.webp")
+            text: Tr.tr("Featured wallpaper")
+            fillLabel: false
+            onClicked: {
+                Wallpapers.setWallpaper(Quickshell.shellPath("assets/wallpaper.webp"));
+                root.nState.closeSubPage();
+>>>>>>> caelestia/main
             }
         }
 
         StyledText {
             Layout.topMargin: Tokens.spacing.large
-            text: qsTr("Local wallpapers")
+            text: Tr.tr("Local wallpapers")
             font: Tokens.font.title.small
         }
 
@@ -592,7 +612,7 @@ PageBase {
 
                     StyledText {
                         Layout.alignment: Qt.AlignHCenter
-                        text: qsTr("No local wallpapers found")
+                        text: Tr.tr("No local wallpapers found")
                         color: Colours.palette.m3outline
                         font: Tokens.font.title.small
                     }

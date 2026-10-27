@@ -1,12 +1,16 @@
 import QtQuick
+<<<<<<< HEAD
 import Quickshell
 import Quickshell.Io
 import Caelestia
+=======
+>>>>>>> caelestia/main
 import Caelestia.Config
 import Caelestia.Models
+import Caelestia.Multimedia
+import Caelestia.State
 import qs.components
 import qs.components.effects
-import qs.components.images
 import qs.services
 import qs.utils
 
@@ -42,6 +46,8 @@ Item {
     }
 
     StateLayer {
+        id: stateLayer
+
         radius: Tokens.rounding.large
         onClicked: {
             Wallpapers.setWallpaper(root.modelData.path);
@@ -62,7 +68,7 @@ Item {
         }
     }
 
-    StyledClippingRect {
+    ClipRect {
         id: image
 
         anchors.horizontalCenter: parent.horizontalCenter
@@ -81,6 +87,7 @@ Item {
             visible: thumbImg.status !== Image.Ready
         }
 
+<<<<<<< HEAD
         CachingImage {
             id: thumbImg
 
@@ -98,6 +105,12 @@ Item {
                     }
                 }
             }
+=======
+        Visual {
+            anchors.fill: parent
+            source: root.modelData.path
+            playing: (root.PathView.isCurrentItem && PersistentState.wallpaperPlaying) || stateLayer.containsMouse
+>>>>>>> caelestia/main
         }
     }
 

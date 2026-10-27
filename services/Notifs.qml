@@ -7,6 +7,8 @@ import Quickshell.Io
 import Quickshell.Services.Notifications
 import Caelestia
 import Caelestia.Config
+import Caelestia.I18n
+import Caelestia.State
 import qs.components.misc
 import qs.services
 import qs.utils
@@ -17,7 +19,6 @@ Singleton {
     property list<NotifData> list: []
     readonly property list<NotifData> notClosed: list.filter(n => !n.closed)
     readonly property list<NotifData> popups: list.filter(n => n.popup)
-    property alias dnd: props.dnd
 
     property bool loaded
 
@@ -30,13 +31,14 @@ Singleton {
     }
 
     function shouldShowPopup(): bool {
-        if (props.dnd || ShellState.anySidebarOpen())
+        if (PersistentState.doNotDisturb || ShellState.anySidebarOpen())
             return false;
         if (GlobalConfig.notifs.fullscreen === NotifsFullscreen.Off && hasFullscreen())
             return false;
         return true;
     }
 
+<<<<<<< HEAD
     function clear(): void {
         const toClose = [];
         for (let i = 0; i < root.list.length; i++)
@@ -70,9 +72,25 @@ Singleton {
             Toaster.toast(qsTr("Do not disturb disabled"), qsTr("Popup notifications are now enabled"), "do_not_disturb_off");
     }
 
+=======
+>>>>>>> caelestia/main
     onListChanged: {
         if (loaded)
             saveTimer.restart();
+    }
+
+    Connections {
+        function onDoNotDisturbChanged(): void {
+            if (!GlobalConfig.utilities.toasts.dndChanged)
+                return;
+
+            if (PersistentState.doNotDisturb)
+                Toaster.toast(Tr.tr("Do not disturb enabled"), Tr.tr("Popup notifications are now disabled"), "do_not_disturb_on");
+            else
+                Toaster.toast(Tr.tr("Do not disturb disabled"), Tr.tr("Popup notifications are now enabled"), "do_not_disturb_off");
+        }
+
+        target: PersistentState
     }
 
     Timer {
@@ -93,14 +111,6 @@ Singleton {
                     hasActionIcons: n.hasActionIcons,
                     actions: n.actions
                 }))))
-    }
-
-    PersistentProperties {
-        id: props
-
-        property bool dnd
-
-        reloadableId: "notifs"
     }
 
     NotificationServer {
@@ -164,25 +174,35 @@ Singleton {
         onPressed: root.clear()
     }
 
+    // qmllint disable unresolved-type
+    CustomShortcut {
+        // qmllint enable unresolved-type
+        name: "toggleDnd"
+        description: "Toggle do not disturb"
+        onPressed: {
+            PersistentState.doNotDisturb = !PersistentState.doNotDisturb;
+        }
+    }
+
     IpcHandler {
         function clear(): void {
             root.clear();
         }
 
         function isDndEnabled(): bool {
-            return props.dnd;
+            return PersistentState.doNotDisturb;
         }
 
         function toggleDnd(): void {
-            props.dnd = !props.dnd;
+            PersistentState.doNotDisturb = !PersistentState.doNotDisturb;
         }
 
         function enableDnd(): void {
-            props.dnd = true;
+            PersistentState.doNotDisturb = true;
         }
 
         function disableDnd(): void {
-            props.dnd = false;
+            PersistentState.doNotDisturb = false;
         }
 
         target: "notifs"

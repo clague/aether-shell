@@ -25,6 +25,7 @@ body:
 
   - type: textarea
     attributes:
+<<<<<<< HEAD
       label: Log file
       description: |
         Drag and drop `log.qslog.log` here (compress if too large).
@@ -45,6 +46,12 @@ body:
         ```
 
         </details>
+=======
+      label: "Version info"
+      description: "Run `caelestia -v` and paste the result below."
+      placeholder: "Paste the output of `caelestia -v` here!"
+      render: text
+>>>>>>> caelestia/main
     validations:
       required: true
 

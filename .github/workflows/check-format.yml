@@ -7,7 +7,16 @@ on:
   pull_request:
 
 jobs:
+  changes:
+    uses: ./.github/workflows/detect-changes.yml
+    permissions:
+      pull-requests: read
+    with:
+      filter-group: format
+
   check-qml:
+    needs: changes
+    if: needs.changes.outputs.format-qml == 'true'
     runs-on: ubuntu-latest
     # Lowercase literal, not ${{ github.repository_owner }}: Docker rejects an
     # uppercase registry reference, container.image is resolved before any step
@@ -20,7 +29,8 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout repo
+        uses: actions/checkout@v7
 
       - name: Check QML format
         shell: fish {0}
@@ -32,6 +42,8 @@ jobs:
           python3 scripts/qml-lint-conventions.py
 
   check-cpp:
+    needs: changes
+    if: needs.changes.outputs.format-cpp == 'true'
     runs-on: ubuntu-latest
     # Lowercase literal, not ${{ github.repository_owner }}: Docker rejects an
     # uppercase registry reference, container.image is resolved before any step
@@ -44,7 +56,8 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout repo
+        uses: actions/checkout@v7
 
       - name: Check C++ format
         shell: fish {0}
@@ -52,3 +65,22 @@ jobs:
           clang-format --version
           find plugin extras -name '*.cpp' -o -name '*.hpp' \
             | xargs clang-format --dry-run --Werror
+
+  format-check:
+    if: always()
+    needs:
+      - changes
+      - check-qml
+      - check-cpp
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Verify formatting results
+        uses: $/.github/actions/verify-checks
+        with:
+          needs: ${{ toJSON(needs) }}
+          checks: |
+            {
+              "check-qml": "format-qml",
+              "check-cpp": "format-cpp"
+            }

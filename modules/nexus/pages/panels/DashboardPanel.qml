@@ -4,12 +4,17 @@ import QtQuick
 import QtQuick.Layouts
 import M3Shapes
 import Caelestia.Config
+<<<<<<< HEAD
 import qs.components.controls
+=======
+import Caelestia.I18n
+>>>>>>> caelestia/main
 import qs.modules.nexus.common
 
 PageBase {
     id: root
 
+<<<<<<< HEAD
     readonly property list<MenuItem> dashboardShapeItems: [
         MenuItem {
             property int value: MaterialShape.Circle
@@ -137,6 +142,9 @@ PageBase {
     ]
 
     title: qsTr("Dashboard")
+=======
+    title: Tr.tr("Dashboard")
+>>>>>>> caelestia/main
     isSubPage: true
 
     ColumnLayout {
@@ -148,11 +156,12 @@ PageBase {
         // General
         SectionHeader {
             first: true
-            text: qsTr("General")
+            text: Tr.tr("General")
         }
 
         ToggleRow {
             first: true
+<<<<<<< HEAD
             text: qsTr("Enabled")
             configNode: root.targetConfig.dashboard
             propertyName: "enabled"
@@ -215,15 +224,36 @@ PageBase {
             onSelected: item => {
                 root.targetConfig.lock.profilePicShape = item.value; // qmllint disable missing-property
             }
+=======
+            text: Tr.trCtx("Enabled", "toggle label")
+            checked: Config.dashboard.enabled
+            onToggled: GlobalConfig.dashboard.enabled = checked
+        }
+
+        ToggleRow {
+            text: Tr.tr("Show on hover")
+            subtext: Tr.tr("Reveal when the cursor reaches the screen edge")
+            checked: Config.dashboard.showOnHover
+            onToggled: GlobalConfig.dashboard.showOnHover = checked
+>>>>>>> caelestia/main
+        }
+
+        ToggleRow {
+            last: true
+            text: Tr.tr("Show clock seconds")
+            subtext: Tr.tr("Display seconds for the clock in the main panel")
+            checked: Config.dashboard.showClockSeconds
+            onToggled: GlobalConfig.dashboard.showClockSeconds = checked
         }
 
         // Tabs
         SectionHeader {
-            text: qsTr("Tabs")
+            text: Tr.tr("Tabs")
         }
 
         ToggleRow {
             first: true
+<<<<<<< HEAD
             text: qsTr("Dashboard")
             configNode: root.targetConfig.dashboard
             propertyName: "showDashboard"
@@ -347,10 +377,28 @@ PageBase {
             onToggled: {
                 root.targetConfig.dashboard.syncMediaShapesToBeat = checked;
             }
+=======
+            text: Tr.tr("Dashboard")
+            checked: Config.dashboard.showDashboard
+            onToggled: GlobalConfig.dashboard.showDashboard = checked
+        }
+
+        ToggleRow {
+            text: Tr.tr("Media")
+            checked: Config.dashboard.showMedia
+            onToggled: GlobalConfig.dashboard.showMedia = checked
+        }
+
+        ToggleRow {
+            text: Tr.tr("Performance")
+            checked: Config.dashboard.showPerformance
+            onToggled: GlobalConfig.dashboard.showPerformance = checked
+>>>>>>> caelestia/main
         }
 
         ToggleRow {
             last: true
+<<<<<<< HEAD
             Layout.fillWidth: true
             text: qsTr("Replace lyrics with visuals")
             subtext: qsTr("Show the GIF/shapes in the media tab instead of lyrics")
@@ -379,15 +427,21 @@ PageBase {
             onToggled: {
                 root.targetConfig.dashboard.showWeatherLocation = checked;
             }
+=======
+            text: Tr.tr("Weather")
+            checked: Config.dashboard.showWeather
+            onToggled: GlobalConfig.dashboard.showWeather = checked
+>>>>>>> caelestia/main
         }
 
         // Performance widgets
         SectionHeader {
-            text: qsTr("Performance widgets")
+            text: Tr.tr("Performance widgets")
         }
 
         ToggleRow {
             first: true
+<<<<<<< HEAD
             text: qsTr("Battery")
             configNode: root.targetConfig.dashboard.performance
             propertyName: "showBattery"
@@ -435,10 +489,40 @@ PageBase {
             onToggled: {
                 root.targetConfig.dashboard.performance.showStorage = checked;
             }
+=======
+            text: Tr.tr("Battery")
+            checked: Config.dashboard.performance.showBattery
+            onToggled: GlobalConfig.dashboard.performance.showBattery = checked
+        }
+
+        ToggleRow {
+            text: Tr.tr("GPU")
+            checked: Config.dashboard.performance.showGpu
+            onToggled: GlobalConfig.dashboard.performance.showGpu = checked
+        }
+
+        ToggleRow {
+            text: Tr.tr("CPU")
+            checked: Config.dashboard.performance.showCpu
+            onToggled: GlobalConfig.dashboard.performance.showCpu = checked
+        }
+
+        ToggleRow {
+            text: Tr.tr("Memory")
+            checked: Config.dashboard.performance.showMemory
+            onToggled: GlobalConfig.dashboard.performance.showMemory = checked
+        }
+
+        ToggleRow {
+            text: Tr.tr("Storage")
+            checked: Config.dashboard.performance.showStorage
+            onToggled: GlobalConfig.dashboard.performance.showStorage = checked
+>>>>>>> caelestia/main
         }
 
         ToggleRow {
             last: true
+<<<<<<< HEAD
             text: qsTr("Network")
             configNode: root.targetConfig.dashboard.performance
             propertyName: "showNetwork"
@@ -446,21 +530,32 @@ PageBase {
             onToggled: {
                 root.targetConfig.dashboard.performance.showNetwork = checked;
             }
+=======
+            text: Tr.tr("Network")
+            checked: Config.dashboard.performance.showNetwork
+            onToggled: GlobalConfig.dashboard.performance.showNetwork = checked
+>>>>>>> caelestia/main
         }
 
         // Behaviour
         SectionHeader {
-            text: qsTr("Behaviour")
+            text: Tr.tr("Behaviour")
         }
 
         StepperRow {
             first: true
             last: true
+<<<<<<< HEAD
             label: qsTr("Drag threshold")
             subtext: qsTr("Pixels dragged before the dashboard opens")
             configNode: root.targetConfig.dashboard
             propertyName: "dragThreshold"
             value: root.targetConfig.dashboard.dragThreshold
+=======
+            label: Tr.tr("Drag threshold")
+            subtext: Tr.tr("Pixels dragged before the dashboard opens")
+            value: Config.dashboard.dragThreshold
+>>>>>>> caelestia/main
             from: 0
             to: 200
             stepSize: 5

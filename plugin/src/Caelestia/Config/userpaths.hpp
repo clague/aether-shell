@@ -6,14 +6,12 @@
 #include "settings/objectnode.hpp"
 #include "common.hpp"
 
-namespace caelestia::config {
+namespace caelestia::shell::config {
 
 using Qt::StringLiterals::operator""_s;
 
 // Lets a lambda default containing commas pass through a macro argument in one piece, as
 // hybridconfig.hpp does for the same reason.
-#define ARG(...) __VA_ARGS__
-
 namespace detail {
 
 // Defined in userpaths.cpp. `self` is the UserPaths node, so the theme name is read from the
@@ -28,16 +26,17 @@ QString themeAsset(const settings::Node* self, const QString& file, const QStrin
 // specific asset from somewhere else keeps that when they switch themes, exactly as an
 // explicitly set feature flag survives a preset change (D8). It also means an empty themeName
 // is not a special case in every reader -- it is just the fallback.
-#define THEMED_PATH(name, file, fallback)                                                                              \
-    CONFIG_PROPERTY(QString, name, ARG([](const settings::Node* self) {                                                \
-        return detail::themeAsset(self, u##file##_s, u##fallback##_s);                                                 \
-    }))
+//
+// The settings schema moved to static defaults, so the themed value is applied through
+// reresolve() (see userpaths.cpp for the key->asset table) when the theme changes or a layer
+// loads; until then the static fallback applies.
+#define THEMED_PATH(name, file, fallback) CONFIG_PROPERTY(QString, name, u##fallback##_s)
 
 class UserPaths : public settings::ObjectNode {
     CONFIG_NODE_NO_CTOR(UserPaths, settings::ObjectNode)
     // SETTINGS_NODE bundles this with the default constructor; taking the NO_CTOR form to add
     // one drops it, and without it every `Config.paths.*` reader in the tree reports
-    // `Type "caelestia::config::UserPaths" ... not found`. HybridConfig carries it for the
+    // `Type "caelestia::shell::config::UserPaths" ... not found`. HybridConfig carries it for the
     // same reason.
     QML_ANONYMOUS
 
@@ -61,10 +60,12 @@ class UserPaths : public settings::ObjectNode {
     THEMED_PATH(lockNoNotifsPic, "notif.png", "root:/assets/dino.png")
 
 public:
+    // Applies the selected theme's assets to the keys the user has not set (D8).
+    void reresolve();
+
     explicit UserPaths(UserPaths* fallback = nullptr, QObject* parent = nullptr, bool globalOnly = false);
 };
 
 #undef THEMED_PATH
-#undef ARG
 
-} // namespace caelestia::config
+} // namespace caelestia::shell::config

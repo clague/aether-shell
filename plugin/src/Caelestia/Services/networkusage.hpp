@@ -6,19 +6,7 @@
 #include "core/circularbuffer.hpp"
 #include "tickingservice.hpp"
 
-namespace caelestia::services {
-
-struct NetworkFormatResult {
-    Q_GADGET
-    QML_ANONYMOUS
-
-    Q_PROPERTY(qreal value MEMBER value CONSTANT)
-    Q_PROPERTY(QString unit MEMBER unit CONSTANT)
-
-public:
-    qreal value = 0.0;
-    QString unit;
-};
+namespace caelestia::shell::services {
 
 class NetworkUsage : public TickingService {
     Q_OBJECT
@@ -31,8 +19,8 @@ class NetworkUsage : public TickingService {
     Q_PROPERTY(qreal uploadTotal READ uploadTotal NOTIFY changed)
     Q_PROPERTY(int historyLength READ historyLength CONSTANT)
 
-    Q_PROPERTY(caelestia::CircularBuffer* downloadBuffer READ downloadBuffer CONSTANT)
-    Q_PROPERTY(caelestia::CircularBuffer* uploadBuffer READ uploadBuffer CONSTANT)
+    Q_PROPERTY(caelestia::shell::CircularBuffer* downloadBuffer READ downloadBuffer CONSTANT)
+    Q_PROPERTY(caelestia::shell::CircularBuffer* uploadBuffer READ uploadBuffer CONSTANT)
 
 public:
     explicit NetworkUsage(QObject* parent = nullptr);
@@ -42,9 +30,6 @@ public:
     [[nodiscard]] qreal downloadTotal() const;
     [[nodiscard]] qreal uploadTotal() const;
     [[nodiscard]] int historyLength() const;
-
-    [[nodiscard]] Q_INVOKABLE static NetworkFormatResult formatBytesRate(qreal bytes);
-    [[nodiscard]] Q_INVOKABLE static NetworkFormatResult formatBytes(qreal bytes);
 
     [[nodiscard]] CircularBuffer* downloadBuffer() const;
     [[nodiscard]] CircularBuffer* uploadBuffer() const;
@@ -71,4 +56,4 @@ private:
     QElapsedTimer m_timer;
 };
 
-} // namespace caelestia::services
+} // namespace caelestia::shell::services

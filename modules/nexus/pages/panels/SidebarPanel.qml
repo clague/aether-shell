@@ -3,12 +3,13 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Caelestia.Config
+import Caelestia.I18n
 import qs.modules.nexus.common
 
 PageBase {
     id: root
 
-    title: qsTr("Sidebar")
+    title: Tr.tr("Sidebar")
     isSubPage: true
 
     ColumnLayout {
@@ -19,11 +20,12 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("General")
+            text: Tr.tr("General")
         }
 
         ToggleRow {
             first: true
+<<<<<<< HEAD
             text: qsTr("Enabled")
             configNode: root.targetConfig.sidebar
             propertyName: "enabled"
@@ -31,17 +33,35 @@ PageBase {
             onToggled: {
                 root.targetConfig.sidebar.enabled = checked;
             }
+=======
+            text: Tr.trCtx("Enabled", "toggle label")
+            checked: Config.sidebar.enabled
+            onToggled: GlobalConfig.sidebar.enabled = checked
+>>>>>>> caelestia/main
+        }
+
+        ToggleRow {
+            text: Tr.tr("Show on hover")
+            subtext: Tr.tr("Reveal when the cursor reaches the screen edge")
+            checked: Config.sidebar.showOnHover
+            onToggled: GlobalConfig.sidebar.showOnHover = checked
         }
 
         StepperRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
             last: true
+<<<<<<< HEAD
             label: qsTr("Drag threshold")
             subtext: qsTr("Pixels dragged before the sidebar opens")
             configNode: root.targetConfig.sidebar
             propertyName: "dragThreshold"
             value: root.targetConfig.sidebar.dragThreshold
+=======
+            label: Tr.tr("Drag threshold")
+            subtext: Tr.tr("Pixels dragged before the sidebar opens")
+            value: Config.sidebar.dragThreshold
+>>>>>>> caelestia/main
             from: 0
             to: 200
             stepSize: 5

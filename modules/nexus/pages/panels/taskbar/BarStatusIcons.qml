@@ -3,14 +3,19 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Caelestia.Config
+<<<<<<< HEAD
 import qs.components
 import qs.services
+=======
+import Caelestia.I18n
+>>>>>>> caelestia/main
 import qs.modules.nexus.common
 
 PageBase {
     id: root
 
     readonly property var builtinIcons: ({
+<<<<<<< HEAD
             lockStatus: qsTr("Lock keys"),
             kbLayout: qsTr("Keyboard layout"),
             audio: qsTr("Speakers"),
@@ -20,9 +25,18 @@ PageBase {
             battery: qsTr("Battery"),
             peripheralBattery: qsTr("Peripheral battery"),
             notifications: qsTr("Notifications")
+=======
+            lockStatus: Tr.tr("Lock keys"),
+            kbLayout: Tr.tr("Keyboard layout"),
+            audio: Tr.tr("Speakers"),
+            microphone: Tr.tr("Microphone"),
+            network: Tr.tr("Network"),
+            bluetooth: Tr.tr("Bluetooth"),
+            battery: Tr.tr("Battery")
+>>>>>>> caelestia/main
         })
 
-    title: qsTr("Status icons")
+    title: Tr.tr("Status icons")
     isSubPage: true
 
     ColumnLayout {
@@ -32,6 +46,7 @@ PageBase {
         spacing: Tokens.spacing.extraSmall / 2
 
         // Visible icons
+<<<<<<< HEAD
         RowLayout {
             Layout.fillWidth: true
             Layout.leftMargin: Tokens.padding.small
@@ -51,6 +66,11 @@ PageBase {
             Item {
                 Layout.fillWidth: true
             }
+=======
+        SectionHeader {
+            first: true
+            text: Tr.tr("Visible icons")
+>>>>>>> caelestia/main
         }
 
         ListEditor {
@@ -85,9 +105,9 @@ PageBase {
 
             rootParent: root.flickable
             icon: "add"
-            label: qsTr("Add entry")
-            header: qsTr("Add new entry")
-            acceptLabel: qsTr("Add")
+            label: Tr.tr("Add entry")
+            header: Tr.tr("Add new entry")
+            acceptLabel: Tr.trCtx("Add", "button")
 
             model: {
                 const builtins = Object.keys(root.builtinIcons).map(k => ({
@@ -110,12 +130,13 @@ PageBase {
 
         // Behaviour
         SectionHeader {
-            text: qsTr("Behaviour")
+            text: Tr.tr("Behaviour")
         }
 
         ToggleRow {
             first: true
             last: true
+<<<<<<< HEAD
             text: qsTr("Popout on hover")
             subtext: qsTr("Show a details popout when hovering the status icons")
             configNode: root.targetConfig.bar.popouts
@@ -124,6 +145,12 @@ PageBase {
             onToggled: {
                 root.targetConfig.bar.popouts.statusIcons = checked;
             }
+=======
+            text: Tr.tr("Popout on hover")
+            subtext: Tr.tr("Show a details popout when hovering the status icons")
+            checked: Config.bar.popouts.statusIcons
+            onToggled: GlobalConfig.bar.popouts.statusIcons = checked
+>>>>>>> caelestia/main
         }
     }
 }

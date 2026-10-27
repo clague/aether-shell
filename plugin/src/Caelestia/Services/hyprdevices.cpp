@@ -7,12 +7,15 @@
 
 #include "config/rootnodes.hpp"
 #include "core/toaster.hpp"
+#include "util/i18n.hpp"
 
-namespace caelestia::services::hypr {
+namespace caelestia::shell::services::hypr {
 
 using Qt::StringLiterals::operator""_s;
 
 namespace {
+
+using util::i18n::mark;
 
 const config::UtilitiesToasts* toastConfig() {
     return config::ConfigSingleton::instance()->utilities()->toasts();
@@ -22,28 +25,30 @@ void toastCapsLock(bool enabled) {
     if (!toastConfig()->capsLockChanged())
         return;
 
-    // TODO: tr when translations added
-    Toaster::instance()->toast(enabled ? u"Caps lock enabled"_s : u"Caps lock disabled"_s,
-        enabled ? u"Caps lock is currently enabled"_s : u"Caps lock is currently disabled"_s,
-        enabled ? u"keyboard_capslock_badge"_s : u"keyboard_capslock"_s);
+    const auto title = enabled ? mark(u"Caps lock enabled"_s) : mark(u"Caps lock disabled"_s);
+    const auto message =
+        enabled ? mark(u"Caps lock is currently enabled"_s) : mark(u"Caps lock is currently disabled"_s);
+    const auto icon = enabled ? u"keyboard_capslock_badge"_s : u"keyboard_capslock"_s;
+    Toaster::instance()->toast(title, message, icon);
 }
 
 void toastNumLock(bool enabled) {
     if (!toastConfig()->numLockChanged())
         return;
 
-    // TODO: tr when translations added
-    Toaster::instance()->toast(enabled ? u"Num lock enabled"_s : u"Num lock disabled"_s,
-        enabled ? u"Num lock is currently enabled"_s : u"Num lock is currently disabled"_s,
-        enabled ? u"looks_one"_s : u"timer_1"_s);
+    const auto title = enabled ? mark(u"Num lock enabled"_s) : mark(u"Num lock disabled"_s);
+    const auto message = enabled ? mark(u"Num lock is currently enabled"_s) : mark(u"Num lock is currently disabled"_s);
+    const auto icon = enabled ? u"looks_one"_s : u"timer_1"_s;
+    Toaster::instance()->toast(title, message, icon);
 }
 
 void toastKbLayout(const QString& layout) {
     if (!toastConfig()->kbLayoutChanged())
         return;
 
-    // TODO: tr when translations added
-    Toaster::instance()->toast(u"Keyboard layout changed"_s, u"Layout changed to: %1"_s.arg(layout), u"keyboard"_s);
+    Toaster::instance()->toast(
+        // TRANSLATORS: %1 = an XKB keyboard layout name, e.g. English (US)
+        mark(u"Keyboard layout changed"_s), mark(u"Layout changed to: %1"_s, { layout }), u"keyboard"_s);
 }
 
 } // namespace
@@ -163,7 +168,7 @@ bool HyprDevices::updateLastIpcObject(const QJsonObject& object) {
         const auto obj = o.toObject();
         const auto addr = obj.value(u"address"_s).toString();
 
-        auto it = std::ranges::find_if(m_keyboards, [addr](const HyprKeyboard* kb) {
+        const auto it = std::ranges::find_if(m_keyboards, [addr](const HyprKeyboard* kb) {
             return kb->address() == addr;
         });
 
@@ -182,4 +187,4 @@ bool HyprDevices::updateLastIpcObject(const QJsonObject& object) {
     return dirty;
 }
 
-} // namespace caelestia::services::hypr
+} // namespace caelestia::shell::services::hypr

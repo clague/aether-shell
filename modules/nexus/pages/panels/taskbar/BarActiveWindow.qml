@@ -2,12 +2,13 @@ pragma ComponentBehavior: Bound
 
 import QtQuick.Layouts
 import Caelestia.Config
+import Caelestia.I18n
 import qs.modules.nexus.common
 
 PageBase {
     id: root
 
-    title: qsTr("Active window")
+    title: Tr.tr("Active window")
     isSubPage: true
 
     ColumnLayout {
@@ -18,6 +19,7 @@ PageBase {
 
         ToggleRow {
             first: true
+<<<<<<< HEAD
             text: qsTr("Enable component")
             checked: {
                 const entries = Config.bar.entries;
@@ -76,10 +78,29 @@ PageBase {
             onToggled: {
                 root.targetConfig.bar.activeWindow.showOnHover = checked;
             }
+=======
+            text: Tr.trCtx("Compact", "taskbar active window layout")
+            checked: Config.bar.activeWindow.compact
+            onToggled: GlobalConfig.bar.activeWindow.compact = checked
+        }
+
+        ToggleRow {
+            text: Tr.trCtx("Inverted", "taskbar active window: swap the title and class order")
+            checked: Config.bar.activeWindow.inverted
+            onToggled: GlobalConfig.bar.activeWindow.inverted = checked
+        }
+
+        ToggleRow {
+            text: Tr.tr("Show on hover")
+            subtext: Tr.tr("Only show the active window title while hovering")
+            checked: Config.bar.activeWindow.showOnHover
+            onToggled: GlobalConfig.bar.activeWindow.showOnHover = checked
+>>>>>>> caelestia/main
         }
 
         ToggleRow {
             last: true
+<<<<<<< HEAD
             text: qsTr("Popout on hover")
             subtext: qsTr("Show a window details popout when hovering")
             configNode: root.targetConfig.bar.popouts
@@ -88,6 +109,12 @@ PageBase {
             onToggled: {
                 root.targetConfig.bar.popouts.activeWindow = checked;
             }
+=======
+            text: Tr.tr("Popout on hover")
+            subtext: Tr.tr("Show a window details popout when hovering")
+            checked: Config.bar.popouts.activeWindow
+            onToggled: GlobalConfig.bar.popouts.activeWindow = checked
+>>>>>>> caelestia/main
         }
     }
 }

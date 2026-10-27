@@ -7,7 +7,16 @@ on:
   pull_request:
 
 jobs:
+  changes:
+    uses: ./.github/workflows/detect-changes.yml
+    permissions:
+      pull-requests: read
+    with:
+      filter-group: build
+
   lint-qml:
+    needs: changes
+    if: needs.changes.outputs.lint == 'true'
     runs-on: ubuntu-latest
     # Lowercase literal, not ${{ github.repository_owner }}: Docker rejects an
     # uppercase registry reference, container.image is resolved before any step
@@ -20,9 +29,10 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout source
+        uses: actions/checkout@v7
 
-      - name: Build
+      - name: CMake build
         run: |
           # Set version and git rev for CI build so we don't call git
           cmake -B build -G Ninja -DCMAKE_CXX_COMPILER=clazy -DVERSION= -DGIT_REVISION=
@@ -56,10 +66,20 @@ jobs:
           set -l qml_files (string match -vr 'build/.*' **.qml)
 
           # Lint
-          set -l lint_out (/usr/lib/qt6/bin/qmllint --import disable $args $qml_files 2>&1 | tee /dev/stderr)
-          test -z "$lint_out" || exit 1
+          set -l lint_out (mktemp)
+          /usr/lib/qt6/bin/qmllint $args $qml_files 2> $lint_out
+
+          set -l singleton_pattern 'Type [A-Z][a-zA-Z0-9]* not declared as singleton in qmldir but using pragma Singleton'
+          set -l post_reload_hook_pattern 'PostReloadHook was not found\. Did you add all imports and dependencies\?'
+          sed -i -E "/(($singleton_pattern)|($post_reload_hook_pattern)) \[import\]/d" $lint_out
+
+          cat $lint_out
+
+          ! test -s $lint_out
 
   lint-cpp:
+    needs: changes
+    if: needs.changes.outputs.lint == 'true'
     runs-on: ubuntu-latest
     # Lowercase literal, not ${{ github.repository_owner }}: Docker rejects an
     # uppercase registry reference, container.image is resolved before any step
@@ -72,8 +92,10 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout source
+        uses: actions/checkout@v7
 
+<<<<<<< HEAD
       # The checkout is owned by a different uid than the container's root, so git refuses
       # every command with "detected dubious ownership". The checkers now fail loudly on
       # that rather than reporting an empty tree as clean, but they still need it to work.
@@ -94,6 +116,9 @@ jobs:
         run: ./hybrid/tools/dead-config.py
 
       - name: Configure
+=======
+      - name: CMake build
+>>>>>>> caelestia/main
         run: |
           cmake -B build -G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
             -DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON -DVERSION= -DGIT_REVISION=
@@ -110,3 +135,22 @@ jobs:
           clang-tidy --version
           run-clang-tidy -p build -quiet -j "$(nproc)" -warnings-as-errors='*' \
             -source-filter='^(?!.*/build/).*\.cpp$'
+
+  lint-check:
+    if: always()
+    needs:
+      - changes
+      - lint-qml
+      - lint-cpp
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Verify lint results
+        uses: $/.github/actions/verify-checks
+        with:
+          needs: ${{ toJSON(needs) }}
+          checks: |
+            {
+              "lint-qml": "lint",
+              "lint-cpp": "lint"
+            }

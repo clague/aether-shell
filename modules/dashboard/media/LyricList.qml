@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Effects
 import QtQuick.Layouts
 import Caelestia.Config
+import Caelestia.I18n
 import Caelestia.Services
 import qs.components
 import qs.components.containers
@@ -15,7 +16,6 @@ Item {
     id: root
 
     readonly property real fadeAmount: 0.1
-    property bool flag
     property list<string> lyricList: Lyrics.lyrics
 
     function reloadTrack() {
@@ -67,7 +67,6 @@ Item {
     }
 
     state: {
-        flag; // For some reason it doesn't update sometimes, so use this to force an update
         if (Lyrics.hasLyrics)
             return "hasLyrics";
         if (Lyrics.loading)
@@ -156,6 +155,7 @@ Item {
         }
     ]
 
+<<<<<<< HEAD
     Connections {
         function onActiveChanged() {
             root.reloadTrack();
@@ -181,6 +181,8 @@ Item {
         target: Lyrics
     }
 
+=======
+>>>>>>> caelestia/main
     Loader {
         id: loadingIndicator
 
@@ -209,7 +211,7 @@ Item {
             }
 
             StyledText {
-                text: qsTr("Loading lyrics...")
+                text: Tr.tr("Loading lyrics...")
                 color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.title.medium
             }
@@ -241,7 +243,7 @@ Item {
             }
 
             StyledText {
-                text: qsTr("No lyrics found")
+                text: Tr.tr("No lyrics found")
                 color: Colours.palette.m3outline
                 font: Tokens.font.title.medium
             }

@@ -2,12 +2,17 @@ pragma ComponentBehavior: Bound
 
 import QtQuick.Layouts
 import Caelestia.Config
+<<<<<<< HEAD
 import qs.components.controls
+=======
+import Caelestia.I18n
+>>>>>>> caelestia/main
 import qs.modules.nexus.common
 
 PageBase {
     id: root
 
+<<<<<<< HEAD
     readonly property list<MenuItem> positionItems: [
         MenuItem {
             property string value: "top"
@@ -32,6 +37,9 @@ PageBase {
     ]
 
     title: qsTr("Taskbar")
+=======
+    title: Tr.tr("Taskbar")
+>>>>>>> caelestia/main
     isSubPage: true
 
     ColumnLayout {
@@ -43,11 +51,12 @@ PageBase {
         // Behaviour
         SectionHeader {
             first: true
-            text: qsTr("Behaviour")
+            text: Tr.tr("Behaviour")
         }
 
         ToggleRow {
             first: true
+<<<<<<< HEAD
             text: qsTr("Persistent")
             subtext: qsTr("Keep the bar visible at all times")
             configNode: root.targetConfig.bar
@@ -86,15 +95,34 @@ PageBase {
             onToggled: {
                 root.targetConfig.bar.showOnHover = checked;
             }
+=======
+            text: Tr.tr("Persistent")
+            subtext: Tr.tr("Keep the bar visible at all times")
+            checked: Config.bar.persistent
+            onToggled: GlobalConfig.bar.persistent = checked
+        }
+
+        ToggleRow {
+            text: Tr.tr("Show on hover")
+            subtext: Tr.tr("Reveal the bar when the cursor reaches the screen edge")
+            checked: Config.bar.showOnHover
+            onToggled: GlobalConfig.bar.showOnHover = checked
+>>>>>>> caelestia/main
         }
 
         StepperRow {
             last: true
+<<<<<<< HEAD
             label: qsTr("Drag threshold")
             subtext: qsTr("Pixels dragged before the bar reveals")
             configNode: root.targetConfig.bar
             propertyName: "dragThreshold"
             value: root.targetConfig.bar.dragThreshold
+=======
+            label: Tr.tr("Drag threshold")
+            subtext: Tr.tr("Pixels dragged before the bar reveals")
+            value: Config.bar.dragThreshold
+>>>>>>> caelestia/main
             from: 0
             to: 200
             stepSize: 5
@@ -105,7 +133,7 @@ PageBase {
 
         // Components
         SectionHeader {
-            text: qsTr("Components")
+            text: Tr.tr("Components")
         }
 
         NavRow {
@@ -118,13 +146,20 @@ PageBase {
 
         NavRow {
             icon: "workspaces"
+<<<<<<< HEAD
             text: qsTr("Workspaces")
             subtext: qsTr("Indicators, window icons")
             onClicked: root.nState.openSubPage(7)
+=======
+            text: Tr.tr("Workspaces")
+            subtext: Tr.tr("Indicators, window icons")
+            onClicked: root.nState.openSubPage(6)
+>>>>>>> caelestia/main
         }
 
         NavRow {
             icon: "web_asset"
+<<<<<<< HEAD
             text: qsTr("Active window")
             subtext: qsTr("Title display, popout")
             onClicked: root.nState.openSubPage(8)
@@ -135,17 +170,29 @@ PageBase {
             text: qsTr("Dock")
             subtext: qsTr("Positioning, recoloring")
             onClicked: root.nState.openSubPage(12)
+=======
+            text: Tr.tr("Active window")
+            subtext: Tr.tr("Title display, popout")
+            onClicked: root.nState.openSubPage(7)
+>>>>>>> caelestia/main
         }
 
         NavRow {
             icon: "widgets"
+<<<<<<< HEAD
             text: qsTr("Tray")
             subtext: qsTr("System tray icons")
             onClicked: root.nState.openSubPage(9)
+=======
+            text: Tr.tr("Tray")
+            subtext: Tr.tr("System tray icons")
+            onClicked: root.nState.openSubPage(8)
+>>>>>>> caelestia/main
         }
 
         NavRow {
             icon: "signal_cellular_alt"
+<<<<<<< HEAD
             text: qsTr("Status icons")
             subtext: qsTr("Visible indicators")
             onClicked: root.nState.openSubPage(10)
@@ -163,40 +210,52 @@ PageBase {
             text: qsTr("GitHub")
             subtext: qsTr("Contributions, token setup")
             onClicked: root.nState.openSubPage(13)
+=======
+            text: Tr.tr("Status icons")
+            subtext: Tr.tr("Visible indicators")
+            onClicked: root.nState.openSubPage(9)
+>>>>>>> caelestia/main
         }
 
         NavRow {
             last: true
+<<<<<<< HEAD
             icon: "music_note"
             text: qsTr("Spotify")
             subtext: qsTr("Visualizer, title length, background")
             onClicked: root.nState.openSubPage(14)
+=======
+            icon: "schedule"
+            text: Tr.tr("Clock")
+            subtext: Tr.tr("Date, icon, background")
+            onClicked: root.nState.openSubPage(10)
+>>>>>>> caelestia/main
         }
 
         // Scroll actions
         SectionHeader {
-            text: qsTr("Scroll actions")
+            text: Tr.tr("Scroll actions")
         }
 
         ToggleRow {
             first: true
-            text: qsTr("Workspaces")
-            subtext: qsTr("Scroll over the workspace indicator to switch workspaces")
+            text: Tr.tr("Workspaces")
+            subtext: Tr.tr("Scroll over the workspace indicator to switch workspaces")
             checked: Config.bar.scrollActions.workspaces
             onToggled: GlobalConfig.bar.scrollActions.workspaces = checked
         }
 
         ToggleRow {
-            text: qsTr("Volume")
-            subtext: qsTr("Scroll on the top half of the bar to adjust volume")
+            text: Tr.tr("Volume")
+            subtext: Tr.tr("Scroll on the top half of the bar to adjust volume")
             checked: Config.bar.scrollActions.volume
             onToggled: GlobalConfig.bar.scrollActions.volume = checked
         }
 
         ToggleRow {
             last: true
-            text: qsTr("Brightness")
-            subtext: qsTr("Scroll on the bottom half of the bar to adjust brightness")
+            text: Tr.tr("Brightness")
+            subtext: Tr.tr("Scroll on the bottom half of the bar to adjust brightness")
             checked: Config.bar.scrollActions.brightness
             onToggled: GlobalConfig.bar.scrollActions.brightness = checked
         }

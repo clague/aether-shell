@@ -6,30 +6,15 @@
 #include "common.hpp"
 #include "enums.hpp"
 
-namespace caelestia::config {
+namespace caelestia::shell::config {
 
 using Qt::StringLiterals::operator""_s;
 
-#define ARG(...) __VA_ARGS__
-
-namespace detail {
-
-// Defined in hybridconfig.cpp, where the preset tables live. `self` is the node holding
-// the key, so the lookup can find the selected preset through its parent.
-bool presetFeature(const settings::Node* self, const QString& key);
-HybridVariant::Enum presetVariant(const settings::Node* self, const QString& key);
-
-} // namespace detail
-
-// A feature or variant with no user value takes the selected preset's (D8).
-#define FEATURE(name)                                                                                                  \
-    CONFIG_GLOBAL_PROPERTY(bool, name, ARG([](const settings::Node* self) {                                            \
-        return detail::presetFeature(self, u## #name##_s);                                                             \
-    }))
-#define VARIANT(name)                                                                                                  \
-    CONFIG_GLOBAL_PROPERTY(caelestia::config::HybridVariant::Enum, name, ARG([](const settings::Node* self) {          \
-        return detail::presetVariant(self, u## #name##_s);                                                             \
-    }))
+// A feature or variant with no user value takes the selected preset's (D8). The settings
+// schema moved to static defaults, so the preset lookup is applied through reresolve()
+// when the preset changes or a layer loads, rather than through a callable default.
+#define FEATURE(name) CONFIG_GLOBAL_PROPERTY(bool, name, false)
+#define VARIANT(name) CONFIG_GLOBAL_PROPERTY(HybridVariant::Enum, name, HybridVariant::Midnight)
 
 // One boolean per feature. This is the workhorse of the hybrid design (D3): the two forks
 // are ~90% disjoint, so nearly everything they add is a feature that is either present or
@@ -44,8 +29,8 @@ HybridVariant::Enum presetVariant(const settings::Node* self, const QString& key
 //                 a switch offering to enable it is exactly the wrong artefact. Recorded
 //                 in the traps, not in the user's settings schema.
 //
-// Each flag's *default* is the selected preset's value, resolved through the DefaultSpec
-// function above (D8). A user who has never touched a flag follows the preset; one who has
+// Each flag's *default* is the selected preset's value, resolved through reresolve() (D8).
+// A user who has never touched a flag follows the preset; one who has
 // keeps their own value, because an override is never re-resolved.
 //
 // Everything here is global: a feature flag per monitor is meaningless.
@@ -103,11 +88,13 @@ class HybridConfig : public settings::ObjectNode {
     CONFIG_GLOBAL_SUBOBJECT(HybridVariants, variants)
 
 public:
+    // Applies the selected preset's values to the flags and variants the user has not set (D8).
+    void reresolve();
+
     explicit HybridConfig(HybridConfig* fallback = nullptr, QObject* parent = nullptr, bool globalOnly = false);
 };
 
 #undef FEATURE
 #undef VARIANT
-#undef ARG
 
-} // namespace caelestia::config
+} // namespace caelestia::shell::config

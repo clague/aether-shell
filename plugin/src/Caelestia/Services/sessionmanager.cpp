@@ -9,6 +9,7 @@
 #include <qloggingcategory.h>
 
 #include "core/toaster.hpp"
+#include "util/i18n.hpp"
 
 namespace {
 
@@ -16,9 +17,10 @@ Q_LOGGING_CATEGORY(lcSessionManager, "caelestia.services.sessionmanager", QtInfo
 
 } // namespace
 
-namespace caelestia::services {
+namespace caelestia::shell::services {
 
 using Qt::StringLiterals::operator""_s;
+using util::i18n::mark;
 
 namespace {
 
@@ -115,8 +117,8 @@ void SessionManager::hibernate() {
     } else {
         qCWarning(lcSessionManager) << "Hibernate unavailable, ignoring hibernate request";
 
-        Toaster::instance()->toast(
-            tr("Hibernate failed"), tr("Enable hibernation to use this feature."), u"warning"_s, Toast::Type::Warning);
+        Toaster::instance()->toast(mark(u"Hibernate failed"_s), mark(u"Enable hibernation to use this feature."_s),
+            u"warning"_s, Toast::Type::Warning);
     }
 }
 
@@ -142,7 +144,8 @@ bool SessionManager::queryHibernateAvailable() {
     if (!bus)
         return false;
 
-    auto hibernateMsg = QDBusMessage::createMethodCall(k_loginService, k_loginPath, k_loginIface, u"CanHibernate"_s);
+    const auto hibernateMsg =
+        QDBusMessage::createMethodCall(k_loginService, k_loginPath, k_loginIface, u"CanHibernate"_s);
     const QDBusReply<QString> hibernateReply = bus->call(hibernateMsg);
     if (!hibernateReply.isValid()) {
         qCWarning(lcSessionManager) << "Failed to query hibernate support:" << hibernateReply.error().message();
@@ -162,7 +165,7 @@ void SessionManager::call(const QString& path, const QString& iface, const QStri
     auto msg = QDBusMessage::createMethodCall(k_loginService, path, iface, method);
     msg.setArguments(args);
 
-    auto* watcher = new QDBusPendingCallWatcher(bus->asyncCall(msg), this);
+    const auto* watcher = new QDBusPendingCallWatcher(bus->asyncCall(msg), this);
     connect(watcher, &QDBusPendingCallWatcher::finished, this, [method](QDBusPendingCallWatcher* self) {
         const QDBusPendingReply<> reply = *self;
         if (reply.isError())
@@ -205,4 +208,4 @@ void SessionManager::handleUnlockRequested() {
     emit unlockRequested();
 }
 
-} // namespace caelestia::services
+} // namespace caelestia::shell::services

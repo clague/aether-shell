@@ -26,7 +26,6 @@ qml_module(caelestia-services
         cavaprovider.cpp
         tickingservice.cpp
         sensorslib.cpp
-        usagefmt.cpp
         cpu.cpp
         gpu.cpp
         memory.cpp
@@ -46,6 +45,7 @@ qml_module(caelestia-services
         hyprextras.cpp
         ${PROTO_SRCS}
     LIBRARIES
+        Qt::Concurrent
         Qt::DBus
         Qt::Network
         PkgConfig::Pipewire
@@ -55,6 +55,7 @@ qml_module(caelestia-services
         protobuf::libprotobuf
         OpenSSL::Crypto
         OpenSSL::SSL
+        caelestia-util
         caelestia-core
         caelestia-config
     DEPENDENCIES

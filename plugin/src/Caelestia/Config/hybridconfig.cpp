@@ -4,7 +4,7 @@
 
 #include "settings/common.hpp"
 
-namespace caelestia::config {
+namespace caelestia::shell::config {
 
 namespace {
 
@@ -106,10 +106,6 @@ HybridPreset::Enum selectedPreset(const settings::Node* self) {
     return static_cast<HybridPreset::Enum>(parent->value(u"preset"_s).toInt());
 }
 
-} // namespace
-
-namespace detail {
-
 bool presetFeature(const settings::Node* self, const QString& key) {
     return presetFor(selectedPreset(self)).features.value(key, false);
 }
@@ -118,34 +114,34 @@ HybridVariant::Enum presetVariant(const settings::Node* self, const QString& key
     return presetFor(selectedPreset(self)).variants.value(key, HybridVariant::Midnight);
 }
 
-} // namespace detail
-
-namespace {
+} // namespace
 
 // Re-resolve every key the user has *not* set. Deliberately not resetToDefaults(): that
 // writes every key unconditionally, and under the ambient write origin (File while the
 // config is loading) each write is recorded as an override -- so it would overwrite the
 // user's explicit values with the preset's, which is the opposite of D8. Writing under
 // WriteOrigin::Layer records nothing, which is exactly what a fallback layer should do.
-void reresolveUnset(settings::ObjectNode* node) {
-    const settings::WriteScope scope(node, settings::WriteOrigin::Layer);
-    for (const auto& desc : node->schema().descriptors()) {
-        if (desc.isNode || node->isOverride(desc.key))
+void HybridConfig::reresolve() {
+    const settings::WriteScope scope(m_features, settings::WriteOrigin::Layer);
+    for (const auto& desc : m_features->schema().descriptors()) {
+        if (desc.isNode || m_features->isOverride(desc.key))
             continue;
-        node->setValue(desc.key, desc.defaultValue(node));
+        m_features->setValue(desc.key, presetFeature(m_features, desc.key));
+    }
+    for (const auto& desc : m_variants->schema().descriptors()) {
+        if (desc.isNode || m_variants->isOverride(desc.key))
+            continue;
+        m_variants->setValue(desc.key, presetVariant(m_variants, desc.key));
     }
 }
-
-} // namespace
 
 HybridConfig::HybridConfig(HybridConfig* fallback, QObject* parent, bool globalOnly)
     : settings::ObjectNode(fallback, parent, globalOnly) {
     // Every feature and variant default is a function of the preset, so changing the preset
     // has to re-resolve them. Anything the user set stays set (D8).
     connect(this, &HybridConfig::presetChanged, this, [this] {
-        reresolveUnset(m_features);
-        reresolveUnset(m_variants);
+        reresolve();
     });
 }
 
-} // namespace caelestia::config
+} // namespace caelestia::shell::config

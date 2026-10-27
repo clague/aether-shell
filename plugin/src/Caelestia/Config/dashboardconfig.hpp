@@ -3,7 +3,7 @@
 #include "settings/objectnode.hpp"
 #include "common.hpp"
 
-namespace caelestia::config {
+namespace caelestia::shell::config {
 
 class DashboardPerformance : public settings::ObjectNode {
     CONFIG_NODE(DashboardPerformance, settings::ObjectNode)
@@ -34,10 +34,11 @@ class DashboardConfig : public settings::ObjectNode {
     CONFIG_PROPERTY(bool, syncMediaShapesToBeat, false)
     CONFIG_PROPERTY(bool, replaceMediaLyricsWithVisuals, false)
     CONFIG_GLOBAL_PROPERTY(int, profilePicShape, 9)
+    CONFIG_PROPERTY(bool, showClockSeconds, false)
     CONFIG_GLOBAL_PROPERTY(int, mediaUpdateInterval, 500)
     CONFIG_GLOBAL_PROPERTY(int, resourceUpdateInterval, 1000)
     CONFIG_PROPERTY(int, dragThreshold, 50)
     CONFIG_SUBOBJECT(DashboardPerformance, performance)
 };
 
-} // namespace caelestia::config
+} // namespace caelestia::shell::config

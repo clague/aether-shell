@@ -2,6 +2,7 @@
 
 #include <qbytearray.h>
 #include <qbytearrayview.h>
+#include <qfuturewatcher.h>
 #include <qhash.h>
 #include <qpointer.h>
 #include <qqmlintegration.h>
@@ -11,7 +12,7 @@
 #include "diskinfo.hpp"
 #include "tickingservice.hpp"
 
-namespace caelestia::services {
+namespace caelestia::shell::services {
 
 class Storage : public TickingService {
     Q_OBJECT
@@ -19,10 +20,10 @@ class Storage : public TickingService {
     QML_SINGLETON
 
     Q_PROPERTY(qreal percentage READ percentage NOTIFY percentageChanged)
-    Q_PROPERTY(QQmlListProperty<caelestia::services::DiskInfo> disks READ disksProp NOTIFY disksChanged)
-    Q_PROPERTY(caelestia::services::DiskInfo* manualPrimaryDisk READ manualPrimaryDisk WRITE setManualPrimaryDisk NOTIFY
-            manualPrimaryDiskChanged)
-    Q_PROPERTY(caelestia::services::DiskInfo* primaryDisk READ primaryDisk NOTIFY primaryDiskChanged)
+    Q_PROPERTY(QQmlListProperty<caelestia::shell::services::DiskInfo> disks READ disksProp NOTIFY disksChanged)
+    Q_PROPERTY(caelestia::shell::services::DiskInfo* manualPrimaryDisk READ manualPrimaryDisk WRITE setManualPrimaryDisk
+            NOTIFY manualPrimaryDiskChanged)
+    Q_PROPERTY(caelestia::shell::services::DiskInfo* primaryDisk READ primaryDisk NOTIFY primaryDiskChanged)
 
 public:
     explicit Storage(QObject* parent = nullptr);
@@ -50,6 +51,8 @@ private:
         bool hasRoot = false;
     };
 
+    using AccumHash = QHash<QString, Accum>;
+
     // Mounts sharing a backing filesystem report identical usage, so they are deduped by source device first
     struct DeviceEntry {
         quint64 totalBytes = 0;
@@ -60,7 +63,9 @@ private:
     };
 
     [[nodiscard]] static QHash<QByteArray, DeviceEntry> collectDevices();
-    [[nodiscard]] static QHash<QString, Accum> foldToDisks(const QHash<QByteArray, DeviceEntry>& byDevice);
+    [[nodiscard]] static AccumHash foldToDisks(const QHash<QByteArray, DeviceEntry>& byDevice);
+
+    void applyDisks(const AccumHash& byDisk);
 
     [[nodiscard]] static QStringList resolveToPhysicalDisks(const QString& devicePath);
     [[nodiscard]] static bool isPseudoFs(QByteArrayView fsType);
@@ -71,6 +76,7 @@ private:
 
     QList<DiskInfo*> m_disks;
     QPointer<DiskInfo> m_manualPrimaryDisk;
+    QFutureWatcher<AccumHash>* const m_futureWatcher;
 };
 
-} // namespace caelestia::services
+} // namespace caelestia::shell::services

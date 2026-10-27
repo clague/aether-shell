@@ -7,7 +7,7 @@
 #include "settings/objectnode.hpp"
 #include "common.hpp"
 
-namespace caelestia::config {
+namespace caelestia::shell::config {
 
 class AnimCurves : public settings::ObjectNode {
     CONFIG_NODE(AnimCurves, settings::ObjectNode)
@@ -116,6 +116,7 @@ class BarTokens : public settings::ObjectNode {
     CONFIG_PROPERTY(int, trayMenuWidth, 300)
     CONFIG_PROPERTY(int, batteryWidth, 250)
     CONFIG_PROPERTY(int, networkWidth, 320)
+    CONFIG_PROPERTY(int, audioWidth, 320)
     CONFIG_PROPERTY(int, kbLayoutWidth, 320)
 };
 
@@ -252,4 +253,4 @@ class SizeTokens : public settings::ObjectNode {
     CONFIG_SUBOBJECT(NexusTokens, nexus)
 };
 
-} // namespace caelestia::config
+} // namespace caelestia::shell::config

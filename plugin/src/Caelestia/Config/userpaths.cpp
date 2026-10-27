@@ -2,7 +2,7 @@
 
 #include "settings/common.hpp"
 
-namespace caelestia::config {
+namespace caelestia::shell::config {
 
 using Qt::StringLiterals::operator""_s;
 
@@ -17,28 +17,49 @@ QString themeAsset(const settings::Node* self, const QString& file, const QStrin
 
 namespace {
 
+// The themed keys, in declaration order: config key -> (theme asset file, static fallback).
+// The file and fallback are the macro arguments THEMED_PATH used to pass into the default
+// lambdas; the settings schema moved to static defaults, so reresolve() applies the theme
+// through this table instead.
+struct ThemedPath {
+    const char* key;
+    const char* file;
+    const char* fallback;
+};
+
+const QList<ThemedPath>& themedPaths() {
+    static const QList<ThemedPath> k_list{
+        { "sessionGif", "session.gif", "root:/assets/kurukuru.gif" },
+        { "mediaGif", "media.gif", "root:/assets/bongocat.gif" },
+        { "noNotifsPic", "notif.png", "root:/assets/dino.png" },
+        { "lockNoNotifsPic", "notif.png", "root:/assets/dino.png" },
+    };
+    return k_list;
+}
+
+} // namespace
+
 // Re-resolve every themed key the user has *not* set. Deliberately not resetToDefaults(): that
 // writes every key unconditionally, and under the ambient write origin each write is recorded
 // as an override -- so switching theme would overwrite the user's own explicit paths with the
 // theme's, which is the opposite of what a default means. WriteOrigin::Layer records nothing.
-void reresolveUnset(settings::ObjectNode* node) {
-    const settings::WriteScope scope(node, settings::WriteOrigin::Layer);
-    for (const auto& desc : node->schema().descriptors()) {
-        if (desc.isNode || desc.key == u"themeName"_s || node->isOverride(desc.key))
+void UserPaths::reresolve() {
+    const settings::WriteScope scope(this, settings::WriteOrigin::Layer);
+    for (const auto& themed : themedPaths()) {
+        const auto key = QString::fromUtf8(themed.key);
+        if (isOverride(key))
             continue;
-        node->setValue(desc.key, desc.defaultValue(node));
+        setValue(key, detail::themeAsset(this, QString::fromUtf8(themed.file), QString::fromUtf8(themed.fallback)));
     }
 }
-
-} // namespace
 
 UserPaths::UserPaths(UserPaths* fallback, QObject* parent, bool globalOnly)
     : settings::ObjectNode(fallback, parent, globalOnly) {
     // Every themed path is a function of themeName, so changing the theme has to re-resolve
     // them. Anything the user set stays set.
     connect(this, &UserPaths::themeNameChanged, this, [this] {
-        reresolveUnset(this);
+        reresolve();
     });
 }
 
-} // namespace caelestia::config
+} // namespace caelestia::shell::config

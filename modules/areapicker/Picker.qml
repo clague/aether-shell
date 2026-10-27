@@ -5,6 +5,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import Caelestia
+import Caelestia.I18n
 import qs.components
 import qs.components.effects
 import qs.services
@@ -38,18 +39,26 @@ MouseArea {
         if (!mon)
             return [];
 
+<<<<<<< HEAD
         // A monitor object can exist with an empty lastIpcObject -- during startup before
         // the first IPC reply, and for the whole run under a compositor that is not
         // Hyprland. The `!mon` check above does not cover that.
         const special = mon.lastIpcObject?.specialWorkspace;
         const wsId = special?.name ? special.id : mon.activeWorkspace?.id;
         if (wsId === undefined || wsId === null)
+=======
+        const special = mon.lastIpcObject?.specialWorkspace;
+        const wsId = special?.name ? special.id : mon.activeWorkspace?.id;
+        if (wsId === undefined)
+>>>>>>> caelestia/main
             return [];
 
         return Hypr.toplevelsForWs(wsId).sort((a, b) => {
             // Pinned first, then fullscreen, then floating, then any other
-            const ac = a.lastIpcObject;
-            const bc = b.lastIpcObject;
+            const ac = a?.lastIpcObject;
+            const bc = b?.lastIpcObject;
+            if (!ac || !bc)
+                return !ac - !bc; // Missing IPC last
             return (bc.pinned - ac.pinned) || ((bc.fullscreen !== 0) - (ac.fullscreen !== 0)) || (bc.floating - ac.floating);
         });
     }
@@ -59,10 +68,14 @@ MouseArea {
             if (!client)
                 continue;
 
+            const ipc = client.lastIpcObject;
+            if (!ipc?.at || !ipc?.size)
+                continue;
+
             let {
                 at: [cx, cy],
                 size: [cw, ch]
-            } = client.lastIpcObject;
+            } = ipc;
             cx -= screen.x;
             cy -= screen.y;
             if (cx <= x && cy <= y && cx + cw >= x && cy + ch >= y) {
@@ -80,10 +93,16 @@ MouseArea {
         const isSearch = root.loader.searchMode;
         const tmpfile = isSearch ? Qt.resolvedUrl("/tmp/caelestia-search.png") : Qt.resolvedUrl(`/tmp/caelestia-picker-${Quickshell.processId}-${Date.now()}.png`);
         CUtils.saveItem(screencopy, tmpfile, Qt.rect(Math.ceil(rsx), Math.ceil(rsy), Math.floor(sw), Math.floor(sh)), path => {
+<<<<<<< HEAD
             if (isSearch) {
                 Quickshell.execDetached(["touch", "/tmp/caelestia-search.done"]);
             } else if (root.loader.clipboardOnly) {
                 Quickshell.execDetached(["caelestia", "screenshot", "--copy", "--file", path]);
+=======
+            if (root.loader.clipboardOnly) {
+                Quickshell.execDetached(["sh", "-c", "wl-copy --type image/png < " + path]);
+                Quickshell.execDetached(["notify-send", "-a", "caelestia-cli", "-i", path, Tr.tr("Screenshot taken"), Tr.tr("Screenshot copied to clipboard")]);
+>>>>>>> caelestia/main
             } else {
                 Quickshell.execDetached(["caelestia", "screenshot", "--file", path]);
             }
@@ -108,15 +127,15 @@ MouseArea {
 
         opacity = 1;
 
-        const c = clients[0];
-        if (c) {
-            const cx = c.lastIpcObject.at[0] - screen.x;
-            const cy = c.lastIpcObject.at[1] - screen.y;
+        const ipc = clients[0]?.lastIpcObject;
+        if (ipc?.at && ipc?.size) {
+            const cx = ipc.at[0] - screen.x;
+            const cy = ipc.at[1] - screen.y;
             onClient = true;
             sx = cx;
             sy = cy;
-            ex = cx + c.lastIpcObject.size[0];
-            ey = cy + c.lastIpcObject.size[1];
+            ex = cx + ipc.size[0];
+            ey = cy + ipc.size[1];
         } else {
             sx = screen.width / 2 - 100;
             sy = screen.height / 2 - 100;

@@ -11,7 +11,7 @@
 #include "common.hpp"
 #include "enums.hpp"
 
-namespace caelestia::config {
+namespace caelestia::shell::config {
 
 using Qt::StringLiterals::operator""_s;
 using settings::vmap;
@@ -38,6 +38,8 @@ class BarWorkspaces : public settings::ObjectNode {
     CONFIG_PROPERTY(int, shown, 5)
     CONFIG_PROPERTY(bool, activeIndicator, true)
     CONFIG_PROPERTY(bool, occupiedBg, false)
+    CONFIG_PROPERTY(bool, showUnoccupied, true)
+    CONFIG_PROPERTY(bool, perMonitor, true)
     CONFIG_PROPERTY(bool, showWindows, true)
     CONFIG_PROPERTY(bool, showWindowsOnSpecialWorkspaces, true)
     CONFIG_PROPERTY(int, maxWindowIcons, 5)
@@ -52,18 +54,14 @@ class BarWorkspaces : public settings::ObjectNode {
     CONFIG_PROPERTY(QString, occupiedLabel, u" 󰮯"_s)
     CONFIG_PROPERTY(QString, activeLabel, u" 󰮯"_s)
     CONFIG_PROPERTY(QString, capitalisation, u"preserve"_s)
-    CONFIG_GLOBAL_PROPERTY(QVariantList, specialWorkspaceIcons, {})
-    CONFIG_GLOBAL_PROPERTY(QStringList, ignoredTags,
+    CONFIG_GLOBAL_PROPERTY(QVariantList, specialWorkspaceIcons, {})    CONFIG_GLOBAL_PROPERTY(QStringList, ignoredTags,
         DEFAULT_ARG({
             u"hide_in_bar"_s,
             u"xwl_popup"_s,
         }))
-    CONFIG_GLOBAL_PROPERTY(QVariantList, windowIcons,
+    CONFIG_GLOBAL_LIST(IconRuleList, windowIcons,
         DEFAULT_ARG({
-            vmap({
-                { u"regex"_s, u"steam(_app_(default|[0-9]+))?"_s },
-                { u"icon"_s, u"sports_esports"_s },
-            }),
+            ICON_RULE_REGEX("steam(_app_(default|[0-9]+))?", "sports_esports"),
         }))
     CONFIG_GLOBAL_PROPERTY(QVariantList, wsIcons, {})
 };
@@ -76,13 +74,22 @@ class BarActiveWindow : public settings::ObjectNode {
     CONFIG_PROPERTY(bool, showOnHover, true)
 };
 
+class BarTrayIconSub : public settings::ObjectNode {
+    CONFIG_NODE(BarTrayIconSub, settings::ObjectNode)
+
+    CONFIG_PROPERTY(QString, id, {})
+    CONFIG_PROPERTY(QString, icon, {})
+    CONFIG_PROPERTY(QString, image, {})
+};
+CONFIG_LIST_TYPE(BarTrayIconSub, BarTrayIconSubList)
+
 class BarTray : public settings::ObjectNode {
     CONFIG_NODE(BarTray, settings::ObjectNode)
 
     CONFIG_PROPERTY(bool, background, false)
     CONFIG_PROPERTY(bool, recolour, false)
     CONFIG_PROPERTY(bool, compact, false)
-    CONFIG_GLOBAL_PROPERTY(QVariantList, iconSubs, {})
+    CONFIG_GLOBAL_LIST(BarTrayIconSubList, iconSubs, {})
     CONFIG_GLOBAL_PROPERTY(QStringList, hiddenIcons, {})
 };
 
@@ -92,6 +99,7 @@ class BarClock : public settings::ObjectNode {
     CONFIG_PROPERTY(bool, background, false)
     CONFIG_PROPERTY(bool, showDate, false)
     CONFIG_PROPERTY(bool, showIcon, true)
+    CONFIG_PROPERTY(bool, showSeconds, false)
 };
 
 class BarDock : public settings::ObjectNode {
@@ -224,4 +232,4 @@ class BarConfig : public settings::ObjectNode {
     CONFIG_PROPERTY(QStringList, peripheralBatteryExcluded, {})
 };
 
-} // namespace caelestia::config
+} // namespace caelestia::shell::config

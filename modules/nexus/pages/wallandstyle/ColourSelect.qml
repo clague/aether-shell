@@ -2,7 +2,12 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Caelestia.Config
+<<<<<<< HEAD
 import qs.components.controls
+=======
+import Caelestia.I18n
+import qs.components
+>>>>>>> caelestia/main
 import qs.services
 import qs.modules.launcher.services
 import qs.modules.nexus.common
@@ -10,6 +15,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
+<<<<<<< HEAD
     readonly property list<var> variantData: [
         {
             name: "vibrant",
@@ -50,6 +56,9 @@ PageBase {
     ]
 
     title: qsTr("Colours")
+=======
+    title: Tr.tr("Colours")
+>>>>>>> caelestia/main
     isSubPage: true
 
     ColumnLayout {
@@ -78,6 +87,7 @@ PageBase {
 
             model: root.variantData
 
+<<<<<<< HEAD
             MenuItem {
                 required property var modelData
 
@@ -85,6 +95,20 @@ PageBase {
                 onClicked: {
                     Quickshell.execDetached(["caelestia", "scheme", "set", "-v", modelData.name]);
                 }
+=======
+            StyledText {
+                Layout.alignment: Qt.AlignHCenter
+                text: Tr.tr("Page under construction")
+                color: Colours.palette.m3outlineVariant
+                font: Tokens.font.title.large
+            }
+
+            StyledText {
+                Layout.alignment: Qt.AlignHCenter
+                text: Tr.tr("This page will be available in a future update.")
+                color: Colours.palette.m3outlineVariant
+                font: Tokens.font.body.large
+>>>>>>> caelestia/main
             }
         }
 

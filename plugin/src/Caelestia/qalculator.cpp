@@ -1,12 +1,16 @@
 #include "qalculator.hpp"
 
+#include <qstringlist.h>
 #include <qtconcurrentrun.h>
 
 #include <libqalculate/qalculate.h>
 
-namespace caelestia {
+#include "util/i18n.hpp"
+
+namespace caelestia::shell {
 
 using Qt::StringLiterals::operator""_s;
+using util::i18n::mark;
 
 QMutex Qalculator::s_calculatorMutex;
 
@@ -66,28 +70,35 @@ QPair<QString, QString> Qalculator::evaluate(const QString& expr) {
     const QMutexLocker locker(&s_calculatorMutex);
 
     const EvaluationOptions eo;
-    const PrintOptions po;
+    PrintOptions po;
+    po.interval_display = INTERVAL_DISPLAY_SIGNIFICANT_DIGITS;
 
     std::string parsed;
     const std::string result = CALCULATOR->calculateAndPrint(
         CALCULATOR->unlocalizeExpression(expr.toStdString(), eo.parse_options), 100, eo, po, &parsed);
 
-    std::string error;
+    QStringList messages;
+    bool hasError = false;
+    bool hasWarning = false;
     while (CALCULATOR->message()) {
-        if (!CALCULATOR->message()->message().empty()) {
-            if (CALCULATOR->message()->type() == MESSAGE_ERROR) {
-                error += "error: ";
-            } else if (CALCULATOR->message()->type() == MESSAGE_WARNING) {
-                error += "warning: ";
-            }
-            error += CALCULATOR->message()->message();
+        const auto* msg = CALCULATOR->message();
+        if (!msg->message().empty()) {
+            hasError = hasError || msg->type() == MESSAGE_ERROR;
+            hasWarning = hasWarning || msg->type() == MESSAGE_WARNING;
+            messages << QString::fromStdString(msg->message());
         }
         CALCULATOR->nextMessage();
     }
 
-    if (!error.empty()) {
-        const auto errorStr = QString::fromStdString(error);
-        return { errorStr, errorStr };
+    if (!messages.isEmpty()) {
+        const auto joined = messages.join(u"; "_s);
+        if (hasError)
+            // TRANSLATORS: %1 = a message from Qalculate, we don't translate it
+            return { mark(u"error: %1"_s, { joined }), joined };
+        if (hasWarning)
+            // TRANSLATORS: %1 = a message from Qalculate, we don't translate it
+            return { mark(u"warning: %1"_s, { joined }), joined };
+        return { joined, joined };
     }
 
     return { u"%1 = %2"_s.arg(parsed).arg(result), QString::fromStdString(result) };
@@ -130,4 +141,4 @@ void Qalculator::setBusy(bool busy) {
     emit busyChanged();
 }
 
-} // namespace caelestia
+} // namespace caelestia::shell

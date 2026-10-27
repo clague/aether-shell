@@ -4,7 +4,7 @@
 #include <qmetatype.h>
 #include <qset.h>
 
-namespace caelestia::config {
+namespace caelestia::shell::config {
 
 namespace {
 
@@ -131,4 +131,4 @@ QVariantList SessionConfig::buildButtons(bool customOnly) const {
     return result;
 }
 
-} // namespace caelestia::config
+} // namespace caelestia::shell::config

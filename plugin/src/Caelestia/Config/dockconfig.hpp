@@ -5,7 +5,7 @@
 #include "settings/objectnode.hpp"
 #include "common.hpp"
 
-namespace caelestia::config {
+namespace caelestia::shell::config {
 
 // OP's dock: a separate auto-hiding panel, as distinct from MiDnight's dock, which is a section
 // inside the bar and configured under `bar.dock`. Both are selected by hybrid.variants.dock, so
@@ -23,4 +23,4 @@ class DockConfig : public settings::ObjectNode {
     CONFIG_GLOBAL_PROPERTY(QStringList, pinnedApps, QStringList())
 };
 
-} // namespace caelestia::config
+} // namespace caelestia::shell::config

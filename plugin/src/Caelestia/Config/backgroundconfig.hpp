@@ -4,8 +4,9 @@
 
 #include "settings/objectnode.hpp"
 #include "common.hpp"
+#include "enums.hpp"
 
-namespace caelestia::config {
+namespace caelestia::shell::config {
 
 using Qt::StringLiterals::operator""_s;
 
@@ -82,6 +83,7 @@ class BackgroundConfig : public settings::ObjectNode {
 
     CONFIG_PROPERTY(bool, enabled, true)
     CONFIG_PROPERTY(bool, wallpaperEnabled, true)
+    CONFIG_ENUM_PROPERTY(WallpaperTransition, wallpaperTransition, WallpaperTransition::Crossfade)
     CONFIG_PROPERTY(bool, wallpaperRecolor, false)
     CONFIG_PROPERTY(qreal, wallpaperRecolorStrength, 0.5)
     CONFIG_PROPERTY(bool, videoWallpaperPaused, false)
@@ -95,4 +97,4 @@ class BackgroundConfig : public settings::ObjectNode {
     CONFIG_SUBOBJECT(BackgroundVisualiser, visualiser)
 };
 
-} // namespace caelestia::config
+} // namespace caelestia::shell::config

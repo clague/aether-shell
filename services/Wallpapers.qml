@@ -430,6 +430,7 @@ Searcher {
 
         recursive: true
         path: Paths.wallsdir
+<<<<<<< HEAD
         filter: FileSystemModel.Files
         nameFilters: Array.from(Images.validImageExtensions).concat(Array.from(Images.validVideoExtensions)).map(e => `*.${e}`).concat(["project.json"])
         onEntriesChanged: root.updateCombinedList()
@@ -443,6 +444,9 @@ Searcher {
         filter: FileSystemModel.Files
         nameFilters: ["project.json"]
         onEntriesChanged: root.updateCombinedList()
+=======
+        filter: FileSystemModel.Images | FileSystemModel.Videos
+>>>>>>> caelestia/main
     }
 
     Process {

@@ -169,6 +169,7 @@ PathView {
         }
     }
 
+<<<<<<< HEAD
     Timer {
         id: previewTimer
 
@@ -184,11 +185,21 @@ PathView {
             if (event.angleDelta.y > 0 || event.angleDelta.x > 0)
                 root.decrementCurrentIndex();
             else if (event.angleDelta.y < 0 || event.angleDelta.x < 0)
+=======
+    CustomMouseArea {
+        function onWheel(event: WheelEvent): void {
+            if (event.angleDelta.y > 0)
+                root.decrementCurrentIndex();
+            else if (event.angleDelta.y < 0)
+>>>>>>> caelestia/main
                 root.incrementCurrentIndex();
         }
 
         anchors.fill: parent
+<<<<<<< HEAD
         preventStealing: false
         acceptedButtons: Qt.NoButton
+=======
+>>>>>>> caelestia/main
     }
 }

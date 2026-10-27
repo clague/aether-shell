@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls
 import Caelestia.Config
+import Caelestia.I18n
 import qs.components
 import qs.components.controls
 import qs.services
@@ -412,6 +413,7 @@ Item {
             anchors.verticalCenter: parent.verticalCenter
 
             StyledText {
+<<<<<<< HEAD
                 text: {
                     if (root.state === "wallpapers")
                         return qsTr("No wallpapers found");
@@ -421,11 +423,15 @@ Item {
                         return qsTr("No animations found");
                     return qsTr("No results");
                 }
+=======
+                text: root.state === "wallpapers" ? Tr.tr("No wallpapers found") : Tr.tr("No results")
+>>>>>>> caelestia/main
                 color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.body.builders.large.weight(Font.Medium).build()
             }
 
             StyledText {
+<<<<<<< HEAD
                 text: {
                     if (root.state === "wallpapers")
                         return Wallpapers.list.length === 0 ? qsTr("Try putting some wallpapers in %1").arg(Paths.shortenHome(Paths.wallsdir)) : qsTr("Try searching for something else");
@@ -435,6 +441,9 @@ Item {
                         return qsTr("Try adding .lua files to\n~/.config/caelestia/animations/");
                     return qsTr("Try searching for something else");
                 }
+=======
+                text: root.state === "wallpapers" && Wallpapers.list.length === 0 ? Tr.tr("Try putting some wallpapers in %1").arg(Paths.shortenHome(Paths.wallsdir)) : Tr.tr("Try searching for something else")
+>>>>>>> caelestia/main
                 color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.body.medium
             }

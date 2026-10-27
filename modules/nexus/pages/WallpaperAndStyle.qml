@@ -5,9 +5,10 @@ import QtQuick.Layouts
 import Caelestia
 import Caelestia.Components
 import Caelestia.Config
+import Caelestia.I18n
 import qs.components
 import qs.components.controls
-import qs.components.images
+import qs.components.widgets
 import qs.services
 import qs.utils
 import qs.modules.nexus.common
@@ -15,6 +16,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
+<<<<<<< HEAD
     readonly property list<MenuItem> hwDecoderItems: [
         MenuItem {
             text: qsTr("Auto")
@@ -57,6 +59,9 @@ PageBase {
     }
 
     title: qsTr("Wallpaper & style")
+=======
+    title: Tr.tr("Wallpaper & style")
+>>>>>>> caelestia/main
 
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
@@ -64,7 +69,7 @@ PageBase {
         width: root.cappedWidth
         spacing: Tokens.spacing.large
 
-        StyledClippingRect {
+        ClipRect {
             id: wallWrapper
 
             Layout.alignment: Qt.AlignHCenter
@@ -100,7 +105,7 @@ PageBase {
 
                     StyledText {
                         Layout.alignment: Qt.AlignHCenter
-                        text: qsTr("Wallpaper disabled")
+                        text: Tr.tr("Wallpaper disabled")
                         color: Colours.palette.m3onSurfaceVariant
                         font: Tokens.font.body.large
                     }
@@ -113,7 +118,7 @@ PageBase {
                 }
             }
 
-            Item {
+            WallpaperImpl {
                 anchors.fill: parent
                 opacity: Config.background.wallpaperEnabled ? 1 : 0
 
@@ -122,6 +127,7 @@ PageBase {
                         type: Anim.SlowEffects
                     }
                 }
+<<<<<<< HEAD
 
                 Loader {
                     id: wallIndicatorLoader
@@ -182,6 +188,8 @@ PageBase {
                         }
                     }
                 }
+=======
+>>>>>>> caelestia/main
             }
 
             IconTextButton {
@@ -225,7 +233,7 @@ PageBase {
 
             IconTextButton {
                 icon: "wallpaper"
-                text: qsTr("Wallpapers")
+                text: Tr.tr("Wallpapers")
                 font: Tokens.font.body.large
                 isRound: true
                 shapeMorph: true
@@ -238,7 +246,7 @@ PageBase {
 
             IconTextButton {
                 icon: "palette"
-                text: qsTr("Colours")
+                text: Tr.tr("Colours")
                 font: Tokens.font.body.large
                 isRound: true
                 shapeMorph: true
@@ -271,7 +279,7 @@ PageBase {
         ToggleRow {
             Layout.fillWidth: true
             first: true
-            text: qsTr("Display wallpaper")
+            text: Tr.tr("Display wallpaper")
             checked: Config.background.wallpaperEnabled
             onToggled: GlobalConfig.background.wallpaperEnabled = checked
         }
@@ -286,6 +294,7 @@ PageBase {
             enabled: Config.background.wallpaperEnabled
         }
 
+<<<<<<< HEAD
         SliderRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
@@ -306,6 +315,13 @@ PageBase {
             menuItems: root.hwDecoderItems
             active: root.hwDecoderItems[root.hwDecoderToIndex(WallpaperPauser.hwDecoder)]
             onSelected: item => WallpaperPauser.hwDecoder = root.hwDecoderValues[root.hwDecoderItems.indexOf(item)]
+=======
+            text: Tr.tr("Transparency")
+            // TRANSLATORS: %1/%2 = opacity values from 0 to 1 for the base surface and layered surfaces
+            subtext: Tr.tr("Base %1, layers %2").arg(Colours.transparency.base).arg(Colours.transparency.layers)
+            checked: Colours.transparency.enabled
+            onToggled: GlobalConfig.appearance.transparency.enabled = checked
+>>>>>>> caelestia/main
         }
 
         ToggleRow {
@@ -393,7 +409,7 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
             last: true
-            text: qsTr("Dark theme")
+            text: Tr.tr("Dark theme")
             checked: !Colours.light
             onToggled: Colours.setMode(checked ? "dark" : "light")
         }

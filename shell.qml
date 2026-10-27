@@ -6,6 +6,7 @@ pragma ComponentBehavior: Bound
 //@ pragma DefaultEnv QSG_RENDER_LOOP=threaded
 //@ pragma DefaultEnv QT_QUICK_FLICKABLE_WHEEL_DECELERATION=10000
 
+<<<<<<< HEAD
 import "modules"
 import "modules/drawers"
 import "modules/background"
@@ -13,14 +14,26 @@ import "modules/shimeji"
 import "modules/areapicker"
 import "modules/lock"
 import "modules/polkit"
+=======
+>>>>>>> caelestia/main
 import QtQuick
 import QtQml
 import Quickshell
+<<<<<<< HEAD
 import Quickshell.Services.SystemTray
 import Caelestia.Config
 import qs.services
 import qs.utils
 import qs.modules.overview
+=======
+import Caelestia.Config
+import qs.services
+import qs.modules.areapicker
+import qs.modules.background
+import qs.modules.drawers
+import qs.modules.lock
+import qs.daemons
+>>>>>>> caelestia/main
 
 ShellRoot {
     id: root
@@ -37,10 +50,25 @@ ShellRoot {
     settings.watchFiles: true
 
     Component.onCompleted: {
+<<<<<<< HEAD
         Qt.callLater(() => {
             Weather.reload();
             PastafarianCalendar.reload();
         });
+=======
+        // Force certain singletons to load on shell init instead of lazily
+        Notifs;
+        Players;
+        Brightness;
+        Weather.reload();
+
+        if (GlobalConfig.utilities.vpn.enabled)
+            VPN;
+    }
+
+    FontLoader {
+        source: Quickshell.shellPath("assets/google-sans-flex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf")
+>>>>>>> caelestia/main
     }
 
     Binding {
@@ -49,9 +77,7 @@ ShellRoot {
         value: root
     }
 
-    GSFLoader {}
-    ServiceLoader {}
-
+    // Modules
     Background {}
     DesktopLyricsOverlay {}
     BadAppleOverlay {}
@@ -76,6 +102,7 @@ ShellRoot {
         id: lock
     }
 
+<<<<<<< HEAD
     PolkitModule {}
 
     Variants {
@@ -88,6 +115,13 @@ ShellRoot {
     Shortcuts {}
     BatteryMonitor {}
 
+=======
+    // Daemons
+    Shortcuts {}
+    BatteryMonitor {}
+    GameMode {}
+    IdleInhibit {}
+>>>>>>> caelestia/main
     IdleMonitors {
         lock: lock
     }

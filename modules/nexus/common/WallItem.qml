@@ -2,8 +2,8 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
 import Caelestia.Config
+import Caelestia.Multimedia
 import qs.components
 import qs.components.controls
 import qs.services
@@ -29,7 +29,7 @@ Item {
         anchors.fill: parent
         spacing: Tokens.spacing.small
 
-        StyledClippingRect {
+        ClipRect {
             id: imgWrapper
 
             Layout.fillWidth: true
@@ -40,7 +40,7 @@ Item {
             Loader {
                 anchors.centerIn: parent
 
-                opacity: img.status === Image.Ready ? 0 : 1
+                opacity: img.ready ? 0 : 1
                 active: opacity > 0
 
                 sourceComponent: StyledRect {
@@ -66,10 +66,11 @@ Item {
                 }
             }
 
-            Image {
+            Visual {
                 id: img
 
                 anchors.fill: parent
+<<<<<<< HEAD
                 asynchronous: true
                 fillMode: Image.PreserveAspectCrop
 
@@ -97,6 +98,9 @@ Item {
                         type: Anim.SlowEffects
                     }
                 }
+=======
+                playing: stateLayer.containsMouse
+>>>>>>> caelestia/main
             }
         }
 
@@ -113,6 +117,8 @@ Item {
     }
 
     StateLayer {
+        id: stateLayer
+
         anchors.bottomMargin: root.fillLabel ? 0 : layout.implicitHeight - imgWrapper.implicitHeight
         onClicked: root.clicked()
     }

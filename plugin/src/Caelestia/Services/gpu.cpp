@@ -11,7 +11,7 @@
 #include "config/serviceconfig.hpp"
 #include "sensorslib.hpp"
 
-namespace caelestia::services {
+namespace caelestia::shell::services {
 
 using Qt::StringLiterals::operator""_s;
 
@@ -147,7 +147,7 @@ QString pciSlotFor(const QString& cardDir) {
 QString cleanName(QString s) {
     static const QRegularExpression k_noise(u"\\(R\\)|\\(TM\\)|Graphics"_s, QRegularExpression::CaseInsensitiveOption);
     static const QRegularExpression k_spaces(u"\\s+"_s);
-    s.replace(k_noise, QString());
+    s.replace(k_noise, {});
     s.replace(k_spaces, u" "_s);
     return s.trimmed();
 }
@@ -246,23 +246,25 @@ struct NameSource {
 // Name probes in priority order; the first non-empty result wins. Which of them run
 // depends on the resolved type.
 const std::array<NameSource, 3>& nameSources() {
-    static const std::array<NameSource, 3> k_sources = { {
+    static const std::array<NameSource, 3> k_sources = {
         {
-            .program = u"nvidia-smi"_s,
-            .args = { u"--query-gpu=name"_s, u"--format=csv,noheader"_s },
-            .parse = &parseNvidiaName,
+            {
+                .program = u"nvidia-smi"_s,
+                .args = { u"--query-gpu=name"_s, u"--format=csv,noheader"_s },
+                .parse = &parseNvidiaName,
+            },
+            {
+                .program = u"glxinfo"_s,
+                .args = { u"-B"_s },
+                .parse = &parseGlxinfoName,
+            },
+            {
+                .program = u"lspci"_s,
+                .args = {},
+                .parse = &parseLspciName,
+            },
         },
-        {
-            .program = u"glxinfo"_s,
-            .args = { u"-B"_s },
-            .parse = &parseGlxinfoName,
-        },
-        {
-            .program = u"lspci"_s,
-            .args = {},
-            .parse = &parseLspciName,
-        },
-    } };
+    };
     return k_sources;
 }
 
@@ -276,9 +278,9 @@ Gpu::Gpu(QObject* parent)
     : TickingService(parent) {
     m_busyFiles = gpuBusyFiles();
 
-    auto* svc = caelestia::config::ConfigSingleton::instance()->services();
+    const auto* svc = caelestia::shell::config::ConfigSingleton::instance()->services();
     m_userType = svc->gpuType();
-    QObject::connect(svc, &caelestia::config::ServiceConfig::gpuTypeChanged, this, [this, svc] {
+    QObject::connect(svc, &caelestia::shell::config::ServiceConfig::gpuTypeChanged, this, [this, svc] {
         const GpuType value = svc->gpuType();
         if (value == m_userType) {
             return;
@@ -296,6 +298,10 @@ GpuType Gpu::type() const {
 
 QString Gpu::name() const {
     return m_name;
+}
+
+bool Gpu::detecting() const {
+    return m_detecting;
 }
 
 qreal Gpu::percentage() const {
@@ -325,6 +331,14 @@ void Gpu::setName(QString value) {
     emit nameChanged();
 }
 
+void Gpu::setDetecting(bool value) {
+    if (value == m_detecting) {
+        return;
+    }
+    m_detecting = value;
+    emit detectingChanged();
+}
+
 void Gpu::tick() {
     if (m_type == GpuType::Generic) {
         readGenericUsage();
@@ -348,11 +362,13 @@ void Gpu::resolveGpu() {
     }
 
     if (m_userType == GpuType::None) {
-        setName(tr("None"));
+        setName({});
+        setDetecting(false);
         return;
     }
 
-    setName(tr("Detecting GPU..."));
+    setName({});
+    setDetecting(true);
     // Intel, like Generic, is named by the driver-agnostic probes rather than nvidia-smi.
     const bool skipNvidiaProbe = m_userType == GpuType::Generic || m_userType == GpuType::Intel;
     tryNameSource(skipNvidiaProbe ? k_firstGenericSource : k_nvidiaSource, generation);
@@ -423,13 +439,15 @@ void Gpu::finishNameSource(int index, int generation, QString name) {
         }
 
         if (m_type == GpuType::None) {
-            setName(tr("None"));
+            setName({});
+            setDetecting(false);
             return;
         }
     }
 
     if (!name.isEmpty()) {
         setName(std::move(name));
+        setDetecting(false);
         return;
     }
 
@@ -438,7 +456,8 @@ void Gpu::finishNameSource(int index, int generation, QString name) {
     if (next < probeEnd()) {
         tryNameSource(next, generation);
     } else {
-        setName(tr("None"));
+        setName({});
+        setDetecting(false);
     }
 }
 
@@ -610,4 +629,4 @@ void Gpu::resetUsage() {
     }
 }
 
-} // namespace caelestia::services
+} // namespace caelestia::shell::services
