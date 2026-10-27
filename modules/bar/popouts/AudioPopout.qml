@@ -15,16 +15,10 @@ ColumnLayout {
 
     required property PopoutState popouts
 
-<<<<<<< HEAD
     property bool _isSidebarOpen: popouts.sidebarOpen && popouts.isHorizontal && popouts.currentSection === "end"
 
     implicitWidth: Math.max(300, _isSidebarOpen ? Tokens.sizes.sidebar.width - Tokens.padding.extraLargeIncreased : 0)
     spacing: Tokens.spacing.medium
-=======
-    implicitWidth: Tokens.sizes.bar.audioWidth
-    implicitHeight: layout.implicitHeight + Tokens.padding.medium * 2
->>>>>>> caelestia/main
-
     ButtonGroup {
         id: sinks
     }
@@ -36,11 +30,10 @@ ColumnLayout {
     StyledText {
         Layout.topMargin: Tokens.padding.medium
         Layout.leftMargin: Tokens.padding.small
-        text: qsTr("Audio")
+        text: Tr.tr("Audio")
         font.weight: 500
     }
 
-<<<<<<< HEAD
     StyledRect {
         Layout.fillWidth: true
         implicitWidth: outputLayout.implicitWidth + Tokens.padding.medium * 2
@@ -51,78 +44,14 @@ ColumnLayout {
 
         ColumnLayout {
             id: outputLayout
-=======
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.verticalCenter: parent.verticalCenter
-        spacing: Tokens.spacing.medium
-
-        StyledText {
-            text: Tr.trCtx("Output device", "audio output device")
-            font: Tokens.font.body.builders.medium.weight(Font.Medium).build()
-        }
->>>>>>> caelestia/main
-
             width: parent.width - Tokens.padding.medium * 2
             x: Tokens.padding.medium
             y: Tokens.padding.medium
             spacing: Tokens.spacing.medium
 
-<<<<<<< HEAD
             StyledText {
-                text: qsTr("Output device")
-                font: Tokens.font.body.builders.medium.weight(Font.Medium).build()
-=======
-            StyledRadioButton {
-                id: control
-
-                required property PwNode modelData
-
-                Layout.fillWidth: true
-                ButtonGroup.group: sinks
-                checked: Audio.sink?.id === modelData.id
-                onClicked: Audio.setAudioSink(modelData)
-                text: modelData.description
-            }
-        }
-
-        StyledText {
-            Layout.topMargin: Tokens.spacing.medium
-            text: Tr.trCtx("Input device", "audio input device")
-            font: Tokens.font.body.builders.medium.weight(Font.Medium).build()
-        }
-
-        Repeater {
-            model: Audio.sources
-
-            StyledRadioButton {
-                required property PwNode modelData
-
-                Layout.fillWidth: true
-                ButtonGroup.group: sources
-                checked: Audio.source?.id === modelData.id
-                onClicked: Audio.setAudioSource(modelData)
-                text: modelData.description
-            }
-        }
-
-        StyledText {
-            Layout.topMargin: Tokens.spacing.medium
-            text: Audio.muted ? Tr.tr("Volume (muted)") : Tr.tr("Volume (%1%)").arg(Math.round(Audio.volume * 100))
-            font: Tokens.font.body.builders.medium.weight(Font.Medium).build()
-        }
-
-        CustomMouseArea {
-            Layout.fillWidth: true
-            implicitHeight: Tokens.padding.medium * 3
-
-            onWheel: event => {
-                if (event.angleDelta.y > 0)
-                    Audio.incrementVolume();
-                else if (event.angleDelta.y < 0)
-                    Audio.decrementVolume();
->>>>>>> caelestia/main
-            }
+                text: Tr.trCtx("Output device", "audio output device")
+                font: Tokens.font.body.builders.medium.weight(Font.Medium).build()            }
 
             Repeater {
                 model: Audio.sinks
@@ -141,7 +70,6 @@ ColumnLayout {
         }
     }
 
-<<<<<<< HEAD
     StyledRect {
         Layout.fillWidth: true
         implicitWidth: inputLayout.implicitWidth + Tokens.padding.medium * 2
@@ -149,17 +77,6 @@ ColumnLayout {
         radius: Tokens.rounding.medium
         color: Colours.tPalette.m3surfaceContainer
         clip: true
-=======
-        IconTextButton {
-            Layout.fillWidth: true
-            Layout.topMargin: Tokens.spacing.medium
-            inactiveColour: Colours.palette.m3primaryContainer
-            inactiveOnColour: Colours.palette.m3onPrimaryContainer
-            verticalPadding: Tokens.padding.extraSmall
-            text: Tr.tr("Open settings")
-            icon: "settings"
->>>>>>> caelestia/main
-
         ColumnLayout {
             id: inputLayout
 
@@ -169,7 +86,7 @@ ColumnLayout {
             spacing: Tokens.spacing.medium
 
             StyledText {
-                text: qsTr("Input device")
+                text: Tr.trCtx("Input device", "audio input device")
                 font: Tokens.font.body.builders.medium.weight(Font.Medium).build()
             }
 
@@ -192,7 +109,7 @@ ColumnLayout {
 
     StyledText {
         Layout.topMargin: Tokens.spacing.medium
-        text: qsTr("Volume (%1)").arg(Audio.muted ? qsTr("Muted") : `${Math.round(Audio.volume * 100)}%`)
+        text: Tr.tr("Volume (%1)").arg(Audio.muted ? Tr.tr("muted") : `${Math.round(Audio.volume * 100)}%`)
         font: Tokens.font.body.builders.medium.weight(Font.Medium).build()
     }
 
@@ -223,7 +140,7 @@ ColumnLayout {
         inactiveColour: Colours.palette.m3primaryContainer
         inactiveOnColour: Colours.palette.m3onPrimaryContainer
         verticalPadding: Tokens.padding.small
-        text: qsTr("Open settings")
+        text: Tr.tr("Open settings")
         icon: "settings"
 
         onClicked: root.popouts.detachRequested("audio")

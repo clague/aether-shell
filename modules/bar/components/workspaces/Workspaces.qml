@@ -55,26 +55,10 @@ ClipRect {
 
     property real blur: onSpecial ? 1 : 0
 
-<<<<<<< HEAD
     readonly property bool isHorizontal: Config.bar.position === "top" || Config.bar.position === "bottom"
 
     implicitWidth: isHorizontal ? (layout.implicitWidth + Tokens.padding.small) : Tokens.sizes.bar.innerWidth
     implicitHeight: isHorizontal ? Tokens.sizes.bar.innerWidth : (layout.implicitHeight + Tokens.padding.small)
-=======
-    function workspaceIndex(id: int): int {
-        if (!Config.bar.workspaces.showUnoccupied)
-            return wsIds.indexOf(id);
-
-        let index = id - 1;
-        while (index < 0)
-            index += shown;
-        return index % shown;
-    }
-
-    implicitWidth: Tokens.sizes.bar.innerWidth
-    implicitHeight: workspaces.layoutHeight + workspaces.anchors.margins * 2
->>>>>>> caelestia/main
-
     color: Colours.tPalette.m3surfaceContainer
     radius: Tokens.rounding.full
 
@@ -111,7 +95,6 @@ ClipRect {
             }
         }
 
-<<<<<<< HEAD
         GridLayout {
             id: layout
 
@@ -121,17 +104,6 @@ ClipRect {
             flow: root.isHorizontal ? GridLayout.LeftToRight : GridLayout.TopToBottom
             columnSpacing: Math.floor(Tokens.spacing.small)
             rowSpacing: Math.floor(Tokens.spacing.small)
-=======
-        LazyListView {
-            id: workspaces
-
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.margins: Tokens.padding.extraSmall
-            implicitHeight: contentHeight
->>>>>>> caelestia/main
-
             spacing: Tokens.spacing.extraSmall
             removeDuration: Tokens.anim.durations.expressiveDefaultEffects
 
@@ -175,14 +147,8 @@ ClipRect {
 
         Loader {
             asynchronous: true
-<<<<<<< HEAD
             anchors.horizontalCenter: root.isHorizontal ? undefined : parent.horizontalCenter
-            anchors.verticalCenter: root.isHorizontal ? parent.verticalCenter : undefined
-=======
-            anchors.left: workspaces.left
-            anchors.right: workspaces.right
->>>>>>> caelestia/main
-            active: Config.bar.workspaces.activeIndicator
+            anchors.verticalCenter: root.isHorizontal ? parent.verticalCenter : undefined            active: Config.bar.workspaces.activeIndicator
 
             sourceComponent: ActiveIndicator {
                 activeWs: {

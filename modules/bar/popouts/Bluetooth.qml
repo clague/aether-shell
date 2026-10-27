@@ -23,9 +23,8 @@ ColumnLayout {
 
     StyledText {
         Layout.topMargin: Tokens.padding.medium
-<<<<<<< HEAD
         Layout.leftMargin: Tokens.padding.small
-        text: qsTr("Bluetooth")
+        text: Tr.tr("Bluetooth")
         font.weight: 500
     }
 
@@ -42,66 +41,10 @@ ColumnLayout {
 
             width: parent.width - Tokens.padding.medium * 2
             x: Tokens.padding.medium
-            y: Tokens.padding.medium
-=======
-        Layout.rightMargin: Tokens.padding.extraSmall
-        text: Tr.tr("Bluetooth")
-        font: Tokens.font.body.builders.medium.weight(Font.Medium).build()
-    }
-
-    Toggle {
-        label: Tr.trCtx("Enabled", "toggle label")
-        checked: Bluetooth.defaultAdapter?.enabled ?? false
-        toggle.onToggled: {
-            const adapter = Bluetooth.defaultAdapter;
-            if (adapter)
-                adapter.enabled = checked;
-        }
-    }
-
-    Toggle {
-        label: Tr.trCtx("Discovering", "bluetooth adapter state")
-        checked: Bluetooth.defaultAdapter?.discovering ?? false
-        toggle.onToggled: {
-            const adapter = Bluetooth.defaultAdapter;
-            if (adapter)
-                adapter.discovering = checked;
-        }
-    }
-
-    StyledText {
-        Layout.topMargin: Tokens.spacing.small
-        Layout.rightMargin: Tokens.padding.extraSmall
-        text: {
-            const devices = Bluetooth.devices.values;
-            const connected = devices.filter(d => d.connected).length;
-            if (connected > 0)
-                // TRANSLATORS: %n = total paired devices, %1 = how many of them are connected
-                return Tr.trN("%n device available (%1 connected)", "%n devices available (%1 connected)", devices.length).arg(connected);
-            return Tr.trN("%n device available", "%n devices available", devices.length);
-        }
-        color: Colours.palette.m3onSurfaceVariant
-        font: Tokens.font.body.small
-    }
-
-    Repeater {
-        model: ScriptModel {
-            values: [...Bluetooth.devices.values].sort((a, b) => (b.connected - a.connected) || (b.paired - a.paired) || a.name.localeCompare(b.name)).slice(0, 5)
-        }
-
-        RowLayout {
-            id: device
-
-            required property BluetoothDevice modelData
-            readonly property bool loading: modelData.state === BluetoothDeviceState.Connecting || modelData.state === BluetoothDeviceState.Disconnecting
-
-            Layout.fillWidth: true
-            Layout.rightMargin: Tokens.padding.extraSmall
->>>>>>> caelestia/main
-            spacing: Tokens.spacing.small
+            y: Tokens.padding.medium            spacing: Tokens.spacing.small
 
             Toggle {
-                label: qsTr("Enabled")
+                label: Tr.trCtx("Enabled", "toggle label")
                 checked: Bluetooth.defaultAdapter?.enabled ?? false // qmllint disable unresolved-type
                 toggle.onToggled: {
                     const adapter = Bluetooth.defaultAdapter; // qmllint disable unresolved-type
@@ -111,7 +54,7 @@ ColumnLayout {
             }
 
             Toggle {
-                label: qsTr("Discovering")
+                label: Tr.trCtx("Discovering", "bluetooth adapter state")
                 checked: Bluetooth.defaultAdapter?.discovering ?? false // qmllint disable unresolved-type
                 toggle.onToggled: {
                     const adapter = Bluetooth.defaultAdapter; // qmllint disable unresolved-type
@@ -125,17 +68,16 @@ ColumnLayout {
                 Layout.rightMargin: Tokens.padding.extraSmall
                 text: {
                     const devices = Bluetooth.devices.values; // qmllint disable unresolved-type
-                    let available = qsTr("%1 device%2 available").arg(devices.length).arg(devices.length === 1 ? "" : "s");
+                    let available = devices.length === 1 ? Tr.tr("1 device available") : Tr.tr("%1 devices available").arg(devices.length);
                     const connected = devices.filter(d => d.connected).length;
                     if (connected > 0)
-                        available += qsTr(" (%1 connected)").arg(connected);
+                        available += Tr.tr(" (%1 connected)").arg(connected);
                     return available;
                 }
                 color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.body.small
             }
 
-<<<<<<< HEAD
             Repeater {
                 model: ScriptModel {
                     values: [...Bluetooth.devices.values].sort((a, b) => (b.connected - a.connected) || (b.paired - a.paired) || a.name.localeCompare(b.name)).slice(0, 5) // qmllint disable unresolved-type
@@ -143,48 +85,12 @@ ColumnLayout {
 
                 RowLayout {
                     id: device
-=======
-            MaterialIcon {
-                visible: device.modelData.state === BluetoothDeviceState.Connected
-                text: device.modelData.batteryAvailable ? Icons.getBatteryIcon(device.modelData.battery) : "battery_alert"
-                color: device.modelData.batteryAvailable && device.modelData.battery < 0.2 ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
-            }
-
-            StyledRect {
-                id: connectBtn
-
-                implicitWidth: implicitHeight
-                implicitHeight: connectIcon.implicitHeight + Tokens.padding.extraSmall
-
-                radius: Tokens.rounding.full
-                color: Qt.alpha(Colours.palette.m3primary, device.modelData.state === BluetoothDeviceState.Connected ? 1 : 0)
-
-                CircularIndicator {
-                    anchors.fill: parent
-                    running: device.loading
-                }
-
-                StateLayer {
-                    color: device.modelData.state === BluetoothDeviceState.Connected ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface
-                    disabled: device.loading
-                    onClicked: device.modelData.connected = !device.modelData.connected
-                }
->>>>>>> caelestia/main
-
                     required property BluetoothDevice modelData
                     readonly property bool loading: modelData.state === BluetoothDeviceState.Connecting || modelData.state === BluetoothDeviceState.Disconnecting // qmllint disable unresolved-type
 
-<<<<<<< HEAD
                     Layout.fillWidth: true
                     Layout.rightMargin: Tokens.padding.extraSmall
                     spacing: Tokens.spacing.small
-=======
-                    anchors.centerIn: parent
-                    animate: true
-                    text: device.modelData.connected ? "link_off" : "link"
-                    color: device.modelData.state === BluetoothDeviceState.Connected ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface
->>>>>>> caelestia/main
-
                     opacity: 0
                     scale: 0.7
 
@@ -226,7 +132,7 @@ ColumnLayout {
 
                         StyledText {
                             visible: device.modelData.batteryAvailable // qmllint disable unresolved-type
-                            text: device.modelData.batteryAvailable ? qsTr("%1%").arg(Math.round(device.modelData.battery * 100)) : "" // qmllint disable unresolved-type
+                            text: device.modelData.batteryAvailable ? Tr.tr("%1%").arg(Math.round(device.modelData.battery * 100)) : "" // qmllint disable unresolved-type
                             font: Tokens.font.body.small
                             color: device.modelData.batteryAvailable && device.modelData.battery < 0.2 ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant
                         }
@@ -298,14 +204,8 @@ ColumnLayout {
         Layout.fillWidth: true
         inactiveColour: Colours.palette.m3primaryContainer
         inactiveOnColour: Colours.palette.m3onPrimaryContainer
-<<<<<<< HEAD
         verticalPadding: Tokens.padding.small
-        text: qsTr("Open settings")
-=======
-        verticalPadding: Tokens.padding.extraSmall
-        text: Tr.tr("Open settings")
->>>>>>> caelestia/main
-        icon: "settings"
+        text: Tr.tr("Open settings")        icon: "settings"
 
         onClicked: root.popouts.detachRequested("bluetooth")
     }

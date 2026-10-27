@@ -122,16 +122,10 @@ Item {
             anchors.right: root.isHorizontal ? undefined : parent.right
 
             radius: Tokens.rounding.full
-<<<<<<< HEAD
             // Changed undefined to 0 to fix "Unable to assign [undefined] to double"
             implicitWidth: root.isHorizontal ? parent.width / 2 : 0
             implicitHeight: root.isHorizontal ? 0 : parent.height / 2
             opacity: root.isHorizontal ? (view.contentX > 0 ? 0 : 1) : (view.contentY > 0 ? 0 : 1)
-=======
-            implicitHeight: parent.height / 2
-            opacity: view.y < -Tokens.padding.extraSmall ? 0 : 1
->>>>>>> caelestia/main
-
             Behavior on opacity {
                 Anim {
                     type: Anim.DefaultEffects
@@ -146,15 +140,9 @@ Item {
             anchors.left: root.isHorizontal ? undefined : parent.left
 
             radius: Tokens.rounding.full
-<<<<<<< HEAD
             implicitWidth: root.isHorizontal ? parent.width / 2 : 0
             implicitHeight: root.isHorizontal ? 0 : parent.height / 2
             opacity: root.isHorizontal ? (view.contentX < view.contentWidth - parent.width + Tokens.padding.extraSmall ? 0 : 1) : (view.contentY < view.contentHeight - parent.height + Tokens.padding.extraSmall ? 0 : 1)
-=======
-            implicitHeight: parent.height / 2
-            opacity: view.y > -root.maxViewY + Tokens.padding.extraSmall ? 0 : 1
->>>>>>> caelestia/main
-
             Behavior on opacity {
                 Anim {
                     type: Anim.DefaultEffects
@@ -170,24 +158,14 @@ Item {
         anchors.right: parent.right
         implicitHeight: contentHeight
 
-<<<<<<< HEAD
         orientation: root.isHorizontal ? ListView.Horizontal : ListView.Vertical
 
         currentIndex: model.values.findIndex(w => w.name === root.activeSpecial)
         onCurrentIndexChanged: currentIndex = Qt.binding(() => model.values.findIndex(w => w.name === root.activeSpecial))
-=======
-        cullDelegates: false
-        spacing: Tokens.spacing.small
-        removeDuration: Tokens.anim.durations.expressiveDefaultEffects
-
-        onContentHeightChanged: root.ensureVisible()
->>>>>>> caelestia/main
-
         model: ScriptModel {
             values: root.wsIds
         }
 
-<<<<<<< HEAD
         preferredHighlightBegin: 0
         preferredHighlightEnd: root.isHorizontal ? width : height
         highlightRangeMode: ListView.StrictlyEnforceRange
@@ -210,18 +188,7 @@ Item {
                 enabled: !root.isHorizontal
 
                 Anim {}
-            }
-=======
-        delegate: Workspace {
-            activeWsId: root.activeSpecialId
-            ws: modelData
-            monitor: root.monitor
-            offMonitorColour: Colours.palette.m3outline
-            displayType: Config.bar.workspaces.specialDisplayType
-            showWindows: Config.bar.workspaces.showWindowsOnSpecialWorkspaces
-            iconRules: GlobalConfig.bar.workspaces.specialWorkspaceIcons
->>>>>>> caelestia/main
-        }
+            }        }
 
         Behavior on y {
             id: viewYBehavior
@@ -240,7 +207,6 @@ Item {
         anchors.right: view.right
         active: Config.bar.workspaces.activeIndicator
 
-<<<<<<< HEAD
         sourceComponent: Item {
             StyledClippingRect {
                 id: indicator
@@ -303,29 +269,13 @@ Item {
                         type: Anim.Emphasized
                     }
                 }
-            }
-=======
-        sourceComponent: ActiveIndicator {
-            activeWs: root.activeWs
-            mask: view
-            color: Colours.palette.m3tertiary
-            contentColour: Colours.palette.m3onTertiary
->>>>>>> caelestia/main
-        }
+            }        }
     }
 
     MouseArea {
-<<<<<<< HEAD
         property real startPos
-=======
-        property real startY
-        property real startViewY
-        property bool dragging
->>>>>>> caelestia/main
-
         anchors.fill: parent
 
-<<<<<<< HEAD
         drag.target: view.contentItem
 
         drag.axis: root.isHorizontal ? Drag.XAxis : Drag.YAxis
@@ -549,35 +499,7 @@ Item {
                         text: Icons.getAppCategoryIcon(modelData.lastIpcObject.class, "terminal")
                         color: Colours.palette.m3onSurfaceVariant
                     }
-                }
-=======
-        onPressed: event => {
-            startY = event.y;
-            startViewY = view.y;
-            dragging = false;
-        }
-
-        onPositionChanged: event => {
-            if (!dragging && Math.abs(event.y - startY) > drag.threshold)
-                dragging = true;
-
-            if (dragging)
-                view.y = CUtils.clamp(startViewY + (event.y - startY), -root.maxViewY, 0);
-        }
-
-        onClicked: event => {
-            if (dragging)
-                return;
-
-            const ws = view.itemAt(event.x, event.y - view.y) as Workspace;
-            if (ws) {
-                const match = Hypr.workspaces.values.find(w => w.id === ws.ws);
-                if (match)
-                    Hypr.toggleSpecial(Hypr.trimWsName(match.name));
-            } else {
-                Hypr.toggleSpecial("special");
->>>>>>> caelestia/main
-            }
+                }            }
         }
     }
 }

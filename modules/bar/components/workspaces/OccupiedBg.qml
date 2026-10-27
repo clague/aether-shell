@@ -39,7 +39,6 @@ Item {
 
                 removeDuration: Tokens.anim.durations.expressiveDefaultEffects
 
-<<<<<<< HEAD
         StyledRect {
             id: rect
 
@@ -97,11 +96,7 @@ Item {
             Behavior on implicitHeight {
                 enabled: !rect.isHorizontal
 
-                Anim {}
-=======
-                OccupiedRect {}
->>>>>>> caelestia/main
-            }
+                Anim {}            }
         }
     }
 

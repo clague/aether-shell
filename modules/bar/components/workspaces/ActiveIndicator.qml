@@ -36,7 +36,6 @@ StyledRect {
         endAnim.start();
     }
 
-<<<<<<< HEAD
     readonly property bool isHorizontal: Config.bar.position === "top" || Config.bar.position === "bottom"
 
     property real leading: workspaces.count > 0 ? (isHorizontal ? workspaces.itemAt(currentWsIdx)?.x : workspaces.itemAt(currentWsIdx)?.y) ?? 0 : 0
@@ -67,16 +66,7 @@ StyledRect {
     x: isHorizontal ? offset + mask.x : 0
     y: isHorizontal ? 0 : offset + mask.y
     implicitWidth: isHorizontal ? size : Tokens.sizes.bar.innerWidth - Tokens.padding.small
-    implicitHeight: isHorizontal ? Tokens.sizes.bar.innerWidth - Tokens.padding.small : size
-=======
-    onActiveWsChanged: runAnim()
-    Component.onCompleted: runAnim()
-
-    clip: true
-    y: start + mask.y
-    implicitHeight: end - start
->>>>>>> caelestia/main
-    radius: Tokens.rounding.full
+    implicitHeight: isHorizontal ? Tokens.sizes.bar.innerWidth - Tokens.padding.small : size    radius: Tokens.rounding.full
     color: Colours.palette.m3primary
 
     Anim on start {
@@ -106,18 +96,10 @@ StyledRect {
         sourceColor: Colours.palette.m3onSurface
         colorizationColor: Colours.palette.m3onPrimary
 
-<<<<<<< HEAD
         x: root.isHorizontal ? -parent.offset : 0
         y: root.isHorizontal ? 0 : -parent.offset
         implicitWidth: root.mask.implicitWidth
         implicitHeight: root.mask.implicitHeight
-=======
-        x: 0
-        y: -parent.start
-        implicitWidth: root.mask.width
-        implicitHeight: root.mask.height
->>>>>>> caelestia/main
-
         anchors.horizontalCenter: root.isHorizontal ? undefined : parent.horizontalCenter
         anchors.verticalCenter: root.isHorizontal ? parent.verticalCenter : undefined
     }

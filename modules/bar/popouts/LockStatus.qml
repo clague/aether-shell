@@ -13,10 +13,9 @@ ColumnLayout {
     spacing: Tokens.spacing.medium
 
     StyledText {
-<<<<<<< HEAD
         Layout.topMargin: Tokens.padding.medium
         Layout.leftMargin: Tokens.padding.small
-        text: qsTr("Keyboard Locks")
+        text: Tr.tr("Keyboard Locks")
         font.weight: 500
     }
 
@@ -37,19 +36,12 @@ ColumnLayout {
             spacing: Tokens.spacing.small
 
             StyledText {
-                text: qsTr("Capslock: %1").arg(Hypr.capsLock ? "Enabled" : "Disabled")
+                text: Tr.tr("Capslock: %1").arg(Hypr.capsLock ? Tr.tr("Enabled") : Tr.tr("Disabled"))
             }
 
             StyledText {
-                text: qsTr("Numlock: %1").arg(Hypr.numLock ? "Enabled" : "Disabled")
+                text: Tr.tr("Numlock: %1").arg(Hypr.numLock ? Tr.tr("Enabled") : Tr.tr("Disabled"))
             }
         }
-=======
-        text: Hypr.capsLock ? Tr.tr("Caps lock enabled") : Tr.tr("Caps lock disabled")
-    }
-
-    StyledText {
-        text: Hypr.numLock ? Tr.tr("Num lock enabled") : Tr.tr("Num lock disabled")
->>>>>>> caelestia/main
     }
 }

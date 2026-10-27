@@ -11,12 +11,7 @@ import qs.components
 import qs.services
 import qs.utils
 
-<<<<<<< HEAD
-GridLayout {
-=======
-Item {
->>>>>>> caelestia/main
-    id: root
+GridLayout {    id: root
 
     required property int modelData
     required property int index
@@ -24,21 +19,11 @@ Item {
     required property int ws
     required property HyprlandMonitor monitor
 
-<<<<<<< HEAD
     readonly property bool isWorkspace: true // Flag for finding workspace children
     readonly property bool isHorizontal: Config.bar.position === "top" || Config.bar.position === "bottom"
 
     // Unanimated prop for others to use as reference
     readonly property int size: isHorizontal ? (implicitWidth + (hasWindows ? Tokens.padding.extraSmall : 0)) : (implicitHeight + (hasWindows ? Tokens.padding.extraSmall : 0))
-=======
-    required property int displayType
-    required property bool showWindows
-    required property var iconRules
-    property string activeLabel
-    property string occupiedLabel
-    property string label
->>>>>>> caelestia/main
-
     readonly property list<HyprlandToplevel> toplevels: Hypr.toplevelsForWs(ws, GlobalConfig.bar.workspaces.ignoredTags)
     readonly property bool isOccupied: toplevels.length > 0
     readonly property bool hasWindows: isOccupied && showWindows && Config.bar.workspaces.maxWindowIcons > 0
@@ -71,7 +56,6 @@ Item {
             shape.shape = Qt.binding(() => isOccupied ? MaterialShape.Square : MaterialShape.Circle);
     }
 
-<<<<<<< HEAD
     columns: isHorizontal ? -1 : 1
     rows: isHorizontal ? 1 : -1
     flow: isHorizontal ? GridLayout.LeftToRight : GridLayout.TopToBottom
@@ -79,14 +63,6 @@ Item {
     Layout.alignment: isHorizontal ? Qt.AlignVCenter : Qt.AlignHCenter
     Layout.preferredWidth: isHorizontal ? size : -1
     Layout.preferredHeight: isHorizontal ? -1 : size
-=======
-    anchors.horizontalCenter: parent?.horizontalCenter
-    LazyListView.preferredHeight: LazyListView.removing ? 0 : layout.implicitHeight + (hasWindows ? Tokens.padding.extraSmall : 0)
-    LazyListView.visibleHeight: LazyListView.preferredHeight
-
-    opacity: LazyListView.removing || LazyListView.adding ? 0 : 1
->>>>>>> caelestia/main
-
     columnSpacing: 0
     rowSpacing: 0
 
@@ -94,48 +70,12 @@ Item {
         Anim {}
     }
 
-<<<<<<< HEAD
         Layout.alignment: root.isHorizontal ? (Qt.AlignVCenter | Qt.AlignLeft) : (Qt.AlignHCenter | Qt.AlignTop)
         Layout.preferredWidth: root.isHorizontal ? (Tokens.sizes.bar.innerWidth - Tokens.padding.small) : -1
         Layout.preferredHeight: root.isHorizontal ? -1 : (Tokens.sizes.bar.innerWidth - Tokens.padding.small)
 
         asynchronous: true
-        sourceComponent: Config.bar.workspaces.useIcon ? iconComponent : textComponent
-=======
-    Behavior on y {
-        enabled: root.LazyListView.ready
-
-        Anim {}
-    }
-
-    Behavior on opacity {
-        Anim {
-            type: Anim.DefaultEffects
-        }
-    }
-
-    Component {
-        id: shapeComponent
-
-        MaterialShape {
-            implicitSize: Tokens.sizes.bar.innerWidth - Tokens.padding.small
-
-            color: root.fgColour
-            scale: root.focused ? 2 / 3 : root.isOccupied ? 1 / 3 : 1 / 4
-
-            animationEasing: Tokens.anim.expressiveDefaultSpatial
-            animationDuration: Tokens.anim.durations.expressiveDefaultSpatial * Tokens.anim.durations.scale
-
-            Behavior on color {
-                CAnim {}
-            }
-
-            Behavior on scale {
-                Anim {}
-            }
-        }
->>>>>>> caelestia/main
-    }
+        sourceComponent: Config.bar.workspaces.useIcon ? iconComponent : textComponent    }
 
     Component {
         id: textComponent
@@ -143,7 +83,6 @@ Item {
         StyledText {
             animate: true
             text: {
-<<<<<<< HEAD
                 const ws = Hypr.workspaces.values.find(w => w.id === root.ws);
                 const wsName = !ws || ws.name == root.ws ? root.ws : ws.name[0];
                 let displayName = wsName.toString();
@@ -157,44 +96,13 @@ Item {
                 const activeLabel = Config.bar.workspaces.activeLabel || (root.isOccupied ? occupiedLabel : label);
                 return root.activeWsId === root.ws ? activeLabel : root.isOccupied ? occupiedLabel : label;
             }
-            color: Config.bar.workspaces.occupiedBg || root.isOccupied || root.activeWsId === root.ws ? Colours.palette.m3onSurface : Colours.layer(Colours.palette.m3outlineVariant, 2)
-=======
-                if (root.focused) {
-                    const label = root.activeLabel;
-                    if (label)
-                        return label;
-                }
-
-                if (root.focused || root.isOccupied) {
-                    const label = root.occupiedLabel;
-                    if (label)
-                        return label;
-                }
-
-                const label = root.label;
-                if (label)
-                    return label;
-
-                const ws = Hypr.workspaces.values.find(w => w.id === root.ws);
-                const wsName = !ws || ws.name == root.ws ? root.ws : Hypr.trimWsName(ws.name)[0];
-
-                const capitalisation = Config.bar.workspaces.capitalisation;
-                if (capitalisation === BarWorkspaceCapitalisation.Upper)
-                    return String(wsName).toUpperCase();
-                else if (capitalisation === BarWorkspaceCapitalisation.Lower)
-                    return String(wsName).toLowerCase();
-                return wsName;
-            }
-            color: root.fgColour
->>>>>>> caelestia/main
-            verticalAlignment: Qt.AlignVCenter
+            color: Config.bar.workspaces.occupiedBg || root.isOccupied || root.activeWsId === root.ws ? Colours.palette.m3onSurface : Colours.layer(Colours.palette.m3outlineVariant, 2)            verticalAlignment: Qt.AlignVCenter
             font.family: Tokens.font.workspaces
         }
     }
 
     Component {
         id: iconComponent
-<<<<<<< HEAD
 
         Item {
             id: iconRoot
@@ -333,9 +241,6 @@ Item {
 
     Loader {
         id: windows
-=======
->>>>>>> caelestia/main
-
         MaterialIcon {
             fill: 1
             grade: 25
@@ -343,24 +248,14 @@ Item {
             color: root.fgColour
             verticalAlignment: Qt.AlignVCenter
 
-<<<<<<< HEAD
         Layout.alignment: root.isHorizontal ? Qt.AlignVCenter : Qt.AlignHCenter
         Layout.fillWidth: root.isHorizontal && enabled
         Layout.fillHeight: !root.isHorizontal && enabled
         Layout.topMargin: root.isHorizontal ? 0 : -Tokens.sizes.bar.innerWidth / 10
         Layout.leftMargin: root.isHorizontal ? -Tokens.sizes.bar.innerWidth / 10 : 0
-=======
-            WsIconCacher {
-                id: iconCacher
-            }
-        }
-    }
->>>>>>> caelestia/main
-
     Component {
         id: iconLoaderComponent
 
-<<<<<<< HEAD
         sourceComponent: root.isHorizontal ? rowComponent : columnComponent
     }
 
@@ -416,11 +311,6 @@ Item {
 
         Row {
             spacing: 0
-=======
-        Loader {
-            sourceComponent: loaderIconCacher.icon ? iconComponent : textComponent
->>>>>>> caelestia/main
-
             WsIconCacher {
                 id: loaderIconCacher
             }
@@ -502,7 +392,6 @@ Item {
         }
     }
 
-<<<<<<< HEAD
     Behavior on Layout.preferredHeight {
         enabled: !root.isHorizontal
 
@@ -512,30 +401,5 @@ Item {
     Behavior on Layout.preferredWidth {
         enabled: root.isHorizontal
 
-        Anim {}
-=======
-    component WsIconCacher: QtObject {
-        id: cacher
-
-        property string name
-        readonly property string icon: Icons.matchIconRuleList(Hypr.trimWsName(name), root.iconRules)
-        readonly property HyprlandWorkspace wsObj: Hypr.workspaces.values.find(w => w.id === root.ws) ?? null
-
-        readonly property Connections conn: Connections {
-            function onNameChanged(): void {
-                cacher.updateName();
-            }
-
-            target: cacher.wsObj
-        }
-
-        function updateName(): void {
-            if (wsObj)
-                name = wsObj.name;
-        }
-
-        onWsObjChanged: updateName()
-        Component.onCompleted: updateName()
->>>>>>> caelestia/main
-    }
+        Anim {}    }
 }

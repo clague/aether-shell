@@ -89,7 +89,6 @@ Item {
             SafeScreencopy {
                 id: preview
 
-<<<<<<< HEAD
                 captureSource: {
                     const top = Hypr.activeToplevel; // qmllint disable unresolved-type
                     if (!top || !top.wayland) // qmllint disable unresolved-type
@@ -103,9 +102,6 @@ Item {
                     }
                     return top.wayland; // qmllint disable unresolved-type
                 }
-=======
-                captureSource: Hypr.activeToplevel?.wayland ?? null
->>>>>>> caelestia/main
                 live: visible
 
                 constraintSize.width: Tokens.sizes.bar.windowPreviewSize
