@@ -78,6 +78,7 @@ def declared_names(line: str):
         return []
     return [a or b for a, b in DECL_RE.findall(line)]
 
+
 ALLOWED = {
     # --- superseded, and provably so (T28) ------------------------------------------------
     "videoWallpaperPauseOnFullscreen": "BackgroundConfig",
@@ -97,6 +98,16 @@ ALLOWED = {
     "screenCounts": "ShimejiConfig",
     "tabIndicatorHeight": "DashboardTokens",
     "wsIcons": "BarWorkspaces",
+    # --- upstream 2026-09..10 work not read on the MiDnight baseline (yet) -----------------
+    # The workspace v2 / audio-popout-sizes / lock-centre machinery stayed on our side per
+    # hybrid/docs/phase2-upstream-catchup.md, so upstream's own keys still arrive in the
+    # schema but nothing reads them. Until the T7 swap (video wallpaper) and the multi-
+    # upstream push land, these stay to keep configs round-trippable with upstream.
+    "audioWidth": "Tokens",
+    "enableSessionControls": "LockConfig",
+    "ignoredTags": "BarWorkspaces",
+    "perMonitor": "BarWorkspaces",
+    "showUnoccupied": "BarWorkspaces",
 }
 
 ALLOW_REASON = (
@@ -116,7 +127,11 @@ def check_wrappers_known(headers):
             m = WRAPPER_DEF_RE.match(line)
             # CONFIG_* names are matched by DECL_RE directly, so a macro that merely renames
             # one of them (CONFIG_LIST -> SETTINGS_LIST) is already covered and is not a hole.
-            if not m or m.group(1) in KNOWN_WRAPPERS or m.group(1).startswith("CONFIG_"):
+            if (
+                not m
+                or m.group(1) in KNOWN_WRAPPERS
+                or m.group(1).startswith("CONFIG_")
+            ):
                 continue
             # A macro definition can continue over backslash-continued lines; look at the
             # whole run before deciding it does not declare a property.
@@ -132,23 +147,35 @@ def check_wrappers_known(headers):
             # FEATURE(name) pass the name *through*, which is what makes them invisible.
             params = {a.strip() for a in m.group(2).split(",") if a.strip()}
             declared = re.findall(
-                r"CONFIG_(?:GLOBAL_)?(?:ENUM_)?(?:PROPERTY|LIST)\s*\(\s*[^,()]+,\s*([A-Za-z_]\w*)", body)
+                r"CONFIG_(?:GLOBAL_)?(?:ENUM_)?(?:PROPERTY|LIST)\s*\(\s*[^,()]+,\s*([A-Za-z_]\w*)",
+                body,
+            )
             if params & set(declared):
                 unknown.append(f"{f}:{i + 1}: {m.group(1)}")
     if unknown:
-        print("  wrapper macro(s) this checker does not parse -- every key declared through")
-        print("  them is invisible here. Add the name to KNOWN_WRAPPERS and to DECL_RE:")
+        print(
+            "  wrapper macro(s) this checker does not parse -- every key declared through"
+        )
+        print(
+            "  them is invisible here. Add the name to KNOWN_WRAPPERS and to DECL_RE:"
+        )
         for u in unknown:
             print(f"    {u}")
     return unknown
 
 
 def tracked(*patterns):
-    out = subprocess.run(["git", "-C", str(ROOT), "ls-files", *patterns],
-                         capture_output=True, text=True, check=True).stdout.split()
+    out = subprocess.run(
+        ["git", "-C", str(ROOT), "ls-files", *patterns],
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.split()
     if not out:
-        sys.exit(f"git ls-files {patterns} matched nothing under {ROOT} -- refusing to "
-                 f"report a clean result from an empty file list")
+        sys.exit(
+            f"git ls-files {patterns} matched nothing under {ROOT} -- refusing to "
+            f"report a clean result from an empty file list"
+        )
     return out
 
 
@@ -181,13 +208,22 @@ def self_test() -> int:
         # The macro definition itself must not register a key called `name`,
         # which would look live because `.name` appears all over the QML.
         ("#define CONFIG_PROPERTY(Type, name, defaultVal) \\", []),
-        ("    // CONFIG_PROPERTY(bool, commented, true)", ["commented"]),  # comments not stripped
+        (
+            "    // CONFIG_PROPERTY(bool, commented, true)",
+            ["commented"],
+        ),  # comments not stripped
         ("    int somethingElse = 3;", []),
     ]
 
     reader_cases = [
         ("read as .key in QML", "showOnHover", "Config.dock.showOnHover", "", True),
-        ("read as a string subscript", "showOnHover", 'Config.dock["showOnHover"]', "", True),
+        (
+            "read as a string subscript",
+            "showOnHover",
+            'Config.dock["showOnHover"]',
+            "",
+            True,
+        ),
         ("read bare in C++", "showOnHover", "", "if (showOnHover) {}", True),
         # A longer name must not keep a shorter key alive.
         ("longer name is not a read", "show", "Config.dock.showOnHover", "", False),
@@ -201,7 +237,9 @@ def self_test() -> int:
         got = declared_names(line)
         if got != expected:
             failures += 1
-            print(f"  \033[0;31mdeclaration\033[0m: {line.strip()[:52]!r} -> {got}, wanted {expected}")
+            print(
+                f"  \033[0;31mdeclaration\033[0m: {line.strip()[:52]!r} -> {got}, wanted {expected}"
+            )
 
     for name, key, qml, cpp, expected in reader_cases:
         got = has_reader(key, qml, cpp)
@@ -214,8 +252,10 @@ def self_test() -> int:
     if failures:
         print(f"\033[1;31mFAIL\033[0m self-test: {failures} of {total} case(s) wrong")
         return 1
-    print(f"\033[1;32mPASS\033[0m self-test: {total} cases, declarations parsed and readers "
-          "resolved in both directions")
+    print(
+        f"\033[1;32mPASS\033[0m self-test: {total} cases, declarations parsed and readers "
+        "resolved in both directions"
+    )
     return 0
 
 
@@ -240,7 +280,9 @@ def main():
                 cpp.append(line)
     cpp_text = "\n".join(cpp)
 
-    qml_text = "\n".join((ROOT / f).read_text(errors="ignore") for f in tracked("*.qml"))
+    qml_text = "\n".join(
+        (ROOT / f).read_text(errors="ignore") for f in tracked("*.qml")
+    )
 
     dead, skipped = [], []
     for key, (f, n) in sorted(keys.items()):
@@ -256,7 +298,9 @@ def main():
     for key, f, n in dead:
         print(f"  DEAD  {key:38} {f}:{n}")
 
-    print(f"\n{len(keys)} config key(s), {len(skipped)} allowlisted, {len(dead)} with no reader")
+    print(
+        f"\n{len(keys)} config key(s), {len(skipped)} allowlisted, {len(dead)} with no reader"
+    )
     return 1 if dead else 0
 
 

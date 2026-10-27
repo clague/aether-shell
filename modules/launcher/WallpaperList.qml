@@ -183,10 +183,12 @@ PathView {
         function onWheel(event: WheelEvent): void {
             if (event.angleDelta.y > 0 || event.angleDelta.x > 0)
                 root.decrementCurrentIndex();
-            else if (event.angleDelta.y < 0 || event.angleDelta.x < 0)                root.incrementCurrentIndex();
+            else if (event.angleDelta.y < 0 || event.angleDelta.x < 0)
+                root.incrementCurrentIndex();
         }
 
         anchors.fill: parent
         preventStealing: false
-        acceptedButtons: Qt.NoButton    }
+        acceptedButtons: Qt.NoButton
+    }
 }

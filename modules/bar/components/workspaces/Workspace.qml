@@ -3,47 +3,31 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Hyprland
 import M3Shapes
-import Caelestia.Components
 import Caelestia.Config
 import qs.components
 import qs.services
 import qs.utils
 
-GridLayout {    id: root
+GridLayout {
+    id: root
 
-    required property int modelData
     required property int index
     required property int activeWsId
-    required property int ws
-    required property HyprlandMonitor monitor
+    required property var occupied
+    required property int groupOffset
 
     readonly property bool isWorkspace: true // Flag for finding workspace children
     readonly property bool isHorizontal: Config.bar.position === "top" || Config.bar.position === "bottom"
 
     // Unanimated prop for others to use as reference
     readonly property int size: isHorizontal ? (implicitWidth + (hasWindows ? Tokens.padding.extraSmall : 0)) : (implicitHeight + (hasWindows ? Tokens.padding.extraSmall : 0))
-    readonly property list<HyprlandToplevel> toplevels: Hypr.toplevelsForWs(ws, GlobalConfig.bar.workspaces.ignoredTags)
-    readonly property bool isOccupied: toplevels.length > 0
-    readonly property bool hasWindows: isOccupied && showWindows && Config.bar.workspaces.maxWindowIcons > 0
+
+    readonly property int ws: groupOffset + index + 1
+    readonly property bool isOccupied: occupied[ws] ?? false
+    readonly property bool hasWindows: isOccupied && Config.bar.workspaces.showWindows
     readonly property bool focused: activeWsId === ws
     readonly property list<int> focusedShapeList: [MaterialShape.Slanted, MaterialShape.Oval, MaterialShape.Pill, MaterialShape.Triangle, MaterialShape.Arrow, MaterialShape.Diamond, MaterialShape.Pentagon, MaterialShape.Gem, MaterialShape.VerySunny, MaterialShape.Sunny, MaterialShape.Cookie4Sided, MaterialShape.Cookie6Sided, MaterialShape.Cookie7Sided, MaterialShape.Cookie9Sided, MaterialShape.Cookie12Sided, MaterialShape.Clover4Leaf, MaterialShape.SoftBurst, MaterialShape.Ghostish]
-
-    property color offMonitorColour: Colours.palette.m3outlineVariant
-    readonly property bool onOtherMonitor: {
-        if (Config.bar.workspaces.perMonitor)
-            return false;
-        const mon = Hypr.workspaces.values.find(w => w.id === ws)?.monitor;
-        return !!(mon && mon !== monitor);
-    }
-    readonly property color fgColour: {
-        if (onOtherMonitor)
-            return offMonitorColour;
-        if (focused || isOccupied || Config.bar.workspaces.occupiedBg)
-            return Colours.palette.m3onSurface;
-        return Colours.layer(Colours.palette.m3outlineVariant, 2);
-    }
 
     function updateShape(): void {
         const shape = indicator.item as MaterialShape;
@@ -63,19 +47,20 @@ GridLayout {    id: root
     Layout.alignment: isHorizontal ? Qt.AlignVCenter : Qt.AlignHCenter
     Layout.preferredWidth: isHorizontal ? size : -1
     Layout.preferredHeight: isHorizontal ? -1 : size
+
     columnSpacing: 0
     rowSpacing: 0
 
-    Behavior on LazyListView.visibleHeight {
-        Anim {}
-    }
+    Loader {
+        id: indicator
 
         Layout.alignment: root.isHorizontal ? (Qt.AlignVCenter | Qt.AlignLeft) : (Qt.AlignHCenter | Qt.AlignTop)
         Layout.preferredWidth: root.isHorizontal ? (Tokens.sizes.bar.innerWidth - Tokens.padding.small) : -1
         Layout.preferredHeight: root.isHorizontal ? -1 : (Tokens.sizes.bar.innerWidth - Tokens.padding.small)
 
         asynchronous: true
-        sourceComponent: Config.bar.workspaces.useIcon ? iconComponent : textComponent    }
+        sourceComponent: Config.bar.workspaces.useIcon ? iconComponent : textComponent
+    }
 
     Component {
         id: textComponent
@@ -96,7 +81,8 @@ GridLayout {    id: root
                 const activeLabel = Config.bar.workspaces.activeLabel || (root.isOccupied ? occupiedLabel : label);
                 return root.activeWsId === root.ws ? activeLabel : root.isOccupied ? occupiedLabel : label;
             }
-            color: Config.bar.workspaces.occupiedBg || root.isOccupied || root.activeWsId === root.ws ? Colours.palette.m3onSurface : Colours.layer(Colours.palette.m3outlineVariant, 2)            verticalAlignment: Qt.AlignVCenter
+            color: Config.bar.workspaces.occupiedBg || root.isOccupied || root.activeWsId === root.ws ? Colours.palette.m3onSurface : Colours.layer(Colours.palette.m3outlineVariant, 2)
+            verticalAlignment: Qt.AlignVCenter
             font.family: Tokens.font.workspaces
         }
     }
@@ -241,20 +227,17 @@ GridLayout {    id: root
 
     Loader {
         id: windows
-        MaterialIcon {
-            fill: 1
-            grade: 25
-            text: iconCacher.icon
-            color: root.fgColour
-            verticalAlignment: Qt.AlignVCenter
+
+        asynchronous: true
 
         Layout.alignment: root.isHorizontal ? Qt.AlignVCenter : Qt.AlignHCenter
         Layout.fillWidth: root.isHorizontal && enabled
         Layout.fillHeight: !root.isHorizontal && enabled
         Layout.topMargin: root.isHorizontal ? 0 : -Tokens.sizes.bar.innerWidth / 10
         Layout.leftMargin: root.isHorizontal ? -Tokens.sizes.bar.innerWidth / 10 : 0
-    Component {
-        id: iconLoaderComponent
+
+        visible: active
+        active: root.hasWindows
 
         sourceComponent: root.isHorizontal ? rowComponent : columnComponent
     }
@@ -311,82 +294,42 @@ GridLayout {    id: root
 
         Row {
             spacing: 0
-            WsIconCacher {
-                id: loaderIconCacher
-            }
-        }
-    }
 
-    ColumnLayout {
-        id: layout
-
-        anchors.fill: parent
-        spacing: 0
-
-        Loader {
-            id: indicator
-
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-            Layout.preferredHeight: Tokens.sizes.bar.innerWidth - Tokens.padding.small
-            sourceComponent: {
-                if (root.displayType === BarWorkspaceDisplay.Icons)
-                    return iconLoaderComponent;
-                if (root.displayType === BarWorkspaceDisplay.Text)
-                    return textComponent;
-                return shapeComponent;
+            add: Transition {
+                Anim {
+                    properties: "scale"
+                    from: 0
+                    to: 1
+                    easing: Tokens.anim.standardDecel
+                }
             }
 
-            onItemChanged: root.updateShape()
-        }
+            move: Transition {
+                Anim {
+                    properties: "scale"
+                    to: 1
+                    easing: Tokens.anim.standardDecel
+                }
+                Anim {
+                    properties: "x,y"
+                }
+            }
 
-        Loader {
-            id: windows
-
-            asynchronous: true
-
-            Layout.fillWidth: true
-            Layout.topMargin: -Tokens.spacing.extraSmall / 2
-            Layout.preferredHeight: root.hasWindows && item ? (item as LazyListView).layoutHeight : 0
-
-            visible: active
-            active: root.showWindows && Config.bar.workspaces.maxWindowIcons > 0
-
-            sourceComponent: LazyListView {
-                spacing: 0
-                implicitHeight: contentHeight
-                cullDelegates: false
-                removeDuration: Tokens.anim.durations.expressiveDefaultEffects
-
+            Repeater {
                 model: ScriptModel {
                     values: {
-                        const windows = root.toplevels;
+                        const windows = Hypr.toplevelsForWs(root.ws);
                         const maxIcons = root.Config.bar.workspaces.maxWindowIcons;
                         return maxIcons > 0 ? windows.slice(0, maxIcons) : windows;
                     }
                 }
 
-                delegate: MaterialIcon {
-                    id: win
-
+                MaterialIcon {
                     required property var modelData
-                    required property int index // Needed, LazyListView will fail to set it if it doesn't exist
 
                     grade: 0
-                    horizontalAlignment: Text.AlignHCenter
                     text: Icons.getAppCategoryIcon(modelData.lastIpcObject.class, "terminal")
-                    color: root.onOtherMonitor ? root.offMonitorColour : Colours.palette.m3onSurfaceVariant
-
-                    opacity: LazyListView.adding || LazyListView.removing ? 0 : 1
-
-                    Behavior on opacity {
-                        Anim {
-                            type: Anim.DefaultEffects
-                        }
-                    }
-
-                    Behavior on y {
-                        Anim {}
-                    }
+                    color: Colours.palette.m3onSurfaceVariant
                 }
             }
         }
@@ -401,5 +344,6 @@ GridLayout {    id: root
     Behavior on Layout.preferredWidth {
         enabled: root.isHorizontal
 
-        Anim {}    }
+        Anim {}
+    }
 }

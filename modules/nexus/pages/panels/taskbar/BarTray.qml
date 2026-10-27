@@ -45,7 +45,8 @@ PageBase {
             checked: root.targetConfig.bar.tray.compact
             onToggled: {
                 root.targetConfig.bar.tray.compact = checked;
-            }        }
+            }
+        }
 
         ToggleRow {
             last: true
@@ -56,6 +57,7 @@ PageBase {
             checked: root.targetConfig.bar.popouts.tray
             onToggled: {
                 root.targetConfig.bar.popouts.tray = checked;
-            }        }
+            }
+        }
     }
 }

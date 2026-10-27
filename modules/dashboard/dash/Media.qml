@@ -198,5 +198,6 @@ Item {
         MediaShapes {
             anchors.fill: parent
             visible: Config.dashboard.useMediaShapes
-        }    }
+        }
+    }
 }

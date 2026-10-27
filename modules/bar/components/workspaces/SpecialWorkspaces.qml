@@ -1,65 +1,21 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtQuick.Layouts
 import Quickshell
 import Quickshell.Hyprland
-import Caelestia
-import Caelestia.Components
 import Caelestia.Config
 import qs.components
 import qs.components.effects
 import qs.services
+import qs.utils
 
 Item {
     id: root
 
-    required property HyprlandMonitor monitor
-
-    readonly property int activeSpecialId: monitor?.lastIpcObject.specialWorkspace?.id ?? 0
-    readonly property var wsIds: {
-        const allMonitors = !Config.bar.workspaces.perMonitor;
-        return Hypr.workspaces.values.filter(w => w.name.startsWith("special:") && (allMonitors || w.monitor === root.monitor)).map(w => w.id);
-    }
-    readonly property int activeIdx: wsIds.indexOf(activeSpecialId)
-    readonly property real maxViewY: Math.max(0, view.contentHeight - height)
-
-    readonly property Workspace activeWs: {
-        CUtils.dependency(view.itemsDirty);
-        return view.itemAtIndex(activeIdx) as Workspace;
-    }
-
-    function ensureVisible(animate = true): void {
-        if (!activeWs)
-            return;
-
-        const top = activeWs.LazyListView.layoutY;
-        const bottom = top + activeWs.LazyListView.preferredHeight;
-
-        let target = view.y;
-        if (top < -target)
-            target = -top;
-        else if (bottom > -target + height)
-            target = -(bottom - height);
-
-        target = CUtils.clamp(target, -maxViewY, 0);
-        if (target !== view.y) {
-            if (animate) {
-                const type = viewYAnim.type;
-                viewYAnim.type = Anim.DefaultSpatial;
-                view.y = target;
-                viewYAnim.type = type;
-            } else {
-                viewYBehavior.enabled = false;
-                view.y = target;
-                viewYBehavior.enabled = true;
-            }
-        }
-    }
-
-    onActiveWsChanged: ensureVisible()
-    onHeightChanged: ensureVisible(false)
-    Component.onCompleted: ensureVisible(false)
-    onMaxViewYChanged: ensureVisible()
+    required property ShellScreen screen
+    readonly property HyprlandMonitor monitor: Hypr.monitorFor(screen)
+    readonly property string activeSpecial: (GlobalConfig.bar.workspaces.perMonitorWorkspaces ? monitor : Hypr.focusedMonitor)?.lastIpcObject.specialWorkspace?.name ?? ""
 
     readonly property bool isHorizontal: Config.bar.position === "top" || Config.bar.position === "bottom"
 
@@ -68,18 +24,6 @@ Item {
     layer.enabled: true
     layer.effect: Mask {
         maskSource: mask
-    }
-
-    Connections {
-        function onLayoutYChanged(): void {
-            root.ensureVisible();
-        }
-
-        function onPreferredHeightChanged(): void {
-            root.ensureVisible();
-        }
-
-        target: root.activeWs?.LazyListView ?? null
     }
 
     Item {
@@ -101,11 +45,11 @@ Item {
                     color: Qt.rgba(0, 0, 0, 0)
                 }
                 GradientStop {
-                    position: 0.2
+                    position: 0.3
                     color: Qt.rgba(0, 0, 0, 1)
                 }
                 GradientStop {
-                    position: 0.8
+                    position: 0.7
                     color: Qt.rgba(0, 0, 0, 1)
                 }
                 GradientStop {
@@ -126,6 +70,7 @@ Item {
             implicitWidth: root.isHorizontal ? parent.width / 2 : 0
             implicitHeight: root.isHorizontal ? 0 : parent.height / 2
             opacity: root.isHorizontal ? (view.contentX > 0 ? 0 : 1) : (view.contentY > 0 ? 0 : 1)
+
             Behavior on opacity {
                 Anim {
                     type: Anim.DefaultEffects
@@ -143,6 +88,7 @@ Item {
             implicitWidth: root.isHorizontal ? parent.width / 2 : 0
             implicitHeight: root.isHorizontal ? 0 : parent.height / 2
             opacity: root.isHorizontal ? (view.contentX < view.contentWidth - parent.width + Tokens.padding.extraSmall ? 0 : 1) : (view.contentY < view.contentHeight - parent.height + Tokens.padding.extraSmall ? 0 : 1)
+
             Behavior on opacity {
                 Anim {
                     type: Anim.DefaultEffects
@@ -151,19 +97,20 @@ Item {
         }
     }
 
-    LazyListView {
+    ListView {
         id: view
 
-        anchors.left: parent.left
-        anchors.right: parent.right
-        implicitHeight: contentHeight
+        anchors.fill: parent
+        spacing: Tokens.spacing.medium
+        interactive: false
 
         orientation: root.isHorizontal ? ListView.Horizontal : ListView.Vertical
 
         currentIndex: model.values.findIndex(w => w.name === root.activeSpecial)
         onCurrentIndexChanged: currentIndex = Qt.binding(() => model.values.findIndex(w => w.name === root.activeSpecial))
+
         model: ScriptModel {
-            values: root.wsIds
+            values: Hypr.workspaces.values.filter(w => w.name.startsWith("special:") && (!GlobalConfig.bar.workspaces.perMonitorWorkspaces || w.monitor === root.monitor))
         }
 
         preferredHighlightBegin: 0
@@ -188,24 +135,60 @@ Item {
                 enabled: !root.isHorizontal
 
                 Anim {}
-            }        }
+            }
+        }
 
-        Behavior on y {
-            id: viewYBehavior
+        delegate: SpecialWsDelegate {}
 
+        add: Transition {
             Anim {
-                id: viewYAnim
+                properties: "scale"
+                from: 0
+                to: 1
+                easing: Tokens.anim.standardDecel
+            }
+        }
 
-                type: Anim.FastEffects
+        remove: Transition {
+            Anim {
+                property: "scale"
+                to: 0.5
+                type: Anim.StandardSmall
+            }
+            Anim {
+                property: "opacity"
+                to: 0
+                type: Anim.StandardSmall
+            }
+        }
+
+        move: Transition {
+            Anim {
+                properties: "scale"
+                to: 1
+                easing: Tokens.anim.standardDecel
+            }
+            Anim {
+                properties: "x,y"
+            }
+        }
+
+        displaced: Transition {
+            Anim {
+                properties: "scale"
+                to: 1
+                easing: Tokens.anim.standardDecel
+            }
+            Anim {
+                properties: "x,y"
             }
         }
     }
 
     Loader {
         asynchronous: true
-        anchors.left: view.left
-        anchors.right: view.right
         active: Config.bar.workspaces.activeIndicator
+        anchors.fill: parent
 
         sourceComponent: Item {
             StyledClippingRect {
@@ -269,12 +252,14 @@ Item {
                         type: Anim.Emphasized
                     }
                 }
-            }        }
+            }
+        }
     }
 
     MouseArea {
         property real startPos
-        anchors.fill: parent
+
+        anchors.fill: view
 
         drag.target: view.contentItem
 
@@ -499,7 +484,8 @@ Item {
                         text: Icons.getAppCategoryIcon(modelData.lastIpcObject.class, "terminal")
                         color: Colours.palette.m3onSurfaceVariant
                     }
-                }            }
+                }
+            }
         }
     }
 }

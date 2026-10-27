@@ -442,7 +442,8 @@ Searcher {
         path: Quickshell.env("HOME") + "/.local/share/Steam/steamapps/workshop/content/431960"
         filter: FileSystemModel.Files
         nameFilters: ["project.json"]
-        onEntriesChanged: root.updateCombinedList()    }
+        onEntriesChanged: root.updateCombinedList()
+    }
 
     Process {
         id: getPreviewColoursProc

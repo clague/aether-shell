@@ -76,7 +76,8 @@ PageBase {
             checked: root.targetConfig.bar.activeWindow.showOnHover
             onToggled: {
                 root.targetConfig.bar.activeWindow.showOnHover = checked;
-            }        }
+            }
+        }
 
         ToggleRow {
             last: true
@@ -87,6 +88,7 @@ PageBase {
             checked: root.targetConfig.bar.popouts.activeWindow
             onToggled: {
                 root.targetConfig.bar.popouts.activeWindow = checked;
-            }        }
+            }
+        }
     }
 }

@@ -1,7 +1,6 @@
 pragma ComponentBehavior: Bound
 
 import "popouts" as BarPopouts
-import qs.modules.bar.components
 import "components/workspaces"
 import QtQuick
 import QtQuick.Layouts
@@ -9,6 +8,8 @@ import Quickshell
 import Caelestia.Config
 import qs.components
 import qs.services
+import qs.modules.bar.components
+
 Item {
     id: root
 
@@ -49,7 +50,8 @@ Item {
                 const tray = wrapper.item as Tray;
                 if (tray)
                     tray.expanded = false;
-            }        }
+            }
+        }
     }
 
     function sectionIdFor(wrapper: EntryWrapper): string {

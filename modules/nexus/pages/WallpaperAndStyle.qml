@@ -58,6 +58,7 @@ PageBase {
     }
 
     title: Tr.tr("Wallpaper & style")
+
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
@@ -181,7 +182,8 @@ PageBase {
                             wallIndicatorLoader.opacity = 0;
                         }
                     }
-                }            }
+                }
+            }
 
             IconTextButton {
                 anchors.bottom: parent.bottom
@@ -304,7 +306,8 @@ PageBase {
             menuOnTop: true
             menuItems: root.hwDecoderItems
             active: root.hwDecoderItems[root.hwDecoderToIndex(WallpaperPauser.hwDecoder)]
-            onSelected: item => WallpaperPauser.hwDecoder = root.hwDecoderValues[root.hwDecoderItems.indexOf(item)]        }
+            onSelected: item => WallpaperPauser.hwDecoder = root.hwDecoderValues[root.hwDecoderItems.indexOf(item)]
+        }
 
         ToggleRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing

@@ -2,7 +2,9 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Caelestia.Config
-import qs.components.controlsimport qs.services
+import Caelestia.I18n
+import qs.components.controls
+import qs.services
 import qs.modules.launcher.services
 import qs.modules.nexus.common
 
@@ -48,7 +50,8 @@ PageBase {
         }
     ]
 
-    title: Tr.tr("Colours")    isSubPage: true
+    title: Tr.tr("Colours")
+    isSubPage: true
 
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
@@ -82,7 +85,8 @@ PageBase {
                 text: modelData.label
                 onClicked: {
                     Quickshell.execDetached(["caelestia", "scheme", "set", "-v", modelData.name]);
-                }            }
+                }
+            }
         }
 
         SectionHeader {

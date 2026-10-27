@@ -5,7 +5,9 @@ import QtQuick.Layouts
 import Quickshell
 import Caelestia.Components
 import Caelestia.Config
-import Caelestia.Imagesimport Caelestia.Models
+import Caelestia.I18n
+import Caelestia.Images
+import Caelestia.Models
 import qs.components
 import qs.components.controls
 import qs.components.filedialog
@@ -63,7 +65,8 @@ PageBase {
         root.sortVersion++;
     }
 
-    title: Tr.tr("Select wallpaper")    isSubPage: true
+    title: Tr.tr("Select wallpaper")
+    isSubPage: true
 
     onSortColorChanged: {
         if (sortColor === "transparent") {
@@ -429,7 +432,8 @@ PageBase {
                 active: {
                     const f = root.nState ? root.nState.wallpaperFilterType : "all";
                     return menuItems.find(m => m.filterValue === f) ?? menuItems[0];
-                }            }
+                }
+            }
         }
 
         StyledText {

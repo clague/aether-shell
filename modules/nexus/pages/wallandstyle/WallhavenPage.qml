@@ -1,4 +1,5 @@
 import QtQuick
+import Caelestia.I18n
 import qs.modules.dashboard
 import qs.modules.nexus.common
 

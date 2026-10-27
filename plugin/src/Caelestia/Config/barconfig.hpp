@@ -54,16 +54,15 @@ class BarWorkspaces : public settings::ObjectNode {
     CONFIG_PROPERTY(QString, occupiedLabel, u" 󰮯"_s)
     CONFIG_PROPERTY(QString, activeLabel, u" 󰮯"_s)
     CONFIG_PROPERTY(QString, capitalisation, u"preserve"_s)
-    CONFIG_GLOBAL_PROPERTY(QVariantList, specialWorkspaceIcons, {})    CONFIG_GLOBAL_PROPERTY(QStringList, ignoredTags,
+    CONFIG_GLOBAL_PROPERTY(QVariantList, specialWorkspaceIcons, {})
+    CONFIG_GLOBAL_PROPERTY(QStringList, ignoredTags,
         DEFAULT_ARG({
             u"hide_in_bar"_s,
             u"xwl_popup"_s,
-        }))
-    CONFIG_GLOBAL_LIST(IconRuleList, windowIcons,
+        })) CONFIG_GLOBAL_LIST(IconRuleList, windowIcons,
         DEFAULT_ARG({
             ICON_RULE_REGEX("steam(_app_(default|[0-9]+))?", "sports_esports"),
-        }))
-    CONFIG_GLOBAL_PROPERTY(QVariantList, wsIcons, {})
+        })) CONFIG_GLOBAL_PROPERTY(QVariantList, wsIcons, {})
 };
 
 class BarActiveWindow : public settings::ObjectNode {

@@ -4,7 +4,9 @@ import QtQuick
 import QtQuick.Layouts
 import M3Shapes
 import Caelestia.Config
-import qs.components.controlsimport qs.modules.nexus.common
+import Caelestia.I18n
+import qs.components.controls
+import qs.modules.nexus.common
 
 PageBase {
     id: root
@@ -135,7 +137,8 @@ PageBase {
         }
     ]
 
-    title: Tr.tr("Dashboard")    isSubPage: true
+    title: Tr.tr("Dashboard")
+    isSubPage: true
 
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
@@ -212,7 +215,8 @@ PageBase {
             menuItems: root.lockShapeItems
             onSelected: item => {
                 root.targetConfig.lock.profilePicShape = item.value; // qmllint disable missing-property
-            }        }
+            }
+        }
 
         ToggleRow {
             last: true
@@ -351,7 +355,8 @@ PageBase {
             checked: root.targetConfig.dashboard.syncMediaShapesToBeat
             onToggled: {
                 root.targetConfig.dashboard.syncMediaShapesToBeat = checked;
-            }        }
+            }
+        }
 
         ToggleRow {
             last: true
@@ -382,7 +387,8 @@ PageBase {
             checked: root.targetConfig.dashboard.showWeatherLocation !== false
             onToggled: {
                 root.targetConfig.dashboard.showWeatherLocation = checked;
-            }        }
+            }
+        }
 
         // Performance widgets
         SectionHeader {
@@ -437,7 +443,8 @@ PageBase {
             checked: root.targetConfig.dashboard.performance.showStorage
             onToggled: {
                 root.targetConfig.dashboard.performance.showStorage = checked;
-            }        }
+            }
+        }
 
         ToggleRow {
             last: true
@@ -447,7 +454,8 @@ PageBase {
             checked: root.targetConfig.dashboard.performance.showNetwork
             onToggled: {
                 root.targetConfig.dashboard.performance.showNetwork = checked;
-            }        }
+            }
+        }
 
         // Behaviour
         SectionHeader {
@@ -461,7 +469,8 @@ PageBase {
             subtext: Tr.tr("Pixels dragged before the dashboard opens")
             configNode: root.targetConfig.dashboard
             propertyName: "dragThreshold"
-            value: root.targetConfig.dashboard.dragThreshold            from: 0
+            value: root.targetConfig.dashboard.dragThreshold
+            from: 0
             to: 200
             stepSize: 5
             onMoved: v => {

@@ -57,7 +57,8 @@ PageBase {
             label: Tr.tr("Show in fullscreen")
             subtext: Tr.tr("Whether notifications appear over fullscreen apps")
             configNode: root.targetConfig.notifs
-            propertyName: "fullscreen"            menuItems: root.notifFullscreenItems
+            propertyName: "fullscreen"
+            menuItems: root.notifFullscreenItems
             active: root.notifFullscreenItems[root.targetConfig.notifs.fullscreen]
             onSelected: item => {
                 root.targetConfig.notifs.fullscreen = root.notifFullscreenItems.indexOf(item);
@@ -91,7 +92,8 @@ PageBase {
             subtext: Tr.tr("Time before a notification dismisses (ms)")
             configNode: root.targetConfig.notifs
             propertyName: "defaultExpireTimeout"
-            value: root.targetConfig.notifs.defaultExpireTimeout            from: 1000
+            value: root.targetConfig.notifs.defaultExpireTimeout
+            from: 1000
             to: 60000
             stepSize: 500
             onMoved: v => {
@@ -105,7 +107,8 @@ PageBase {
             subtext: Tr.tr("Notifications shown per group before collapsing")
             configNode: root.targetConfig.notifs
             propertyName: "groupPreviewNum"
-            value: root.targetConfig.notifs.groupPreviewNum            from: 1
+            value: root.targetConfig.notifs.groupPreviewNum
+            from: 1
             to: 10
             stepSize: 1
             onMoved: v => {
@@ -123,7 +126,8 @@ PageBase {
             label: Tr.tr("Show in fullscreen")
             subtext: Tr.tr("Whether toasts appear over fullscreen apps")
             configNode: root.targetConfig.utilities.toasts
-            propertyName: "fullscreen"            menuItems: root.toastFullscreenItems
+            propertyName: "fullscreen"
+            menuItems: root.toastFullscreenItems
             active: root.toastFullscreenItems[Math.max(0, root.toastFullscreenValues.indexOf(root.targetConfig.utilities.toasts.fullscreen))]
             onSelected: item => {
                 root.targetConfig.utilities.toasts.fullscreen = root.toastFullscreenValues[root.toastFullscreenItems.indexOf(item)];
@@ -135,7 +139,8 @@ PageBase {
             subtext: Tr.tr("Maximum number of toasts shown at once")
             configNode: root.targetConfig.utilities
             propertyName: "maxToasts"
-            value: root.targetConfig.utilities.maxToasts            from: 1
+            value: root.targetConfig.utilities.maxToasts
+            from: 1
             to: 10
             stepSize: 1
             onMoved: v => {
@@ -260,7 +265,8 @@ PageBase {
             checked: root.targetConfig.utilities.toasts.vpnChanged
             onToggled: {
                 root.targetConfig.utilities.toasts.vpnChanged = checked;
-            }        }
+            }
+        }
 
         ToggleRow {
             last: true
@@ -270,6 +276,7 @@ PageBase {
             checked: root.targetConfig.utilities.toasts.nowPlaying
             onToggled: {
                 root.targetConfig.utilities.toasts.nowPlaying = checked;
-            }        }
+            }
+        }
     }
 }

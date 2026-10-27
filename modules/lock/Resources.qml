@@ -201,10 +201,10 @@ StyledRect {
                         Quickshell.execDetached(["sh", "-c", command.join(" ")]);
                     } else {
                         Quickshell.execDetached(command);
-                    }                }
+                    }
+                }
             }
         }
-    }
 
         Layout.fillWidth: true
         Layout.preferredHeight: width

@@ -3,8 +3,10 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Caelestia.Config
+import Caelestia.I18n
 import qs.components
-import qs.components.controlsimport qs.services
+import qs.components.controls
+import qs.services
 import qs.utils
 import qs.modules.nexus.common
 
@@ -24,6 +26,7 @@ PageBase {
     }
 
     title: Tr.tr("Audio")
+
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top

@@ -90,7 +90,8 @@ QtObject {
             category: "shell"
         },
         {
-            label: Tr.tr("Services"),            icon: "build",
+            label: Tr.tr("Services"),
+            icon: "build",
             description: Tr.tr("Poll intervals, lyrics backend"),
             category: "shell"
         },

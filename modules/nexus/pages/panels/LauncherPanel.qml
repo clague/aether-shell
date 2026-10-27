@@ -43,7 +43,8 @@ PageBase {
             checked: root.targetConfig.launcher.showOnHover
             onToggled: {
                 root.targetConfig.launcher.showOnHover = checked;
-            }        }
+            }
+        }
 
         TextFieldRow {
             id: prefixRow
@@ -54,7 +55,8 @@ PageBase {
             configNode: root.targetConfig.launcher
             propertyName: "actionPrefix"
             errorText: Tr.tr("Prefix must not be alphanumeric")
-            value: root.targetConfig.launcher.actionPrefix === ">" ? "" : root.targetConfig.launcher.actionPrefix            placeholderText: ">"
+            value: root.targetConfig.launcher.actionPrefix === ">" ? "" : root.targetConfig.launcher.actionPrefix
+            placeholderText: ">"
             maximumLength: 1
             smallField: true
             validate: /^[^a-zA-Z0-9\s]$/
@@ -77,7 +79,8 @@ PageBase {
             label: Tr.tr("Max items shown")
             configNode: root.targetConfig.launcher
             propertyName: "maxShown"
-            value: root.targetConfig.launcher.maxShown            from: 1
+            value: root.targetConfig.launcher.maxShown
+            from: 1
             to: 20
             stepSize: 1
             onMoved: v => {
@@ -89,7 +92,8 @@ PageBase {
             label: Tr.tr("Max wallpapers")
             configNode: root.targetConfig.launcher
             propertyName: "maxWallpapers"
-            value: root.targetConfig.launcher.maxWallpapers            from: 1
+            value: root.targetConfig.launcher.maxWallpapers
+            from: 1
             to: 30
             stepSize: 1
             onMoved: v => {
@@ -103,7 +107,8 @@ PageBase {
             subtext: Tr.tr("Pixels dragged before the launcher opens")
             configNode: root.targetConfig.launcher
             propertyName: "dragThreshold"
-            value: root.targetConfig.launcher.dragThreshold            from: 0
+            value: root.targetConfig.launcher.dragThreshold
+            from: 0
             to: 200
             stepSize: 5
             onMoved: v => {
@@ -125,7 +130,8 @@ PageBase {
             checked: root.targetConfig.launcher.vimKeybinds
             onToggled: {
                 root.targetConfig.launcher.vimKeybinds = checked;
-            }        }
+            }
+        }
 
         ToggleRow {
             last: true
@@ -136,7 +142,8 @@ PageBase {
             checked: root.targetConfig.launcher.enableDangerousActions
             onToggled: {
                 root.targetConfig.launcher.enableDangerousActions = checked;
-            }        }
+            }
+        }
 
         // Fuzzy search
         SectionHeader {
@@ -181,7 +188,8 @@ PageBase {
             checked: root.targetConfig.launcher.useFuzzy.variants
             onToggled: {
                 root.targetConfig.launcher.useFuzzy.variants = checked;
-            }        }
+            }
+        }
 
         ToggleRow {
             last: true
@@ -191,6 +199,7 @@ PageBase {
             checked: root.targetConfig.launcher.useFuzzy.wallpapers
             onToggled: {
                 root.targetConfig.launcher.useFuzzy.wallpapers = checked;
-            }        }
+            }
+        }
     }
 }

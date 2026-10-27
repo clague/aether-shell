@@ -7,7 +7,7 @@
 
 #include "beattracker.hpp"
 
-using caelestia::services::BeatTracker;
+using caelestia::shell::services::BeatTracker;
 
 // m_processor is protected; this is the only way to reach it from outside.
 class Probe : public BeatTracker {

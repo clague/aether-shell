@@ -23,7 +23,8 @@ PageBase {
             subtext: Tr.tr("Number of workspaces displayed")
             configNode: root.targetConfig.bar.workspaces
             propertyName: "shown"
-            value: root.targetConfig.bar.workspaces.shown            from: 1
+            value: root.targetConfig.bar.workspaces.shown
+            from: 1
             to: 20
             stepSize: 1
             onMoved: v => {
@@ -98,7 +99,8 @@ PageBase {
             label: Tr.tr("Max window icons")
             configNode: root.targetConfig.bar.workspaces
             propertyName: "maxWindowIcons"
-            value: root.targetConfig.bar.workspaces.maxWindowIcons            from: 0
+            value: root.targetConfig.bar.workspaces.maxWindowIcons
+            from: 0
             to: 20
             stepSize: 1
             onMoved: v => {
@@ -116,5 +118,6 @@ PageBase {
             onToggled: {
                 root.targetConfig.bar.workspaces.perMonitorWorkspaces = checked;
             }
-        }    }
+        }
+    }
 }

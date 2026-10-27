@@ -53,7 +53,8 @@ PageBase {
             checked: root.targetConfig.utilities.enabled
             onToggled: {
                 root.targetConfig.utilities.enabled = checked;
-            }        }
+            }
+        }
 
         // Cards
         SectionHeader {
@@ -80,7 +81,8 @@ PageBase {
             checked: root.targetConfig.utilities.cards.recorder
             onToggled: {
                 root.targetConfig.utilities.cards.recorder = checked;
-            }        }
+            }
+        }
 
         ToggleRow {
             last: true
@@ -91,7 +93,8 @@ PageBase {
             checked: root.targetConfig.utilities.cards.quickToggles
             onToggled: {
                 root.targetConfig.utilities.cards.quickToggles = checked;
-            }        }
+            }
+        }
 
         // Quick toggles
         SectionHeader {
@@ -149,7 +152,8 @@ PageBase {
 
         ToggleRow {
             text: Tr.tr("VPN")
-            subtext: Tr.tr("Connect or disconnect the VPN")            disabled: !Config.utilities.cards.quickToggles
+            subtext: Tr.tr("Connect or disconnect the VPN")
+            disabled: !Config.utilities.cards.quickToggles
             checked: root.isToggleOn("vpn")
             onToggled: root.setToggleOn("vpn", checked)
         }

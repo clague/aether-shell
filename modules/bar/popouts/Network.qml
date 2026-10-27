@@ -28,7 +28,8 @@ ColumnLayout {
         Layout.topMargin: Tokens.padding.medium
         Layout.leftMargin: Tokens.padding.small
         text: Tr.tr("Network")
-        font.weight: 500    }
+        font.weight: 500
+    }
 
     StyledRect {
         Layout.fillWidth: true
@@ -81,7 +82,8 @@ ColumnLayout {
                         if (a.active !== b.active)
                             return b.active - a.active;
                         return b.strength - a.strength;
-                    }).slice(0, 8)                }
+                    }).slice(0, 8)
+                }
 
                 RowLayout {
                     id: networkItem

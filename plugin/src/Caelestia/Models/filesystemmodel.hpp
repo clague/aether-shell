@@ -82,7 +82,8 @@ public:
         Images = 0x1,
         Videos = 0x2,
         Files = 0x4,
-        Dirs = 0x8,    };
+        Dirs = 0x8,
+    };
     Q_DECLARE_FLAGS(Filters, Filter)
     Q_FLAG(Filters)
 

@@ -166,7 +166,8 @@ PageBase {
             active: root.tempItems[root.targetConfig.services.useFahrenheit ? 1 : 0]
             onSelected: item => {
                 root.targetConfig.services.useFahrenheit = root.tempItems.indexOf(item) === 1;
-            }        }
+            }
+        }
 
         SelectRow {
             last: true
@@ -178,7 +179,8 @@ PageBase {
             active: root.tempItems[root.targetConfig.services.useFahrenheitPerformance ? 1 : 0]
             onSelected: item => {
                 root.targetConfig.services.useFahrenheitPerformance = root.tempItems.indexOf(item) === 1;
-            }        }
+            }
+        }
 
         // Time & date
         SectionHeader {
@@ -196,6 +198,7 @@ PageBase {
             active: root.clockItems[root.targetConfig.services.useTwelveHourClock ? 1 : 0]
             onSelected: item => {
                 root.targetConfig.services.useTwelveHourClock = root.clockItems.indexOf(item) === 1;
-            }        }
+            }
+        }
     }
 }

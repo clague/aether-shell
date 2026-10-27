@@ -7,13 +7,15 @@ import Caelestia
 import Caelestia.Config
 import Caelestia.I18n
 import qs.components
-import qs.components.imagesimport qs.services
+import qs.components.images
+import qs.services
 
 Item {
     id: root
 
     property string source: Wallpapers.current
-    property Item current: null    property bool completed
+    property Item current: null
+    property bool completed
     property string settledSource: ""
     property var screen: null
     property bool weActive: false
@@ -449,5 +451,6 @@ Item {
             to: img.maxRadius
             type: Anim.Emphasized
             duration: 2500
-        }    }
+        }
+    }
 }

@@ -421,7 +421,8 @@ Item {
                     if (root.state === "animations")
                         return Tr.tr("No animations found");
                     return Tr.tr("No results");
-                }                color: Colours.palette.m3onSurfaceVariant
+                }
+                color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.body.builders.large.weight(Font.Medium).build()
             }
 
@@ -434,7 +435,8 @@ Item {
                     if (root.state === "animations")
                         return Tr.tr("Try adding .lua files to\n~/.config/caelestia/animations/");
                     return Tr.tr("Try searching for something else");
-                }                color: Colours.palette.m3onSurfaceVariant
+                }
+                color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.body.medium
             }
         }

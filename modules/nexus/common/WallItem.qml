@@ -96,7 +96,8 @@ Item {
                     Anim {
                         type: Anim.SlowEffects
                     }
-                }            }
+                }
+            }
         }
 
         StyledText {

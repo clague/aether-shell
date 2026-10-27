@@ -41,7 +41,8 @@ ColumnLayout {
 
             width: parent.width - Tokens.padding.medium * 2
             x: Tokens.padding.medium
-            y: Tokens.padding.medium            spacing: Tokens.spacing.small
+            y: Tokens.padding.medium
+            spacing: Tokens.spacing.small
 
             Toggle {
                 label: Tr.trCtx("Enabled", "toggle label")
@@ -85,6 +86,7 @@ ColumnLayout {
 
                 RowLayout {
                     id: device
+
                     required property BluetoothDevice modelData
                     readonly property bool loading: modelData.state === BluetoothDeviceState.Connecting || modelData.state === BluetoothDeviceState.Disconnecting // qmllint disable unresolved-type
 
@@ -205,7 +207,8 @@ ColumnLayout {
         inactiveColour: Colours.palette.m3primaryContainer
         inactiveOnColour: Colours.palette.m3onPrimaryContainer
         verticalPadding: Tokens.padding.small
-        text: Tr.tr("Open settings")        icon: "settings"
+        text: Tr.tr("Open settings")
+        icon: "settings"
 
         onClicked: root.popouts.detachRequested("bluetooth")
     }

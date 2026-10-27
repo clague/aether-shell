@@ -31,7 +31,8 @@ PageBase {
             checked: root.targetConfig.sidebar.enabled
             onToggled: {
                 root.targetConfig.sidebar.enabled = checked;
-            }        }
+            }
+        }
 
         ToggleRow {
             text: Tr.tr("Show on hover")
@@ -48,7 +49,8 @@ PageBase {
             subtext: Tr.tr("Pixels dragged before the sidebar opens")
             configNode: root.targetConfig.sidebar
             propertyName: "dragThreshold"
-            value: root.targetConfig.sidebar.dragThreshold            from: 0
+            value: root.targetConfig.sidebar.dragThreshold
+            from: 0
             to: 200
             stepSize: 5
             onMoved: v => {

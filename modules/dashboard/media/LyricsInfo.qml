@@ -198,7 +198,8 @@ Item {
                         icon: "add"
                         type: IconButton.Text
                         onClicked: Lyrics.offset += 100
-                    }                }
+                    }
+                }
             }
 
             Item {

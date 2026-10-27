@@ -1,3 +1,5 @@
+pragma Singleton
+
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
@@ -71,7 +73,8 @@ Scope {
             } else {
                 Hypr.extras.batchMessage([`keyword windowrulev2 opaque, class:.*`]);
             }
-        }    }
+        }
+    }
 
     function syncState(enableDisable: bool): void {
         if (RuntimeState.gameMode) {
@@ -106,6 +109,8 @@ Scope {
 
     PersistentProperties {
         id: props
+    }
+
     Connections {
         function onGameModeChanged(): void {
             root.syncState(true);

@@ -55,7 +55,9 @@ AUTOGEN_INCLUDES=()
 while IFS= read -r d; do AUTOGEN_INCLUDES+=(-I"$d"); done < <(find "$AUTOGEN_ROOT" -type d)
 
 QTFLAGS=$(pkg-config --cflags --libs Qt6Core Qt6Qml)
-COMMON=(-std=c++20 -O1 -mno-direct-extern-access -w -fPIC -I"$SVC" -I"$ROOT/plugin/src"
+# plugin/include is where upstream now parks util headers (i18n, ringbuffer), next to
+# plugin/src. Both are include paths for the standalone test compilation.
+COMMON=(-std=c++20 -O1 -mno-direct-extern-access -w -fPIC -I"$SVC" -I"$ROOT/plugin/src" -I"$ROOT/plugin/include"
         "${AUTOGEN_INCLUDES[@]}")
 
 # name : extra sources : extra pkg-config packages

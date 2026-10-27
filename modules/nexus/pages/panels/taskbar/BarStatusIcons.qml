@@ -3,8 +3,10 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Caelestia.Config
+import Caelestia.I18n
 import qs.components
-import qs.servicesimport qs.modules.nexus.common
+import qs.services
+import qs.modules.nexus.common
 
 PageBase {
     id: root
@@ -18,7 +20,8 @@ PageBase {
             bluetooth: Tr.tr("Bluetooth"),
             battery: Tr.tr("Battery"),
             peripheralBattery: Tr.tr("Peripheral battery"),
-            notifications: Tr.tr("Notifications")        })
+            notifications: Tr.tr("Notifications")
+        })
 
     title: Tr.tr("Status icons")
     isSubPage: true
@@ -48,7 +51,8 @@ PageBase {
 
             Item {
                 Layout.fillWidth: true
-            }        }
+            }
+        }
 
         ListEditor {
             function labelFor(item: var): string {
@@ -120,6 +124,7 @@ PageBase {
             checked: root.targetConfig.bar.popouts.statusIcons
             onToggled: {
                 root.targetConfig.bar.popouts.statusIcons = checked;
-            }        }
+            }
+        }
     }
 }

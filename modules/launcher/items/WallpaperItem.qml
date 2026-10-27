@@ -1,7 +1,8 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import Caelestiaimport Caelestia.Config
+import Caelestia
+import Caelestia.Config
 import Caelestia.Models
 import Caelestia.Multimedia
 import Caelestia.State
@@ -99,7 +100,8 @@ Item {
                         thumbGenerator.running = true;
                     }
                 }
-            }        }
+            }
+        }
     }
 
     StyledText {

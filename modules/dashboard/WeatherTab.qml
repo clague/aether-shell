@@ -31,14 +31,16 @@ Item {
 
                 StyledText {
                     visible: Config.dashboard.showWeatherLocation !== false
-                    text: Weather.city || Tr.tr("Loading...")                    font: Tokens.font.body.builders.large.size(28).weight(Font.DemiBold).build()
+                    text: Weather.city || Tr.tr("Loading...")
+                    font: Tokens.font.body.builders.large.size(28).weight(Font.DemiBold).build()
                     color: Colours.palette.m3onSurface
                 }
 
                 StyledText {
                     text: new Date().toLocaleDateString(Qt.locale(), "dddd, MMMM d")
                     font: Config.dashboard.showWeatherLocation !== false ? Tokens.font.body.small : Tokens.font.body.builders.large.size(28).weight(Font.DemiBold).build()
-                    color: Config.dashboard.showWeatherLocation !== false ? Colours.palette.m3onSurfaceVariant : Colours.palette.m3onSurface                }
+                    color: Config.dashboard.showWeatherLocation !== false ? Colours.palette.m3onSurfaceVariant : Colours.palette.m3onSurface
+                }
             }
 
             Item {

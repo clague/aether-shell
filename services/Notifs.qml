@@ -61,15 +61,8 @@ Singleton {
         return notif;
     }
 
-    onDndChanged: {
-        if (!GlobalConfig.utilities.toasts.dndChanged)
-            return;
+    readonly property bool dnd: PersistentState.doNotDisturb
 
-        if (dnd)
-            Toaster.toast(qsTr("Do not disturb enabled"), qsTr("Popup notifications are now disabled"), "do_not_disturb_on");
-        else
-            Toaster.toast(qsTr("Do not disturb disabled"), qsTr("Popup notifications are now enabled"), "do_not_disturb_off");
-    }
     onListChanged: {
         if (loaded)
             saveTimer.restart();
@@ -129,7 +122,7 @@ Singleton {
             });
             root.list = [comp, ...root.list];
 
-            if (!props.dnd && notif.appName !== "caelestia-cli" && !GlobalConfig.audio.sounds.disabledNotifApps.includes(notif.appName))
+            if (!PersistentState.doNotDisturb && notif.appName !== "caelestia-cli" && !GlobalConfig.audio.sounds.disabledNotifApps.includes(notif.appName))
                 Audio.playNotification();
         }
     }

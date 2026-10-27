@@ -68,6 +68,7 @@ Singleton {
             contentItem.Tokens.screen: screen.name
 
             title: Tr.tr("Nexus — %1").arg(PageRegistry.pages[nexus.nState.currentPageIdx]?.label ?? "")
+
             Nexus {
                 id: nexus
 

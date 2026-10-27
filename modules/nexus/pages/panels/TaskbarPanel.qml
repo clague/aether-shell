@@ -2,7 +2,9 @@ pragma ComponentBehavior: Bound
 
 import QtQuick.Layouts
 import Caelestia.Config
-import qs.components.controlsimport qs.modules.nexus.common
+import Caelestia.I18n
+import qs.components.controls
+import qs.modules.nexus.common
 
 PageBase {
     id: root
@@ -30,7 +32,8 @@ PageBase {
         }
     ]
 
-    title: Tr.tr("Taskbar")    isSubPage: true
+    title: Tr.tr("Taskbar")
+    isSubPage: true
 
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
@@ -83,7 +86,8 @@ PageBase {
             checked: root.targetConfig.bar.showOnHover
             onToggled: {
                 root.targetConfig.bar.showOnHover = checked;
-            }        }
+            }
+        }
 
         StepperRow {
             last: true
@@ -91,7 +95,8 @@ PageBase {
             subtext: Tr.tr("Pixels dragged before the bar reveals")
             configNode: root.targetConfig.bar
             propertyName: "dragThreshold"
-            value: root.targetConfig.bar.dragThreshold            from: 0
+            value: root.targetConfig.bar.dragThreshold
+            from: 0
             to: 200
             stepSize: 5
             onMoved: v => {
@@ -116,7 +121,8 @@ PageBase {
             icon: "workspaces"
             text: Tr.tr("Workspaces")
             subtext: Tr.tr("Indicators, window icons")
-            onClicked: root.nState.openSubPage(7)        }
+            onClicked: root.nState.openSubPage(7)
+        }
 
         NavRow {
             icon: "web_asset"
@@ -129,13 +135,15 @@ PageBase {
             icon: "dock"
             text: Tr.tr("Dock")
             subtext: Tr.tr("Positioning, recoloring")
-            onClicked: root.nState.openSubPage(12)        }
+            onClicked: root.nState.openSubPage(12)
+        }
 
         NavRow {
             icon: "widgets"
             text: Tr.tr("Tray")
             subtext: Tr.tr("System tray icons")
-            onClicked: root.nState.openSubPage(9)        }
+            onClicked: root.nState.openSubPage(9)
+        }
 
         NavRow {
             icon: "signal_cellular_alt"
@@ -155,14 +163,16 @@ PageBase {
             icon: "code"
             text: Tr.tr("GitHub")
             subtext: Tr.tr("Contributions, token setup")
-            onClicked: root.nState.openSubPage(13)        }
+            onClicked: root.nState.openSubPage(13)
+        }
 
         NavRow {
             last: true
             icon: "music_note"
             text: Tr.tr("Spotify")
             subtext: Tr.tr("Visualizer, title length, background")
-            onClicked: root.nState.openSubPage(14)        }
+            onClicked: root.nState.openSubPage(14)
+        }
 
         // Scroll actions
         SectionHeader {

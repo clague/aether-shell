@@ -44,7 +44,8 @@ MouseArea {
         // Hyprland. The `!mon` check above does not cover that.
         const special = mon.lastIpcObject?.specialWorkspace;
         const wsId = special?.name ? special.id : mon.activeWorkspace?.id;
-        if (wsId === undefined || wsId === null)            return [];
+        if (wsId === undefined || wsId === null)
+            return [];
 
         return Hypr.toplevelsForWs(wsId).sort((a, b) => {
             // Pinned first, then fullscreen, then floating, then any other
@@ -89,7 +90,8 @@ MouseArea {
             if (isSearch) {
                 Quickshell.execDetached(["touch", "/tmp/caelestia-search.done"]);
             } else if (root.loader.clipboardOnly) {
-                Quickshell.execDetached(["caelestia", "screenshot", "--copy", "--file", path]);            } else {
+                Quickshell.execDetached(["caelestia", "screenshot", "--copy", "--file", path]);
+            } else {
                 Quickshell.execDetached(["caelestia", "screenshot", "--file", path]);
             }
             Audio.playCameraClick();

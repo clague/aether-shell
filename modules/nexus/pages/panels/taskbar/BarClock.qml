@@ -46,7 +46,8 @@ PageBase {
             checked: root.targetConfig.bar.clock.showIcon
             onToggled: {
                 root.targetConfig.bar.clock.showIcon = checked;
-            }        }
+            }
+        }
 
         ToggleRow {
             last: true

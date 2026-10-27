@@ -19,6 +19,7 @@ ColumnLayout {
 
     implicitWidth: Math.max(300, _isSidebarOpen ? Tokens.sizes.sidebar.width - Tokens.padding.extraLargeIncreased : 0)
     spacing: Tokens.spacing.medium
+
     ButtonGroup {
         id: sinks
     }
@@ -44,6 +45,7 @@ ColumnLayout {
 
         ColumnLayout {
             id: outputLayout
+
             width: parent.width - Tokens.padding.medium * 2
             x: Tokens.padding.medium
             y: Tokens.padding.medium
@@ -51,7 +53,8 @@ ColumnLayout {
 
             StyledText {
                 text: Tr.trCtx("Output device", "audio output device")
-                font: Tokens.font.body.builders.medium.weight(Font.Medium).build()            }
+                font: Tokens.font.body.builders.medium.weight(Font.Medium).build()
+            }
 
             Repeater {
                 model: Audio.sinks
@@ -77,6 +80,7 @@ ColumnLayout {
         radius: Tokens.rounding.medium
         color: Colours.tPalette.m3surfaceContainer
         clip: true
+
         ColumnLayout {
             id: inputLayout
 
