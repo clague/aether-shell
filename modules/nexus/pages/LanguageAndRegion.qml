@@ -160,26 +160,18 @@ PageBase {
             first: true
             label: Tr.tr("Temperature")
             subtext: Tr.tr("Units for weather temperatures")
-            configNode: root.targetConfig.services
-            propertyName: "useFahrenheit"
             menuItems: root.tempItems
-            active: root.tempItems[root.targetConfig.services.useFahrenheit ? 1 : 0]
-            onSelected: item => {
-                root.targetConfig.services.useFahrenheit = root.tempItems.indexOf(item) === 1;
-            }
+            active: root.tempItems.find(i => i.value === GlobalConfig.services.weatherUnits)
+            onSelected: item => GlobalConfig.services.weatherUnits = item.value
         }
 
         SelectRow {
             last: true
             label: Tr.tr("System temperatures")
             subtext: Tr.tr("Units for CPU and GPU temperatures")
-            configNode: root.targetConfig.services
-            propertyName: "useFahrenheitPerformance"
             menuItems: root.tempItems
-            active: root.tempItems[root.targetConfig.services.useFahrenheitPerformance ? 1 : 0]
-            onSelected: item => {
-                root.targetConfig.services.useFahrenheitPerformance = root.tempItems.indexOf(item) === 1;
-            }
+            active: root.tempItems.find(i => i.value === GlobalConfig.services.sensorUnits)
+            onSelected: item => GlobalConfig.services.sensorUnits = item.value
         }
 
         // Time & date
@@ -192,13 +184,9 @@ PageBase {
             last: true
             label: Tr.tr("Clock format")
             subtext: Tr.tr("How times are shown across the shell")
-            configNode: root.targetConfig.services
-            propertyName: "useTwelveHourClock"
             menuItems: root.clockItems
-            active: root.clockItems[root.targetConfig.services.useTwelveHourClock ? 1 : 0]
-            onSelected: item => {
-                root.targetConfig.services.useTwelveHourClock = root.clockItems.indexOf(item) === 1;
-            }
+            active: root.clockItems.find(i => i.value === GlobalConfig.services.clockFormat)
+            onSelected: item => GlobalConfig.services.clockFormat = item.value
         }
     }
 }
