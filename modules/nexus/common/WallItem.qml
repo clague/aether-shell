@@ -2,8 +2,8 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 import Caelestia.Config
-import Caelestia.Multimedia
 import qs.components
 import qs.components.controls
 import qs.services
@@ -40,7 +40,9 @@ Item {
             Loader {
                 anchors.centerIn: parent
 
-                opacity: img.ready ? 0 : 1
+                // ours' plain Image matches DiskStore + thumbnail-rendered models; it has no
+                // forwarding "ready" property of its own, so status drives it.
+                opacity: img.status === Image.Ready ? 0 : 1
                 active: opacity > 0
 
                 sourceComponent: StyledRect {
@@ -66,7 +68,10 @@ Item {
                 }
             }
 
-            Visual {
+            // Keep ours' plain Image rather than upstream's Visual: the MiDnight
+            // wallpaper engine owns the thumbnails this block renders (T7 swap
+            // will re-point it when the C++ engine lands).
+            Image {
                 id: img
 
                 anchors.fill: parent

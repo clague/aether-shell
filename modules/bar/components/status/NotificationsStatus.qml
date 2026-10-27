@@ -27,7 +27,7 @@ MaterialIcon {
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         onClicked: mouse => {
             if (mouse.button === Qt.RightButton) {
-                Notifs.dnd = !Notifs.dnd;
+                Notifs.setDnd(!Notifs.dnd);
             } else {
                 const vis = Visibilities.getForActive();
                 if (!vis)

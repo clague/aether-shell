@@ -41,7 +41,7 @@ namespace {
 // putting a compressed point on the wire.
 constexpr qsizetype k_p256PointLen = 65;
 
-QByteArray encodedP256PublicKey(EVP_PKEY* key) {
+QByteArray encodedP256PublicKey(EVP_PKEY const* key) {
     if (!key)
         return {};
 
@@ -139,25 +139,25 @@ QByteArray hkdfInternal(
         EVP_PKEY_CTX_free(pctx);
         return {};
     }
-    if (!salt.isEmpty()) {
-        if (EVP_PKEY_CTX_set1_hkdf_salt(
-                pctx, reinterpret_cast<const unsigned char*>(salt.constData()), static_cast<int>(salt.size())) <= 0) {
-            EVP_PKEY_CTX_free(pctx);
-            return {};
-        }
+    if ((!salt.isEmpty()) &&
+        (EVP_PKEY_CTX_set1_hkdf_salt(
+             pctx, reinterpret_cast<const unsigned char*>(salt.constData()), static_cast<int>(salt.size())) <= 0)) {
+        EVP_PKEY_CTX_free(pctx);
+        return {};
     }
+
     if (EVP_PKEY_CTX_set1_hkdf_key(
             pctx, reinterpret_cast<const unsigned char*>(ikm.constData()), static_cast<int>(ikm.size())) <= 0) {
         EVP_PKEY_CTX_free(pctx);
         return {};
     }
-    if (!info.isEmpty()) {
-        if (EVP_PKEY_CTX_add1_hkdf_info(
-                pctx, reinterpret_cast<const unsigned char*>(info.constData()), static_cast<int>(info.size())) <= 0) {
-            EVP_PKEY_CTX_free(pctx);
-            return {};
-        }
+    if ((!info.isEmpty()) &&
+        (EVP_PKEY_CTX_add1_hkdf_info(
+             pctx, reinterpret_cast<const unsigned char*>(info.constData()), static_cast<int>(info.size())) <= 0)) {
+        EVP_PKEY_CTX_free(pctx);
+        return {};
     }
+
     QByteArray out;
     out.resize(static_cast<qsizetype>(outLen));
     size_t outLenLocal = outLen;

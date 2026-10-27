@@ -115,9 +115,9 @@ bool QuickShareDiscovery::advertise(const QString& deviceName, int port) {
     QString const serviceName =
         QString::fromLatin1(nameB.toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals));
 
+    // deviceType 3 = laptop; bit layout is the one upstream's nearby discovery writes.
     QByteArray recordBytes;
-    char const deviceType = 3; // laptop
-    recordBytes.append(static_cast<char>(deviceType << 1));
+    recordBytes.append(static_cast<char>(3u << 1u));
 
     for (int i = 0; i < 16; i++) {
         recordBytes.append(static_cast<char>(QRandomGenerator::global()->generate()));
@@ -179,10 +179,8 @@ void QuickShareDiscovery::triggerTemporaryAdvertising(const QString& deviceName,
         return; // Already permanently advertising
     }
 
-    if (!m_isAdvertising) {
-        if (advertise(deviceName, port)) {
-            m_isTempAdvertising = true;
-        }
+    if (!m_isAdvertising && advertise(deviceName, port)) {
+        m_isTempAdvertising = true;
     }
 
     if (m_isAdvertising && m_isTempAdvertising) {

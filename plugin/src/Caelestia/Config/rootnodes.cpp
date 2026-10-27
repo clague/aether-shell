@@ -18,7 +18,7 @@ void loaded(ConfigKind kind, settings::RootNode* layer, const QString& screen) {
     // every layer that just loaded gets its preset and theme re-applied to what the user did
     // not set. hybrid() is global only, so skip it for per-screen layers.
     if (kind == ConfigKind::Shell) {
-        auto* const config = static_cast<ConfigRoot*>(layer);
+        auto const* const config = static_cast<ConfigRoot*>(layer);
         if (screen.isEmpty())
             config->hybrid()->reresolve();
         config->paths()->reresolve();

@@ -14,7 +14,8 @@ using Qt::StringLiterals::operator""_s;
 // schema moved to static defaults, so the preset lookup is applied through reresolve()
 // when the preset changes or a layer loads, rather than through a callable default.
 #define FEATURE(name) CONFIG_GLOBAL_PROPERTY(bool, name, false)
-#define VARIANT(name) CONFIG_GLOBAL_PROPERTY(HybridVariant::Enum, name, HybridVariant::Midnight)
+#define VARIANT(name)                                                                                                  \
+    CONFIG_GLOBAL_PROPERTY(caelestia::shell::config::HybridVariant::Enum, name, HybridVariant::Midnight)
 
 // One boolean per feature. This is the workhorse of the hybrid design (D3): the two forks
 // are ~90% disjoint, so nearly everything they add is a feature that is either present or

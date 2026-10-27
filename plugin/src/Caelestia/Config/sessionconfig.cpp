@@ -34,7 +34,7 @@ bool collectCustom(const settings::Schema& schema, const QJsonValue& json, QMap<
     if (newValues == values && newKeys == keys)
         return false;
 
-    values = newValues;
+    values = std::move(newValues);
     keys = newKeys;
     return true;
 }

@@ -8,6 +8,7 @@ import Caelestia.Config
 import Caelestia.Services
 import qs.components
 import qs.services
+import qs.daemons
 
 Item {
     id: root

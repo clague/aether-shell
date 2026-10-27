@@ -151,14 +151,14 @@ Item {
                 ConfirmButton {
                     text: qsTr("Cancel")
                     colour: Colours.tPalette.m3surfaceContainerHighest
-                    onColour: Colours.palette.m3onSurfaceVariant
+                    onColour: Colours.palette.m3onSurfaceVariant // qmllint disable confusing-expression-statement
                     onClicked: root.cancel()
                 }
 
                 ConfirmButton {
                     text: qsTr("Shut Down")
                     colour: Colours.palette.m3error
-                    onColour: Colours.palette.m3onError
+                    onColour: Colours.palette.m3onError // qmllint disable confusing-expression-statement
                     onClicked: root.accept()
                 }
             }

@@ -109,7 +109,7 @@ QVariantList QuickShareService::transferHistory() const {
 }
 
 void QuickShareService::sendFile(const QString& deviceId, const QString& filePath) {
-    auto it = std::ranges::find_if(m_devices, [&](const QuickShareDevice& d) {
+    auto const it = std::ranges::find_if(m_devices, [&](const QuickShareDevice& d) {
         return d.id == deviceId;
     });
     if (it == m_devices.end())
@@ -176,7 +176,7 @@ void QuickShareService::onDeviceFound(const QuickShareDevice& device) {
     if (device.name == QSysInfo::machineHostName())
         return;
 
-    auto it = std::ranges::find_if(m_devices, [&](const QuickShareDevice& d) {
+    auto const it = std::ranges::find_if(m_devices, [&](const QuickShareDevice& d) {
         return d.id == device.id;
     });
     if (it == m_devices.end()) {
@@ -186,7 +186,7 @@ void QuickShareService::onDeviceFound(const QuickShareDevice& device) {
 }
 
 void QuickShareService::onDeviceLost(const QString& deviceId) {
-    auto it = std::ranges::find_if(m_devices, [&](const QuickShareDevice& d) {
+    auto const it = std::ranges::find_if(m_devices, [&](const QuickShareDevice& d) {
         return d.id == deviceId;
     });
     if (it != m_devices.end()) {

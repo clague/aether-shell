@@ -42,7 +42,7 @@ BeatTracker::BeatTracker(QObject* parent)
     m_processor = new BeatProcessor();
     init();
 
-    auto* const processor = static_cast<BeatProcessor*>(m_processor);
+    auto const* const processor = static_cast<BeatProcessor*>(m_processor);
     connect(processor, &BeatProcessor::beat, this, &BeatTracker::updateBpm);
     // BeatTracker::beat was declared and never emitted -- in all three upstreams, not just
     // here. modules/dashboard/dash/MediaShapes.qml has connected `onBeat` to morph() the

@@ -17,9 +17,32 @@ QuickShareBleAdvertisementAdaptor::QuickShareBleAdvertisementAdaptor(QObject* pa
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 QVariantMap QuickShareBleAdvertisementAdaptor::serviceData() const {
     QVariantMap map;
-    const char rawData[] = { static_cast<char>(252), 18, static_cast<char>(142), 1, 66, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        static_cast<char>(191), 45, 91, static_cast<char>(160), static_cast<char>(225), static_cast<char>(216), 117, 36,
-        static_cast<char>(202), 0 };
+    const char rawData[] = {
+        static_cast<char>(252),
+        18,
+        static_cast<char>(142),
+        1,
+        66,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        static_cast<char>(191),
+        45,
+        91,
+        static_cast<char>(160),
+        static_cast<char>(225),
+        static_cast<char>(216),
+        117,
+        36,
+        static_cast<char>(202),
+        0,
+    };
     QByteArray const data(rawData, 24);
     map.insert(u"0000fe2c-0000-1000-8000-00805f9b34fb"_s, QVariant::fromValue(data));
     return map;

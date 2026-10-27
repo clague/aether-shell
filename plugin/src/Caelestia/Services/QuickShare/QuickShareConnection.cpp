@@ -126,7 +126,7 @@ QuickShareConnection::QuickShareConnection(const QString& host, int port, QObjec
         &QuickShareConnection::onError);
 #endif
 
-    connect(m_socket, &QTcpSocket::connected, this, [this]() {
+    connect(m_socket, &QTcpSocket::connected, this, [this] {
         m_state = OfflineFrameExchange;
         emit stateChanged(m_state);
 
@@ -142,7 +142,7 @@ QuickShareConnection::QuickShareConnection(const QString& host, int port, QObjec
         req->set_endpoint_name(hostname.toStdString());
 
         QByteArray endpointInfo;
-        endpointInfo.append(static_cast<char>(3 << 1)); // Laptop
+        endpointInfo.append(static_cast<char>(0x3u << 1u)); // Laptop
         for (int i = 0; i < 16; i++) {
             endpointInfo.append(static_cast<char>(QRandomGenerator::global()->generate()));
         }
@@ -276,7 +276,7 @@ void QuickShareConnection::sendEncryptedSharingFrame(const sharing::nearby::Fram
     offline1.set_version(location::nearby::connections::OfflineFrame::V1);
     auto* v1a = offline1.mutable_v1();
     v1a->set_type(location::nearby::connections::V1Frame::PAYLOAD_TRANSFER);
-    *v1a->mutable_payload_transfer() = ptf1;
+    *v1a->mutable_payload_transfer() = std::move(ptf1);
 
     QByteArray out1;
     out1.resize(static_cast<qsizetype>(offline1.ByteSizeLong()));
@@ -299,7 +299,7 @@ void QuickShareConnection::sendEncryptedSharingFrame(const sharing::nearby::Fram
     offline2.set_version(location::nearby::connections::OfflineFrame::V1);
     auto* v1b = offline2.mutable_v1();
     v1b->set_type(location::nearby::connections::V1Frame::PAYLOAD_TRANSFER);
-    *v1b->mutable_payload_transfer() = ptf2;
+    *v1b->mutable_payload_transfer() = std::move(ptf2);
 
     QByteArray out2;
     out2.resize(static_cast<qsizetype>(offline2.ByteSizeLong()));
@@ -423,11 +423,11 @@ void QuickShareConnection::handleOfflineFrame(const QByteArray& data) {
         if (req.has_endpoint_info()) {
             const auto& info = req.endpoint_info();
             if (info.size() >= 18) {
-                const auto visibility = (static_cast<unsigned char>(info[0]) >> 3) & 0x01;
+                const auto visibility = (static_cast<unsigned int>(static_cast<unsigned char>(info[0])) >> 3u) & 0x1u;
                 if (visibility == 0) {
                     // info is a protobuf std::string, so stay in its size type for the
                     // bounds check and convert once at the QString boundary.
-                    const size_t nameLen = static_cast<unsigned char>(info[17]);
+                    const size_t nameLen = static_cast<unsigned int>(static_cast<unsigned char>(info[17]));
                     if (nameLen > 0 && info.size() >= 18 + nameLen) {
                         m_deviceName = QString::fromUtf8(info.data() + 18, static_cast<qsizetype>(nameLen));
                     }
@@ -569,7 +569,7 @@ QByteArray QuickShareConnection::wrapInSecureMessage(const QByteArray& offlineFr
     header.set_public_metadata(metadataBytes.constData(), metadataBytes.size());
 
     securemessage::HeaderAndBody headerAndBody;
-    *headerAndBody.mutable_header() = header;
+    *headerAndBody.mutable_header() = std::move(header);
     headerAndBody.set_body(ciphertext.constData(), ciphertext.size());
 
     QByteArray headerAndBodyBytes;
@@ -739,7 +739,7 @@ void QuickShareConnection::handlePayloadTransfer(const QByteArray& plaintext) {
         m_payloadBuffers[payloadId].append(chunkBody);
     }
 
-    if ((payloadChunk.flags() & 1) == 1) {
+    if ((static_cast<unsigned>(payloadChunk.flags()) & 0x1u) == 1) {
         const QByteArray& complete = m_payloadBuffers[payloadId];
         sharing::nearby::Frame frame;
         if (!complete.isEmpty() && frame.ParseFromArray(complete.constData(), static_cast<int>(complete.size())))
@@ -810,7 +810,7 @@ void QuickShareConnection::handleIncomingFileChunk(const QByteArray& chunkBody, 
 
     emit transferProgress(m_fileBuffer.size(), m_incomingFileSize);
 
-    if ((flags & 1) != 1)
+    if ((static_cast<unsigned>(flags) & 0x1u) != 1)
         return;
 
     const QString savePath = QDir::homePath() + u"/Downloads/"_s + m_incomingFileName;

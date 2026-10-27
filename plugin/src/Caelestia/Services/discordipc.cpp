@@ -18,7 +18,7 @@ enum class Opcode : quint8 {
     Frame = 1,
     Close = 2,
     Ping = 3,
-    Pong = 4
+    Pong = 4,
 };
 
 } // namespace
@@ -128,12 +128,12 @@ void DiscordIpc::onReadyRead() {
 
 void DiscordIpc::processPayload(int opcode, const QJsonObject& payload) {
     if (opcode == static_cast<int>(Opcode::Frame)) {
-        if (payload.contains(u"cmd"_s) && payload[u"cmd"_s].toString() == u"DISPATCH"_s) {
-            if (payload.contains(u"evt"_s) && payload[u"evt"_s].toString() == u"READY"_s) {
-                m_connected = true;
-                emit connectedChanged();
-            }
+        if ((payload.contains(u"cmd"_s) && payload[u"cmd"_s].toString() == u"DISPATCH"_s) &&
+            (payload.contains(u"evt"_s) && payload[u"evt"_s].toString() == u"READY"_s)) {
+            m_connected = true;
+            emit connectedChanged();
         }
+
     } else if (opcode == static_cast<int>(Opcode::Close)) {
         m_socket->abort();
     }

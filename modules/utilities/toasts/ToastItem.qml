@@ -6,6 +6,7 @@ import Caelestia.I18n
 import qs.components
 import qs.components.effects
 import qs.services
+import qs.daemons
 
 StyledRect {
     id: root

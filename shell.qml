@@ -98,7 +98,6 @@ ShellRoot {
     // Daemons
     Shortcuts {}
     BatteryMonitor {}
-    GameMode {}
     IdleInhibit {}
     IdleMonitors {
         lock: lock

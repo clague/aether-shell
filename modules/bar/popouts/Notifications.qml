@@ -44,7 +44,7 @@ ColumnLayout {
             Toggle {
                 label: qsTr("Do not disturb")
                 checked: Notifs.dnd
-                toggle.onToggled: Notifs.dnd = checked
+                toggle.onToggled: Notifs.setDnd(checked)
             }
 
             StyledText {

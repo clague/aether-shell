@@ -8,6 +8,7 @@ import Caelestia.Config
 import Caelestia.Images
 import qs.services
 import qs.utils
+import qs.daemons
 
 Singleton {
     id: root

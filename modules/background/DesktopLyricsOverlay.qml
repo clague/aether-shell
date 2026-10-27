@@ -7,6 +7,7 @@ import Caelestia.Config
 import qs.components
 import qs.components.containers
 import qs.services
+import qs.daemons
 
 Variants {
     model: GlobalConfig.hybrid.features.floatingLyrics ? Screens.screens.filter(s => GlobalConfig.forScreen(s.name).background.enabled) : []

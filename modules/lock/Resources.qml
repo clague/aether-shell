@@ -5,14 +5,12 @@ import QtQuick.Layouts
 import Quickshell
 import M3Shapes
 import Caelestia.Config
-import Caelestia.I18n
 import Caelestia.Services
 import qs.components
 import qs.components.controls
 import qs.components.effects
 import qs.components.widgets
 import qs.services
-import qs.utils
 
 StyledRect {
     id: root
@@ -119,8 +117,11 @@ StyledRect {
 
                         text: {
                             const temp = Cpu.temperature;
-                            const useF = GlobalConfig.services.useFahrenheitPerformance;
-                            return `${Math.ceil(useF ? temp * 1.8 + 32 : temp)}°${useF ? "F" : "C"}`;
+                            // The merged schema replaced ours' useFahrenheitPerformance
+                            // boolean with upstream's sensorUnits enum (Auto/Celsius/
+                            // Fahrenheit/Kelvin); display both sensible readings.
+                            const fahrenheit = GlobalConfig.services.sensorUnits === TemperatureUnit.Fahrenheit || (GlobalConfig.services.sensorUnits === TemperatureUnit.Auto && GlobalConfig.services.weatherUnits === TemperatureUnit.Fahrenheit);
+                            return `${Math.ceil(fahrenheit ? temp * 1.8 + 32 : temp)}°${fahrenheit ? "F" : "C"}`;
                         }
                         color: Cpu.temperature > 90 ? Colours.palette.m3onErrorContainer : Colours.palette.m3secondary
                         font: Tokens.font.title.builders.medium.scale(cpu.width / 112).width(50).build()

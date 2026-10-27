@@ -66,7 +66,7 @@ StyledRect {
                 type: TextButton.Text
                 onClicked: {
                     QuickShare.rejectIncomingTransfer();
-                    QuickShare.hasPendingTransfer = false;
+                    QuickShare.hasPendingTransfer = false; // qmllint disable missing-property
                 }
             }
 
@@ -75,7 +75,7 @@ StyledRect {
                 type: TextButton.Filled
                 onClicked: {
                     QuickShare.acceptIncomingTransfer();
-                    QuickShare.hasPendingTransfer = false;
+                    QuickShare.hasPendingTransfer = false; // qmllint disable missing-property
                 }
             }
         }

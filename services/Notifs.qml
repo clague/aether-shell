@@ -24,6 +24,11 @@ Singleton {
 
     property bool loaded
 
+    // Write-through: everything routes through upstream's state module.
+    function setDnd(value: bool): void {
+        PersistentState.doNotDisturb = value;
+    }
+
     function hasFullscreen(): bool {
         for (const monitor of Hypr.monitors.values) {
             if (monitor?.activeWorkspace?.toplevels.values.some(t => t.lastIpcObject.fullscreen > 1))

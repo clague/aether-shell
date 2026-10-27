@@ -29,10 +29,10 @@ struct ThemedPath {
 
 const QList<ThemedPath>& themedPaths() {
     static const QList<ThemedPath> k_list{
-        { "sessionGif", "session.gif", "root:/assets/kurukuru.gif" },
-        { "mediaGif", "media.gif", "root:/assets/bongocat.gif" },
-        { "noNotifsPic", "notif.png", "root:/assets/dino.png" },
-        { "lockNoNotifsPic", "notif.png", "root:/assets/dino.png" },
+        { .key = "sessionGif", .file = "session.gif", .fallback = "root:/assets/kurukuru.gif" },
+        { .key = "mediaGif", .file = "media.gif", .fallback = "root:/assets/bongocat.gif" },
+        { .key = "noNotifsPic", .file = "notif.png", .fallback = "root:/assets/dino.png" },
+        { .key = "lockNoNotifsPic", .file = "notif.png", .fallback = "root:/assets/dino.png" },
     };
     return k_list;
 }

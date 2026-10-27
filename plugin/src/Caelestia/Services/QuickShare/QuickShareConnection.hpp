@@ -20,7 +20,7 @@ public:
         PostHandshake,
         PairedKeyExchange,
         ConnectionAccepted,
-        Transferring
+        Transferring,
     };
 
     explicit QuickShareConnection(QTcpSocket* socket, QObject* parent = nullptr);

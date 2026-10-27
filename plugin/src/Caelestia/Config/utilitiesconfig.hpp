@@ -27,6 +27,8 @@ class UtilitiesToasts : public settings::ObjectNode {
     CONFIG_PROPERTY(bool, kbLimit, true)
     CONFIG_PROPERTY(bool, vpnChanged, true)
     CONFIG_PROPERTY(bool, nowPlaying, false)
+    CONFIG_PROPERTY(bool, transparency, false)
+    CONFIG_PROPERTY(qreal, transparencyBase, 0.85)
 };
 
 class UtilitiesVpnProvider : public settings::ObjectNode {

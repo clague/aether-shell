@@ -17,6 +17,9 @@ Item {
 
     readonly property real fadeAmount: 0.1
     property list<string> lyricList: Lyrics.lyrics
+    // Forced-update flip; written in the Connections below (upstream's state
+    // module does not carry it, ours-shape ours-shape ours-shape did).
+    property bool flag
 
     function reloadTrack() {
         const p = Players.active;

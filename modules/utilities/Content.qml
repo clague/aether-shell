@@ -110,8 +110,8 @@ Item {
                     id: mediaFlickable
 
                     readonly property Item currentItem: {
-                        mediaRepeater.count;
-                        mediaRepeater.dummy;
+                        mediaRepeater.count; // qmllint disable confusing-expression-statement
+                        mediaRepeater.dummy; // qmllint disable confusing-expression-statement
                         return mediaRepeater.itemAt(mediaLayout.currentIndex);
                     }
 

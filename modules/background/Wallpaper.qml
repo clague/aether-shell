@@ -5,7 +5,6 @@ import QtQuick.Effects
 import M3Shapes
 import Caelestia
 import Caelestia.Config
-import Caelestia.I18n
 import qs.components
 import qs.components.images
 import qs.services
@@ -403,8 +402,8 @@ Item {
 
                 onLoaded: {
                     if (item && img.verifiedPath !== "") {
-                        item.videoSource = root.toFileUrl(img.verifiedPath);
-                        item.autoStart = !WallpaperPauser.paused;
+                        item.videoSource = root.toFileUrl(img.verifiedPath); // qmllint disable missing-property
+                        item.autoStart = !WallpaperPauser.paused; // qmllint disable missing-property
                     }
                 }
 

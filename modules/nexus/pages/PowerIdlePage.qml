@@ -11,8 +11,8 @@ PageBase {
 
     function getTimeout(action: string, defaultSec: int): int {
         const list = GlobalConfig.general.idle.timeouts;
-        for (let i = 0; i < list.length; i++) {
-            const item = list[i];
+        for (let i = 0; i < list.values.length; i++) {
+            const item = list.values[i];
             if (item.idleAction === action)
                 return item.timeout;
             if (Array.isArray(item.idleAction) && item.idleAction.includes(action))
@@ -21,12 +21,24 @@ PageBase {
         return defaultSec;
     }
 
+    // The settings schema moved to typed lists; the write surface is the node's
+    // remove/insert pair rather than whole-list assignment.
     function updateTimeout(action: string, seconds: int, returnAct: string): void {
-        const list = JSON.parse(JSON.stringify(GlobalConfig.general.idle.timeouts));
+        const list = GlobalConfig.general.idle.timeouts;
         let found = false;
-        for (let i = 0; i < list.length; i++) {
-            if (list[i].idleAction === action || (Array.isArray(list[i].idleAction) && list[i].idleAction.includes(action))) {
-                list[i].timeout = seconds;
+        for (let i = 0; i < list.values.length; i++) {
+            const item = list.values[i];
+            if (item.idleAction === action || (Array.isArray(item.idleAction) && item.idleAction.includes(action))) {
+                const at = Object.assign({}, item, {
+                    idleAction: item.idleAction,
+                    timeout: seconds
+                });
+                if (returnAct)
+                    at.returnAction = returnAct;
+                else
+                    delete at.returnAction;
+                list.remove(i);
+                list.insert(at, i);
                 found = true;
                 break;
             }
@@ -38,9 +50,8 @@ PageBase {
             };
             if (returnAct)
                 entry.returnAction = returnAct;
-            list.push(entry);
+            list.insert(entry);
         }
-        GlobalConfig.general.idle.timeouts = list;
     }
 
     title: Tr.tr("Power & idle")

@@ -8,6 +8,7 @@ import Caelestia.Config
 import Caelestia.I18n
 import qs.components
 import qs.components.controls
+import qs.components.images
 import qs.components.widgets
 import qs.services
 import qs.utils
