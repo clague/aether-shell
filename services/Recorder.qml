@@ -51,28 +51,11 @@ Singleton {
         onExited: code => {
             const running = code === 0;
 
-<<<<<<< HEAD
-            if (code === 0) {
-                if (root.needsStop) {
-                    Quickshell.execDetached(["caelestia", "record"]);
-                    props.running = false;
-                    props.paused = false;
-                    Audio.playVideoStop();
-                } else if (root.needsPause) {
-                    Quickshell.execDetached(["caelestia", "record", "-p"]);
-                    props.paused = !props.paused;
-                }
-            } else if (root.needsStart) {
-                Quickshell.execDetached(["caelestia", "record", ...root.startArgs]);
-                props.running = true;
-                props.paused = false;
-                props.elapsed = 0;
-                Audio.playVideoRecord();
-=======
             if (running && root.needsStop) {
                 commandProc.exec(["caelestia", "record"]);
                 props.running = false;
                 props.paused = false;
+                Audio.playVideoStop();
             } else if (running && root.needsPause) {
                 commandProc.exec(["caelestia", "record", "-p"]);
                 props.paused = !props.paused;
@@ -81,13 +64,7 @@ Singleton {
                 props.running = true;
                 props.paused = false;
                 props.elapsed = 0;
-            } else if (running !== props.running && !commandProc.running) {
-                // The recording was started/stopped outside the shell (e.g. via
-                // keybind), or our command finished without reaching the optimistic state
-                props.running = running;
-                props.paused = false;
-                props.elapsed = 0;
->>>>>>> caelestia/main
+                Audio.playVideoRecord();
             }
 
             root.needsStart = false;

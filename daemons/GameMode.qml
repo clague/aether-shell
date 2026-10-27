@@ -12,7 +12,6 @@ import qs.utils
 Scope {
     id: root
 
-<<<<<<< HEAD:services/GameMode.qml
     property alias enabled: props.enabled
 
     property bool _autoEnabled: false
@@ -72,21 +71,7 @@ Scope {
             } else {
                 Hypr.extras.batchMessage([`keyword windowrulev2 opaque, class:.*`]);
             }
-        }
-=======
-    function applyGameMode(): void {
-        Hypr.extras.applyOptions({
-            "animations:enabled": 0,
-            "decoration:shadow:enabled": 0,
-            "decoration:blur:enabled": 0,
-            "general:gaps_in": 0,
-            "general:gaps_out": 0,
-            "general:border_size": 1,
-            "decoration:rounding": 0,
-            "general:allow_tearing": 1
-        });
->>>>>>> caelestia/main:daemons/GameMode.qml
-    }
+        }    }
 
     function syncState(enableDisable: bool): void {
         if (RuntimeState.gameMode) {
@@ -100,7 +85,6 @@ Scope {
         }
     }
 
-<<<<<<< HEAD:services/GameMode.qml
     Timer {
         interval: 500
         repeat: true
@@ -122,10 +106,6 @@ Scope {
 
     PersistentProperties {
         id: props
-=======
-    Component.onCompleted: syncState(false)
->>>>>>> caelestia/main:daemons/GameMode.qml
-
     Connections {
         function onGameModeChanged(): void {
             root.syncState(true);

@@ -38,7 +38,6 @@ Singleton {
         return true;
     }
 
-<<<<<<< HEAD
     function clear(): void {
         const toClose = [];
         for (let i = 0; i < root.list.length; i++)
@@ -71,9 +70,6 @@ Singleton {
         else
             Toaster.toast(qsTr("Do not disturb disabled"), qsTr("Popup notifications are now enabled"), "do_not_disturb_off");
     }
-
-=======
->>>>>>> caelestia/main
     onListChanged: {
         if (loaded)
             saveTimer.restart();

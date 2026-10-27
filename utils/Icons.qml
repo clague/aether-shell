@@ -97,6 +97,8 @@ Singleton {
     ]
 
     readonly property var notifIconRules: [
+        // MiDnight's quick-share notification; the rest are upstream's rules.
+        [["quickshare"], "near_me"],
         [["reboot"], "restart_alt"],
         [["recording"], "screen_record"],
         [["battery"], "power"],
@@ -189,39 +191,8 @@ Singleton {
     }
 
     function getNotifIcon(summary: string, urgency: int): string {
-<<<<<<< HEAD
-        summary = summary.toLowerCase();
-        if (summary.includes("quickshare"))
-            return "near_me";
-        if (summary.includes("reboot"))
-            return "restart_alt";
-        if (summary.includes("recording"))
-            return "screen_record";
-        if (summary.includes("battery"))
-            return "power";
-        if (summary.includes("screenshot"))
-            return "screenshot_monitor";
-        if (summary.includes("welcome"))
-            return "waving_hand";
-        if (summary.includes("time") || summary.includes("a break"))
-            return "schedule";
-        if (summary.includes("installed"))
-            return "download";
-        if (summary.includes("update"))
-            return "update";
-        if (summary.includes("unable to"))
-            return "deployed_code_alert";
-        if (summary.includes("profile"))
-            return "person";
-        if (summary.includes("file"))
-            return "folder_copy";
-        if (urgency === NotificationUrgency.Critical)
-            return "release_alert";
-        return "chat";
-=======
         const fallback = urgency === NotificationUrgency.Critical ? "release_alert" : "chat";
         return matchIcon(summary.toLowerCase(), notifIconRules, fallback);
->>>>>>> caelestia/main
     }
 
     function getVolumeIcon(volume: real, isMuted: bool): string {
@@ -235,7 +206,6 @@ Singleton {
     }
 
     function getMicVolumeIcon(volume: real, isMuted: bool): string {
-<<<<<<< HEAD
         if (!isMuted && volume > 0)
             return "mic";
         return "mic_off";
@@ -245,7 +215,7 @@ Singleton {
         name = name.toLowerCase().slice("special:".length);
 
         for (const iconConfig of GlobalConfig.bar.workspaces.specialWorkspaceIcons)
-            if (matchIconConfig(name, iconConfig))
+            if (matchIconRule(name, iconConfig))
                 return iconConfig.icon;
 
         if (name === "special")
@@ -265,7 +235,7 @@ Singleton {
         name = name.toLowerCase().slice("special:".length);
 
         for (const iconConfig of GlobalConfig.bar.workspaces.specialWorkspaceIcons)
-            if (matchIconConfig(name, iconConfig))
+            if (matchIconRule(name, iconConfig))
                 return iconConfig.icon;
 
         if (name === "special")
@@ -279,9 +249,6 @@ Singleton {
         if (name === "sysmon")
             return "list_alt";
         return name[0].toUpperCase();
-=======
-        return !isMuted && volume > 0 ? "mic" : "mic_off";
->>>>>>> caelestia/main
     }
 
     function getTrayIcon(id: string, icon: string): string {
