@@ -15,15 +15,15 @@ QtObject {
             category: "appearance"
         },
         {
-            label: qsTr("Background elements"),
+            label: Tr.tr("Background elements"),
             icon: "wallpaper",
-            description: qsTr("Clock, lyrics, visualiser, shimeji"),
+            description: Tr.tr("Clock, lyrics, visualiser, shimeji"),
             category: "appearance"
         },
         {
-            label: qsTr("Shell Tokens"),
+            label: Tr.tr("Shell Tokens"),
             icon: "tune",
-            description: qsTr("Modify interface spacing, rounding, and sizing"),
+            description: Tr.tr("Modify interface spacing, rounding, and sizing"),
             category: "appearance",
             developerOnly: true
         },
@@ -84,18 +84,13 @@ QtObject {
             category: "shell"
         },
         {
-<<<<<<< HEAD
-            label: qsTr("Hyprland"),
+            label: Tr.tr("Hyprland"),
             icon: "layers",
-            description: qsTr("Window manager configuration"),
+            description: Tr.tr("Window manager configuration"),
             category: "shell"
         },
         {
-            label: qsTr("Services"),
-=======
-            label: Tr.tr("Services"),
->>>>>>> caelestia/main
-            icon: "build",
+            label: Tr.tr("Services"),            icon: "build",
             description: Tr.tr("Poll intervals, lyrics backend"),
             category: "shell"
         },
@@ -108,17 +103,17 @@ QtObject {
 
         // Hybrid
         {
-            label: qsTr("Hybrid"),
+            label: Tr.tr("Hybrid"),
             icon: "merge",
-            description: qsTr("Features imported from each fork, and which one wins"),
+            description: Tr.tr("Features imported from each fork, and which one wins"),
             category: "hybrid"
         },
 
         // Power & idle
         {
-            label: qsTr("Power & idle"),
+            label: Tr.tr("Power & idle"),
             icon: "power_settings_new",
-            description: qsTr("Idle timeouts, sleep and screen-off behaviour"),
+            description: Tr.tr("Idle timeouts, sleep and screen-off behaviour"),
             category: "shell"
         },
 

@@ -6,7 +6,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    title: qsTr("Shimeji characters")
+    title: Tr.tr("Shimeji characters")
     isSubPage: true
 
     ColumnLayout {
@@ -17,13 +17,13 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("General")
+            text: Tr.tr("General")
         }
 
         ToggleRow {
             first: true
             Layout.fillWidth: true
-            text: qsTr("Enable Shimeji")
+            text: Tr.tr("Enable Shimeji")
             configNode: root.targetConfig.shimeji
             propertyName: "enabled"
             checked: root.targetConfig.shimeji.enabled
@@ -35,8 +35,8 @@ PageBase {
         ToggleRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            text: qsTr("Auto-hide Shimeji")
-            subtext: qsTr("Hide Shimeji when a window is open")
+            text: Tr.tr("Auto-hide Shimeji")
+            subtext: Tr.tr("Hide Shimeji when a window is open")
             configNode: root.targetConfig.shimeji
             propertyName: "autoHide"
             checked: root.targetConfig.shimeji.autoHide
@@ -50,7 +50,7 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            label: qsTr("Shimeji count per screen")
+            label: Tr.tr("Shimeji count per screen")
             configNode: root.targetConfig.shimeji
             propertyName: "count"
             from: 1

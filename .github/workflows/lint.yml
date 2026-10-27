@@ -95,7 +95,6 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v7
 
-<<<<<<< HEAD
       # The checkout is owned by a different uid than the container's root, so git refuses
       # every command with "detected dubious ownership". The checkers now fail loudly on
       # that rather than reporting an empty tree as clean, but they still need it to work.
@@ -115,11 +114,7 @@ jobs:
       - name: Check for config keys nothing reads
         run: ./hybrid/tools/dead-config.py
 
-      - name: Configure
-=======
-      - name: CMake build
->>>>>>> caelestia/main
-        run: |
+      - name: Configure        run: |
           cmake -B build -G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
             -DCMAKE_DISABLE_PRECOMPILE_HEADERS=ON -DVERSION= -DGIT_REVISION=
 

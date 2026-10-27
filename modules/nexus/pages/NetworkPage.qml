@@ -361,7 +361,7 @@ PageBase {
             first: true
             last: true
             icon: "wifi_tethering"
-            text: qsTr("Hotspot")
+            text: Tr.tr("Hotspot")
             trailingIcon: "chevron_right"
             visible: GlobalConfig.hybrid.features.hotspot
             onClicked: root.nState.openSubPage(7) // Hotspot sub-page

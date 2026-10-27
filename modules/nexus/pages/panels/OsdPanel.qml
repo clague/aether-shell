@@ -7,7 +7,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    title: qsTr("On-screen display")
+    title: Tr.tr("On-screen display")
     isSubPage: true
 
     ColumnLayout {
@@ -19,27 +19,27 @@ PageBase {
         // General
         SectionHeader {
             first: true
-            text: qsTr("General")
+            text: Tr.tr("General")
         }
 
         ToggleRow {
             first: true
             last: true
-            text: qsTr("Enabled")
-            subtext: qsTr("Show floating on-screen indicators when adjusting volume or brightness")
+            text: Tr.tr("Enabled")
+            subtext: Tr.tr("Show floating on-screen indicators when adjusting volume or brightness")
             checked: Config.osd.enabled
             onToggled: GlobalConfig.osd.enabled = checked
         }
 
         // Overlays
         SectionHeader {
-            text: qsTr("Overlays")
+            text: Tr.tr("Overlays")
         }
 
         ToggleRow {
             first: true
-            text: qsTr("Brightness")
-            subtext: qsTr("Show indicator when adjusting display brightness")
+            text: Tr.tr("Brightness")
+            subtext: Tr.tr("Show indicator when adjusting display brightness")
             disabled: !Config.osd.enabled
             checked: Config.osd.enableBrightness
             onToggled: GlobalConfig.osd.enableBrightness = checked
@@ -47,8 +47,8 @@ PageBase {
 
         ToggleRow {
             last: true
-            text: qsTr("Microphone")
-            subtext: qsTr("Show indicator when muting or unmuting the microphone")
+            text: Tr.tr("Microphone")
+            subtext: Tr.tr("Show indicator when muting or unmuting the microphone")
             disabled: !Config.osd.enabled
             checked: Config.osd.enableMicrophone
             onToggled: GlobalConfig.osd.enableMicrophone = checked
@@ -56,14 +56,14 @@ PageBase {
 
         // Timing
         SectionHeader {
-            text: qsTr("Timing")
+            text: Tr.tr("Timing")
         }
 
         StepperRow {
             first: true
             last: true
-            label: qsTr("Hide delay")
-            subtext: qsTr("Milliseconds before the indicator automatically disappears")
+            label: Tr.tr("Hide delay")
+            subtext: Tr.tr("Milliseconds before the indicator automatically disappears")
             disabled: !Config.osd.enabled
             value: Config.osd.hideDelay
             from: 500

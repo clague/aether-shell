@@ -19,19 +19,11 @@ PageBase {
 
         StepperRow {
             first: true
-<<<<<<< HEAD
-            label: qsTr("Shown")
-            subtext: qsTr("Number of workspaces displayed")
+            label: Tr.tr("Shown")
+            subtext: Tr.tr("Number of workspaces displayed")
             configNode: root.targetConfig.bar.workspaces
             propertyName: "shown"
-            value: root.targetConfig.bar.workspaces.shown
-=======
-            // TRANSLATORS: the number of workspaces shown on the bar
-            label: Tr.trCtx("Shown", "bar workspaces")
-            subtext: Tr.tr("Number of workspaces displayed")
-            value: Config.bar.workspaces.shown
->>>>>>> caelestia/main
-            from: 1
+            value: root.targetConfig.bar.workspaces.shown            from: 1
             to: 20
             stepSize: 1
             onMoved: v => {
@@ -40,8 +32,7 @@ PageBase {
         }
 
         ToggleRow {
-<<<<<<< HEAD
-            text: qsTr("Active indicator")
+            text: Tr.tr("Active indicator")
             configNode: root.targetConfig.bar.workspaces
             propertyName: "activeIndicator"
             checked: root.targetConfig.bar.workspaces.activeIndicator
@@ -51,7 +42,7 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Active trail")
+            text: Tr.tr("Active trail")
             configNode: root.targetConfig.bar.workspaces
             propertyName: "activeTrail"
             checked: root.targetConfig.bar.workspaces.activeTrail
@@ -61,7 +52,7 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Occupied background")
+            text: Tr.tr("Occupied background")
             configNode: root.targetConfig.bar.workspaces
             propertyName: "occupiedBg"
             checked: root.targetConfig.bar.workspaces.occupiedBg
@@ -72,7 +63,7 @@ PageBase {
 
         ToggleRow {
             Layout.fillWidth: true
-            text: qsTr("Use material icons for indicators")
+            text: Tr.tr("Use material icons for indicators")
             configNode: root.targetConfig.bar.workspaces
             propertyName: "useIcon"
             checked: root.targetConfig.bar.workspaces.useIcon
@@ -83,8 +74,8 @@ PageBase {
 
         ToggleRow {
             Layout.fillWidth: true
-            text: qsTr("Show windows")
-            subtext: qsTr("Show icons of open windows on each workspace")
+            text: Tr.tr("Show windows")
+            subtext: Tr.tr("Show icons of open windows on each workspace")
             configNode: root.targetConfig.bar.workspaces
             propertyName: "showWindows"
             checked: root.targetConfig.bar.workspaces.showWindows
@@ -94,7 +85,7 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Windows on special workspaces")
+            text: Tr.tr("Windows on special workspaces")
             configNode: root.targetConfig.bar.workspaces
             propertyName: "showWindowsOnSpecialWorkspaces"
             checked: root.targetConfig.bar.workspaces.showWindowsOnSpecialWorkspaces
@@ -104,82 +95,26 @@ PageBase {
         }
 
         StepperRow {
-            label: qsTr("Max window icons")
+            label: Tr.tr("Max window icons")
             configNode: root.targetConfig.bar.workspaces
             propertyName: "maxWindowIcons"
-            value: root.targetConfig.bar.workspaces.maxWindowIcons
-=======
-            text: Tr.trCtx("Active indicator", "bar workspaces")
-            checked: Config.bar.workspaces.activeIndicator
-            onToggled: GlobalConfig.bar.workspaces.activeIndicator = checked
-        }
-
-        ToggleRow {
-            text: Tr.trCtx("Active trail", "bar workspaces")
-            checked: Config.bar.workspaces.activeTrail
-            onToggled: GlobalConfig.bar.workspaces.activeTrail = checked
-        }
-
-        ToggleRow {
-            text: Tr.trCtx("Occupied background", "bar workspaces")
-            checked: Config.bar.workspaces.occupiedBg
-            onToggled: GlobalConfig.bar.workspaces.occupiedBg = checked
-        }
-
-        ToggleRow {
-            text: Tr.trCtx("Show unoccupied", "bar workspaces")
-            subtext: Tr.tr("Show workspaces that are inactive and empty")
-            checked: Config.bar.workspaces.showUnoccupied
-            onToggled: GlobalConfig.bar.workspaces.showUnoccupied = checked
-        }
-
-        ToggleRow {
-            text: Tr.trCtx("Per monitor", "bar workspaces")
-            subtext: Tr.tr("Hide workspaces not on the current monitor")
-            checked: Config.bar.workspaces.perMonitor
-            onToggled: GlobalConfig.bar.workspaces.perMonitor = checked
-        }
-
-        ToggleRow {
-            text: Tr.trCtx("Show windows", "bar workspaces")
-            subtext: Tr.tr("Show icons of open windows on each workspace")
-            checked: Config.bar.workspaces.showWindows
-            onToggled: GlobalConfig.bar.workspaces.showWindows = checked
-        }
-
-        ToggleRow {
-            text: Tr.trCtx("Windows on special workspaces", "bar workspaces")
-            checked: Config.bar.workspaces.showWindowsOnSpecialWorkspaces
-            onToggled: GlobalConfig.bar.workspaces.showWindowsOnSpecialWorkspaces = checked
-        }
-
-        StepperRow {
-            last: true
-            // TRANSLATORS: maximum number of window icons shown per workspace
-            label: Tr.trCtx("Max window icons", "bar workspaces")
-            value: Config.bar.workspaces.maxWindowIcons
->>>>>>> caelestia/main
-            from: 0
+            value: root.targetConfig.bar.workspaces.maxWindowIcons            from: 0
             to: 20
             stepSize: 1
             onMoved: v => {
                 root.targetConfig.bar.workspaces.maxWindowIcons = v;
             }
         }
-<<<<<<< HEAD
 
         ToggleRow {
             last: true
-            text: qsTr("Per-monitor workspaces")
-            subtext: qsTr("Show each monitor's workspaces independently")
+            text: Tr.tr("Per-monitor workspaces")
+            subtext: Tr.tr("Show each monitor's workspaces independently")
             configNode: root.targetConfig.bar.workspaces
             propertyName: "perMonitorWorkspaces"
             checked: root.targetConfig.bar.workspaces.perMonitorWorkspaces
             onToggled: {
                 root.targetConfig.bar.workspaces.perMonitorWorkspaces = checked;
             }
-        }
-=======
->>>>>>> caelestia/main
-    }
+        }    }
 }

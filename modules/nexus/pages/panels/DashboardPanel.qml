@@ -4,77 +4,71 @@ import QtQuick
 import QtQuick.Layouts
 import M3Shapes
 import Caelestia.Config
-<<<<<<< HEAD
-import qs.components.controls
-=======
-import Caelestia.I18n
->>>>>>> caelestia/main
-import qs.modules.nexus.common
+import qs.components.controlsimport qs.modules.nexus.common
 
 PageBase {
     id: root
 
-<<<<<<< HEAD
     readonly property list<MenuItem> dashboardShapeItems: [
         MenuItem {
             property int value: MaterialShape.Circle
 
-            text: qsTr("Circle")
+            text: Tr.tr("Circle")
         },
         MenuItem {
             property int value: MaterialShape.Square
 
-            text: qsTr("Square")
+            text: Tr.tr("Square")
         },
         MenuItem {
             property int value: MaterialShape.Pill
 
-            text: qsTr("Pill")
+            text: Tr.tr("Pill")
         },
         MenuItem {
             property int value: MaterialShape.Diamond
 
-            text: qsTr("Diamond")
+            text: Tr.tr("Diamond")
         },
         MenuItem {
             property int value: MaterialShape.ClamShell
 
-            text: qsTr("Clam Shell")
+            text: Tr.tr("Clam Shell")
         },
         MenuItem {
             property int value: MaterialShape.Pentagon
 
-            text: qsTr("Pentagon")
+            text: Tr.tr("Pentagon")
         },
         MenuItem {
             property int value: MaterialShape.Gem
 
-            text: qsTr("Gem")
+            text: Tr.tr("Gem")
         },
         MenuItem {
             property int value: MaterialShape.Cookie4Sided
 
-            text: qsTr("Cookie 4-Sided")
+            text: Tr.tr("Cookie 4-Sided")
         },
         MenuItem {
             property int value: MaterialShape.Cookie6Sided
 
-            text: qsTr("Cookie 6-Sided")
+            text: Tr.tr("Cookie 6-Sided")
         },
         MenuItem {
             property int value: MaterialShape.Cookie7Sided
 
-            text: qsTr("Cookie 7-Sided")
+            text: Tr.tr("Cookie 7-Sided")
         },
         MenuItem {
             property int value: MaterialShape.Cookie9Sided
 
-            text: qsTr("Cookie 9-Sided")
+            text: Tr.tr("Cookie 9-Sided")
         },
         MenuItem {
             property int value: MaterialShape.Cookie12Sided
 
-            text: qsTr("Cookie 12-Sided")
+            text: Tr.tr("Cookie 12-Sided")
         }
     ]
 
@@ -82,70 +76,66 @@ PageBase {
         MenuItem {
             property int value: MaterialShape.Circle
 
-            text: qsTr("Circle")
+            text: Tr.tr("Circle")
         },
         MenuItem {
             property int value: MaterialShape.Square
 
-            text: qsTr("Square")
+            text: Tr.tr("Square")
         },
         MenuItem {
             property int value: MaterialShape.Pill
 
-            text: qsTr("Pill")
+            text: Tr.tr("Pill")
         },
         MenuItem {
             property int value: MaterialShape.Diamond
 
-            text: qsTr("Diamond")
+            text: Tr.tr("Diamond")
         },
         MenuItem {
             property int value: MaterialShape.ClamShell
 
-            text: qsTr("Clam Shell")
+            text: Tr.tr("Clam Shell")
         },
         MenuItem {
             property int value: MaterialShape.Pentagon
 
-            text: qsTr("Pentagon")
+            text: Tr.tr("Pentagon")
         },
         MenuItem {
             property int value: MaterialShape.Gem
 
-            text: qsTr("Gem")
+            text: Tr.tr("Gem")
         },
         MenuItem {
             property int value: MaterialShape.Cookie4Sided
 
-            text: qsTr("Cookie 4-Sided")
+            text: Tr.tr("Cookie 4-Sided")
         },
         MenuItem {
             property int value: MaterialShape.Cookie6Sided
 
-            text: qsTr("Cookie 6-Sided")
+            text: Tr.tr("Cookie 6-Sided")
         },
         MenuItem {
             property int value: MaterialShape.Cookie7Sided
 
-            text: qsTr("Cookie 7-Sided")
+            text: Tr.tr("Cookie 7-Sided")
         },
         MenuItem {
             property int value: MaterialShape.Cookie9Sided
 
-            text: qsTr("Cookie 9-Sided")
+            text: Tr.tr("Cookie 9-Sided")
         },
         MenuItem {
             property int value: MaterialShape.Cookie12Sided
 
-            text: qsTr("Cookie 12-Sided")
+            text: Tr.tr("Cookie 12-Sided")
         }
     ]
 
-    title: qsTr("Dashboard")
-=======
-    title: Tr.tr("Dashboard")
->>>>>>> caelestia/main
-    isSubPage: true
+    title: Tr.tr("Dashboard")    isSubPage: true
 
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
@@ -161,8 +151,7 @@ PageBase {
 
         ToggleRow {
             first: true
-<<<<<<< HEAD
-            text: qsTr("Enabled")
+            text: Tr.tr("Enabled")
             configNode: root.targetConfig.dashboard
             propertyName: "enabled"
             checked: root.targetConfig.dashboard.enabled
@@ -173,8 +162,8 @@ PageBase {
 
         ToggleRow {
             Layout.fillWidth: true
-            text: qsTr("Show on hover")
-            subtext: qsTr("Reveal when the cursor reaches the screen edge")
+            text: Tr.tr("Show on hover")
+            subtext: Tr.tr("Reveal when the cursor reaches the screen edge")
             configNode: root.targetConfig.dashboard
             propertyName: "showOnHover"
             checked: root.targetConfig.dashboard.showOnHover
@@ -185,12 +174,12 @@ PageBase {
 
         SelectRow {
             Layout.fillWidth: true
-            label: qsTr("Dashboard profile picture shape")
-            subtext: qsTr("Choose the shape of the profile picture on the dashboard")
+            label: Tr.tr("Dashboard profile picture shape")
+            subtext: Tr.tr("Choose the shape of the profile picture on the dashboard")
             configNode: root.targetConfig.dashboard
             propertyName: "profilePicShape"
             fallbackIcon: "person"
-            fallbackText: qsTr("Pill")
+            fallbackText: Tr.tr("Pill")
             active: {
                 for (let i = 0; i < root.dashboardShapeItems.length; i++) {
                     if (root.dashboardShapeItems[i].value === root.targetConfig.dashboard.profilePicShape)
@@ -207,12 +196,12 @@ PageBase {
         SelectRow {
             Layout.fillWidth: true
             last: true
-            label: qsTr("Lock screen profile picture shape")
-            subtext: qsTr("Choose the shape of the profile picture on the lock screen")
+            label: Tr.tr("Lock screen profile picture shape")
+            subtext: Tr.tr("Choose the shape of the profile picture on the lock screen")
             configNode: root.targetConfig.lock
             propertyName: "profilePicShape"
             fallbackIcon: "lock"
-            fallbackText: qsTr("Clam Shell")
+            fallbackText: Tr.tr("Clam Shell")
             active: {
                 for (let i = 0; i < root.lockShapeItems.length; i++) {
                     if (root.lockShapeItems[i].value === root.targetConfig.lock.profilePicShape)
@@ -223,20 +212,7 @@ PageBase {
             menuItems: root.lockShapeItems
             onSelected: item => {
                 root.targetConfig.lock.profilePicShape = item.value; // qmllint disable missing-property
-            }
-=======
-            text: Tr.trCtx("Enabled", "toggle label")
-            checked: Config.dashboard.enabled
-            onToggled: GlobalConfig.dashboard.enabled = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("Show on hover")
-            subtext: Tr.tr("Reveal when the cursor reaches the screen edge")
-            checked: Config.dashboard.showOnHover
-            onToggled: GlobalConfig.dashboard.showOnHover = checked
->>>>>>> caelestia/main
-        }
+            }        }
 
         ToggleRow {
             last: true
@@ -253,8 +229,7 @@ PageBase {
 
         ToggleRow {
             first: true
-<<<<<<< HEAD
-            text: qsTr("Dashboard")
+            text: Tr.tr("Dashboard")
             configNode: root.targetConfig.dashboard
             propertyName: "showDashboard"
             checked: root.targetConfig.dashboard.showDashboard
@@ -264,7 +239,7 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Media")
+            text: Tr.tr("Media")
             configNode: root.targetConfig.dashboard
             propertyName: "showMedia"
             checked: root.targetConfig.dashboard.showMedia
@@ -274,7 +249,7 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Performance")
+            text: Tr.tr("Performance")
             configNode: root.targetConfig.dashboard
             propertyName: "showPerformance"
             checked: root.targetConfig.dashboard.showPerformance
@@ -285,7 +260,7 @@ PageBase {
 
         ToggleRow {
             Layout.fillWidth: true
-            text: qsTr("Weather")
+            text: Tr.tr("Weather")
             configNode: root.targetConfig.dashboard
             propertyName: "showWeather"
             checked: root.targetConfig.dashboard.showWeather
@@ -297,7 +272,7 @@ PageBase {
         ToggleRow {
             Layout.fillWidth: true
             last: true
-            text: qsTr("Terminal")
+            text: Tr.tr("Terminal")
             configNode: root.targetConfig.dashboard
             propertyName: "showTerminal"
             checked: root.targetConfig.dashboard.showTerminal
@@ -308,15 +283,15 @@ PageBase {
 
         // General
         SectionHeader {
-            text: qsTr("General")
+            text: Tr.tr("General")
         }
 
         ToggleRow {
             first: true
             last: true
             Layout.fillWidth: true
-            text: qsTr("Hyprland splash")
-            subtext: qsTr("Show the current Hyprland splash text")
+            text: Tr.tr("Hyprland splash")
+            subtext: Tr.tr("Show the current Hyprland splash text")
             configNode: root.targetConfig.dashboard
             propertyName: "showHyprlandSplash"
             checked: root.targetConfig.dashboard.showHyprlandSplash
@@ -327,14 +302,14 @@ PageBase {
 
         // Media
         SectionHeader {
-            text: qsTr("Media")
+            text: Tr.tr("Media")
         }
 
         ToggleRow {
             first: true
             Layout.fillWidth: true
-            text: qsTr("Recolor media GIF")
-            subtext: qsTr("Apply system theme colors to the media GIF")
+            text: Tr.tr("Recolor media GIF")
+            subtext: Tr.tr("Apply system theme colors to the media GIF")
             configNode: root.targetConfig.dashboard
             propertyName: "colorizeMediaGif"
             checked: root.targetConfig.dashboard.colorizeMediaGif
@@ -345,8 +320,8 @@ PageBase {
 
         ToggleRow {
             Layout.fillWidth: true
-            text: qsTr("Use material shapes")
-            subtext: qsTr("Replace the media GIF with audio-reactive material shapes")
+            text: Tr.tr("Use material shapes")
+            subtext: Tr.tr("Replace the media GIF with audio-reactive material shapes")
             configNode: root.targetConfig.dashboard
             propertyName: "useMediaShapes"
             checked: root.targetConfig.dashboard.useMediaShapes
@@ -357,8 +332,8 @@ PageBase {
 
         ToggleRow {
             Layout.fillWidth: true
-            text: qsTr("Randomize shape colors")
-            subtext: qsTr("Randomly shift shape colors while morphing")
+            text: Tr.tr("Randomize shape colors")
+            subtext: Tr.tr("Randomly shift shape colors while morphing")
             configNode: root.targetConfig.dashboard
             propertyName: "randomizeMediaShapeColors"
             checked: root.targetConfig.dashboard.randomizeMediaShapeColors
@@ -369,39 +344,20 @@ PageBase {
 
         ToggleRow {
             Layout.fillWidth: true
-            text: qsTr("Sync with music")
-            subtext: qsTr("Randomly pick shapes to the beat instead of bass level")
+            text: Tr.tr("Sync with music")
+            subtext: Tr.tr("Randomly pick shapes to the beat instead of bass level")
             configNode: root.targetConfig.dashboard
             propertyName: "syncMediaShapesToBeat"
             checked: root.targetConfig.dashboard.syncMediaShapesToBeat
             onToggled: {
                 root.targetConfig.dashboard.syncMediaShapesToBeat = checked;
-            }
-=======
-            text: Tr.tr("Dashboard")
-            checked: Config.dashboard.showDashboard
-            onToggled: GlobalConfig.dashboard.showDashboard = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("Media")
-            checked: Config.dashboard.showMedia
-            onToggled: GlobalConfig.dashboard.showMedia = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("Performance")
-            checked: Config.dashboard.showPerformance
-            onToggled: GlobalConfig.dashboard.showPerformance = checked
->>>>>>> caelestia/main
-        }
+            }        }
 
         ToggleRow {
             last: true
-<<<<<<< HEAD
             Layout.fillWidth: true
-            text: qsTr("Replace lyrics with visuals")
-            subtext: qsTr("Show the GIF/shapes in the media tab instead of lyrics")
+            text: Tr.tr("Replace lyrics with visuals")
+            subtext: Tr.tr("Show the GIF/shapes in the media tab instead of lyrics")
             configNode: root.targetConfig.dashboard
             propertyName: "replaceMediaLyricsWithVisuals"
             checked: root.targetConfig.dashboard.replaceMediaLyricsWithVisuals
@@ -412,27 +368,21 @@ PageBase {
 
         // Weather
         SectionHeader {
-            text: qsTr("Weather")
+            text: Tr.tr("Weather")
         }
 
         ToggleRow {
             first: true
             last: true
             Layout.fillWidth: true
-            text: qsTr("Weather location")
-            subtext: qsTr("Show the location in the weather tab")
+            text: Tr.tr("Weather location")
+            subtext: Tr.tr("Show the location in the weather tab")
             configNode: root.targetConfig.dashboard
             propertyName: "showWeatherLocation"
             checked: root.targetConfig.dashboard.showWeatherLocation !== false
             onToggled: {
                 root.targetConfig.dashboard.showWeatherLocation = checked;
-            }
-=======
-            text: Tr.tr("Weather")
-            checked: Config.dashboard.showWeather
-            onToggled: GlobalConfig.dashboard.showWeather = checked
->>>>>>> caelestia/main
-        }
+            }        }
 
         // Performance widgets
         SectionHeader {
@@ -441,8 +391,7 @@ PageBase {
 
         ToggleRow {
             first: true
-<<<<<<< HEAD
-            text: qsTr("Battery")
+            text: Tr.tr("Battery")
             configNode: root.targetConfig.dashboard.performance
             propertyName: "showBattery"
             checked: root.targetConfig.dashboard.performance.showBattery
@@ -452,7 +401,7 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("GPU")
+            text: Tr.tr("GPU")
             configNode: root.targetConfig.dashboard.performance
             propertyName: "showGpu"
             checked: root.targetConfig.dashboard.performance.showGpu
@@ -462,7 +411,7 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("CPU")
+            text: Tr.tr("CPU")
             configNode: root.targetConfig.dashboard.performance
             propertyName: "showCpu"
             checked: root.targetConfig.dashboard.performance.showCpu
@@ -472,7 +421,7 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Memory")
+            text: Tr.tr("Memory")
             configNode: root.targetConfig.dashboard.performance
             propertyName: "showMemory"
             checked: root.targetConfig.dashboard.performance.showMemory
@@ -482,60 +431,23 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Storage")
+            text: Tr.tr("Storage")
             configNode: root.targetConfig.dashboard.performance
             propertyName: "showStorage"
             checked: root.targetConfig.dashboard.performance.showStorage
             onToggled: {
                 root.targetConfig.dashboard.performance.showStorage = checked;
-            }
-=======
-            text: Tr.tr("Battery")
-            checked: Config.dashboard.performance.showBattery
-            onToggled: GlobalConfig.dashboard.performance.showBattery = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("GPU")
-            checked: Config.dashboard.performance.showGpu
-            onToggled: GlobalConfig.dashboard.performance.showGpu = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("CPU")
-            checked: Config.dashboard.performance.showCpu
-            onToggled: GlobalConfig.dashboard.performance.showCpu = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("Memory")
-            checked: Config.dashboard.performance.showMemory
-            onToggled: GlobalConfig.dashboard.performance.showMemory = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("Storage")
-            checked: Config.dashboard.performance.showStorage
-            onToggled: GlobalConfig.dashboard.performance.showStorage = checked
->>>>>>> caelestia/main
-        }
+            }        }
 
         ToggleRow {
             last: true
-<<<<<<< HEAD
-            text: qsTr("Network")
+            text: Tr.tr("Network")
             configNode: root.targetConfig.dashboard.performance
             propertyName: "showNetwork"
             checked: root.targetConfig.dashboard.performance.showNetwork
             onToggled: {
                 root.targetConfig.dashboard.performance.showNetwork = checked;
-            }
-=======
-            text: Tr.tr("Network")
-            checked: Config.dashboard.performance.showNetwork
-            onToggled: GlobalConfig.dashboard.performance.showNetwork = checked
->>>>>>> caelestia/main
-        }
+            }        }
 
         // Behaviour
         SectionHeader {
@@ -545,18 +457,11 @@ PageBase {
         StepperRow {
             first: true
             last: true
-<<<<<<< HEAD
-            label: qsTr("Drag threshold")
-            subtext: qsTr("Pixels dragged before the dashboard opens")
-            configNode: root.targetConfig.dashboard
-            propertyName: "dragThreshold"
-            value: root.targetConfig.dashboard.dragThreshold
-=======
             label: Tr.tr("Drag threshold")
             subtext: Tr.tr("Pixels dragged before the dashboard opens")
-            value: Config.dashboard.dragThreshold
->>>>>>> caelestia/main
-            from: 0
+            configNode: root.targetConfig.dashboard
+            propertyName: "dragThreshold"
+            value: root.targetConfig.dashboard.dragThreshold            from: 0
             to: 200
             stepSize: 5
             onMoved: v => {

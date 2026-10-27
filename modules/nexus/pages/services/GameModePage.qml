@@ -6,7 +6,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    title: qsTr("Game mode")
+    title: Tr.tr("Game mode")
     isSubPage: true
 
     ColumnLayout {
@@ -19,13 +19,13 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("Auto-enable rules")
+            text: Tr.tr("Auto-enable rules")
         }
 
         ToggleRow {
             first: true
-            text: qsTr("Enable automatically")
-            subtext: qsTr("Turn on game mode when a target window is focused or running")
+            text: Tr.tr("Enable automatically")
+            subtext: Tr.tr("Turn on game mode when a target window is focused or running")
             configNode: root.targetConfig.utilities.gameMode
             propertyName: "autoEnable"
             checked: root.targetConfig.utilities.gameMode.autoEnable
@@ -37,18 +37,18 @@ PageBase {
         NavRow {
             last: true
             icon: "ads_click"
-            text: qsTr("Target windows")
-            subtext: qsTr("Add or remove auto-enable targets")
+            text: Tr.tr("Target windows")
+            subtext: Tr.tr("Add or remove auto-enable targets")
             onClicked: root.nState.openSubPage(3)
         }
 
         SectionHeader {
-            text: qsTr("Hyprland overrides")
+            text: Tr.tr("Hyprland overrides")
         }
 
         ToggleRow {
             first: true
-            text: qsTr("Disable animations")
+            text: Tr.tr("Disable animations")
             configNode: root.targetConfig.utilities.gameMode
             propertyName: "disableHyprlandAnimations"
             checked: root.targetConfig.utilities.gameMode.disableHyprlandAnimations
@@ -57,7 +57,7 @@ PageBase {
             }
         }
         ToggleRow {
-            text: qsTr("Disable blur")
+            text: Tr.tr("Disable blur")
             configNode: root.targetConfig.utilities.gameMode
             propertyName: "disableHyprlandBlur"
             checked: root.targetConfig.utilities.gameMode.disableHyprlandBlur
@@ -66,7 +66,7 @@ PageBase {
             }
         }
         ToggleRow {
-            text: qsTr("Disable gaps and rounding")
+            text: Tr.tr("Disable gaps and rounding")
             configNode: root.targetConfig.utilities.gameMode
             propertyName: "disableHyprlandGaps"
             checked: root.targetConfig.utilities.gameMode.disableHyprlandGaps
@@ -75,7 +75,7 @@ PageBase {
             }
         }
         ToggleRow {
-            text: qsTr("Disable shadows")
+            text: Tr.tr("Disable shadows")
             configNode: root.targetConfig.utilities.gameMode
             propertyName: "disableHyprlandShadows"
             checked: root.targetConfig.utilities.gameMode.disableHyprlandShadows
@@ -84,7 +84,7 @@ PageBase {
             }
         }
         ToggleRow {
-            text: qsTr("Disable window transparency")
+            text: Tr.tr("Disable window transparency")
             last: true
             configNode: root.targetConfig.utilities.gameMode
             propertyName: "disableWindowTransparency"
@@ -95,12 +95,12 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("MiDnight feature overrides")
+            text: Tr.tr("MiDnight feature overrides")
         }
 
         ToggleRow {
             first: true
-            text: qsTr("Disable shell transparency")
+            text: Tr.tr("Disable shell transparency")
             configNode: root.targetConfig.utilities.gameMode
             propertyName: "disableShellTransparency"
             checked: root.targetConfig.utilities.gameMode.disableShellTransparency
@@ -109,7 +109,7 @@ PageBase {
             }
         }
         ToggleRow {
-            text: qsTr("Disable toast notifications transparency")
+            text: Tr.tr("Disable toast notifications transparency")
             configNode: root.targetConfig.utilities.gameMode
             propertyName: "disableToastTransparency"
             checked: root.targetConfig.utilities.gameMode.disableToastTransparency
@@ -118,7 +118,7 @@ PageBase {
             }
         }
         ToggleRow {
-            text: qsTr("Disable desktop lyrics")
+            text: Tr.tr("Disable desktop lyrics")
             configNode: root.targetConfig.utilities.gameMode
             propertyName: "disableDesktopLyrics"
             checked: root.targetConfig.utilities.gameMode.disableDesktopLyrics
@@ -127,7 +127,7 @@ PageBase {
             }
         }
         ToggleRow {
-            text: qsTr("Disable visualizer")
+            text: Tr.tr("Disable visualizer")
             configNode: root.targetConfig.utilities.gameMode
             propertyName: "disableVisualizer"
             checked: root.targetConfig.utilities.gameMode.disableVisualizer
@@ -136,7 +136,7 @@ PageBase {
             }
         }
         ToggleRow {
-            text: qsTr("Disable shimeji pets")
+            text: Tr.tr("Disable shimeji pets")
             last: true
             configNode: root.targetConfig.utilities.gameMode
             propertyName: "disableShimeji"

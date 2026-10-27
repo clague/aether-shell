@@ -330,7 +330,7 @@ PageBase {
         root.vars = newVars;
     }
 
-    title: qsTr("Variables")
+    title: Tr.tr("Variables")
     isSubPage: true
 
     Component.onCompleted: {
@@ -345,7 +345,7 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("Apps")
+            text: Tr.tr("Apps")
         }
 
         AppRow {
@@ -377,7 +377,7 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Touchpad")
+            text: Tr.tr("Touchpad")
         }
 
         BoolRow {
@@ -410,7 +410,7 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Blur")
+            text: Tr.tr("Blur")
         }
 
         BoolRow {
@@ -449,7 +449,7 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Shadow")
+            text: Tr.tr("Shadow")
         }
 
         BoolRow {
@@ -477,7 +477,7 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Gaps")
+            text: Tr.tr("Gaps")
         }
 
         IntRow {
@@ -508,7 +508,7 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Window styling")
+            text: Tr.tr("Window styling")
         }
 
         BoundedSliderRow {
@@ -542,7 +542,7 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Misc")
+            text: Tr.tr("Misc")
         }
 
         IntRow {

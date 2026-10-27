@@ -6,7 +6,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    title: qsTr("Rounding & Spacing")
+    title: Tr.tr("Rounding & Spacing")
     isSubPage: true
 
     ColumnLayout {
@@ -17,13 +17,13 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("Corner Rounding")
+            text: Tr.tr("Corner Rounding")
         }
 
         StepperRow {
             first: true
             Layout.fillWidth: true
-            label: qsTr("Extra Small")
+            label: Tr.tr("Extra Small")
             value: TokenConfig.appearance.rounding.extraSmall
             from: 0
             to: 100
@@ -38,7 +38,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Small")
+            label: Tr.tr("Small")
             value: TokenConfig.appearance.rounding.small
             from: 0
             to: 100
@@ -53,7 +53,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Medium")
+            label: Tr.tr("Medium")
             value: TokenConfig.appearance.rounding.medium
             from: 0
             to: 100
@@ -68,7 +68,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Large")
+            label: Tr.tr("Large")
             value: TokenConfig.appearance.rounding.large
             from: 0
             to: 100
@@ -83,7 +83,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Large Increased")
+            label: Tr.tr("Large Increased")
             value: TokenConfig.appearance.rounding.largeIncreased
             from: 0
             to: 100
@@ -98,7 +98,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Extra Large")
+            label: Tr.tr("Extra Large")
             value: TokenConfig.appearance.rounding.extraLarge
             from: 0
             to: 100
@@ -113,7 +113,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Extra Large Increased")
+            label: Tr.tr("Extra Large Increased")
             value: TokenConfig.appearance.rounding.extraLargeIncreased
             from: 0
             to: 100
@@ -129,7 +129,7 @@ PageBase {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            label: qsTr("Extra Extra Large")
+            label: Tr.tr("Extra Extra Large")
             value: TokenConfig.appearance.rounding.extraExtraLarge
             from: 0
             to: 150
@@ -142,13 +142,13 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Layout Spacing")
+            text: Tr.tr("Layout Spacing")
         }
 
         StepperRow {
             first: true
             Layout.fillWidth: true
-            label: qsTr("Extra Small")
+            label: Tr.tr("Extra Small")
             value: TokenConfig.appearance.spacing.extraSmall
             from: 0
             to: 100
@@ -163,7 +163,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Small")
+            label: Tr.tr("Small")
             value: TokenConfig.appearance.spacing.small
             from: 0
             to: 100
@@ -178,7 +178,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Medium")
+            label: Tr.tr("Medium")
             value: TokenConfig.appearance.spacing.medium
             from: 0
             to: 100
@@ -193,7 +193,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Large")
+            label: Tr.tr("Large")
             value: TokenConfig.appearance.spacing.large
             from: 0
             to: 100
@@ -208,7 +208,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Large Increased")
+            label: Tr.tr("Large Increased")
             value: TokenConfig.appearance.spacing.largeIncreased
             from: 0
             to: 100
@@ -223,7 +223,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Extra Large")
+            label: Tr.tr("Extra Large")
             value: TokenConfig.appearance.spacing.extraLarge
             from: 0
             to: 100
@@ -238,7 +238,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Extra Large Increased")
+            label: Tr.tr("Extra Large Increased")
             value: TokenConfig.appearance.spacing.extraLargeIncreased
             from: 0
             to: 100
@@ -254,7 +254,7 @@ PageBase {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            label: qsTr("Extra Extra Large")
+            label: Tr.tr("Extra Extra Large")
             value: TokenConfig.appearance.spacing.extraExtraLarge
             from: 0
             to: 150
@@ -267,13 +267,13 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Inner Padding")
+            text: Tr.tr("Inner Padding")
         }
 
         StepperRow {
             first: true
             Layout.fillWidth: true
-            label: qsTr("Extra Small")
+            label: Tr.tr("Extra Small")
             value: TokenConfig.appearance.padding.extraSmall
             from: 0
             to: 100
@@ -288,7 +288,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Small")
+            label: Tr.tr("Small")
             value: TokenConfig.appearance.padding.small
             from: 0
             to: 100
@@ -303,7 +303,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Medium")
+            label: Tr.tr("Medium")
             value: TokenConfig.appearance.padding.medium
             from: 0
             to: 100
@@ -318,7 +318,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Large")
+            label: Tr.tr("Large")
             value: TokenConfig.appearance.padding.large
             from: 0
             to: 100
@@ -333,7 +333,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Large Increased")
+            label: Tr.tr("Large Increased")
             value: TokenConfig.appearance.padding.largeIncreased
             from: 0
             to: 100
@@ -348,7 +348,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Extra Large")
+            label: Tr.tr("Extra Large")
             value: TokenConfig.appearance.padding.extraLarge
             from: 0
             to: 100
@@ -363,7 +363,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Extra Large Increased")
+            label: Tr.tr("Extra Large Increased")
             value: TokenConfig.appearance.padding.extraLargeIncreased
             from: 0
             to: 100
@@ -379,7 +379,7 @@ PageBase {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            label: qsTr("Extra Extra Large")
+            label: Tr.tr("Extra Extra Large")
             value: TokenConfig.appearance.padding.extraExtraLarge
             from: 0
             to: 150

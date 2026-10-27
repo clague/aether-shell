@@ -32,7 +32,7 @@ PageBase {
         }
     }
 
-    title: qsTr("GitHub")
+    title: Tr.tr("GitHub")
     isSubPage: true
 
     Component.onCompleted: readTokenProc.running = true
@@ -45,14 +45,14 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("Configuration")
+            text: Tr.tr("Configuration")
         }
 
         ToggleRow {
             Layout.fillWidth: true
             first: true
-            text: qsTr("Component background")
-            subtext: qsTr("Render a solid background behind the GitHub activity widget")
+            text: Tr.tr("Component background")
+            subtext: Tr.tr("Render a solid background behind the GitHub activity widget")
             configNode: root.targetConfig.bar.github
             propertyName: "background"
             checked: root.targetConfig.bar.github.background
@@ -87,13 +87,13 @@ PageBase {
                     spacing: 0
 
                     StyledText {
-                        text: qsTr("Personal Access Token")
+                        text: Tr.tr("Personal Access Token")
                         font: Tokens.font.body.small
                         elide: Text.ElideRight
                     }
 
                     StyledText {
-                        text: qsTr("Used to fetch your contribution graph (read:user)")
+                        text: Tr.tr("Used to fetch your contribution graph (read:user)")
                         font: Tokens.font.label.small
                         color: Colours.palette.m3outline
                         elide: Text.ElideRight

@@ -80,7 +80,7 @@ PageBase {
                 StyledText {
                     Layout.alignment: Qt.AlignHCenter
                     Layout.topMargin: Tokens.spacing.small
-                    text: qsTr("by DiM • Basically Caelestia+")
+                    text: Tr.tr("by DiM • Basically Caelestia+")
                     color: Colours.palette.m3onSurfaceVariant
                     font: Tokens.font.label.medium
                     opacity: 0.8
@@ -96,18 +96,18 @@ PageBase {
                         anchors.fill: parent
                         onClicked: {
                             if (GlobalConfig.general.developerMode) {
-                                Toaster.toast(qsTr("Developer Options"), qsTr("No need, you are already a developer."), "construction");
+                                Toaster.toast(Tr.tr("Developer Options"), Tr.tr("No need, you are already a developer."), "construction");
                                 return;
                             }
 
                             hero.clicks++;
                             const remaining = 7 - hero.clicks;
                             if (remaining > 0 && remaining <= 4) {
-                                Toaster.toast(qsTr("Developer Options"), qsTr("You are now %1 steps away from being a developer.").arg(remaining), "construction");
+                                Toaster.toast(Tr.tr("Developer Options"), Tr.tr("You are now %1 steps away from being a developer.").arg(remaining), "construction");
                             } else if (remaining === 0) {
                                 root.nState.justUnlockedDevMode = true;
                                 GlobalConfig.general.developerMode = true;
-                                Toaster.toast(qsTr("Developer Options"), qsTr("You are now a developer!"), "construction");
+                                Toaster.toast(Tr.tr("Developer Options"), Tr.tr("You are now a developer!"), "construction");
                             }
                         }
                     }

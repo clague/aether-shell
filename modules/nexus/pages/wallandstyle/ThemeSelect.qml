@@ -13,7 +13,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    title: qsTr("Themes")
+    title: Tr.tr("Themes")
     isSubPage: true
 
     ColumnLayout {
@@ -24,7 +24,7 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("Available themes")
+            text: Tr.tr("Available themes")
         }
 
         GridLayout {
@@ -125,14 +125,14 @@ PageBase {
 
         // Custom paths
         SectionHeader {
-            text: qsTr("Wallpaper directory")
+            text: Tr.tr("Wallpaper directory")
         }
 
         TextFieldRow {
             first: true
             last: true
-            label: qsTr("Wallpapers folder")
-            subtext: qsTr("Directory used for wallpapers and random switcher")
+            label: Tr.tr("Wallpapers folder")
+            subtext: Tr.tr("Directory used for wallpapers and random switcher")
             value: GlobalConfig.paths.wallpaperDir
             placeholderText: "/home/user/Pictures/Wallpapers"
             onEditingFinished: value => {
@@ -143,7 +143,7 @@ PageBase {
 
         // How to create custom themes guide card
         SectionHeader {
-            text: qsTr("Create your own theme")
+            text: Tr.tr("Create your own theme")
         }
 
         StyledRect {
@@ -169,7 +169,7 @@ PageBase {
                         color: Colours.palette.m3primary
                     }
                     StyledText {
-                        text: qsTr("Theme Package Guide")
+                        text: Tr.tr("Theme Package Guide")
                         font: Tokens.font.title.small
                         color: Colours.palette.m3onSurface
                     }

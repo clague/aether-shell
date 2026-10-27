@@ -6,7 +6,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    title: qsTr("Background visualiser")
+    title: Tr.tr("Background visualiser")
     isSubPage: true
 
     ColumnLayout {
@@ -17,13 +17,13 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("General")
+            text: Tr.tr("General")
         }
 
         ToggleRow {
             first: true
             Layout.fillWidth: true
-            text: qsTr("Enable background visualiser")
+            text: Tr.tr("Enable background visualiser")
             configNode: root.targetConfig.background.visualiser
             propertyName: "enabled"
             checked: root.targetConfig.background.visualiser.enabled
@@ -35,8 +35,8 @@ PageBase {
         ToggleRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            text: qsTr("Auto-hide visualiser")
-            subtext: qsTr("Hide visualiser when a window is open")
+            text: Tr.tr("Auto-hide visualiser")
+            subtext: Tr.tr("Hide visualiser when a window is open")
             configNode: root.targetConfig.background.visualiser
             propertyName: "autoHide"
             checked: root.targetConfig.background.visualiser.autoHide
@@ -50,8 +50,8 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            text: qsTr("Blur background")
-            subtext: qsTr("Blur the wallpaper behind the visualiser")
+            text: Tr.tr("Blur background")
+            subtext: Tr.tr("Blur the wallpaper behind the visualiser")
             configNode: root.targetConfig.background.visualiser
             propertyName: "blur"
             checked: root.targetConfig.background.visualiser.blur
@@ -62,13 +62,13 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Appearance")
+            text: Tr.tr("Appearance")
         }
 
         SliderRow {
             first: true
             Layout.fillWidth: true
-            label: qsTr("Rounding")
+            label: Tr.tr("Rounding")
             configNode: root.targetConfig.background.visualiser
             propertyName: "rounding"
             value: root.targetConfig.background.visualiser.rounding / 10.0
@@ -81,7 +81,7 @@ PageBase {
         SliderRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Spacing")
+            label: Tr.tr("Spacing")
             configNode: root.targetConfig.background.visualiser
             propertyName: "spacing"
             value: root.targetConfig.background.visualiser.spacing / 10.0
@@ -95,8 +95,8 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            label: qsTr("Visualiser bars")
-            subtext: qsTr("Number of bars in the audio visualisers")
+            label: Tr.tr("Visualiser bars")
+            subtext: Tr.tr("Number of bars in the audio visualisers")
             configNode: root.targetConfig.services
             propertyName: "visualiserBars"
             value: root.targetConfig.services.visualiserBars

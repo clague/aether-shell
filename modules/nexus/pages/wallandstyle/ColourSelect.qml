@@ -2,64 +2,53 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Caelestia.Config
-<<<<<<< HEAD
-import qs.components.controls
-=======
-import Caelestia.I18n
-import qs.components
->>>>>>> caelestia/main
-import qs.services
+import qs.components.controlsimport qs.services
 import qs.modules.launcher.services
 import qs.modules.nexus.common
 
 PageBase {
     id: root
 
-<<<<<<< HEAD
     readonly property list<var> variantData: [
         {
             name: "vibrant",
-            label: qsTr("Vibrant")
+            label: Tr.tr("Vibrant")
         },
         {
             name: "tonalspot",
-            label: qsTr("Tonal Spot")
+            label: Tr.tr("Tonal Spot")
         },
         {
             name: "expressive",
-            label: qsTr("Expressive")
+            label: Tr.tr("Expressive")
         },
         {
             name: "fidelity",
-            label: qsTr("Fidelity")
+            label: Tr.tr("Fidelity")
         },
         {
             name: "content",
-            label: qsTr("Content")
+            label: Tr.tr("Content")
         },
         {
             name: "fruitsalad",
-            label: qsTr("Fruit Salad")
+            label: Tr.tr("Fruit Salad")
         },
         {
             name: "rainbow",
-            label: qsTr("Rainbow")
+            label: Tr.tr("Rainbow")
         },
         {
             name: "neutral",
-            label: qsTr("Neutral")
+            label: Tr.tr("Neutral")
         },
         {
             name: "monochrome",
-            label: qsTr("Monochrome")
+            label: Tr.tr("Monochrome")
         }
     ]
 
-    title: qsTr("Colours")
-=======
-    title: Tr.tr("Colours")
->>>>>>> caelestia/main
-    isSubPage: true
+    title: Tr.tr("Colours")    isSubPage: true
 
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
@@ -87,54 +76,38 @@ PageBase {
 
             model: root.variantData
 
-<<<<<<< HEAD
             MenuItem {
                 required property var modelData
 
                 text: modelData.label
                 onClicked: {
                     Quickshell.execDetached(["caelestia", "scheme", "set", "-v", modelData.name]);
-                }
-=======
-            StyledText {
-                Layout.alignment: Qt.AlignHCenter
-                text: Tr.tr("Page under construction")
-                color: Colours.palette.m3outlineVariant
-                font: Tokens.font.title.large
-            }
-
-            StyledText {
-                Layout.alignment: Qt.AlignHCenter
-                text: Tr.tr("This page will be available in a future update.")
-                color: Colours.palette.m3outlineVariant
-                font: Tokens.font.body.large
->>>>>>> caelestia/main
-            }
+                }            }
         }
 
         SectionHeader {
             first: true
-            text: qsTr("General")
+            text: Tr.tr("General")
         }
 
         ToggleRow {
             first: true
             last: true
             Layout.fillWidth: true
-            text: qsTr("Smart colour scheme")
-            subtext: qsTr("Derive theme mode and variant from the wallpaper")
+            text: Tr.tr("Smart colour scheme")
+            subtext: Tr.tr("Derive theme mode and variant from the wallpaper")
             checked: GlobalConfig.services.smartScheme
             onToggled: GlobalConfig.services.smartScheme = checked
         }
 
         SectionHeader {
-            text: qsTr("Scheme Settings")
+            text: Tr.tr("Scheme Settings")
         }
 
         SelectRow {
             first: true
-            label: qsTr("Colour Scheme")
-            subtext: qsTr("Select your base colour scheme style")
+            label: Tr.tr("Colour Scheme")
+            subtext: Tr.tr("Select your base colour scheme style")
             menuItems: schemeItems.instances
             active: {
                 const current = Colours.scheme + " " + Colours.flavour;
@@ -150,8 +123,8 @@ PageBase {
 
         SelectRow {
             last: true
-            label: qsTr("Scheme Variant")
-            subtext: qsTr("Select the color distribution algorithm")
+            label: Tr.tr("Scheme Variant")
+            subtext: Tr.tr("Select the color distribution algorithm")
             menuItems: variantItems.instances
             active: {
                 const current = Colours.variant;

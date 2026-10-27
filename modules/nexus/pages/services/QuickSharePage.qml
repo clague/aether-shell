@@ -7,7 +7,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    title: qsTr("Quick Share")
+    title: Tr.tr("Quick Share")
 
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
@@ -17,14 +17,14 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("Startup")
+            text: Tr.tr("Startup")
         }
 
         ToggleRow {
             first: true
             last: true
-            text: qsTr("Auto-start on launch")
-            subtext: qsTr("Enable Quick Share when the shell starts")
+            text: Tr.tr("Auto-start on launch")
+            subtext: Tr.tr("Enable Quick Share when the shell starts")
             configNode: root.targetConfig.services
             propertyName: "quickShareAutoStart"
             checked: root.targetConfig.services.quickShareAutoStart
@@ -34,14 +34,14 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Status")
+            text: Tr.tr("Status")
         }
 
         ToggleRow {
             first: true
             last: true
-            text: qsTr("Enable Quick Share")
-            subtext: QuickShare.isEnabled ? qsTr("Discoverable by nearby devices") : qsTr("Disabled")
+            text: Tr.tr("Enable Quick Share")
+            subtext: QuickShare.isEnabled ? Tr.tr("Discoverable by nearby devices") : Tr.tr("Disabled")
             checked: QuickShare.isEnabled
             onToggled: {
                 QuickShare.setEnabled(checked);

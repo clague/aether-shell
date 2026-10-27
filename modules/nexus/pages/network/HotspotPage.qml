@@ -15,7 +15,7 @@ PageBase {
     property bool showPassword: false
     property bool savedFeedback: false
 
-    title: qsTr("Wi-Fi Hotspot")
+    title: Tr.tr("Wi-Fi Hotspot")
     isSubPage: true
 
     ColumnLayout {
@@ -35,8 +35,8 @@ PageBase {
         ToggleRow {
             first: true
             last: true
-            text: qsTr("Wi-Fi Hotspot")
-            subtext: Hotspot.active ? qsTr("Broadcasting '%1' (%2 connected)").arg(Hotspot.ssid).arg(Hotspot.clientCount) : qsTr("Turn your device into an Access Point")
+            text: Tr.tr("Wi-Fi Hotspot")
+            subtext: Hotspot.active ? Tr.tr("Broadcasting '%1' (%2 connected)").arg(Hotspot.ssid).arg(Hotspot.clientCount) : Tr.tr("Turn your device into an Access Point")
             font: Tokens.font.body.medium
             horizontalPadding: Tokens.padding.largeIncreased
             checked: Hotspot.active
@@ -73,13 +73,13 @@ PageBase {
                     spacing: 0
 
                     StyledText {
-                        text: Hotspot.lastError.includes("IP configuration") || Hotspot.lastError.includes("reserved") ? qsTr("Missing DHCP Server (dnsmasq)") : qsTr("Hotspot Activation Failed")
+                        text: Hotspot.lastError.includes("IP configuration") || Hotspot.lastError.includes("reserved") ? Tr.tr("Missing DHCP Server (dnsmasq)") : Tr.tr("Hotspot Activation Failed")
                         color: Colours.palette.m3onErrorContainer
                         font: Tokens.font.body.small
                     }
 
                     StyledText {
-                        text: Hotspot.lastError.includes("IP configuration") || Hotspot.lastError.includes("reserved") ? qsTr("Run: sudo pacman -S dnsmasq to enable DHCP hotspot sharing.") : Hotspot.lastError
+                        text: Hotspot.lastError.includes("IP configuration") || Hotspot.lastError.includes("reserved") ? Tr.tr("Run: sudo pacman -S dnsmasq to enable DHCP hotspot sharing.") : Hotspot.lastError
                         color: Colours.palette.m3onErrorContainer
                         font: Tokens.font.label.small
                         wrapMode: Text.WordWrap
@@ -114,7 +114,7 @@ PageBase {
 
                 StyledText {
                     Layout.fillWidth: true
-                    text: Hotspot.active ? qsTr("Settings saved! Restarting hotspot with new credentials...") : qsTr("Settings saved successfully!")
+                    text: Hotspot.active ? Tr.tr("Settings saved! Restarting hotspot with new credentials...") : Tr.tr("Settings saved successfully!")
                     color: Colours.palette.m3onPrimaryContainer
                     font: Tokens.font.body.small
                 }
@@ -123,7 +123,7 @@ PageBase {
 
         // 2. Configuration Settings Section
         SectionHeader {
-            text: qsTr("Hotspot Settings")
+            text: Tr.tr("Hotspot Settings")
         }
 
         StyledTextField {
@@ -131,10 +131,10 @@ PageBase {
 
             Layout.fillWidth: true
             text: Hotspot.ssid
-            placeholderText: qsTr("Hotspot Network Name (SSID)")
-            supportingText: qsTr("The name visible to other devices")
+            placeholderText: Tr.tr("Hotspot Network Name (SSID)")
+            supportingText: Tr.tr("The name visible to other devices")
             leadingIcon: "wifi_tethering"
-            errorText: qsTr("SSID cannot be empty")
+            errorText: Tr.tr("SSID cannot be empty")
             inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhNoPredictiveText
             onAccepted: passwordField.forceActiveFocus()
         }
@@ -148,11 +148,11 @@ PageBase {
 
                 Layout.fillWidth: true
                 text: Hotspot.password
-                placeholderText: qsTr("Password (at least 8 characters)")
-                supportingText: qsTr("WPA2 / WPA3 security key")
+                placeholderText: Tr.tr("Password (at least 8 characters)")
+                supportingText: Tr.tr("WPA2 / WPA3 security key")
                 leadingIcon: "lock"
                 echoMode: root.showPassword ? TextInput.Normal : TextInput.Password
-                errorText: qsTr("Password must be at least 8 characters")
+                errorText: Tr.tr("Password must be at least 8 characters")
                 inputMethodHints: Qt.ImhNoAutoUppercase | Qt.ImhNoPredictiveText
                 onAccepted: saveBtn.clicked()
             }
@@ -172,19 +172,19 @@ PageBase {
             Layout.fillWidth: true
             first: true
             last: true
-            label: qsTr("Frequency band")
-            fallbackText: Hotspot.band === "a" ? qsTr("5 GHz (High Speed)") : qsTr("2.4 GHz (Standard / Long Range)")
+            label: Tr.tr("Frequency band")
+            fallbackText: Hotspot.band === "a" ? Tr.tr("5 GHz (High Speed)") : Tr.tr("2.4 GHz (Standard / Long Range)")
             fallbackIcon: "cell_tower"
 
             menuItems: [
                 MenuItem {
                     icon: "wifi"
-                    text: qsTr("2.4 GHz (Standard / Long Range)")
+                    text: Tr.tr("2.4 GHz (Standard / Long Range)")
                     onClicked: Hotspot.band = "bg"
                 },
                 MenuItem {
                     icon: "speed"
-                    text: qsTr("5 GHz (High Speed)")
+                    text: Tr.tr("5 GHz (High Speed)")
                     onClicked: Hotspot.band = "a"
                 }
             ]
@@ -201,7 +201,7 @@ PageBase {
             IconTextButton {
                 id: saveBtn
 
-                text: root.savedFeedback ? qsTr("Saved!") : qsTr("Save & Apply")
+                text: root.savedFeedback ? Tr.tr("Saved!") : Tr.tr("Save & Apply")
                 icon: root.savedFeedback ? "check" : "save"
                 type: root.savedFeedback ? IconTextButton.Tonal : IconTextButton.Filled
                 onClicked: {
@@ -222,14 +222,14 @@ PageBase {
                     Hotspot.updateCredentials(s, p, Hotspot.band);
                     root.savedFeedback = true;
                     savedTimer.restart();
-                    Toaster.toast(qsTr("Wi-Fi Hotspot"), qsTr("Hotspot settings updated to '%1'").arg(s), "wifi_tethering");
+                    Toaster.toast(Tr.tr("Wi-Fi Hotspot"), Tr.tr("Hotspot settings updated to '%1'").arg(s), "wifi_tethering");
                 }
             }
         }
 
         // 3. Connected Devices Section
         SectionHeader {
-            text: qsTr("Connected Devices (%1)").arg(Hotspot.clientCount)
+            text: Tr.tr("Connected Devices (%1)").arg(Hotspot.clientCount)
         }
 
         ColumnLayout {
@@ -271,7 +271,7 @@ PageBase {
                             spacing: 0
 
                             StyledText {
-                                text: clientEntry.modelData.ip || qsTr("Unknown Device")
+                                text: clientEntry.modelData.ip || Tr.tr("Unknown Device")
                                 font: Tokens.font.body.small
                                 elide: Text.ElideRight
                             }
@@ -302,7 +302,7 @@ PageBase {
 
                 StyledText {
                     Layout.alignment: Qt.AlignHCenter
-                    text: Hotspot.active ? qsTr("No devices connected yet") : qsTr("Hotspot is currently turned off")
+                    text: Hotspot.active ? Tr.tr("No devices connected yet") : Tr.tr("Hotspot is currently turned off")
                     color: Colours.palette.m3outline
                     font: Tokens.font.body.small
                 }

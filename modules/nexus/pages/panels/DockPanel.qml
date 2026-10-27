@@ -36,7 +36,7 @@ PageBase {
         }
     }
 
-    title: qsTr("Dock")
+    title: Tr.tr("Dock")
     isSubPage: true
 
     ColumnLayout {
@@ -48,21 +48,21 @@ PageBase {
         // General
         SectionHeader {
             first: true
-            text: qsTr("General")
+            text: Tr.tr("General")
         }
 
         ToggleRow {
             first: true
-            text: qsTr("Enabled")
-            subtext: qsTr("Show the application dock at the bottom of the screen")
+            text: Tr.tr("Enabled")
+            subtext: Tr.tr("Show the application dock at the bottom of the screen")
             checked: Config.dock.enabled
             onToggled: GlobalConfig.dock.enabled = checked
         }
 
         ToggleRow {
             last: true
-            text: qsTr("Show on hover")
-            subtext: Config.dock.showOnHover ? qsTr("Reveal dock on hover (launcher opens on drag)") : qsTr("Reveal dock on drag (launcher opens on hover)")
+            text: Tr.tr("Show on hover")
+            subtext: Config.dock.showOnHover ? Tr.tr("Reveal dock on hover (launcher opens on drag)") : Tr.tr("Reveal dock on drag (launcher opens on hover)")
             checked: Config.dock.showOnHover
             onToggled: {
                 GlobalConfig.dock.showOnHover = checked;
@@ -72,13 +72,13 @@ PageBase {
 
         // Behaviour & Dimensions
         SectionHeader {
-            text: qsTr("Behaviour & Sizing")
+            text: Tr.tr("Behaviour & Sizing")
         }
 
         StepperRow {
             first: true
-            label: qsTr("Maximum slots")
-            subtext: qsTr("Max visible app slots before overflow scrolling")
+            label: Tr.tr("Maximum slots")
+            subtext: Tr.tr("Max visible app slots before overflow scrolling")
             value: Config.dock.maxSlots
             from: 3
             to: 30
@@ -88,8 +88,8 @@ PageBase {
 
         StepperRow {
             last: true
-            label: qsTr("Drag threshold")
-            subtext: qsTr("Pixels dragged before the dock reveals")
+            label: Tr.tr("Drag threshold")
+            subtext: Tr.tr("Pixels dragged before the dock reveals")
             value: Config.dock.dragThreshold
             from: 0
             to: 200
@@ -99,7 +99,7 @@ PageBase {
 
         // Pinned Applications
         SectionHeader {
-            text: qsTr("Pinned applications")
+            text: Tr.tr("Pinned applications")
         }
 
         Repeater {
@@ -153,9 +153,9 @@ PageBase {
 
             rootParent: root.flickable
             icon: "add"
-            label: qsTr("Pin an app")
-            header: qsTr("Choose application to pin")
-            acceptLabel: qsTr("Pin")
+            label: Tr.tr("Pin an app")
+            header: Tr.tr("Choose application to pin")
+            acceptLabel: Tr.tr("Pin")
 
             model: {
                 const apps = [...DesktopEntries.applications.values].filter(a => a.id && a.name && !GlobalConfig.dock.pinnedApps.includes(a.id)).sort((a, b) => a.name.localeCompare(b.name)).map(a => ({

@@ -41,14 +41,12 @@ PageBase {
             text: Tr.trCtx("Generic", "gpu type")
         },
         MenuItem {
-<<<<<<< HEAD
-            text: qsTr("None")
+            text: Tr.trCtx("None", "gpu type")
         },
+        // MiDnight's Intel probe; ours' ours-to-upstream adaptation duplicates the
+        // driver-agnostic path upstream's nvidia-smi path would misdetect.
         MenuItem {
             text: "Intel"
-=======
-            text: Tr.trCtx("None", "gpu type")
->>>>>>> caelestia/main
         }
     ]
 
@@ -196,35 +194,7 @@ PageBase {
             text: Tr.tr("Service tuning")
         }
 
-        NavRow {
-            first: true
-<<<<<<< HEAD
-            icon: "sports_esports"
-            text: qsTr("Game mode")
-            subtext: qsTr("Manage how MiDnight behaves while gaming")
-            onClicked: root.nState.openSubPage(2)
-        }
-
-        NavRow {
-            icon: "chat" // Using chat since discord icon might not be available in Material icons
-            text: qsTr("Discord Rich Presence")
-            subtext: qsTr("Broadcast your status to Vesktop")
-            onClicked: root.nState.openSubPage(4)
-        }
-
-        NavRow {
-            icon: "picture_in_picture"
-            text: qsTr("Picture in Picture")
-            subtext: qsTr("Configure PiP positioning and focus behavior")
-            onClicked: root.nState.openSubPage(5)
-        }
-
-        NavRow {
-            icon: "near_me"
-            text: qsTr("Quick Share")
-            subtext: qsTr("Auto-start and discoverability settings")
-            onClicked: root.nState.openSubPage(6)
-=======
+        SliderRow {
             // TRANSLATORS: bars of a spectrum analyser, not the taskbar
             label: Tr.tr("Visualiser bars")
             subtext: Tr.tr("Number of bars in the audio visualisers")
@@ -240,7 +210,34 @@ PageBase {
             subtext: Tr.tr("Derive theme mode and variant from the wallpaper")
             checked: GlobalConfig.services.smartScheme
             onToggled: GlobalConfig.services.smartScheme = checked
->>>>>>> caelestia/main
+        }
+
+        NavRow {
+            icon: "sports_esports"
+            text: Tr.tr("Game mode")
+            subtext: Tr.tr("Manage how MiDnight behaves while gaming")
+            onClicked: root.nState.openSubPage(2)
+        }
+
+        NavRow {
+            icon: "chat" // Using chat since discord icon might not be available in Material icons
+            text: Tr.tr("Discord Rich Presence")
+            subtext: Tr.tr("Broadcast your status to Vesktop")
+            onClicked: root.nState.openSubPage(4)
+        }
+
+        NavRow {
+            icon: "picture_in_picture"
+            text: Tr.tr("Picture in Picture")
+            subtext: Tr.tr("Configure PiP positioning and focus behavior")
+            onClicked: root.nState.openSubPage(5)
+        }
+
+        NavRow {
+            icon: "near_me"
+            text: Tr.tr("Quick Share")
+            subtext: Tr.tr("Auto-start and discoverability settings")
+            onClicked: root.nState.openSubPage(6)
         }
 
         SelectRow {

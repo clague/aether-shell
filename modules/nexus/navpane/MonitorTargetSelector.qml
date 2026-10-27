@@ -32,7 +32,7 @@ StyledRect {
         MenuItem {
             required property string modelData
 
-            text: modelData === "" ? qsTr("Global") : modelData
+            text: modelData === "" ? Tr.tr("Global") : modelData
             icon: modelData === "" ? "globe" : "desktop_windows"
             onClicked: root.nState.targetScreen = modelData
         }
@@ -65,14 +65,14 @@ StyledRect {
 
             StyledText {
                 Layout.fillWidth: true
-                text: root.nState.targetScreen === "" ? qsTr("Global Config") : qsTr("Monitor: %1").arg(root.nState.targetScreen)
+                text: root.nState.targetScreen === "" ? Tr.tr("Global Config") : Tr.tr("Monitor: %1").arg(root.nState.targetScreen)
                 font: Tokens.font.body.medium
                 elide: Text.ElideRight
             }
 
             StyledText {
                 Layout.fillWidth: true
-                text: root.nState.targetScreen === "" ? qsTr("Applies to all monitors") : qsTr("Per-monitor overrides")
+                text: root.nState.targetScreen === "" ? Tr.tr("Applies to all monitors") : Tr.tr("Per-monitor overrides")
                 color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.label.small
                 elide: Text.ElideRight
@@ -84,11 +84,11 @@ StyledRect {
 
             type: SplitButton.Tonal
             fallbackIcon: root.nState.targetScreen === "" ? "globe" : "desktop_windows"
-            fallbackText: root.nState.targetScreen === "" ? qsTr("Global") : root.nState.targetScreen
+            fallbackText: root.nState.targetScreen === "" ? Tr.tr("Global") : root.nState.targetScreen
 
             menuItems: screenVariants.instances
 
-            active: screenVariants.instances.find(i => (root.nState.targetScreen === "" && i.text === qsTr("Global")) || i.text === root.nState.targetScreen) ?? screenVariants.instances[0]
+            active: screenVariants.instances.find(i => (root.nState.targetScreen === "" && i.text === Tr.tr("Global")) || i.text === root.nState.targetScreen) ?? screenVariants.instances[0]
         }
     }
 }

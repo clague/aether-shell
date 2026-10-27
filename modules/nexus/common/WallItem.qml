@@ -70,7 +70,6 @@ Item {
                 id: img
 
                 anchors.fill: parent
-<<<<<<< HEAD
                 asynchronous: true
                 fillMode: Image.PreserveAspectCrop
 
@@ -97,11 +96,7 @@ Item {
                     Anim {
                         type: Anim.SlowEffects
                     }
-                }
-=======
-                playing: stateLayer.containsMouse
->>>>>>> caelestia/main
-            }
+                }            }
         }
 
         StyledText {

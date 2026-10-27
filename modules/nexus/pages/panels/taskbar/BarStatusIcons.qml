@@ -3,38 +3,22 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Caelestia.Config
-<<<<<<< HEAD
 import qs.components
-import qs.services
-=======
-import Caelestia.I18n
->>>>>>> caelestia/main
-import qs.modules.nexus.common
+import qs.servicesimport qs.modules.nexus.common
 
 PageBase {
     id: root
 
     readonly property var builtinIcons: ({
-<<<<<<< HEAD
-            lockStatus: qsTr("Lock keys"),
-            kbLayout: qsTr("Keyboard layout"),
-            audio: qsTr("Speakers"),
-            microphone: qsTr("Microphone"),
-            network: qsTr("Network"),
-            bluetooth: qsTr("Bluetooth"),
-            battery: qsTr("Battery"),
-            peripheralBattery: qsTr("Peripheral battery"),
-            notifications: qsTr("Notifications")
-=======
             lockStatus: Tr.tr("Lock keys"),
             kbLayout: Tr.tr("Keyboard layout"),
             audio: Tr.tr("Speakers"),
             microphone: Tr.tr("Microphone"),
             network: Tr.tr("Network"),
             bluetooth: Tr.tr("Bluetooth"),
-            battery: Tr.tr("Battery")
->>>>>>> caelestia/main
-        })
+            battery: Tr.tr("Battery"),
+            peripheralBattery: Tr.tr("Peripheral battery"),
+            notifications: Tr.tr("Notifications")        })
 
     title: Tr.tr("Status icons")
     isSubPage: true
@@ -46,13 +30,12 @@ PageBase {
         spacing: Tokens.spacing.extraSmall / 2
 
         // Visible icons
-<<<<<<< HEAD
         RowLayout {
             Layout.fillWidth: true
             Layout.leftMargin: Tokens.padding.small
 
             StyledText {
-                text: qsTr("Visible icons")
+                text: Tr.tr("Visible icons")
                 color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.label.medium
                 elide: Text.ElideRight
@@ -65,13 +48,7 @@ PageBase {
 
             Item {
                 Layout.fillWidth: true
-            }
-=======
-        SectionHeader {
-            first: true
-            text: Tr.tr("Visible icons")
->>>>>>> caelestia/main
-        }
+            }        }
 
         ListEditor {
             function labelFor(item: var): string {
@@ -136,21 +113,13 @@ PageBase {
         ToggleRow {
             first: true
             last: true
-<<<<<<< HEAD
-            text: qsTr("Popout on hover")
-            subtext: qsTr("Show a details popout when hovering the status icons")
+            text: Tr.tr("Popout on hover")
+            subtext: Tr.tr("Show a details popout when hovering the status icons")
             configNode: root.targetConfig.bar.popouts
             propertyName: "statusIcons"
             checked: root.targetConfig.bar.popouts.statusIcons
             onToggled: {
                 root.targetConfig.bar.popouts.statusIcons = checked;
-            }
-=======
-            text: Tr.tr("Popout on hover")
-            subtext: Tr.tr("Show a details popout when hovering the status icons")
-            checked: Config.bar.popouts.statusIcons
-            onToggled: GlobalConfig.bar.popouts.statusIcons = checked
->>>>>>> caelestia/main
-        }
+            }        }
     }
 }

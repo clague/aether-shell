@@ -80,17 +80,17 @@ Item {
                 text: {
                     switch (root.requestType) {
                     case "confirmation":
-                        return qsTr("Confirm pairing");
+                        return Tr.tr("Confirm pairing");
                     case "passkey":
-                        return qsTr("Enter passkey");
+                        return Tr.tr("Enter passkey");
                     case "pin":
-                        return qsTr("Enter PIN");
+                        return Tr.tr("Enter PIN");
                     case "display":
-                        return qsTr("Enter on device");
+                        return Tr.tr("Enter on device");
                     case "authorization":
-                        return qsTr("Pairing request");
+                        return Tr.tr("Pairing request");
                     default:
-                        return qsTr("Bluetooth pairing");
+                        return Tr.tr("Bluetooth pairing");
                     }
                 }
                 font: Tokens.font.title.medium
@@ -119,7 +119,7 @@ Item {
 
                     StyledText {
                         Layout.alignment: Qt.AlignHCenter
-                        text: root.requestType === "display" ? qsTr("Type this passkey on the device:") : qsTr("Confirm this passkey matches:")
+                        text: root.requestType === "display" ? Tr.tr("Type this passkey on the device:") : Tr.tr("Confirm this passkey matches:")
                         color: Colours.palette.m3outline
                         font: Tokens.font.body.small
                         horizontalAlignment: Text.AlignHCenter
@@ -260,7 +260,7 @@ Item {
 
                     StyledText {
                         anchors.centerIn: parent
-                        text: root.requestType === "passkey" ? qsTr("Passkey") : qsTr("PIN")
+                        text: root.requestType === "passkey" ? Tr.tr("Passkey") : Tr.tr("PIN")
                         color: Colours.palette.m3outline
                         font: Tokens.font.mono.medium
                         opacity: inputScope.inputBuffer ? 0 : 1
@@ -340,7 +340,7 @@ Item {
                 visible: active
 
                 sourceComponent: StyledText {
-                    text: qsTr("This device wants to pair with your computer. Allow?")
+                    text: Tr.tr("This device wants to pair with your computer. Allow?")
                     color: Colours.palette.m3outline
                     font: Tokens.font.body.small
                     wrapMode: Text.WordWrap
@@ -359,7 +359,7 @@ Item {
                     Layout.minimumHeight: Tokens.font.body.medium.pointSize + Tokens.padding.medium * 2
                     inactiveColour: Colours.palette.m3secondaryContainer
                     inactiveOnColour: Colours.palette.m3onSecondaryContainer
-                    text: qsTr("Reject")
+                    text: Tr.tr("Reject")
 
                     onClicked: BtAgent.reject()
                 }
@@ -373,14 +373,14 @@ Item {
                         switch (root.requestType) {
                         case "confirmation":
                         case "authorization":
-                            return qsTr("Accept");
+                            return Tr.tr("Accept");
                         case "passkey":
                         case "pin":
-                            return qsTr("Submit");
+                            return Tr.tr("Submit");
                         case "display":
-                            return qsTr("Cancel");
+                            return Tr.tr("Cancel");
                         default:
-                            return qsTr("OK");
+                            return Tr.tr("OK");
                         }
                     }
                     enabled: {

@@ -16,13 +16,12 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-<<<<<<< HEAD
     readonly property list<MenuItem> hwDecoderItems: [
         MenuItem {
-            text: qsTr("Auto")
+            text: Tr.tr("Auto")
         },
         MenuItem {
-            text: qsTr("Software")
+            text: Tr.tr("Software")
         },
         MenuItem {
             text: "VAAPI"
@@ -58,11 +57,7 @@ PageBase {
         return v in hwDecoderIndexMap ? hwDecoderIndexMap[v] : 1; // Default to software (none)
     }
 
-    title: qsTr("Wallpaper & style")
-=======
     title: Tr.tr("Wallpaper & style")
->>>>>>> caelestia/main
-
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.top: parent.top
@@ -127,7 +122,6 @@ PageBase {
                         type: Anim.SlowEffects
                     }
                 }
-<<<<<<< HEAD
 
                 Loader {
                     id: wallIndicatorLoader
@@ -187,10 +181,7 @@ PageBase {
                             wallIndicatorLoader.opacity = 0;
                         }
                     }
-                }
-=======
->>>>>>> caelestia/main
-            }
+                }            }
 
             IconTextButton {
                 anchors.bottom: parent.bottom
@@ -198,7 +189,7 @@ PageBase {
                 anchors.margins: Tokens.padding.medium
 
                 icon: "save"
-                text: qsTr("Save Recolored")
+                text: Tr.tr("Save Recolored")
                 font: Tokens.font.body.large
                 isRound: true
                 shapeMorph: true
@@ -260,7 +251,7 @@ PageBase {
             // is not built until it is pushed.
             IconTextButton {
                 icon: "brush"
-                text: qsTr("Themes")
+                text: Tr.tr("Themes")
                 font: Tokens.font.body.large
                 isRound: true
                 shapeMorph: true
@@ -273,7 +264,7 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Wallpaper")
+            text: Tr.tr("Wallpaper")
         }
 
         ToggleRow {
@@ -287,19 +278,18 @@ PageBase {
         ToggleRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            text: qsTr("Recolor wallpaper")
-            subtext: qsTr("Tint the wallpaper to match static color schemes")
+            text: Tr.tr("Recolor wallpaper")
+            subtext: Tr.tr("Tint the wallpaper to match static color schemes")
             checked: Config.background.wallpaperRecolor
             onToggled: GlobalConfig.background.wallpaperRecolor = checked
             enabled: Config.background.wallpaperEnabled
         }
 
-<<<<<<< HEAD
         SliderRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
             icon: ""
-            label: qsTr("Recolor strength")
+            label: Tr.tr("Recolor strength")
             valueLabel: Math.round(value * 100) + "%"
             value: Config.background.wallpaperRecolorStrength
             enabled: Config.background.wallpaperRecolor && Config.background.wallpaperEnabled
@@ -310,25 +300,17 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
 
-            label: qsTr("Video Hardware Decoder")
+            label: Tr.tr("Video Hardware Decoder")
             menuOnTop: true
             menuItems: root.hwDecoderItems
             active: root.hwDecoderItems[root.hwDecoderToIndex(WallpaperPauser.hwDecoder)]
-            onSelected: item => WallpaperPauser.hwDecoder = root.hwDecoderValues[root.hwDecoderItems.indexOf(item)]
-=======
-            text: Tr.tr("Transparency")
-            // TRANSLATORS: %1/%2 = opacity values from 0 to 1 for the base surface and layered surfaces
-            subtext: Tr.tr("Base %1, layers %2").arg(Colours.transparency.base).arg(Colours.transparency.layers)
-            checked: Colours.transparency.enabled
-            onToggled: GlobalConfig.appearance.transparency.enabled = checked
->>>>>>> caelestia/main
-        }
+            onSelected: item => WallpaperPauser.hwDecoder = root.hwDecoderValues[root.hwDecoderItems.indexOf(item)]        }
 
         ToggleRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
 
-            text: qsTr("Pause animated wallpapers on battery")
+            text: Tr.tr("Pause animated wallpapers on battery")
             checked: WallpaperPauser.pauseOnBattery
             onToggled: WallpaperPauser.pauseOnBattery = checked
         }
@@ -337,7 +319,7 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
 
-            text: qsTr("Pause animated wallpapers behind windows")
+            text: Tr.tr("Pause animated wallpapers behind windows")
             checked: WallpaperPauser.pauseOnWindowOverlap
             onToggled: WallpaperPauser.pauseOnWindowOverlap = checked
         }
@@ -347,20 +329,20 @@ PageBase {
             Layout.fillWidth: true
 
             last: true
-            text: qsTr("Animate wallpaper transitions")
+            text: Tr.tr("Animate wallpaper transitions")
             checked: Wallpapers.enableAnimation
             onToggled: Wallpapers.enableAnimation = checked
         }
 
         SectionHeader {
-            text: qsTr("Appearance")
+            text: Tr.tr("Appearance")
         }
 
         ToggleRow {
             first: true
             Layout.fillWidth: true
-            text: qsTr("Bezel mode (Pitch black)")
-            subtext: qsTr("Make the shell pitch black to blend with display bezels")
+            text: Tr.tr("Bezel mode (Pitch black)")
+            subtext: Tr.tr("Make the shell pitch black to blend with display bezels")
             checked: Config.appearance.pitchBlack
             onToggled: GlobalConfig.appearance.pitchBlack = checked
         }
@@ -368,8 +350,8 @@ PageBase {
         ToggleRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            text: qsTr("Islands")
-            subtext: qsTr("Everything appears as its own floating widget (Very Experimental)")
+            text: Tr.tr("Islands")
+            subtext: Tr.tr("Everything appears as its own floating widget (Very Experimental)")
             checked: GlobalConfig.appearance.islands
             onToggled: GlobalConfig.appearance.islands = checked
         }
@@ -377,7 +359,7 @@ PageBase {
         ToggleRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            text: qsTr("Transparency")
+            text: Tr.tr("Transparency")
             checked: Colours.transparency.enabled
             onToggled: {
                 GlobalConfig.appearance.transparency.enabled = checked;
@@ -388,7 +370,7 @@ PageBase {
         SliderRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Base transparency level")
+            label: Tr.tr("Base transparency level")
             value: Colours.transparency.base
             valueLabel: Math.round(value * 100) + "%"
             onMoved: v => GlobalConfig.appearance.transparency.base = v
@@ -398,7 +380,7 @@ PageBase {
         SliderRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Layer transparency level")
+            label: Tr.tr("Layer transparency level")
             value: Colours.transparency.layers
             valueLabel: Math.round(value * 100) + "%"
             onMoved: v => GlobalConfig.appearance.transparency.layers = v

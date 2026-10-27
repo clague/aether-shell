@@ -9,31 +9,31 @@ PageBase {
 
     readonly property list<MenuItem> positionItems: [
         MenuItem {
-            text: qsTr("Top left")
+            text: Tr.tr("Top left")
         },
         MenuItem {
-            text: qsTr("Top center")
+            text: Tr.tr("Top center")
         },
         MenuItem {
-            text: qsTr("Top right")
+            text: Tr.tr("Top right")
         },
         MenuItem {
-            text: qsTr("Middle left")
+            text: Tr.tr("Middle left")
         },
         MenuItem {
-            text: qsTr("Middle center")
+            text: Tr.tr("Middle center")
         },
         MenuItem {
-            text: qsTr("Middle right")
+            text: Tr.tr("Middle right")
         },
         MenuItem {
-            text: qsTr("Bottom left")
+            text: Tr.tr("Bottom left")
         },
         MenuItem {
-            text: qsTr("Bottom center")
+            text: Tr.tr("Bottom center")
         },
         MenuItem {
-            text: qsTr("Bottom right")
+            text: Tr.tr("Bottom right")
         }
     ]
 
@@ -60,7 +60,7 @@ PageBase {
         }
     }
 
-    title: qsTr("Picture in Picture")
+    title: Tr.tr("Picture in Picture")
 
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
@@ -70,13 +70,13 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("Behavior")
+            text: Tr.tr("Behavior")
         }
 
         SelectRow {
             first: true
-            label: qsTr("Position")
-            subtext: qsTr("Anchor quadrant for Picture in Picture windows")
+            label: Tr.tr("Position")
+            subtext: Tr.tr("Anchor quadrant for Picture in Picture windows")
             configNode: root.targetConfig.services
             propertyName: "pipPosition"
             menuItems: root.positionItems
@@ -89,8 +89,8 @@ PageBase {
         ToggleRow {
             Layout.fillWidth: true
             last: true
-            text: qsTr("Follow active focus")
-            subtext: qsTr("Automatically warp PiP to the active monitor and workspace")
+            text: Tr.tr("Follow active focus")
+            subtext: Tr.tr("Automatically warp PiP to the active monitor and workspace")
             configNode: root.targetConfig.services
             propertyName: "pipFollowFocus"
             checked: root.targetConfig.services.pipFollowFocus

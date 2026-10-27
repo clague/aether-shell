@@ -7,7 +7,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    title: qsTr("Spotify")
+    title: Tr.tr("Spotify")
     isSubPage: true
 
     ColumnLayout {
@@ -18,13 +18,13 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("Configuration")
+            text: Tr.tr("Configuration")
         }
 
         ToggleRow {
             first: true
-            text: qsTr("Background")
-            subtext: qsTr("Render a solid background behind the Spotify widget")
+            text: Tr.tr("Background")
+            subtext: Tr.tr("Render a solid background behind the Spotify widget")
             configNode: root.targetConfig.bar.spotify
             propertyName: "background"
             checked: root.targetConfig.bar.spotify.background
@@ -34,8 +34,8 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Show visualizer")
-            subtext: qsTr("Display animated frequency visualizer bars")
+            text: Tr.tr("Show visualizer")
+            subtext: Tr.tr("Display animated frequency visualizer bars")
             configNode: root.targetConfig.bar.spotify
             propertyName: "showVisualiser"
             checked: root.targetConfig.bar.spotify.showVisualiser
@@ -45,8 +45,8 @@ PageBase {
         }
 
         StepperRow {
-            label: qsTr("Max title length")
-            subtext: qsTr("Cut off character count for track title")
+            label: Tr.tr("Max title length")
+            subtext: Tr.tr("Cut off character count for track title")
             configNode: root.targetConfig.bar.spotify
             propertyName: "maxTitleLength"
             value: root.targetConfig.bar.spotify.maxTitleLength
@@ -59,8 +59,8 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Inverted text direction")
-            subtext: qsTr("Rotate text in the opposite direction when the bar is vertical")
+            text: Tr.tr("Inverted text direction")
+            subtext: Tr.tr("Rotate text in the opposite direction when the bar is vertical")
             configNode: root.targetConfig.bar.spotify
             propertyName: "inverted"
             checked: root.targetConfig.bar.spotify.inverted
@@ -70,8 +70,8 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Auto-hide")
-            subtext: qsTr("Hide the widget when there is no media source available")
+            text: Tr.tr("Auto-hide")
+            subtext: Tr.tr("Hide the widget when there is no media source available")
             configNode: root.targetConfig.bar.spotify
             propertyName: "autoHide"
             checked: root.targetConfig.bar.spotify.autoHide
@@ -82,8 +82,8 @@ PageBase {
 
         ToggleRow {
             last: true
-            text: qsTr("Horizontal volume slider")
-            subtext: qsTr("Place a horizontal volume slider below the playback controls in the popout")
+            text: Tr.tr("Horizontal volume slider")
+            subtext: Tr.tr("Place a horizontal volume slider below the playback controls in the popout")
             configNode: root.targetConfig.bar.spotify
             propertyName: "horizontalVolume"
             checked: root.targetConfig.bar.spotify.horizontalVolume

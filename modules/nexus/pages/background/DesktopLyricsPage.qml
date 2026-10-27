@@ -11,35 +11,35 @@ PageBase {
 
     readonly property list<MenuItem> positionItems: [
         MenuItem {
-            text: qsTr("Top Left")
+            text: Tr.tr("Top Left")
         },
         MenuItem {
-            text: qsTr("Top Center")
+            text: Tr.tr("Top Center")
         },
         MenuItem {
-            text: qsTr("Top Right")
+            text: Tr.tr("Top Right")
         },
         MenuItem {
-            text: qsTr("Middle Left")
+            text: Tr.tr("Middle Left")
         },
         MenuItem {
-            text: qsTr("Middle Center")
+            text: Tr.tr("Middle Center")
         },
         MenuItem {
-            text: qsTr("Middle Right")
+            text: Tr.tr("Middle Right")
         },
         MenuItem {
-            text: qsTr("Bottom Left")
+            text: Tr.tr("Bottom Left")
         },
         MenuItem {
-            text: qsTr("Bottom Center")
+            text: Tr.tr("Bottom Center")
         },
         MenuItem {
-            text: qsTr("Bottom Right")
+            text: Tr.tr("Bottom Right")
         }
     ]
 
-    title: qsTr("Desktop lyrics")
+    title: Tr.tr("Desktop lyrics")
     isSubPage: true
 
     ColumnLayout {
@@ -50,13 +50,13 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("General")
+            text: Tr.tr("General")
         }
 
         ToggleRow {
             first: true
             Layout.fillWidth: true
-            text: qsTr("Enable desktop lyrics")
+            text: Tr.tr("Enable desktop lyrics")
             configNode: root.targetConfig.background.desktopLyrics
             propertyName: "enabled"
             checked: root.targetConfig.background.desktopLyrics.enabled
@@ -68,8 +68,8 @@ PageBase {
         ToggleRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            text: qsTr("Overlay lyrics")
-            subtext: qsTr("Render lyrics on top of all windows")
+            text: Tr.tr("Overlay lyrics")
+            subtext: Tr.tr("Render lyrics on top of all windows")
             configNode: root.targetConfig.background.desktopLyrics
             propertyName: "overlay"
             checked: root.targetConfig.background.desktopLyrics.overlay
@@ -82,8 +82,8 @@ PageBase {
         ToggleRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            text: qsTr("Auto-hide for fullscreen windows")
-            subtext: qsTr("Hide lyrics when a window is fullscreen")
+            text: Tr.tr("Auto-hide for fullscreen windows")
+            subtext: Tr.tr("Hide lyrics when a window is fullscreen")
             configNode: root.targetConfig.background.desktopLyrics
             propertyName: "autoHideFullscreen"
             checked: root.targetConfig.background.desktopLyrics.autoHideFullscreen
@@ -97,8 +97,8 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            text: qsTr("Auto-hide for tiled windows")
-            subtext: qsTr("Hide lyrics when tiled windows are open")
+            text: Tr.tr("Auto-hide for tiled windows")
+            subtext: Tr.tr("Hide lyrics when tiled windows are open")
             configNode: root.targetConfig.background.desktopLyrics
             propertyName: "autoHideTiled"
             checked: root.targetConfig.background.desktopLyrics.autoHideTiled
@@ -109,13 +109,13 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Appearance")
+            text: Tr.tr("Appearance")
         }
 
         SelectRow {
             first: true
             Layout.fillWidth: true
-            label: qsTr("Position")
+            label: Tr.tr("Position")
             configNode: root.targetConfig.background.desktopLyrics
             propertyName: "position"
             menuItems: root.positionItems
@@ -131,7 +131,7 @@ PageBase {
         SliderRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Scale")
+            label: Tr.tr("Scale")
             configNode: root.targetConfig.background.desktopLyrics
             propertyName: "scale"
             value: (root.targetConfig.background.desktopLyrics.scale - 0.5) / 2.5
@@ -145,8 +145,8 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            text: qsTr("Invert colors")
-            subtext: qsTr("Invert the lyrics color when using light wallpaper")
+            text: Tr.tr("Invert colors")
+            subtext: Tr.tr("Invert the lyrics color when using light wallpaper")
             configNode: root.targetConfig.background.desktopLyrics
             propertyName: "invertColors"
             checked: root.targetConfig.background.desktopLyrics.invertColors
@@ -156,13 +156,13 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Background")
+            text: Tr.tr("Background")
         }
 
         ToggleRow {
             first: true
             Layout.fillWidth: true
-            text: qsTr("Enable background")
+            text: Tr.tr("Enable background")
             configNode: root.targetConfig.background.desktopLyrics.background
             propertyName: "enabled"
             checked: root.targetConfig.background.desktopLyrics.background.enabled
@@ -174,7 +174,7 @@ PageBase {
         SliderRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Opacity")
+            label: Tr.tr("Opacity")
             configNode: root.targetConfig.background.desktopLyrics.background
             propertyName: "opacity"
             value: root.targetConfig.background.desktopLyrics.background.opacity
@@ -189,7 +189,7 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            text: qsTr("Blur")
+            text: Tr.tr("Blur")
             configNode: root.targetConfig.background.desktopLyrics.background
             propertyName: "blur"
             checked: root.targetConfig.background.desktopLyrics.background.blur
@@ -200,13 +200,13 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Shadow")
+            text: Tr.tr("Shadow")
         }
 
         ToggleRow {
             first: true
             Layout.fillWidth: true
-            text: qsTr("Enable shadow")
+            text: Tr.tr("Enable shadow")
             configNode: root.targetConfig.background.desktopLyrics.shadow
             propertyName: "enabled"
             checked: root.targetConfig.background.desktopLyrics.shadow.enabled
@@ -218,7 +218,7 @@ PageBase {
         SliderRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Opacity")
+            label: Tr.tr("Opacity")
             configNode: root.targetConfig.background.desktopLyrics.shadow
             propertyName: "opacity"
             value: root.targetConfig.background.desktopLyrics.shadow.opacity
@@ -233,7 +233,7 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            label: qsTr("Blur strength")
+            label: Tr.tr("Blur strength")
             configNode: root.targetConfig.background.desktopLyrics.shadow
             propertyName: "blur"
             value: root.targetConfig.background.desktopLyrics.shadow.blur / 2.0

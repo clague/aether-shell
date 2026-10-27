@@ -5,12 +5,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Caelestia.Config
-<<<<<<< HEAD
-import qs.services
-=======
-import Caelestia.I18n
->>>>>>> caelestia/main
-import qs.utils
+import qs.servicesimport qs.utils
 
 Searcher {
     id: root

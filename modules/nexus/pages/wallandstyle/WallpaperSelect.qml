@@ -5,12 +5,7 @@ import QtQuick.Layouts
 import Quickshell
 import Caelestia.Components
 import Caelestia.Config
-<<<<<<< HEAD
-import Caelestia.Images
-=======
-import Caelestia.I18n
->>>>>>> caelestia/main
-import Caelestia.Models
+import Caelestia.Imagesimport Caelestia.Models
 import qs.components
 import qs.components.controls
 import qs.components.filedialog
@@ -21,7 +16,6 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-<<<<<<< HEAD
     property color sortColor: "transparent"
 
     property var colorDistances: ({})
@@ -69,11 +63,7 @@ PageBase {
         root.sortVersion++;
     }
 
-    title: qsTr("Select wallpaper")
-=======
-    title: Tr.tr("Wallpapers")
->>>>>>> caelestia/main
-    isSubPage: true
+    title: Tr.tr("Select wallpaper")    isSubPage: true
 
     onSortColorChanged: {
         if (sortColor === "transparent") {
@@ -90,7 +80,7 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("General")
+            text: Tr.tr("General")
         }
 
         ButtonRow {
@@ -124,7 +114,7 @@ PageBase {
                 visible: GlobalConfig.hybrid.features.wallhaven
 
                 icon: "image_search"
-                text: qsTr("Wallhaven")
+                text: Tr.tr("Wallhaven")
                 font: Tokens.font.body.large
                 isRound: true
                 shapeMorph: true
@@ -137,7 +127,7 @@ PageBase {
 
             IconTextButton {
                 icon: "view_in_ar"
-                text: qsTr("Wallpaper Engine")
+                text: Tr.tr("Wallpaper Engine")
                 font: Tokens.font.body.large
                 isRound: true
                 shapeMorph: true
@@ -165,10 +155,9 @@ PageBase {
             }
         }
 
-<<<<<<< HEAD
         StyledText {
             Layout.topMargin: Tokens.spacing.medium
-            text: qsTr("Featured wallpapers")
+            text: Tr.tr("Featured wallpapers")
             font: Tokens.font.title.small
         }
 
@@ -391,14 +380,14 @@ PageBase {
 
                 type: SplitButton.Tonal
                 fallbackIcon: "collections"
-                fallbackText: qsTr("All")
+                fallbackText: Tr.tr("All")
                 minLeftWidth: 100
 
                 menuItems: [
                     MenuItem {
                         property string filterValue: "all"
 
-                        text: qsTr("All")
+                        text: Tr.tr("All")
                         icon: "collections"
                         onClicked: {
                             if (root.nState)
@@ -408,7 +397,7 @@ PageBase {
                     MenuItem {
                         property string filterValue: "image"
 
-                        text: qsTr("Images")
+                        text: Tr.tr("Images")
                         icon: "image"
                         onClicked: {
                             if (root.nState)
@@ -418,7 +407,7 @@ PageBase {
                     MenuItem {
                         property string filterValue: "gif"
 
-                        text: qsTr("GIFs")
+                        text: Tr.tr("GIFs")
                         icon: "gif"
                         onClicked: {
                             if (root.nState)
@@ -428,7 +417,7 @@ PageBase {
                     MenuItem {
                         property string filterValue: "video"
 
-                        text: qsTr("Videos")
+                        text: Tr.tr("Videos")
                         icon: "movie"
                         onClicked: {
                             if (root.nState)
@@ -440,19 +429,7 @@ PageBase {
                 active: {
                     const f = root.nState ? root.nState.wallpaperFilterType : "all";
                     return menuItems.find(m => m.filterValue === f) ?? menuItems[0];
-                }
-=======
-        WallItem {
-            imgHeight: Math.round(width * 0.3)
-            radius: Tokens.rounding.extraLarge
-            source: Quickshell.shellPath("assets/wallpaper.webp")
-            text: Tr.tr("Featured wallpaper")
-            fillLabel: false
-            onClicked: {
-                Wallpapers.setWallpaper(Quickshell.shellPath("assets/wallpaper.webp"));
-                root.nState.closeSubPage();
->>>>>>> caelestia/main
-            }
+                }            }
         }
 
         StyledText {
@@ -624,7 +601,7 @@ PageBase {
                     StyledText {
                         Layout.alignment: Qt.AlignHCenter
                         Layout.maximumWidth: parent.width
-                        text: qsTr("Add images to %1").arg(Paths.shortenHome(Paths.wallsdir))
+                        text: Tr.tr("Add images to %1").arg(Paths.shortenHome(Paths.wallsdir))
                         color: Colours.palette.m3outline
                         font: Tokens.font.label.small
                         elide: Text.ElideMiddle

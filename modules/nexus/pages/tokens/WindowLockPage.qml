@@ -6,7 +6,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    title: qsTr("Window & Lock Sizes")
+    title: Tr.tr("Window & Lock Sizes")
     isSubPage: true
 
     ColumnLayout {
@@ -17,13 +17,13 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("Lock Screen")
+            text: Tr.tr("Lock Screen")
         }
 
         SliderRow {
             first: true
             Layout.fillWidth: true
-            label: qsTr("Height Multiplier")
+            label: Tr.tr("Height Multiplier")
             value: TokenConfig.sizes.lock.heightMult
             valueLabel: value.toFixed(2)
             showReset: true
@@ -36,7 +36,7 @@ PageBase {
         SliderRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Aspect Ratio")
+            label: Tr.tr("Aspect Ratio")
             value: (TokenConfig.sizes.lock.ratio - 1.0) / 1.5
             valueLabel: (1.0 + value * 1.5).toFixed(2)
             showReset: true
@@ -49,7 +49,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Center Card Width")
+            label: Tr.tr("Center Card Width")
             value: TokenConfig.sizes.lock.centerWidth
             from: 200
             to: 1000
@@ -64,7 +64,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Forecast Item Width")
+            label: Tr.tr("Forecast Item Width")
             value: TokenConfig.sizes.lock.forecastItemWidth
             from: 20
             to: 100
@@ -79,7 +79,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Large Logo Width")
+            label: Tr.tr("Large Logo Width")
             value: TokenConfig.sizes.lock.largeLogoWidth
             from: 100
             to: 500
@@ -95,7 +95,7 @@ PageBase {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            label: qsTr("Large Font Width")
+            label: Tr.tr("Large Font Width")
             value: TokenConfig.sizes.lock.largeFontWidth
             from: 100
             to: 600
@@ -108,13 +108,13 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Nexus Settings Window")
+            text: Tr.tr("Nexus Settings Window")
         }
 
         SliderRow {
             first: true
             Layout.fillWidth: true
-            label: qsTr("Height Multiplier")
+            label: Tr.tr("Height Multiplier")
             value: TokenConfig.sizes.nexus.heightMult
             valueLabel: value.toFixed(2)
             showReset: true
@@ -127,7 +127,7 @@ PageBase {
         SliderRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Aspect Ratio")
+            label: Tr.tr("Aspect Ratio")
             value: (TokenConfig.sizes.nexus.ratio - 1.0) / 1.5
             valueLabel: (1.0 + value * 1.5).toFixed(2)
             showReset: true
@@ -140,7 +140,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Minimum Width")
+            label: Tr.tr("Minimum Width")
             value: TokenConfig.sizes.nexus.minWidth
             from: 400
             to: 1200
@@ -155,7 +155,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Minimum Height")
+            label: Tr.tr("Minimum Height")
             value: TokenConfig.sizes.nexus.minHeight
             from: 300
             to: 900
@@ -170,7 +170,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Max Navigation Width")
+            label: Tr.tr("Max Navigation Width")
             value: TokenConfig.sizes.nexus.maxNavWidth
             from: 200
             to: 800
@@ -185,7 +185,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Max Content Width")
+            label: Tr.tr("Max Content Width")
             value: TokenConfig.sizes.nexus.maxContentWidth
             from: 400
             to: 1200
@@ -201,7 +201,7 @@ PageBase {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            label: qsTr("Popup Width")
+            label: Tr.tr("Popup Width")
             value: TokenConfig.sizes.nexus.popupWidth
             from: 150
             to: 500
@@ -214,13 +214,13 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Window Information Overlay")
+            text: Tr.tr("Window Information Overlay")
         }
 
         SliderRow {
             first: true
             Layout.fillWidth: true
-            label: qsTr("Height Multiplier")
+            label: Tr.tr("Height Multiplier")
             value: TokenConfig.sizes.winfo.heightMult
             valueLabel: value.toFixed(2)
             showReset: true
@@ -234,7 +234,7 @@ PageBase {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            label: qsTr("Details Pane Width")
+            label: Tr.tr("Details Pane Width")
             value: TokenConfig.sizes.winfo.detailsWidth
             from: 200
             to: 800

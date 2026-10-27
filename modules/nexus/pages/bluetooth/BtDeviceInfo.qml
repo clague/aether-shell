@@ -164,9 +164,8 @@ PageBase {
 
         ToggleRow {
             verticalPadding: Tokens.padding.large
-<<<<<<< HEAD
-            text: qsTr("Reconnect on startup")
-            subtext: qsTr("Attempt to connect this device when the shell starts")
+            text: Tr.tr("Reconnect on startup")
+            subtext: Tr.tr("Attempt to connect this device when the shell starts")
             checked: root.device && GlobalConfig.services.bluetoothAutoReconnectDevices.includes(root.device.address)
             onToggled: {
                 if (!root.device || !root.device.address)
@@ -188,14 +187,9 @@ PageBase {
         }
 
         ToggleRow {
-            Layout.fillWidth: true
             verticalPadding: Tokens.padding.large
-            text: qsTr("Blocked")
-            subtext: qsTr("Prevent this device from connecting")
-=======
             text: Tr.trCtx("Blocked", "bluetooth device state")
             subtext: Tr.tr("Prevent this device from connecting")
->>>>>>> caelestia/main
             checked: root.device?.blocked ?? false
             onToggled: {
                 if (root.device)

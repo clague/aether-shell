@@ -158,53 +158,27 @@ PageBase {
 
         SelectRow {
             first: true
-<<<<<<< HEAD
-            label: qsTr("Temperature")
-            subtext: qsTr("Units for weather temperatures")
+            label: Tr.tr("Temperature")
+            subtext: Tr.tr("Units for weather temperatures")
             configNode: root.targetConfig.services
             propertyName: "useFahrenheit"
             menuItems: root.tempItems
             active: root.tempItems[root.targetConfig.services.useFahrenheit ? 1 : 0]
             onSelected: item => {
                 root.targetConfig.services.useFahrenheit = root.tempItems.indexOf(item) === 1;
-            }
-=======
-            label: Tr.tr("Temperature")
-            subtext: Tr.tr("Units for weather temperatures")
-            menuItems: root.tempItems
-            active: root.tempItems.find(i => i.value === GlobalConfig.services.weatherUnits)
-            onSelected: item => GlobalConfig.services.weatherUnits = item.value
-        }
-
-        SelectRow {
-            label: Tr.tr("System temperatures")
-            subtext: Tr.tr("Units for CPU and GPU temperatures")
-            menuItems: root.tempItems
-            active: root.tempItems.find(i => i.value === GlobalConfig.services.sensorUnits)
-            onSelected: item => GlobalConfig.services.sensorUnits = item.value
->>>>>>> caelestia/main
-        }
+            }        }
 
         SelectRow {
             last: true
-<<<<<<< HEAD
-            label: qsTr("System temperatures")
-            subtext: qsTr("Units for CPU and GPU temperatures")
+            label: Tr.tr("System temperatures")
+            subtext: Tr.tr("Units for CPU and GPU temperatures")
             configNode: root.targetConfig.services
             propertyName: "useFahrenheitPerformance"
             menuItems: root.tempItems
             active: root.tempItems[root.targetConfig.services.useFahrenheitPerformance ? 1 : 0]
             onSelected: item => {
                 root.targetConfig.services.useFahrenheitPerformance = root.tempItems.indexOf(item) === 1;
-            }
-=======
-            label: Tr.tr("Data sizes")
-            subtext: Tr.tr("Units for data sizes and network speeds")
-            menuItems: root.dataItems
-            active: root.dataItems.find(i => i.value === GlobalConfig.services.dataUnits)
-            onSelected: item => GlobalConfig.services.dataUnits = item.value
->>>>>>> caelestia/main
-        }
+            }        }
 
         // Time & date
         SectionHeader {
@@ -214,24 +188,14 @@ PageBase {
         SelectRow {
             first: true
             last: true
-<<<<<<< HEAD
-            label: qsTr("Clock format")
-            subtext: qsTr("How times are shown across the shell")
+            label: Tr.tr("Clock format")
+            subtext: Tr.tr("How times are shown across the shell")
             configNode: root.targetConfig.services
             propertyName: "useTwelveHourClock"
             menuItems: root.clockItems
             active: root.clockItems[root.targetConfig.services.useTwelveHourClock ? 1 : 0]
             onSelected: item => {
                 root.targetConfig.services.useTwelveHourClock = root.clockItems.indexOf(item) === 1;
-            }
-=======
-            label: Tr.tr("Clock format")
-            subtext: Tr.tr("How times are shown across the shell")
-            menuOnTop: true
-            menuItems: root.clockItems
-            active: root.clockItems.find(i => i.value === GlobalConfig.services.clockFormat)
-            onSelected: item => GlobalConfig.services.clockFormat = item.value
->>>>>>> caelestia/main
-        }
+            }        }
     }
 }

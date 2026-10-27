@@ -10,7 +10,7 @@ PageBase {
     // Ordered to match config::HybridPreset (Recommended, Midnight, Op).
     readonly property list<MenuItem> presetItems: [
         MenuItem {
-            text: qsTr("Recommended")
+            text: Tr.tr("Recommended")
             icon: "recommend"
         },
         MenuItem {
@@ -27,14 +27,14 @@ PageBase {
     // enumerator must be appended in both places -- see T47.
     readonly property list<MenuItem> variantItems: [
         MenuItem {
-            text: qsTr("MiDnight")
+            text: Tr.tr("MiDnight")
         },
         MenuItem {
-            text: qsTr("OP")
+            text: Tr.tr("OP")
         }
     ]
 
-    title: qsTr("Hybrid")
+    title: Tr.tr("Hybrid")
 
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
@@ -44,14 +44,14 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("Preset")
+            text: Tr.tr("Preset")
         }
 
         SelectRow {
             first: true
             last: true
-            label: qsTr("Preset")
-            subtext: qsTr("A starting set of features. Anything you change below stays changed.")
+            label: Tr.tr("Preset")
+            subtext: Tr.tr("A starting set of features. Anything you change below stays changed.")
             configNode: GlobalConfig.hybrid
             propertyName: "preset"
             menuItems: root.presetItems
@@ -64,13 +64,13 @@ PageBase {
         // ------------------------------------------------------------- panels
 
         SectionHeader {
-            text: qsTr("Panels")
+            text: Tr.tr("Panels")
         }
 
         ToggleRow {
             first: true
-            text: qsTr("Dock")
-            subtext: qsTr("A separate dock window with pinned and running apps")
+            text: Tr.tr("Dock")
+            subtext: Tr.tr("A separate dock window with pinned and running apps")
             configNode: GlobalConfig.hybrid.features
             propertyName: "dock"
             checked: GlobalConfig.hybrid.features.dock
@@ -79,8 +79,8 @@ PageBase {
 
         ToggleRow {
             last: true
-            text: qsTr("Overview")
-            subtext: qsTr("Workspace overview with window thumbnails")
+            text: Tr.tr("Overview")
+            subtext: Tr.tr("Workspace overview with window thumbnails")
             configNode: GlobalConfig.hybrid.features
             propertyName: "overview"
             checked: GlobalConfig.hybrid.features.overview
@@ -90,13 +90,13 @@ PageBase {
         // ------------------------------------------------------------ launcher
 
         SectionHeader {
-            text: qsTr("Launcher")
+            text: Tr.tr("Launcher")
         }
 
         ToggleRow {
             first: true
-            text: qsTr("Clipboard history")
-            subtext: qsTr("Search and paste from the launcher")
+            text: Tr.tr("Clipboard history")
+            subtext: Tr.tr("Search and paste from the launcher")
             configNode: GlobalConfig.hybrid.features
             propertyName: "clipboard"
             checked: GlobalConfig.hybrid.features.clipboard
@@ -104,8 +104,8 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Emoji picker")
-            subtext: qsTr("Search emoji from the launcher")
+            text: Tr.tr("Emoji picker")
+            subtext: Tr.tr("Search emoji from the launcher")
             configNode: GlobalConfig.hybrid.features
             propertyName: "emojiPicker"
             checked: GlobalConfig.hybrid.features.emojiPicker
@@ -113,8 +113,8 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Window switcher")
-            subtext: qsTr("Switch windows from the launcher")
+            text: Tr.tr("Window switcher")
+            subtext: Tr.tr("Switch windows from the launcher")
             configNode: GlobalConfig.hybrid.features
             propertyName: "windowSwitcher"
             checked: GlobalConfig.hybrid.features.windowSwitcher
@@ -122,8 +122,8 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Keybind viewer")
-            subtext: qsTr("Browse Hyprland keybinds from the launcher")
+            text: Tr.tr("Keybind viewer")
+            subtext: Tr.tr("Browse Hyprland keybinds from the launcher")
             configNode: GlobalConfig.hybrid.features
             propertyName: "keybindViewer"
             checked: GlobalConfig.hybrid.features.keybindViewer
@@ -131,8 +131,8 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Video wallpapers")
-            subtext: qsTr("Animated wallpapers, paused when nothing can see them")
+            text: Tr.tr("Video wallpapers")
+            subtext: Tr.tr("Animated wallpapers, paused when nothing can see them")
             configNode: GlobalConfig.hybrid.features
             propertyName: "videoWallpaper"
             checked: GlobalConfig.hybrid.features.videoWallpaper
@@ -140,8 +140,8 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Wallhaven")
-            subtext: qsTr("Browse and set wallpapers from wallhaven.cc")
+            text: Tr.tr("Wallhaven")
+            subtext: Tr.tr("Browse and set wallpapers from wallhaven.cc")
             configNode: GlobalConfig.hybrid.features
             propertyName: "wallhaven"
             checked: GlobalConfig.hybrid.features.wallhaven
@@ -149,8 +149,8 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Floating lyrics")
-            subtext: qsTr("Show synced lyrics on the desktop")
+            text: Tr.tr("Floating lyrics")
+            subtext: Tr.tr("Show synced lyrics on the desktop")
             configNode: GlobalConfig.hybrid.features
             propertyName: "floatingLyrics"
             checked: GlobalConfig.hybrid.features.floatingLyrics
@@ -158,8 +158,8 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Theme packs")
-            subtext: qsTr("Swap wallpaper and shell artwork as a named set")
+            text: Tr.tr("Theme packs")
+            subtext: Tr.tr("Swap wallpaper and shell artwork as a named set")
             configNode: GlobalConfig.hybrid.features
             propertyName: "themeManager"
             checked: GlobalConfig.hybrid.features.themeManager
@@ -168,8 +168,8 @@ PageBase {
 
         ToggleRow {
             last: true
-            text: qsTr("Confirm power actions on the lock screen")
-            subtext: qsTr("Ask before shutdown, reboot or logout from the lock screen")
+            text: Tr.tr("Confirm power actions on the lock screen")
+            subtext: Tr.tr("Ask before shutdown, reboot or logout from the lock screen")
             configNode: GlobalConfig.hybrid.features
             propertyName: "lockPowerConfirm"
             checked: GlobalConfig.hybrid.features.lockPowerConfirm
@@ -177,13 +177,13 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Network")
+            text: Tr.tr("Network")
         }
 
         ToggleRow {
             first: true
-            text: qsTr("Hotspot")
-            subtext: qsTr("Share this machine's connection as a Wi-Fi access point")
+            text: Tr.tr("Hotspot")
+            subtext: Tr.tr("Share this machine's connection as a Wi-Fi access point")
             configNode: GlobalConfig.hybrid.features
             propertyName: "hotspot"
             checked: GlobalConfig.hybrid.features.hotspot
@@ -192,8 +192,8 @@ PageBase {
 
         ToggleRow {
             last: true
-            text: qsTr("Bluetooth pairing agent")
-            subtext: qsTr("Answer pairing requests from other devices. Takes effect on restart")
+            text: Tr.tr("Bluetooth pairing agent")
+            subtext: Tr.tr("Answer pairing requests from other devices. Takes effect on restart")
             configNode: GlobalConfig.hybrid.features
             propertyName: "btAgent"
             checked: GlobalConfig.hybrid.features.btAgent
@@ -201,13 +201,13 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("For fun")
+            text: Tr.tr("For fun")
         }
 
         ToggleRow {
             first: true
-            text: qsTr("Shimeji")
-            subtext: qsTr("Desktop pets that wander across your screens")
+            text: Tr.tr("Shimeji")
+            subtext: Tr.tr("Desktop pets that wander across your screens")
             configNode: GlobalConfig.hybrid.features
             propertyName: "shimeji"
             checked: GlobalConfig.hybrid.features.shimeji
@@ -215,8 +215,8 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Bad Apple")
-            subtext: qsTr("You know what this is")
+            text: Tr.tr("Bad Apple")
+            subtext: Tr.tr("You know what this is")
             configNode: GlobalConfig.hybrid.features
             propertyName: "badApple"
             checked: GlobalConfig.hybrid.features.badApple
@@ -225,8 +225,8 @@ PageBase {
 
         ToggleRow {
             last: true
-            text: qsTr("Dino game")
-            subtext: qsTr("The Chrome runner, in the notification dock")
+            text: Tr.tr("Dino game")
+            subtext: Tr.tr("The Chrome runner, in the notification dock")
             configNode: GlobalConfig.hybrid.features
             propertyName: "dino"
             checked: GlobalConfig.hybrid.features.dino
@@ -236,7 +236,7 @@ PageBase {
         // ------------------------------------------------------------ variants
 
         SectionHeader {
-            text: qsTr("Variants")
+            text: Tr.tr("Variants")
         }
 
         // Only sites that genuinely have two implementations appear here. A selector for one
@@ -251,8 +251,8 @@ PageBase {
         // D10 and T3 block. It waits on Phase 8.
         SelectRow {
             first: true
-            label: qsTr("Audio popout")
-            subtext: qsTr("Which fork's audio panel the bar opens")
+            label: Tr.tr("Audio popout")
+            subtext: Tr.tr("Which fork's audio panel the bar opens")
             configNode: GlobalConfig.hybrid.variants
             propertyName: "audioPopout"
             menuItems: root.variantItems
@@ -263,8 +263,8 @@ PageBase {
         }
 
         SelectRow {
-            label: qsTr("Workspace overview")
-            subtext: qsTr("MiDnight's drawer, or OP's carousel and window grid")
+            label: Tr.tr("Workspace overview")
+            subtext: Tr.tr("MiDnight's drawer, or OP's carousel and window grid")
             configNode: GlobalConfig.hybrid.variants
             propertyName: "overview"
             menuItems: root.variantItems
@@ -276,8 +276,8 @@ PageBase {
 
         SelectRow {
             last: true
-            label: qsTr("Dock")
-            subtext: qsTr("MiDnight's bar section, or OP's auto-hiding panel")
+            label: Tr.tr("Dock")
+            subtext: Tr.tr("MiDnight's bar section, or OP's auto-hiding panel")
             configNode: GlobalConfig.hybrid.variants
             propertyName: "dock"
             menuItems: root.variantItems

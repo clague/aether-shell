@@ -9,24 +9,24 @@ PageBase {
     id: root
 
     readonly property var builtinComponents: ({
-            logo: qsTr("Logo"),
-            workspaces: qsTr("Workspaces"),
-            github: qsTr("GitHub"),
-            spotify: qsTr("Spotify"),
-            spacer: qsTr("Spacer"),
-            activeWindow: qsTr("Active window"),
-            tray: qsTr("System tray"),
-            clock: qsTr("Clock"),
-            statusIcons: qsTr("Status icons"),
-            dock: qsTr("Dock"),
-            power: qsTr("Power menu")
+            logo: Tr.tr("Logo"),
+            workspaces: Tr.tr("Workspaces"),
+            github: Tr.tr("GitHub"),
+            spotify: Tr.tr("Spotify"),
+            spacer: Tr.tr("Spacer"),
+            activeWindow: Tr.tr("Active window"),
+            tray: Tr.tr("System tray"),
+            clock: Tr.tr("Clock"),
+            statusIcons: Tr.tr("Status icons"),
+            dock: Tr.tr("Dock"),
+            power: Tr.tr("Power menu")
         })
 
     readonly property bool isHorizontal: root.targetConfig.bar.position === "top" || root.targetConfig.bar.position === "bottom"
-    readonly property string startLabel: isHorizontal ? qsTr("Left") : qsTr("Top")
-    readonly property string endLabel: isHorizontal ? qsTr("Right") : qsTr("Bottom")
+    readonly property string startLabel: isHorizontal ? Tr.tr("Left") : Tr.tr("Top")
+    readonly property string endLabel: isHorizontal ? Tr.tr("Right") : Tr.tr("Bottom")
 
-    title: qsTr("Taskbar components")
+    title: Tr.tr("Taskbar components")
     isSubPage: true
 
     ColumnLayout {
@@ -42,7 +42,7 @@ PageBase {
         }
 
         EntrySectionEditor {
-            sectionLabel: qsTr("Center")
+            sectionLabel: Tr.tr("Center")
             targetList: root.targetConfig.bar.entries.center
         }
 
@@ -96,9 +96,9 @@ PageBase {
         DialogSelectButton {
             rootParent: root.flickable
             icon: "add"
-            label: qsTr("Add entry")
-            header: qsTr("Add new entry")
-            acceptLabel: qsTr("Add")
+            label: Tr.tr("Add entry")
+            header: Tr.tr("Add new entry")
+            acceptLabel: Tr.tr("Add")
 
             model: {
                 const builtins = Object.keys(root.builtinComponents).map(k => ({

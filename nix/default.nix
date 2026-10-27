@@ -96,12 +96,7 @@
     };
 
     nativeBuildInputs = [cmake ninja pkg-config];
-<<<<<<< HEAD
     buildInputs = [qt6.qtbase qt6.qtdeclarative qt6.qtshadertools libqalculate pipewire aubio libcava fftw lm_sensors protobuf];
-=======
-    buildInputs = [qt6.qtbase qt6.qtdeclarative qt6.qtmultimedia qt6.qtshadertools libqalculate pipewire aubio libcava fftw lm_sensors];
->>>>>>> caelestia/main
-
     dontWrapQtApps = true;
     cmakeFlags =
       [

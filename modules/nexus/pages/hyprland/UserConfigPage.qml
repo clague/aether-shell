@@ -8,7 +8,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    title: qsTr("User configuration")
+    title: Tr.tr("User configuration")
     isSubPage: true
 
     ColumnLayout {
@@ -24,14 +24,14 @@ PageBase {
 
         StyledText {
             Layout.alignment: Qt.AlignHCenter
-            text: qsTr("Page under construction")
+            text: Tr.tr("Page under construction")
             color: Colours.palette.m3outlineVariant
             font: Tokens.font.title.large
         }
 
         StyledText {
             Layout.alignment: Qt.AlignHCenter
-            text: qsTr("This page will be available in a future update.")
+            text: Tr.tr("This page will be available in a future update.")
             color: Colours.palette.m3outlineVariant
             font: Tokens.font.body.large
         }

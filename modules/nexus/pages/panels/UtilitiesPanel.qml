@@ -46,22 +46,14 @@ PageBase {
         ToggleRow {
             first: true
             last: true
-<<<<<<< HEAD
-            text: qsTr("Enabled")
-            subtext: qsTr("Show the utilities panel")
+            text: Tr.tr("Enabled")
+            subtext: Tr.tr("Show the utilities panel")
             configNode: root.targetConfig.utilities
             propertyName: "enabled"
             checked: root.targetConfig.utilities.enabled
             onToggled: {
                 root.targetConfig.utilities.enabled = checked;
-            }
-=======
-            text: Tr.trCtx("Enabled", "toggle label")
-            subtext: Tr.tr("Show the utilities panel")
-            checked: Config.utilities.enabled
-            onToggled: GlobalConfig.utilities.enabled = checked
->>>>>>> caelestia/main
-        }
+            }        }
 
         // Cards
         SectionHeader {
@@ -70,9 +62,8 @@ PageBase {
 
         ToggleRow {
             first: true
-<<<<<<< HEAD
-            text: qsTr("Keep awake")
-            subtext: qsTr("Show the idle inhibitor card")
+            text: Tr.tr("Keep awake")
+            subtext: Tr.tr("Show the idle inhibitor card")
             configNode: root.targetConfig.utilities.cards
             propertyName: "keepAwake"
             checked: root.targetConfig.utilities.cards.keepAwake
@@ -82,47 +73,25 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Screen recorder")
-            subtext: qsTr("Show the screen recorder card")
+            text: Tr.tr("Screen recorder")
+            subtext: Tr.tr("Show the screen recorder card")
             configNode: root.targetConfig.utilities.cards
             propertyName: "recorder"
             checked: root.targetConfig.utilities.cards.recorder
             onToggled: {
                 root.targetConfig.utilities.cards.recorder = checked;
-            }
-=======
-            text: Tr.tr("Keep awake")
-            subtext: Tr.tr("Show the idle inhibitor card")
-            checked: Config.utilities.cards.keepAwake
-            onToggled: GlobalConfig.utilities.cards.keepAwake = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("Screen recorder")
-            subtext: Tr.tr("Show the screen recorder card")
-            checked: Config.utilities.cards.recorder
-            onToggled: GlobalConfig.utilities.cards.recorder = checked
->>>>>>> caelestia/main
-        }
+            }        }
 
         ToggleRow {
             last: true
-<<<<<<< HEAD
-            text: qsTr("Quick toggles")
-            subtext: qsTr("Show the quick toggles card")
+            text: Tr.tr("Quick toggles")
+            subtext: Tr.tr("Show the quick toggles card")
             configNode: root.targetConfig.utilities.cards
             propertyName: "quickToggles"
             checked: root.targetConfig.utilities.cards.quickToggles
             onToggled: {
                 root.targetConfig.utilities.cards.quickToggles = checked;
-            }
-=======
-            text: Tr.tr("Quick toggles")
-            subtext: Tr.tr("Show the quick toggles card")
-            checked: Config.utilities.cards.quickToggles
-            onToggled: GlobalConfig.utilities.cards.quickToggles = checked
->>>>>>> caelestia/main
-        }
+            }        }
 
         // Quick toggles
         SectionHeader {
@@ -179,46 +148,39 @@ PageBase {
         }
 
         ToggleRow {
-<<<<<<< HEAD
-            text: qsTr("VPN")
-            subtext: qsTr("Connect or disconnect the VPN")
-=======
-            last: true
             text: Tr.tr("VPN")
-            subtext: Tr.tr("Connect or disconnect the VPN")
->>>>>>> caelestia/main
-            disabled: !Config.utilities.cards.quickToggles
+            subtext: Tr.tr("Connect or disconnect the VPN")            disabled: !Config.utilities.cards.quickToggles
             checked: root.isToggleOn("vpn")
             onToggled: root.setToggleOn("vpn", checked)
         }
 
         ToggleRow {
-            text: qsTr("Quick Share")
-            subtext: qsTr("Send and receive files nearby")
+            text: Tr.tr("Quick Share")
+            subtext: Tr.tr("Send and receive files nearby")
             disabled: !Config.utilities.cards.quickToggles
             checked: root.isToggleOn("quickshare")
             onToggled: root.setToggleOn("quickshare", checked)
         }
 
         ToggleRow {
-            text: qsTr("Wallpaper selector")
-            subtext: qsTr("Show the wallpaper picker menu")
+            text: Tr.tr("Wallpaper selector")
+            subtext: Tr.tr("Show the wallpaper picker menu")
             disabled: !Config.utilities.cards.quickToggles
             checked: root.isToggleOn("wallpaper")
             onToggled: root.setToggleOn("wallpaper", checked)
         }
 
         ToggleRow {
-            text: qsTr("Bad Apple")
-            subtext: qsTr("Play the Bad Apple animation")
+            text: Tr.tr("Bad Apple")
+            subtext: Tr.tr("Play the Bad Apple animation")
             disabled: !Config.utilities.cards.quickToggles
             checked: root.isToggleOn("badapple")
             onToggled: root.setToggleOn("badapple", checked)
         }
 
         ToggleRow {
-            text: qsTr("Pause video wallpaper")
-            subtext: qsTr("Pause or resume the video wallpaper")
+            text: Tr.tr("Pause video wallpaper")
+            subtext: Tr.tr("Pause or resume the video wallpaper")
             disabled: !Config.utilities.cards.quickToggles
             checked: root.isToggleOn("pauseWallpaper")
             onToggled: root.setToggleOn("pauseWallpaper", checked)
@@ -226,8 +188,8 @@ PageBase {
 
         ToggleRow {
             last: true
-            text: qsTr("Pause PiP")
-            subtext: qsTr("Pause or resume picture-in-picture")
+            text: Tr.tr("Pause PiP")
+            subtext: Tr.tr("Pause or resume picture-in-picture")
             disabled: !Config.utilities.cards.quickToggles
             checked: root.isToggleOn("pipPause")
             onToggled: root.setToggleOn("pipPause", checked)

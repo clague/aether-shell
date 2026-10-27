@@ -3,7 +3,7 @@ import qs.modules.dashboard
 import qs.modules.nexus.common
 
 PageBase {
-    title: qsTr("Wallhaven")
+    title: Tr.tr("Wallhaven")
     isSubPage: true
     scrollable: false
 

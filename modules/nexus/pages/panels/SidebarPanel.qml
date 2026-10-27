@@ -25,20 +25,13 @@ PageBase {
 
         ToggleRow {
             first: true
-<<<<<<< HEAD
-            text: qsTr("Enabled")
+            text: Tr.tr("Enabled")
             configNode: root.targetConfig.sidebar
             propertyName: "enabled"
             checked: root.targetConfig.sidebar.enabled
             onToggled: {
                 root.targetConfig.sidebar.enabled = checked;
-            }
-=======
-            text: Tr.trCtx("Enabled", "toggle label")
-            checked: Config.sidebar.enabled
-            onToggled: GlobalConfig.sidebar.enabled = checked
->>>>>>> caelestia/main
-        }
+            }        }
 
         ToggleRow {
             text: Tr.tr("Show on hover")
@@ -51,18 +44,11 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
             last: true
-<<<<<<< HEAD
-            label: qsTr("Drag threshold")
-            subtext: qsTr("Pixels dragged before the sidebar opens")
-            configNode: root.targetConfig.sidebar
-            propertyName: "dragThreshold"
-            value: root.targetConfig.sidebar.dragThreshold
-=======
             label: Tr.tr("Drag threshold")
             subtext: Tr.tr("Pixels dragged before the sidebar opens")
-            value: Config.sidebar.dragThreshold
->>>>>>> caelestia/main
-            from: 0
+            configNode: root.targetConfig.sidebar
+            propertyName: "dragThreshold"
+            value: root.targetConfig.sidebar.dragThreshold            from: 0
             to: 200
             stepSize: 5
             onMoved: v => {
@@ -72,15 +58,15 @@ PageBase {
 
         // News
         SectionHeader {
-            text: qsTr("News")
+            text: Tr.tr("News")
         }
 
         ToggleRow {
             Layout.fillWidth: true
             first: true
             last: true
-            text: qsTr("Show News Tab")
-            subtext: qsTr("Show the Arch Linux news tab in the sidebar")
+            text: Tr.tr("Show News Tab")
+            subtext: Tr.tr("Show the Arch Linux news tab in the sidebar")
             configNode: root.targetConfig.sidebar
             propertyName: "showNews"
             checked: root.targetConfig.sidebar.showNews !== false
@@ -91,14 +77,14 @@ PageBase {
 
         // AI Assistant
         SectionHeader {
-            text: qsTr("AI Assistant")
+            text: Tr.tr("AI Assistant")
         }
 
         ToggleRow {
             Layout.fillWidth: true
             first: true
-            text: qsTr("Enable Assistant")
-            subtext: qsTr("Show the AI Assistant in the sidebar")
+            text: Tr.tr("Enable Assistant")
+            subtext: Tr.tr("Show the AI Assistant in the sidebar")
             configNode: root.targetConfig.ai
             propertyName: "enableOllama"
             checked: root.targetConfig.ai.enableOllama
@@ -111,8 +97,8 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
             last: true
-            text: qsTr("Enable Tool Usage")
-            subtext: qsTr("Allow the assistant to search the web, take screenshots, etc.")
+            text: Tr.tr("Enable Tool Usage")
+            subtext: Tr.tr("Allow the assistant to search the web, take screenshots, etc.")
             configNode: root.targetConfig.ai
             propertyName: "enableCelestialMode"
             checked: root.targetConfig.ai.enableCelestialMode

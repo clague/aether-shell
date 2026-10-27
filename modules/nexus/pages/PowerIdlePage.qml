@@ -42,7 +42,7 @@ PageBase {
         GlobalConfig.general.idle.timeouts = list;
     }
 
-    title: qsTr("Power & idle")
+    title: Tr.tr("Power & idle")
 
     ColumnLayout {
         anchors.horizontalCenter: parent?.horizontalCenter
@@ -53,14 +53,14 @@ PageBase {
         // Battery
         SectionHeader {
             first: true
-            text: qsTr("Battery management")
+            text: Tr.tr("Battery management")
         }
 
         StepperRow {
             first: true
             last: true
-            label: qsTr("Critical hibernate level")
-            subtext: qsTr("Battery percentage that triggers automatic hibernation (%)")
+            label: Tr.tr("Critical hibernate level")
+            subtext: Tr.tr("Battery percentage that triggers automatic hibernation (%)")
             value: GlobalConfig.general.battery.criticalLevel
             from: 1
             to: 15
@@ -70,41 +70,41 @@ PageBase {
 
         // Idle & Sleep
         SectionHeader {
-            text: qsTr("Idle & Sleep")
+            text: Tr.tr("Idle & Sleep")
         }
 
         ToggleRow {
             first: true
-            text: qsTr("Inhibit sleep during audio")
-            subtext: qsTr("Keep system awake while media or music is playing")
+            text: Tr.tr("Inhibit sleep during audio")
+            subtext: Tr.tr("Keep system awake while media or music is playing")
             checked: GlobalConfig.general.idle.inhibitWhenAudio
             onToggled: GlobalConfig.general.idle.inhibitWhenAudio = checked
         }
 
         ToggleRow {
-            text: qsTr("Inhibit sleep when plugged in")
-            subtext: qsTr("Keep system awake while charging on AC power")
+            text: Tr.tr("Inhibit sleep when plugged in")
+            subtext: Tr.tr("Keep system awake while charging on AC power")
             checked: GlobalConfig.general.idle.inhibitWhenCharging
             onToggled: GlobalConfig.general.idle.inhibitWhenCharging = checked
         }
 
         ToggleRow {
             last: true
-            text: qsTr("Lock before sleep")
-            subtext: qsTr("Automatically lock the session before system suspends")
+            text: Tr.tr("Lock before sleep")
+            subtext: Tr.tr("Automatically lock the session before system suspends")
             checked: GlobalConfig.general.idle.lockBeforeSleep
             onToggled: GlobalConfig.general.idle.lockBeforeSleep = checked
         }
 
         // Timeouts
         SectionHeader {
-            text: qsTr("Inactivity timeouts")
+            text: Tr.tr("Inactivity timeouts")
         }
 
         StepperRow {
             first: true
-            label: qsTr("Lock screen timeout")
-            subtext: qsTr("Minutes of inactivity before locking the screen")
+            label: Tr.tr("Lock screen timeout")
+            subtext: Tr.tr("Minutes of inactivity before locking the screen")
             value: Math.round(root.getTimeout("lock", 180) / 60)
             from: 1
             to: 60
@@ -113,8 +113,8 @@ PageBase {
         }
 
         StepperRow {
-            label: qsTr("Display turn-off (DPMS)")
-            subtext: qsTr("Minutes of inactivity before turning displays off")
+            label: Tr.tr("Display turn-off (DPMS)")
+            subtext: Tr.tr("Minutes of inactivity before turning displays off")
             value: Math.round(root.getTimeout("dpms off", 300) / 60)
             from: 1
             to: 120
@@ -124,8 +124,8 @@ PageBase {
 
         StepperRow {
             last: true
-            label: qsTr("Suspend / Hibernate timeout")
-            subtext: qsTr("Minutes of inactivity before putting system to sleep")
+            label: Tr.tr("Suspend / Hibernate timeout")
+            subtext: Tr.tr("Minutes of inactivity before putting system to sleep")
             value: Math.round(root.getTimeout("suspendThenHibernate", 600) / 60)
             from: 2
             to: 240

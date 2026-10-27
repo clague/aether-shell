@@ -54,16 +54,10 @@ PageBase {
 
         SelectRow {
             first: true
-<<<<<<< HEAD
-            label: qsTr("Show in fullscreen")
-            subtext: qsTr("Whether notifications appear over fullscreen apps")
-            configNode: root.targetConfig.notifs
-            propertyName: "fullscreen"
-=======
             label: Tr.tr("Show in fullscreen")
             subtext: Tr.tr("Whether notifications appear over fullscreen apps")
->>>>>>> caelestia/main
-            menuItems: root.notifFullscreenItems
+            configNode: root.targetConfig.notifs
+            propertyName: "fullscreen"            menuItems: root.notifFullscreenItems
             active: root.notifFullscreenItems[root.targetConfig.notifs.fullscreen]
             onSelected: item => {
                 root.targetConfig.notifs.fullscreen = root.notifFullscreenItems.indexOf(item);
@@ -71,9 +65,8 @@ PageBase {
         }
 
         ToggleRow {
-<<<<<<< HEAD
-            text: qsTr("Expire automatically")
-            subtext: qsTr("Dismiss notifications after their timeout")
+            text: Tr.tr("Expire automatically")
+            subtext: Tr.tr("Dismiss notifications after their timeout")
             configNode: root.targetConfig.notifs
             propertyName: "expire"
             checked: root.targetConfig.notifs.expire
@@ -83,8 +76,8 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Open expanded")
-            subtext: qsTr("Show notifications expanded by default")
+            text: Tr.tr("Open expanded")
+            subtext: Tr.tr("Show notifications expanded by default")
             configNode: root.targetConfig.notifs
             propertyName: "openExpanded"
             checked: root.targetConfig.notifs.openExpanded
@@ -94,32 +87,11 @@ PageBase {
         }
 
         StepperRow {
-            label: qsTr("Default timeout")
-            subtext: qsTr("Time before a notification dismisses (ms)")
+            label: Tr.tr("Default timeout")
+            subtext: Tr.tr("Time before a notification dismisses (ms)")
             configNode: root.targetConfig.notifs
             propertyName: "defaultExpireTimeout"
-            value: root.targetConfig.notifs.defaultExpireTimeout
-=======
-            text: Tr.tr("Expire automatically")
-            subtext: Tr.tr("Dismiss notifications after their timeout")
-            checked: GlobalConfig.notifs.expire
-            onToggled: GlobalConfig.notifs.expire = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("Open expanded")
-            subtext: Tr.tr("Show notifications expanded by default")
-            checked: GlobalConfig.notifs.openExpanded
-            onToggled: GlobalConfig.notifs.openExpanded = checked
-        }
-
-        StepperRow {
-            label: Tr.tr("Default timeout")
-            // TRANSLATORS: ms is the millisecond unit, leave it untranslated
-            subtext: Tr.tr("Time before a notification dismisses (ms)")
-            value: GlobalConfig.notifs.defaultExpireTimeout
->>>>>>> caelestia/main
-            from: 1000
+            value: root.targetConfig.notifs.defaultExpireTimeout            from: 1000
             to: 60000
             stepSize: 500
             onMoved: v => {
@@ -129,18 +101,11 @@ PageBase {
 
         StepperRow {
             last: true
-<<<<<<< HEAD
-            label: qsTr("Group preview count")
-            subtext: qsTr("Notifications shown per group before collapsing")
-            configNode: root.targetConfig.notifs
-            propertyName: "groupPreviewNum"
-            value: root.targetConfig.notifs.groupPreviewNum
-=======
             label: Tr.tr("Group preview count")
             subtext: Tr.tr("Notifications shown per group before collapsing")
-            value: GlobalConfig.notifs.groupPreviewNum
->>>>>>> caelestia/main
-            from: 1
+            configNode: root.targetConfig.notifs
+            propertyName: "groupPreviewNum"
+            value: root.targetConfig.notifs.groupPreviewNum            from: 1
             to: 10
             stepSize: 1
             onMoved: v => {
@@ -155,16 +120,10 @@ PageBase {
 
         SelectRow {
             first: true
-<<<<<<< HEAD
-            label: qsTr("Show in fullscreen")
-            subtext: qsTr("Whether toasts appear over fullscreen apps")
-            configNode: root.targetConfig.utilities.toasts
-            propertyName: "fullscreen"
-=======
             label: Tr.tr("Show in fullscreen")
             subtext: Tr.tr("Whether toasts appear over fullscreen apps")
->>>>>>> caelestia/main
-            menuItems: root.toastFullscreenItems
+            configNode: root.targetConfig.utilities.toasts
+            propertyName: "fullscreen"            menuItems: root.toastFullscreenItems
             active: root.toastFullscreenItems[Math.max(0, root.toastFullscreenValues.indexOf(root.targetConfig.utilities.toasts.fullscreen))]
             onSelected: item => {
                 root.targetConfig.utilities.toasts.fullscreen = root.toastFullscreenValues[root.toastFullscreenItems.indexOf(item)];
@@ -172,19 +131,11 @@ PageBase {
         }
 
         StepperRow {
-<<<<<<< HEAD
-            label: qsTr("Visible toasts")
-            subtext: qsTr("Maximum number of toasts shown at once")
-            configNode: root.targetConfig.utilities
-            propertyName: "maxToasts"
-            value: root.targetConfig.utilities.maxToasts
-=======
-            last: true
             label: Tr.tr("Visible toasts")
             subtext: Tr.tr("Maximum number of toasts shown at once")
-            value: GlobalConfig.utilities.maxToasts
->>>>>>> caelestia/main
-            from: 1
+            configNode: root.targetConfig.utilities
+            propertyName: "maxToasts"
+            value: root.targetConfig.utilities.maxToasts            from: 1
             to: 10
             stepSize: 1
             onMoved: v => {
@@ -193,8 +144,8 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Toast transparency")
-            subtext: qsTr("Apply transparency and blur to toast notifications")
+            text: Tr.tr("Toast transparency")
+            subtext: Tr.tr("Apply transparency and blur to toast notifications")
             configNode: root.targetConfig.utilities.toasts
             propertyName: "transparency"
             checked: root.targetConfig.utilities.toasts.transparency
@@ -205,7 +156,7 @@ PageBase {
 
         SliderRow {
             last: true
-            label: qsTr("Base transparency")
+            label: Tr.tr("Base transparency")
             configNode: root.targetConfig.utilities.toasts
             propertyName: "transparencyBase"
             valueLabel: Math.round(value * 100) + "%"
@@ -223,8 +174,7 @@ PageBase {
 
         ToggleRow {
             first: true
-<<<<<<< HEAD
-            text: qsTr("Charging changes")
+            text: Tr.tr("Charging changes")
             configNode: root.targetConfig.utilities.toasts
             propertyName: "chargingChanged"
             checked: root.targetConfig.utilities.toasts.chargingChanged
@@ -234,7 +184,7 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Game mode changes")
+            text: Tr.tr("Game mode changes")
             configNode: root.targetConfig.utilities.toasts
             propertyName: "gameModeChanged"
             checked: root.targetConfig.utilities.toasts.gameModeChanged
@@ -244,7 +194,7 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Do not disturb changes")
+            text: Tr.tr("Do not disturb changes")
             configNode: root.targetConfig.utilities.toasts
             propertyName: "dndChanged"
             checked: root.targetConfig.utilities.toasts.dndChanged
@@ -254,7 +204,7 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Audio output changes")
+            text: Tr.tr("Audio output changes")
             configNode: root.targetConfig.utilities.toasts
             propertyName: "audioOutputChanged"
             checked: root.targetConfig.utilities.toasts.audioOutputChanged
@@ -264,7 +214,7 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Audio input changes")
+            text: Tr.tr("Audio input changes")
             configNode: root.targetConfig.utilities.toasts
             propertyName: "audioInputChanged"
             checked: root.targetConfig.utilities.toasts.audioInputChanged
@@ -274,7 +224,7 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Caps lock changes")
+            text: Tr.tr("Caps lock changes")
             configNode: root.targetConfig.utilities.toasts
             propertyName: "capsLockChanged"
             checked: root.targetConfig.utilities.toasts.capsLockChanged
@@ -284,7 +234,7 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Num lock changes")
+            text: Tr.tr("Num lock changes")
             configNode: root.targetConfig.utilities.toasts
             propertyName: "numLockChanged"
             checked: root.targetConfig.utilities.toasts.numLockChanged
@@ -294,7 +244,7 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Keyboard layout changes")
+            text: Tr.tr("Keyboard layout changes")
             configNode: root.targetConfig.utilities.toasts
             propertyName: "kbLayoutChanged"
             checked: root.targetConfig.utilities.toasts.kbLayoutChanged
@@ -304,83 +254,22 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("VPN changes")
+            text: Tr.tr("VPN changes")
             configNode: root.targetConfig.utilities.toasts
             propertyName: "vpnChanged"
             checked: root.targetConfig.utilities.toasts.vpnChanged
             onToggled: {
                 root.targetConfig.utilities.toasts.vpnChanged = checked;
-            }
-=======
-            text: Tr.tr("Charging changes")
-            checked: GlobalConfig.utilities.toasts.chargingChanged
-            onToggled: GlobalConfig.utilities.toasts.chargingChanged = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("Game mode changes")
-            checked: GlobalConfig.utilities.toasts.gameModeChanged
-            onToggled: GlobalConfig.utilities.toasts.gameModeChanged = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("Do not disturb changes")
-            checked: GlobalConfig.utilities.toasts.dndChanged
-            onToggled: GlobalConfig.utilities.toasts.dndChanged = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("Audio output changes")
-            checked: GlobalConfig.utilities.toasts.audioOutputChanged
-            onToggled: GlobalConfig.utilities.toasts.audioOutputChanged = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("Audio input changes")
-            checked: GlobalConfig.utilities.toasts.audioInputChanged
-            onToggled: GlobalConfig.utilities.toasts.audioInputChanged = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("Caps lock changes")
-            checked: GlobalConfig.utilities.toasts.capsLockChanged
-            onToggled: GlobalConfig.utilities.toasts.capsLockChanged = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("Num lock changes")
-            checked: GlobalConfig.utilities.toasts.numLockChanged
-            onToggled: GlobalConfig.utilities.toasts.numLockChanged = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("Keyboard layout changes")
-            checked: GlobalConfig.utilities.toasts.kbLayoutChanged
-            onToggled: GlobalConfig.utilities.toasts.kbLayoutChanged = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("VPN changes")
-            checked: GlobalConfig.utilities.toasts.vpnChanged
-            onToggled: GlobalConfig.utilities.toasts.vpnChanged = checked
->>>>>>> caelestia/main
-        }
+            }        }
 
         ToggleRow {
             last: true
-<<<<<<< HEAD
-            text: qsTr("Now playing")
+            text: Tr.tr("Now playing")
             configNode: root.targetConfig.utilities.toasts
             propertyName: "nowPlaying"
             checked: root.targetConfig.utilities.toasts.nowPlaying
             onToggled: {
                 root.targetConfig.utilities.toasts.nowPlaying = checked;
-            }
-=======
-            text: Tr.tr("Now playing")
-            checked: GlobalConfig.utilities.toasts.nowPlaying
-            onToggled: GlobalConfig.utilities.toasts.nowPlaying = checked
->>>>>>> caelestia/main
-        }
+            }        }
     }
 }

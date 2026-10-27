@@ -15,7 +15,6 @@ upstream **Caelestia**. One shell, one config, one CLI — features toggled, not
 
 ## Features
 
-<<<<<<< HEAD
 The two forks are about 90% disjoint, so almost everything they added is a feature that is
 either present or absent rather than a choice between two implementations. Each one is a
 flag under `hybrid.features` in `shell.json`, and the settings app (Nexus) has a page for
@@ -59,12 +58,6 @@ Four components genuinely exist in both forks — the lock centre, the audio pop
 desktop clock and the colour system. Those live under `hybrid.variants` rather than
 `hybrid.features`, because the choice there is *which* implementation, not whether. Each
 currently has one implementation; the selector appears when the second lands.
-=======
-- Widgets: [`Quickshell`](https://quickshell.outfoxxed.me)
-- Window manager: [`Hyprland`](https://hypr.land)
-- Dots: [`caelestia`][dots-repo]
->>>>>>> caelestia/main
-
 ## Installation
 
 > [!IMPORTANT]
@@ -73,7 +66,6 @@ currently has one implementation; the selector appears when the second lands.
 
 Dependencies:
 
-<<<<<<< HEAD
 -   [`caelestia-cli`](https://github.com/caelestia-dots/cli) — required; the shell's IPC and
     most of its shortcuts go through it.
     MiDnight ships a fork of it (`dim-ghub/midnight-cli`, +849 lines) that some of its
@@ -98,33 +90,6 @@ Dependencies:
 -   [`ttf-cascadia-code-nerd`](https://github.com/ryanoasis/nerd-fonts)
 -   `qt6-base`
 -   `qt6-declarative`
-=======
-- [`caelestia-cli`](https://github.com/caelestia-dots/cli)
-- [`quickshell-git`](https://git.outfoxxed.me/quickshell/quickshell) - this has to be the git version, not the latest tagged version
-- `glibc`
-- `gcc-libs`
-- [`ddcutil`](https://github.com/rockowitz/ddcutil)
-- [`brightnessctl`](https://github.com/Hummer12007/brightnessctl)
-- [`libcava`](https://github.com/LukashonakV/cava)
-- [`networkmanager`](https://gitlab.freedesktop.org/NetworkManager/NetworkManager)
-- [`lm_sensors`](https://github.com/lm-sensors/lm-sensors)
-- [`aubio`](https://github.com/aubio/aubio)
-- [`libpipewire`](https://github.com/PipeWire/pipewire)
-- [`libqalculate`](https://github.com/Qalculate/libqalculate)
-- [`power-profiles-daemon`](https://gitlab.freedesktop.org/upower/power-profiles-daemon)
-- [`ttf-material-symbols-variable`](https://github.com/google/material-design-icons)
-- [`ttf-rubik-vf`](https://github.com/googlefonts/rubik)
-- [`ttf-cascadia-code-nerd`](https://github.com/ryanoasis/nerd-fonts)
-- `qt6-base`
-- `qt6-declarative`
-- `qt6-imageformats`
-- `qt6-multimedia`
-- [`qt6-m3shapes-git`](https://github.com/soramanew/m3shapes)
-- [`swappy`](https://github.com/jtheoof/swappy)
-- [`fish`](https://github.com/fish-shell/fish-shell)
-- [`bash`](https://www.gnu.org/software/bash)
->>>>>>> caelestia/main
-
 Build dependencies:
 
 - [`cmake`](https://gitlab.kitware.com/cmake/cmake)
@@ -432,7 +397,6 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
 >
 > <details><summary>Ignored options</summary>
 >
-<<<<<<< HEAD
 > - `appearance` (`anim`, `transparency`)
 > - `general` (`logo`, `apps`, `idle`, `battery`)
 > - `bar.workspaces` (`perMonitorWorkspaces`, `specialWorkspaceIcons`, `windowIcons`, `wsIcons`)
@@ -449,22 +413,7 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
 > - `services` (`weatherLocation`, `useFahrenheit`, `useFahrenheitPerformance`, `useTwelveHourClock`,
 >   `gpuType`, `visualiserBars`, `audioIncrement`, `brightnessIncrement`, `maxVolume`, `smartScheme`,
 >   `defaultPlayer`, `playerAliases`, `lyricsBackend`)
-> - `paths` (`wallpaperDir`, `lyricsDir`)
-=======
-> - `appearance`: `anim.*`, `transparency.*`
-> - `bar.tray`: `hiddenIcons`, `iconSubs`
-> - `bar.workspaces`: `ignoredTags`, `specialWorkspaceIcons`, `windowIcons`, `workspaceIcons`
-> - `dashboard`: `mediaUpdateInterval`, `resourceUpdateInterval`
-> - `general`: `apps.*`, `battery.*`, `idle.*`, `logo`
-> - `launcher`: `actionPrefix`, `actions`, `enableDangerousActions`, `favouriteApps`, `hiddenApps`, `specialPrefix`, `useFuzzy.*`, `vimKeybinds`
-> - `lock`: `enableFprint`, `enableHowdy`, `maxFprintTries`, `maxHowdyTries`, `triggerHowdyOnWake`
-> - `nexus`: `networkRescanInterval`
-> - `notifs`: `actionOnClick`, `defaultExpireTimeout`, `expire`, `fullscreen`, `fullscreenExpireTimeout`
-> - `paths`: `lyricsDir`, `wallpaperDir`
-> - `services`: `audioIncrement`, `brightnessIncrement`, `clockFormat`, `dataUnits`, `defaultPlayer`, `gpuType`, `lyricsBackend`, `maxVolume`, `playerAliases`, `sensorUnits`, `smartScheme`, `visualiserBars`, `weatherLocation`, `weatherUnits`
-> - `utilities`: `toasts.*`, `vpn.*`
->>>>>>> caelestia/main
->
+> - `paths` (`wallpaperDir`, `lyricsDir`)>
 > </details>
 
 ### Example configuration
@@ -691,154 +640,6 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
         "spacing": {
             "scale": 1
         },
-<<<<<<< HEAD
-=======
-        "padding": {
-            "scale": 1
-        },
-        "font": {
-            "scale": 1,
-            "clock": "Rubik",
-            "workspaces": "Rubik",
-            "headline": {
-                "family": "GoogleSansFlex",
-                "large": {
-                    "size": 32,
-                    "weight": 500,
-                    "italic": false,
-                    "vaxes": { "ROND": 25 }
-                },
-                "medium": {
-                    "size": 28,
-                    "weight": 500,
-                    "italic": false,
-                    "vaxes": { "ROND": 25 }
-                },
-                "small": {
-                    "size": 24,
-                    "weight": 500,
-                    "italic": false,
-                    "vaxes": { "ROND": 25 }
-                }
-            },
-            "title": {
-                "family": "GoogleSansFlex",
-                "large": {
-                    "size": 22,
-                    "weight": 500,
-                    "italic": false,
-                    "vaxes": { "ROND": 25 }
-                },
-                "medium": {
-                    "size": 16,
-                    "weight": 500,
-                    "italic": false,
-                    "vaxes": { "ROND": 25 }
-                },
-                "small": {
-                    "size": 14,
-                    "weight": 500,
-                    "italic": false,
-                    "vaxes": { "ROND": 25 }
-                }
-            },
-            "body": {
-                "family": "GoogleSansFlex",
-                "large": {
-                    "size": 16,
-                    "weight": 400,
-                    "italic": false,
-                    "vaxes": { "ROND": 25 }
-                },
-                "medium": {
-                    "size": 14,
-                    "weight": 400,
-                    "italic": false,
-                    "vaxes": { "ROND": 25 }
-                },
-                "small": {
-                    "size": 12,
-                    "weight": 400,
-                    "italic": false,
-                    "vaxes": { "ROND": 25 }
-                }
-            },
-            "label": {
-                "family": "GoogleSansFlex",
-                "large": {
-                    "size": 14,
-                    "weight": 500,
-                    "italic": false,
-                    "vaxes": { "ROND": 25 }
-                },
-                "medium": {
-                    "size": 12,
-                    "weight": 500,
-                    "italic": false,
-                    "vaxes": { "ROND": 25 }
-                },
-                "small": {
-                    "size": 11,
-                    "weight": 400,
-                    "italic": false,
-                    "vaxes": { "ROND": 25 }
-                }
-            },
-            "mono": {
-                "family": "CaskaydiaCove NF",
-                "large": {
-                    "size": 16,
-                    "weight": 400,
-                    "italic": false,
-                    "vaxes": {}
-                },
-                "medium": {
-                    "size": 14,
-                    "weight": 400,
-                    "italic": false,
-                    "vaxes": {}
-                },
-                "small": {
-                    "size": 12,
-                    "weight": 400,
-                    "italic": false,
-                    "vaxes": {}
-                }
-            },
-            "icon": {
-                "family": "Material Symbols Rounded",
-                "extraLarge": {
-                    "size": 36,
-                    "weight": 400,
-                    "italic": false,
-                    "vaxes": {}
-                },
-                "large": {
-                    "size": 24,
-                    "weight": 400,
-                    "italic": false,
-                    "vaxes": {}
-                },
-                "medium": {
-                    "size": 18,
-                    "weight": 400,
-                    "italic": false,
-                    "vaxes": {}
-                },
-                "small": {
-                    "size": 15,
-                    "weight": 400,
-                    "italic": false,
-                    "vaxes": {}
-                }
-            }
-        },
-        "anim": {
-            "durations": {
-                "scale": 1
-            }
-        },
->>>>>>> caelestia/main
         "transparency": {
             "base": 0.85,
             "enabled": false,
@@ -972,69 +773,6 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
         "wallpaperEnabled": true
     },
     "bar": {
-<<<<<<< HEAD
-=======
-        "persistent": true,
-        "showOnHover": true,
-        "dragThreshold": 20,
-        "scrollActions": {
-            "workspaces": true,
-            "volume": true,
-            "brightness": true
-        },
-        "popouts": {
-            "activeWindow": true,
-            "tray": true,
-            "statusIcons": true
-        },
-        "workspaces": {
-            "shown": 5,
-            "activeIndicator": true,
-            "occupiedBg": false,
-            "showUnoccupied": true,
-            "perMonitor": true,
-            "showWindows": true,
-            "showWindowsOnSpecialWorkspaces": true,
-            "maxWindowIcons": 5,
-            "activeTrail": false,
-            "displayType": "shapes",
-            "specialDisplayType": "icons",
-            "label": "  ",
-            "occupiedLabel": "󰮯",
-            "activeLabel": "󰮯",
-            "capitalisation": "preserve",
-            "workspaceIcons": [],
-            "specialWorkspaceIcons": [
-                {
-                    "name": "special",
-                    "icon": "star"
-                },
-                {
-                    "name": "communication",
-                    "icon": "forum"
-                },
-                {
-                    "name": "music",
-                    "icon": "music_cast"
-                },
-                {
-                    "name": "todo",
-                    "icon": "checklist"
-                },
-                {
-                    "name": "sysmon",
-                    "icon": "monitor_heart"
-                }
-            ],
-            "ignoredTags": ["hide_in_bar", "xwl_popup"],
-            "windowIcons": [
-                {
-                    "regex": "steam(_app_(default|[0-9]+))?",
-                    "icon": "sports_esports"
-                }
-            ]
-        },
->>>>>>> caelestia/main
         "activeWindow": {
             "compact": false,
             "inverted": false,
@@ -1412,14 +1150,7 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
         "recolourLogo": true,
         "enableHowdy": true,
         "maxHowdyTries": 3,
-<<<<<<< HEAD
-        "triggerHowdyOnWake": true
-=======
-        "triggerHowdyOnWake": true,
-        "hideNotifs": false,
-        "enableSessionControls": true
->>>>>>> caelestia/main
-    },
+        "triggerHowdyOnWake": true    },
     "nexus": {
         "networkRescanInterval": 15000,
         "wallpapersPerRow": 4
@@ -1451,20 +1182,9 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
         "wallpaperDir": "/home/dim/Pictures/Wallpapers"
     },
     "services": {
-<<<<<<< HEAD
-=======
-        "weatherLocation": "",
-        "weatherUnits": "Auto",
-        "sensorUnits": "Celsius",
-        "dataUnits": "Binary",
-        "clockFormat": "Auto",
-        "gpuType": "Auto",
-        "visualiserBars": 60,
->>>>>>> caelestia/main
         "audioIncrement": 0.1,
         "brightnessIncrement": 0.1,
         "defaultPlayer": "Spotify",
-<<<<<<< HEAD
         "gpuType": "",
         "lyricsBackend": "Auto",
         "maxVolume": 1,
@@ -1479,14 +1199,7 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
         "useFahrenheitPerformance": false,
         "useTwelveHourClock": true,
         "visualiserBars": 60,
-        "weatherLocation": ""
-=======
-        "playerAliases": [
-            { "from": "com.github.th_ch.youtube_music", "to": "YT Music" }
-        ],
-        "lyricsBackend": "Auto"
->>>>>>> caelestia/main
-    },
+        "weatherLocation": ""    },
     "session": {
         "commands": {
             "hibernate": [
@@ -1744,18 +1457,5 @@ Finally, another thank you to all the configs I took inspiration from (only one 
 
 - [Axenide/Ax-Shell](https://github.com/Axenide/Ax-Shell)
 
-<<<<<<< HEAD
-=======
-## Stonks 📈
-
-<a href="https://www.star-history.com/#caelestia-dots/shell&Date">
-    <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=caelestia-dots/shell&type=Date&theme=dark" />
-        <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=caelestia-dots/shell&type=Date" />
-        <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=caelestia-dots/shell&type=Date" />
-    </picture>
-</a>
-
->>>>>>> caelestia/main
 [dots-repo]: https://github.com/caelestia-dots/caelestia
 [discord]: https://caelestiashell.com/discord

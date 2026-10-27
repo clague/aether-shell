@@ -19,8 +19,7 @@ PageBase {
 
         ToggleRow {
             first: true
-<<<<<<< HEAD
-            text: qsTr("Background")
+            text: Tr.tr("Background")
             configNode: root.targetConfig.bar.clock
             propertyName: "background"
             checked: root.targetConfig.bar.clock.background
@@ -30,7 +29,7 @@ PageBase {
         }
 
         ToggleRow {
-            text: qsTr("Show date")
+            text: Tr.tr("Show date")
             configNode: root.targetConfig.bar.clock
             propertyName: "showDate"
             checked: root.targetConfig.bar.clock.showDate
@@ -41,31 +40,13 @@ PageBase {
 
         ToggleRow {
             last: true
-            text: qsTr("Show icon")
+            text: Tr.tr("Show icon")
             configNode: root.targetConfig.bar.clock
             propertyName: "showIcon"
             checked: root.targetConfig.bar.clock.showIcon
             onToggled: {
                 root.targetConfig.bar.clock.showIcon = checked;
-            }
-=======
-            text: Tr.trCtx("Background", "taskbar clock: draw a background behind the clock")
-            checked: Config.bar.clock.background
-            onToggled: GlobalConfig.bar.clock.background = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("Show date")
-            checked: Config.bar.clock.showDate
-            onToggled: GlobalConfig.bar.clock.showDate = checked
-        }
-
-        ToggleRow {
-            text: Tr.tr("Show icon")
-            checked: Config.bar.clock.showIcon
-            onToggled: GlobalConfig.bar.clock.showIcon = checked
->>>>>>> caelestia/main
-        }
+            }        }
 
         ToggleRow {
             last: true

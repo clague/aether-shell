@@ -4,12 +4,9 @@
 build/
 .cache/
 logs
-<<<<<<< HEAD
 .smoke-logs/
 *.bak
 tidy-build/
 .verify/
 __pycache__/
 *.pyc
-=======
->>>>>>> caelestia/main

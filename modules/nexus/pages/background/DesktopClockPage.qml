@@ -11,35 +11,35 @@ PageBase {
 
     readonly property list<MenuItem> positionItems: [
         MenuItem {
-            text: qsTr("Top Left")
+            text: Tr.tr("Top Left")
         },
         MenuItem {
-            text: qsTr("Top Center")
+            text: Tr.tr("Top Center")
         },
         MenuItem {
-            text: qsTr("Top Right")
+            text: Tr.tr("Top Right")
         },
         MenuItem {
-            text: qsTr("Middle Left")
+            text: Tr.tr("Middle Left")
         },
         MenuItem {
-            text: qsTr("Middle Center")
+            text: Tr.tr("Middle Center")
         },
         MenuItem {
-            text: qsTr("Middle Right")
+            text: Tr.tr("Middle Right")
         },
         MenuItem {
-            text: qsTr("Bottom Left")
+            text: Tr.tr("Bottom Left")
         },
         MenuItem {
-            text: qsTr("Bottom Center")
+            text: Tr.tr("Bottom Center")
         },
         MenuItem {
-            text: qsTr("Bottom Right")
+            text: Tr.tr("Bottom Right")
         }
     ]
 
-    title: qsTr("Desktop clock")
+    title: Tr.tr("Desktop clock")
     isSubPage: true
 
     ColumnLayout {
@@ -50,14 +50,14 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("General")
+            text: Tr.tr("General")
         }
 
         ToggleRow {
             first: true
             last: true
             Layout.fillWidth: true
-            text: qsTr("Enable desktop clock")
+            text: Tr.tr("Enable desktop clock")
             configNode: root.targetConfig.background.desktopClock
             propertyName: "enabled"
             checked: root.targetConfig.background.desktopClock.enabled
@@ -67,13 +67,13 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Appearance")
+            text: Tr.tr("Appearance")
         }
 
         SelectRow {
             first: true
             Layout.fillWidth: true
-            label: qsTr("Position")
+            label: Tr.tr("Position")
             configNode: root.targetConfig.background.desktopClock
             propertyName: "position"
             menuItems: root.positionItems
@@ -89,7 +89,7 @@ PageBase {
         SliderRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Scale")
+            label: Tr.tr("Scale")
             configNode: root.targetConfig.background.desktopClock
             propertyName: "scale"
             value: (root.targetConfig.background.desktopClock.scale - 0.5) / 2.5
@@ -103,8 +103,8 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            text: qsTr("Invert colors")
-            subtext: qsTr("Invert the clock color when using light wallpaper")
+            text: Tr.tr("Invert colors")
+            subtext: Tr.tr("Invert the clock color when using light wallpaper")
             configNode: root.targetConfig.background.desktopClock
             propertyName: "invertColors"
             checked: root.targetConfig.background.desktopClock.invertColors
@@ -114,13 +114,13 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Background")
+            text: Tr.tr("Background")
         }
 
         ToggleRow {
             first: true
             Layout.fillWidth: true
-            text: qsTr("Enable background")
+            text: Tr.tr("Enable background")
             configNode: root.targetConfig.background.desktopClock.background
             propertyName: "enabled"
             checked: root.targetConfig.background.desktopClock.background.enabled
@@ -132,7 +132,7 @@ PageBase {
         SliderRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Opacity")
+            label: Tr.tr("Opacity")
             configNode: root.targetConfig.background.desktopClock.background
             propertyName: "opacity"
             value: root.targetConfig.background.desktopClock.background.opacity
@@ -147,7 +147,7 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            text: qsTr("Blur")
+            text: Tr.tr("Blur")
             configNode: root.targetConfig.background.desktopClock.background
             propertyName: "blur"
             checked: root.targetConfig.background.desktopClock.background.blur
@@ -158,13 +158,13 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Shadow")
+            text: Tr.tr("Shadow")
         }
 
         ToggleRow {
             first: true
             Layout.fillWidth: true
-            text: qsTr("Enable shadow")
+            text: Tr.tr("Enable shadow")
             configNode: root.targetConfig.background.desktopClock.shadow
             propertyName: "enabled"
             checked: root.targetConfig.background.desktopClock.shadow.enabled
@@ -176,7 +176,7 @@ PageBase {
         SliderRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Opacity")
+            label: Tr.tr("Opacity")
             configNode: root.targetConfig.background.desktopClock.shadow
             propertyName: "opacity"
             value: root.targetConfig.background.desktopClock.shadow.opacity
@@ -191,7 +191,7 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            label: qsTr("Blur strength")
+            label: Tr.tr("Blur strength")
             configNode: root.targetConfig.background.desktopClock.shadow
             propertyName: "blur"
             value: root.targetConfig.background.desktopClock.shadow.blur / 2.0

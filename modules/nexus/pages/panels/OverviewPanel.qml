@@ -14,20 +14,20 @@ PageBase {
 
     readonly property list<MenuItem> tabItems: [
         MenuItem {
-            text: qsTr("Workspaces carousel")
+            text: Tr.tr("Workspaces carousel")
             icon: "view_carousel"
         },
         MenuItem {
-            text: qsTr("Special scratchpads")
+            text: Tr.tr("Special scratchpads")
             icon: "layers"
         },
         MenuItem {
-            text: qsTr("All windows grid")
+            text: Tr.tr("All windows grid")
             icon: "grid_view"
         }
     ]
 
-    title: qsTr("Taskview")
+    title: Tr.tr("Taskview")
     isSubPage: true
 
     ColumnLayout {
@@ -39,14 +39,14 @@ PageBase {
         // View options
         SectionHeader {
             first: true
-            text: qsTr("View options")
+            text: Tr.tr("View options")
         }
 
         SelectRow {
             first: true
             last: true
-            label: qsTr("Active tab")
-            subtext: qsTr("Initial view when opening the fullscreen overview")
+            label: Tr.tr("Active tab")
+            subtext: Tr.tr("Initial view when opening the fullscreen overview")
             menuItems: root.tabItems
             active: root.tabItems[Math.max(0, Math.min(2, OverviewState.activeTab))]
             onSelected: item => OverviewState.activeTab = root.tabItems.indexOf(item)
@@ -54,7 +54,7 @@ PageBase {
 
         // Integration & Controls
         SectionHeader {
-            text: qsTr("Shortcuts & Gestures")
+            text: Tr.tr("Shortcuts & Gestures")
         }
 
         ConnectedRect {
@@ -81,14 +81,14 @@ PageBase {
                     }
 
                     StyledText {
-                        text: qsTr("Shortcut toggle")
+                        text: Tr.tr("Shortcut toggle")
                         font: Tokens.font.body.medium
                     }
                 }
 
                 StyledText {
                     Layout.fillWidth: true
-                    text: qsTr("Press your configured overview hotkey or run `caelestia ipc overview toggle` to open the taskview at any time.")
+                    text: Tr.tr("Press your configured overview hotkey or run `caelestia ipc overview toggle` to open the taskview at any time.")
                     color: Colours.palette.m3onSurfaceVariant
                     font: Tokens.font.body.small
                     wrapMode: Text.WordWrap

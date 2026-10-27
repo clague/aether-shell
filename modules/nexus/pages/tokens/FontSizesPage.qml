@@ -6,7 +6,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    title: qsTr("Font Sizes")
+    title: Tr.tr("Font Sizes")
     isSubPage: true
 
     ColumnLayout {
@@ -17,13 +17,13 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("Standard Fonts")
+            text: Tr.tr("Standard Fonts")
         }
 
         StepperRow {
             first: true
             Layout.fillWidth: true
-            label: qsTr("Small")
+            label: Tr.tr("Small")
             value: TokenConfig.appearance.fontSize.small
             from: 6
             to: 36
@@ -38,7 +38,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Smaller")
+            label: Tr.tr("Smaller")
             value: TokenConfig.appearance.fontSize.smaller
             from: 6
             to: 36
@@ -53,7 +53,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Normal")
+            label: Tr.tr("Normal")
             value: TokenConfig.appearance.fontSize.normal
             from: 8
             to: 40
@@ -68,7 +68,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Larger")
+            label: Tr.tr("Larger")
             value: TokenConfig.appearance.fontSize.larger
             from: 8
             to: 40
@@ -83,7 +83,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Large")
+            label: Tr.tr("Large")
             value: TokenConfig.appearance.fontSize.large
             from: 10
             to: 48
@@ -99,7 +99,7 @@ PageBase {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            label: qsTr("Extra Large")
+            label: Tr.tr("Extra Large")
             value: TokenConfig.appearance.fontSize.extraLarge
             from: 12
             to: 72
@@ -112,13 +112,13 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Monospace Fonts")
+            text: Tr.tr("Monospace Fonts")
         }
 
         StepperRow {
             first: true
             Layout.fillWidth: true
-            label: qsTr("Mono Small")
+            label: Tr.tr("Mono Small")
             value: TokenConfig.appearance.fontSize.monoSmall
             from: 6
             to: 36
@@ -133,7 +133,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Mono Medium")
+            label: Tr.tr("Mono Medium")
             value: TokenConfig.appearance.fontSize.monoMedium
             from: 8
             to: 40
@@ -149,7 +149,7 @@ PageBase {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            label: qsTr("Mono Large")
+            label: Tr.tr("Mono Large")
             value: TokenConfig.appearance.fontSize.monoLarge
             from: 10
             to: 48

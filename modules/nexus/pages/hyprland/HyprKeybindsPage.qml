@@ -368,7 +368,7 @@ PageBase {
         root.vars = newVars;
     }
 
-    title: qsTr("Keybinds")
+    title: Tr.tr("Keybinds")
     isSubPage: true
 
     Component.onCompleted: {
@@ -388,7 +388,7 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("Workspaces")
+            text: Tr.tr("Workspaces")
         }
 
         KeybindRow {
@@ -419,7 +419,7 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Window Group")
+            text: Tr.tr("Window Group")
         }
 
         KeybindRow {
@@ -442,7 +442,7 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Window Action")
+            text: Tr.tr("Window Action")
         }
 
         KeybindRow {
@@ -481,7 +481,7 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Special Workspaces")
+            text: Tr.tr("Special Workspaces")
         }
 
         KeybindRow {
@@ -508,7 +508,7 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Apps")
+            text: Tr.tr("Apps")
         }
 
         KeybindRow {
@@ -531,7 +531,7 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Misc")
+            text: Tr.tr("Misc")
         }
 
         KeybindRow {
@@ -635,7 +635,7 @@ PageBase {
                     readonly property var clash: root.conflicts[kroot.varKey] ?? []
                     readonly property string binding: root.vars[kroot.varKey] !== undefined ? String(root.vars[kroot.varKey]) : (root.defaults[kroot.varKey] !== undefined ? String(root.defaults[kroot.varKey]) : "Unbound")
 
-                    text: kroot.recording ? "Recording..." : (clash.length > 0 ? qsTr("%1 — also bound to %2").arg(binding).arg(clash.join(", ")) : binding)
+                    text: kroot.recording ? "Recording..." : (clash.length > 0 ? Tr.tr("%1 — also bound to %2").arg(binding).arg(clash.join(", ")) : binding)
                     color: !kroot.recording && clash.length > 0 ? Colours.palette.m3error : Colours.palette.m3outline
                     font: Tokens.font.label.small
                     Layout.fillWidth: true

@@ -6,7 +6,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    title: qsTr("Bar & Dashboard Sizes")
+    title: Tr.tr("Bar & Dashboard Sizes")
     isSubPage: true
 
     ColumnLayout {
@@ -17,13 +17,13 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("Status Bar Widgets")
+            text: Tr.tr("Status Bar Widgets")
         }
 
         StepperRow {
             first: true
             Layout.fillWidth: true
-            label: qsTr("Inner Width")
+            label: Tr.tr("Inner Width")
             value: TokenConfig.sizes.bar.innerWidth
             from: 10
             to: 100
@@ -38,7 +38,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Window Preview Size")
+            label: Tr.tr("Window Preview Size")
             value: TokenConfig.sizes.bar.windowPreviewSize
             from: 100
             to: 600
@@ -53,7 +53,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Tray Menu Width")
+            label: Tr.tr("Tray Menu Width")
             value: TokenConfig.sizes.bar.trayMenuWidth
             from: 150
             to: 500
@@ -68,7 +68,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Battery Width")
+            label: Tr.tr("Battery Width")
             value: TokenConfig.sizes.bar.batteryWidth
             from: 100
             to: 400
@@ -83,7 +83,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Network Width")
+            label: Tr.tr("Network Width")
             value: TokenConfig.sizes.bar.networkWidth
             from: 150
             to: 500
@@ -99,7 +99,7 @@ PageBase {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            label: qsTr("Keyboard Layout Width")
+            label: Tr.tr("Keyboard Layout Width")
             value: TokenConfig.sizes.bar.kbLayoutWidth
             from: 150
             to: 500
@@ -112,13 +112,13 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Dashboard Widgets")
+            text: Tr.tr("Dashboard Widgets")
         }
 
         StepperRow {
             first: true
             Layout.fillWidth: true
-            label: qsTr("User Card Width")
+            label: Tr.tr("User Card Width")
             value: TokenConfig.sizes.dashboard.userWidth
             from: 200
             to: 500
@@ -133,7 +133,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Logo Size")
+            label: Tr.tr("Logo Size")
             value: TokenConfig.sizes.dashboard.logoSize
             from: 16
             to: 64
@@ -148,7 +148,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Uptime Text Size")
+            label: Tr.tr("Uptime Text Size")
             value: TokenConfig.sizes.dashboard.uptimeSize
             from: 16
             to: 64
@@ -163,7 +163,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Date/Time Widget Width")
+            label: Tr.tr("Date/Time Widget Width")
             value: TokenConfig.sizes.dashboard.dateTimeWidth
             from: 80
             to: 300
@@ -178,7 +178,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Weather Width")
+            label: Tr.tr("Weather Width")
             value: TokenConfig.sizes.dashboard.weatherWidth
             from: 150
             to: 400
@@ -193,7 +193,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Media Widget Width")
+            label: Tr.tr("Media Widget Width")
             value: TokenConfig.sizes.dashboard.mediaWidth
             from: 100
             to: 400
@@ -208,7 +208,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Media Section Width")
+            label: Tr.tr("Media Section Width")
             value: TokenConfig.sizes.dashboard.mediaSectionWidth
             from: 150
             to: 500
@@ -223,7 +223,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Media Cover Art Size")
+            label: Tr.tr("Media Cover Art Size")
             value: TokenConfig.sizes.dashboard.mediaCoverArtSize
             from: 100
             to: 300
@@ -238,7 +238,7 @@ PageBase {
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            label: qsTr("Media Tab Width")
+            label: Tr.tr("Media Tab Width")
             value: TokenConfig.sizes.dashboard.mediaTabWidth
             from: 400
             to: 1500
@@ -254,7 +254,7 @@ PageBase {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            label: qsTr("Media Tab Height")
+            label: Tr.tr("Media Tab Height")
             value: TokenConfig.sizes.dashboard.mediaTabHeight
             from: 200
             to: 600

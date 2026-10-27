@@ -16,7 +16,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    title: qsTr("Target windows")
+    title: Tr.tr("Target windows")
     isSubPage: true
     scrollable: false
 
@@ -29,7 +29,7 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: qsTr("Add target window")
+            text: Tr.tr("Add target window")
         }
 
         Item {
@@ -57,13 +57,13 @@ PageBase {
                     spacing: 0
 
                     StyledText {
-                        text: qsTr("Custom regex")
+                        text: Tr.tr("Custom regex")
                         font: Tokens.font.body.small
                         elide: Text.ElideRight
                     }
 
                     StyledText {
-                        text: qsTr("Add a custom class or regex pattern")
+                        text: Tr.tr("Add a custom class or regex pattern")
                         font: Tokens.font.label.small
                         color: Colours.palette.m3outline
                         elide: Text.ElideRight
@@ -119,8 +119,8 @@ PageBase {
             Layout.fillWidth: true
             last: true
             icon: "touch_app"
-            label: qsTr("Pick from running windows")
-            status: qsTr("Select an open window to add it automatically")
+            label: Tr.tr("Pick from running windows")
+            status: Tr.tr("Select an open window to add it automatically")
             onSelected: windowClass => {
                 let list = Array.from(GlobalConfig.utilities.gameMode.autoEnableRegexes);
                 if (!list.includes(windowClass)) {
@@ -131,7 +131,7 @@ PageBase {
         }
 
         SectionHeader {
-            text: qsTr("Target window list")
+            text: Tr.tr("Target window list")
         }
 
         StyledRect {

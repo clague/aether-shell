@@ -7,7 +7,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    title: qsTr("Dock")
+    title: Tr.tr("Dock")
     isSubPage: true
 
     ColumnLayout {
@@ -19,7 +19,7 @@ PageBase {
         ToggleRow {
             Layout.fillWidth: true
             first: true
-            text: qsTr("Enable component")
+            text: Tr.tr("Enable component")
             checked: {
                 const entries = Config.bar.entries;
                 for (const section of [entries.start, entries.center, entries.end]) {
@@ -49,8 +49,8 @@ PageBase {
 
         ToggleRow {
             Layout.fillWidth: true
-            text: qsTr("Monitor center")
-            subtext: qsTr("Center the dock relative to the physical monitor")
+            text: Tr.tr("Monitor center")
+            subtext: Tr.tr("Center the dock relative to the physical monitor")
             configNode: root.targetConfig.bar.dock
             propertyName: "monitorCenter"
             checked: root.targetConfig.bar.dock.monitorCenter
@@ -62,8 +62,8 @@ PageBase {
         ToggleRow {
             Layout.fillWidth: true
             last: true
-            text: qsTr("Recolour icons")
-            subtext: qsTr("Recolour application icons using the system theme")
+            text: Tr.tr("Recolour icons")
+            subtext: Tr.tr("Recolour application icons using the system theme")
             configNode: root.targetConfig.bar.dock
             propertyName: "recolourIcons"
             checked: root.targetConfig.bar.dock.recolourIcons

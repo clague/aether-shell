@@ -11,7 +11,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    title: qsTr("Wallpaper Engine")
+    title: Tr.tr("Wallpaper Engine")
     isSubPage: true
 
     ColumnLayout {
@@ -27,7 +27,7 @@ PageBase {
             SliderRow {
                 first: true
                 icon: "volume_up"
-                label: qsTr("Volume")
+                label: Tr.tr("Volume")
                 valueLabel: Math.round(Wallpapers.weVolume * 100) + "%"
                 value: Wallpapers.weVolume
                 onMoved: v => Wallpapers.weVolume = v
@@ -35,7 +35,7 @@ PageBase {
 
             ToggleRow {
                 last: true
-                text: qsTr("Mute")
+                text: Tr.tr("Mute")
                 checked: Wallpapers.weSilent
                 onToggled: Wallpapers.weSilent = checked
             }
