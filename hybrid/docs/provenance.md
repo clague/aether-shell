@@ -198,3 +198,27 @@ recorded 85 conflict resolutions for replay. Upstream kill range and the decisio
 | mime video filter (`17fa999e`, filesystemmodel) | taken | `superseded` | ours' hardcoded video-extension list replaced by QMediaFormat/`QMimeDatabase` detection |
 | recorder state machine | taken; ours' sounds re-added | `adapted` | `commandProc` reconcile flow from upstream; `Audio.playVideoRecord/Stop()` ours |
 | nix flake inputs, CI workflows, issue templates, README (`e40cc08e` etc.) | **not taken** | *(none)* | ours owns these; upstream's image CI is the one the bootstrap script says stays off |
+
+## Phase 2/9 catch-up — `midnight` `6c70d5cb..f4ade958` (first midnight sync, 57 non-merge commits)
+
+First catch-up with `midnight/main` since the Phase 0 fork baseline `bb7b5657`; the 57 non-merge
+commits sit on top of the merge base `6c70d5cb`, which the `caelestia` sync had already brought in.
+Sync branch `sync/midnight/2026-10-28`, cut from the caelestia catch-up HEAD `047b27b3`; merge
+commit plus a lint-convergence commit, `git rerere` recorded 97 conflict resolutions for replay.
+Gates at the end: 411 QML files `qmllint`-clean, conventions 0, `verify --quick` GREEN.
+
+| Area | Decision | Kind | Notes |
+|---|---|---|---|
+| shimeji overhaul (`Shimeji.qml`, `ShimejiSprite.qml`, `scale` key) | theirs wins | `adapted` | MiDnight rewrote both files; taken whole. `pragma ComponentBehavior: Bound` added (house style) and the sprite's bare `onGround` qualified through `root`. |
+| Orion AI (`modules/sidebar/AiAssistant.qml`, sidebar `Content.qml`) | theirs wins | `adapted` | The whole AI feature arrives with its sidebar integration. Under the Bound pragma its history delegates needed explicit ids: `id: chatCard` on the sessions delegate, whose `chatId/chatIcon/chatTitle/chatPreview/chatUpdated` are delegate-local (root has no such members). ~112 section-order violations fixed. |
+| GSFLoader system font probing (`modules/GSFLoader.qml`) | theirs wins | `adapted` | Font-detection logic from MiDnight replaces the static list. |
+| WE state file + `updateCombinedList` (`services/Wallpapers.qml` FileView persistence) | theirs wins | `adapted` | Ours' duplicate `updateCombinedList`/`weVolume`/`weSilent` block from the conflict resolution removed; the aliases point at `weAdapter`, whose state file persists the Wallpaper-Engine side. |
+| Recorder split CLI invocation (`services/Recorder.qml`), GameMode `enabled` alias, `AudioPopout`, Fastpotify (`Players.qml`) | theirs wins | `adapted` | Taken as merged. |
+| wallpaper engine core (`Wallpaper.qml`, `VideoWallpaper.qml` double buffering) | **ours wins** | *(none)* | The T7 deferral stands: upstream's native C++ video engine is still the planned replacement, so MiDnight's parallel engine work is not adopted on top of ours. |
+| workspaces group, Clock, dashboard/lock/utilities/News, launcher lists, WE settings block, tokens/panels pages | **ours wins** | *(none)* | Same phase-2 decisions re-applied against MiDnight's copies of the same files. |
+| plugin QuickShare C++ | **ours wins** | *(none)* | Ours' plugin-side QuickShare kept; MiDnight's QML-side variant dropped with it. |
+| `services/WallpaperPauser.qml` | **ours restored** | `adapted` | Consumers depend on ours' API (FileView persistence, `paused`, `hwDecoder`, `pauseOnBattery`); MiDnight's version would have silently broken them. |
+| `README`, `.envrc`, nix, issue templates | **not taken** | *(none)* | D-skip as in the caelestia sync; MiDnight's `UnmaintainedNotice` deleted rather than kept. |
+| union adoptions: lockconfig `session` default `true`, serviceconfig comments, aiconfig OpenRouter/OpenClaw, Players Fastpotify entry | both | `adapted` | Keys merged where both forks added disjoint members to the same config nodes. |
+| `bar.github.recolourIcons` toggle (Nexus taskbar page) | **removed** | *(none)* | MiDnight added the setting and the GithubActivity consumer together; ours' GithubActivity has no recolour support, so the toggle pointed at a schema path with no reader. Delete the toggle, not the schema key. |
+| `plugin/src/Caelestia/Config/barconfig.hpp` `BarSections` subobject | fixup | `adapted` | The `CONFIG_SUBOBJECT(BarSections, entries)` macro had been glued onto the tail of a comment line during conflict resolution, silently disabling it; restored on its own line. |
