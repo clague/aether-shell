@@ -14,7 +14,9 @@ Singleton {
     id: root
 
     readonly property list<MprisPlayer> list: Mpris.players.values
+
     readonly property MprisPlayer active: props.manualActive ?? list.find(p => getIdentity(p) === GlobalConfig.services.defaultPlayer) ?? list[0] ?? null
+
     property alias manualActive: props.manualActive
 
     // Apps that expose in-app volume control over MPRIS. Sources not in this list
@@ -23,6 +25,17 @@ Singleton {
 
     // Dedup key for progressive metadata (e.g. mpv-mpris/yt-dlp player fills title then artist later).
     property string lastNowPlayingKey: ""
+
+    // The Lyrics service is the single source of truth for both the dashboard
+    // media tab and the desktop lyrics overlay. Keep it in sync here so neither
+    // view has to call setTrack/clearTrack itself: a view that is created late
+    // (or an overlay whose Loader finished before the metadata arrived) must
+    // not be the only thing that can kick off a load.
+    //
+    // Views acquire/release a consumer slot so lyrics are only fetched while
+    // something can actually display them. The first consumer forces a load
+    // for the current track; metadata signals keep it up to date afterwards.
+    property int lyricsConsumers: 0
 
     function getIdentity(player: MprisPlayer): string {
         if (!player)
@@ -76,17 +89,6 @@ Singleton {
         lastNowPlayingKey = key;
         Toaster.toast(Tr.tr("Now playing"), Tr.trCtx("%1 - %2", "track artist and title").arg(artist).arg(title), "music_note");
     }
-
-    // The Lyrics service is the single source of truth for both the dashboard
-    // media tab and the desktop lyrics overlay. Keep it in sync here so neither
-    // view has to call setTrack/clearTrack itself: a view that is created late
-    // (or an overlay whose Loader finished before the metadata arrived) must
-    // not be the only thing that can kick off a load.
-    //
-    // Views acquire/release a consumer slot so lyrics are only fetched while
-    // something can actually display them. The first consumer forces a load
-    // for the current track; metadata signals keep it up to date afterwards.
-    property int lyricsConsumers: 0
 
     function syncLyrics(force): void {
         if (!force && lyricsConsumers <= 0)
@@ -154,7 +156,9 @@ Singleton {
     CustomShortcut {
         // qmllint enable unresolved-type
         name: "mediaToggle"
+
         description: "Toggle media playback"
+
         onPressed: {
             const active = root.active;
             if (active && active.canTogglePlaying)
@@ -166,7 +170,9 @@ Singleton {
     CustomShortcut {
         // qmllint enable unresolved-type
         name: "mediaPrev"
+
         description: "Previous track"
+
         onPressed: {
             const active = root.active;
             if (active && active.canGoPrevious)
@@ -178,7 +184,9 @@ Singleton {
     CustomShortcut {
         // qmllint enable unresolved-type
         name: "mediaNext"
+
         description: "Next track"
+
         onPressed: {
             const active = root.active;
             if (active && active.canGoNext)

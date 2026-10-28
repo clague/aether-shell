@@ -170,6 +170,7 @@ Item {
 
                         onActiveChanged: if (active)
                             active = true
+
                         Component.onCompleted: active = Qt.binding(() => {
                             if (index === view.currentIndex)
                                 return true;

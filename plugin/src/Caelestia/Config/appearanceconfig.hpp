@@ -216,7 +216,8 @@ class AppearanceFont : public settings::ObjectNode {
     CONFIG_SUBOBJECT(FontStyleIcon, icon)
     CONFIG_PROPERTY(QString, clock, u"GoogleSansFlex"_s)
     // Google Sans Flex doesn't play well with unicode symbols apparently, so use Rubik instead
-    CONFIG_PROPERTY(QString, workspaces, u"GoogleSansFlex"_s)};
+    CONFIG_PROPERTY(QString, workspaces, u"GoogleSansFlex"_s)
+};
 
 class AnimDurations : public settings::ObjectNode {
     CONFIG_NODE(AnimDurations, settings::ObjectNode)

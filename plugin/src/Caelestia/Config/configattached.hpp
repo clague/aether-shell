@@ -35,6 +35,7 @@ class Config : public QQuickAttachedPropertyPropagator, public QQmlParserStatus 
     Q_PROPERTY(const caelestia::shell::config::ShimejiConfig* shimeji READ shimeji NOTIFY sourceChanged)
     Q_PROPERTY(const caelestia::shell::config::AudioConfig* audio READ audio NOTIFY sourceChanged)
     Q_PROPERTY(const caelestia::shell::config::AiConfig* ai READ ai NOTIFY sourceChanged)
+
 public:
     explicit Config(QObject* parent = nullptr);
 

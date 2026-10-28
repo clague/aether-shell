@@ -6,28 +6,31 @@ import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Services.UPower
-import Caelestia.Configimport qs.utils
+import Caelestia.Config
+import qs.utils
 
 Singleton {
     id: root
 
-    // QML Settings is broken here (quickshell app identifiers unset → status 1);
-    // FileView + JsonAdapter persists reliably.
-    FileView {
-        id: pauserStore
+    property bool manualPause: false
+    property bool pauseOnBattery: false
+    property bool pauseOnWindowOverlap: true
+    property string hwDecoder: "none"
 
     property bool paused: false
 
     property bool _loaded: false
 
     property string pauseReason: "None"
+
     function recalculate() {
         let newPaused = false;
         let reason = "None";
 
         // Rule #0 — Manual / Config Pause
-        if (GlobalConfig.background.videoWallpaperPaused || manualPause) {            newPaused = true;
-            reason = !PersistentState.wallpaperPlaying ? "Wallpaper playing toggle" : "Manual / Config Pause";
+        if (GlobalConfig.background.videoWallpaperPaused || manualPause) {
+            newPaused = true;
+            reason = "Manual / Config Pause";
         } else if (pauseOnBattery && UPower.onBattery) {
             newPaused = true;
             reason = "Battery";
@@ -71,17 +74,14 @@ Singleton {
     }
 
     onManualPauseChanged: {
-        pauserStore.writeAdapter();
         recalculate();
     }
 
     onPauseOnBatteryChanged: {
-        pauserStore.writeAdapter();
         recalculate();
     }
 
     onPauseOnWindowOverlapChanged: {
-        pauserStore.writeAdapter();
         recalculate();
     }
 
@@ -95,9 +95,9 @@ Singleton {
             saveHwDecoderProcess.running = true;
         }
     }
+
     Component.onCompleted: {
-        CUtils.mkdirp(Paths.state + "/wallpaper"); // must exist before the pauser state persists
-        CUtils.mkdirp(Paths.cache); // must exist before hwDecoder.txt persists
+        root._loaded = true;
         recalculate();
     }
 

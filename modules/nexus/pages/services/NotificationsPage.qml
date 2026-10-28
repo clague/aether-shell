@@ -55,7 +55,8 @@ PageBase {
         SelectRow {
             first: true
             label: Tr.tr("Show in fullscreen")
-            subtext: Tr.tr("Whether notifications appear over fullscreen apps")            configNode: root.targetConfig.notifs
+            subtext: Tr.tr("Whether notifications appear over fullscreen apps")
+            configNode: root.targetConfig.notifs
             propertyName: "fullscreen"
             menuItems: root.notifFullscreenItems
             active: root.notifFullscreenItems[root.targetConfig.notifs.fullscreen]
@@ -66,7 +67,8 @@ PageBase {
 
         ToggleRow {
             text: Tr.tr("Expire automatically")
-            subtext: Tr.tr("Dismiss notifications after their timeout")            configNode: root.targetConfig.notifs
+            subtext: Tr.tr("Dismiss notifications after their timeout")
+            configNode: root.targetConfig.notifs
             propertyName: "expire"
             checked: root.targetConfig.notifs.expire
             onToggled: {
@@ -76,7 +78,8 @@ PageBase {
 
         ToggleRow {
             text: Tr.tr("Open expanded")
-            subtext: Tr.tr("Show notifications expanded by default")            configNode: root.targetConfig.notifs
+            subtext: Tr.tr("Show notifications expanded by default")
+            configNode: root.targetConfig.notifs
             propertyName: "openExpanded"
             checked: root.targetConfig.notifs.openExpanded
             onToggled: {
@@ -86,7 +89,8 @@ PageBase {
 
         StepperRow {
             label: Tr.tr("Default timeout")
-            subtext: Tr.tr("Time before a notification dismisses (ms)")            configNode: root.targetConfig.notifs
+            subtext: Tr.tr("Time before a notification dismisses (ms)")
+            configNode: root.targetConfig.notifs
             propertyName: "defaultExpireTimeout"
             value: root.targetConfig.notifs.defaultExpireTimeout
             from: 1000
@@ -100,7 +104,8 @@ PageBase {
         StepperRow {
             last: true
             label: Tr.tr("Group preview count")
-            subtext: Tr.tr("Notifications shown per group before collapsing")            configNode: root.targetConfig.notifs
+            subtext: Tr.tr("Notifications shown per group before collapsing")
+            configNode: root.targetConfig.notifs
             propertyName: "groupPreviewNum"
             value: root.targetConfig.notifs.groupPreviewNum
             from: 1
@@ -119,7 +124,8 @@ PageBase {
         SelectRow {
             first: true
             label: Tr.tr("Show in fullscreen")
-            subtext: Tr.tr("Whether toasts appear over fullscreen apps")            configNode: root.targetConfig.utilities.toasts
+            subtext: Tr.tr("Whether toasts appear over fullscreen apps")
+            configNode: root.targetConfig.utilities.toasts
             propertyName: "fullscreen"
             menuItems: root.toastFullscreenItems
             active: root.toastFullscreenItems[Math.max(0, root.toastFullscreenValues.indexOf(root.targetConfig.utilities.toasts.fullscreen))]
@@ -130,7 +136,8 @@ PageBase {
 
         StepperRow {
             label: Tr.tr("Visible toasts")
-            subtext: Tr.tr("Maximum number of toasts shown at once")            configNode: root.targetConfig.utilities
+            subtext: Tr.tr("Maximum number of toasts shown at once")
+            configNode: root.targetConfig.utilities
             propertyName: "maxToasts"
             value: root.targetConfig.utilities.maxToasts
             from: 1
@@ -172,7 +179,8 @@ PageBase {
 
         ToggleRow {
             first: true
-            text: Tr.tr("Charging changes")            configNode: root.targetConfig.utilities.toasts
+            text: Tr.tr("Charging changes")
+            configNode: root.targetConfig.utilities.toasts
             propertyName: "chargingChanged"
             checked: root.targetConfig.utilities.toasts.chargingChanged
             onToggled: {
@@ -262,7 +270,8 @@ PageBase {
 
         ToggleRow {
             last: true
-            text: Tr.tr("Now playing")            configNode: root.targetConfig.utilities.toasts
+            text: Tr.tr("Now playing")
+            configNode: root.targetConfig.utilities.toasts
             propertyName: "nowPlaying"
             checked: root.targetConfig.utilities.toasts.nowPlaying
             onToggled: {

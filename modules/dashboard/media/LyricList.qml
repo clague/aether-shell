@@ -21,8 +21,18 @@ Item {
     // module does not carry it, ours-shape ours-shape ours-shape did).
     property bool flag
 
-    Component.onCompleted: Players.acquireLyrics()
-    Component.onDestruction: Players.releaseLyrics()
+    function reloadTrack() {
+        const p = Players.active;
+        if (p) {
+            Lyrics.setTrack(p.trackArtist, p.trackTitle, p.trackAlbum, p.length);
+        } else {
+            Lyrics.clearTrack();
+        }
+    }
+
+    Component.onCompleted: {
+        root.reloadTrack();
+    }
 
     layer.enabled: true
     layer.effect: Mask {
@@ -171,7 +181,8 @@ Item {
         }
 
         target: Lyrics
-    }    Loader {
+    }
+    Loader {
         id: loadingIndicator
 
         anchors.centerIn: parent

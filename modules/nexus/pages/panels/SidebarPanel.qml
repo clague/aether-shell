@@ -25,7 +25,8 @@ PageBase {
 
         ToggleRow {
             first: true
-            text: Tr.tr("Enabled")            configNode: root.targetConfig.sidebar
+            text: Tr.tr("Enabled")
+            configNode: root.targetConfig.sidebar
             propertyName: "enabled"
             checked: root.targetConfig.sidebar.enabled
             onToggled: {
@@ -37,14 +38,16 @@ PageBase {
             text: Tr.tr("Show on hover")
             subtext: Tr.tr("Reveal when the cursor reaches the screen edge")
             checked: Config.sidebar.showOnHover
-            onToggled: GlobalConfig.sidebar.showOnHover = checked        }
+            onToggled: GlobalConfig.sidebar.showOnHover = checked
+        }
 
         StepperRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
             last: true
             label: Tr.tr("Drag threshold")
-            subtext: Tr.tr("Pixels dragged before the sidebar opens")            configNode: root.targetConfig.sidebar
+            subtext: Tr.tr("Pixels dragged before the sidebar opens")
+            configNode: root.targetConfig.sidebar
             propertyName: "dragThreshold"
             value: root.targetConfig.sidebar.dragThreshold
             from: 0
@@ -97,7 +100,8 @@ PageBase {
             Layout.fillWidth: true
             last: true
             text: Tr.tr("Enable Tool Usage")
-            subtext: Tr.tr("Allow the assistant to search the web, take screenshots, etc.")            configNode: root.targetConfig.ai
+            subtext: Tr.tr("Allow the assistant to search the web, take screenshots, etc.")
+            configNode: root.targetConfig.ai
             propertyName: "enableCelestialMode"
             checked: root.targetConfig.ai.enableCelestialMode
             onToggled: {

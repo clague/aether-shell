@@ -31,7 +31,8 @@ PageBase {
             onMoved: v => TokenConfig.sizes.lock.heightMult = v
             onReset: {
                 TokenConfig.sizes.lock.resetOption("heightMult");
-            }        }
+            }
+        }
 
         SliderRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -43,7 +44,8 @@ PageBase {
             onMoved: v => TokenConfig.sizes.lock.ratio = 1.0 + v * 1.5
             onReset: {
                 TokenConfig.sizes.lock.resetOption("ratio");
-            }        }
+            }
+        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -57,7 +59,8 @@ PageBase {
             onMoved: v => TokenConfig.sizes.lock.centerWidth = v
             onReset: {
                 TokenConfig.sizes.lock.resetOption("centerWidth");
-            }        }
+            }
+        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -71,7 +74,8 @@ PageBase {
             onMoved: v => TokenConfig.sizes.lock.forecastItemWidth = v
             onReset: {
                 TokenConfig.sizes.lock.resetOption("forecastItemWidth");
-            }        }
+            }
+        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -85,7 +89,8 @@ PageBase {
             onMoved: v => TokenConfig.sizes.lock.largeLogoWidth = v
             onReset: {
                 TokenConfig.sizes.lock.resetOption("largeLogoWidth");
-            }        }
+            }
+        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -100,7 +105,8 @@ PageBase {
             onMoved: v => TokenConfig.sizes.lock.largeFontWidth = v
             onReset: {
                 TokenConfig.sizes.lock.resetOption("largeFontWidth");
-            }        }
+            }
+        }
 
         SectionHeader {
             text: Tr.tr("Nexus Settings Window")
@@ -116,7 +122,8 @@ PageBase {
             onMoved: v => TokenConfig.sizes.nexus.heightMult = v
             onReset: {
                 TokenConfig.sizes.nexus.resetOption("heightMult");
-            }        }
+            }
+        }
 
         SliderRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -128,7 +135,8 @@ PageBase {
             onMoved: v => TokenConfig.sizes.nexus.ratio = 1.0 + v * 1.5
             onReset: {
                 TokenConfig.sizes.nexus.resetOption("ratio");
-            }        }
+            }
+        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -142,7 +150,8 @@ PageBase {
             onMoved: v => TokenConfig.sizes.nexus.minWidth = v
             onReset: {
                 TokenConfig.sizes.nexus.resetOption("minWidth");
-            }        }
+            }
+        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -156,7 +165,8 @@ PageBase {
             onMoved: v => TokenConfig.sizes.nexus.minHeight = v
             onReset: {
                 TokenConfig.sizes.nexus.resetOption("minHeight");
-            }        }
+            }
+        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -170,7 +180,8 @@ PageBase {
             onMoved: v => TokenConfig.sizes.nexus.maxNavWidth = v
             onReset: {
                 TokenConfig.sizes.nexus.resetOption("maxNavWidth");
-            }        }
+            }
+        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -184,7 +195,8 @@ PageBase {
             onMoved: v => TokenConfig.sizes.nexus.maxContentWidth = v
             onReset: {
                 TokenConfig.sizes.nexus.resetOption("maxContentWidth");
-            }        }
+            }
+        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -199,7 +211,8 @@ PageBase {
             onMoved: v => TokenConfig.sizes.nexus.popupWidth = v
             onReset: {
                 TokenConfig.sizes.nexus.resetOption("popupWidth");
-            }        }
+            }
+        }
 
         SectionHeader {
             text: Tr.tr("Window Information Overlay")
@@ -215,7 +228,8 @@ PageBase {
             onMoved: v => TokenConfig.sizes.winfo.heightMult = v
             onReset: {
                 TokenConfig.sizes.winfo.resetOption("heightMult");
-            }        }
+            }
+        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -230,6 +244,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.winfo.detailsWidth = v
             onReset: {
                 TokenConfig.sizes.winfo.resetOption("detailsWidth");
-            }        }
+            }
+        }
     }
 }

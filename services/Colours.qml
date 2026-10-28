@@ -5,8 +5,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Caelestia.Config
-import Caelestia.State
 import Caelestia.Images
+import Caelestia.State
 import qs.services
 import qs.utils
 import qs.daemons

@@ -65,23 +65,23 @@ Item {
     // 23-25 ceiling walk · 26-29 pizza thought · 30-33 chicken · 37 jump away ·
     // 38-41 donut · 34-36 window grab and 42-46 unused
     readonly property var anims: ({
-        walk: ["shime1.png", "shime2.png", "shime3.png"],
-        fall: ["shime4.png"],
-        drag: ["shime5.png", "shime6.png", "shime7.png", "shime8.png", "shime9.png", "shime10.png"],
-        idle: ["shime11.png"],
-        climb: ["shime12.png", "shime13.png", "shime14.png"],
-        snack: ["shime15.png", "shime16.png", "shime17.png"],
-        sad: ["shime18.png", "shime21.png"],
-        sit: ["shime19.png"],
-        flat: ["shime20.png"],
-        happy: ["shime22.png"],
-        ceiling: ["shime23.png", "shime24.png", "shime25.png"],
-        pizza: ["shime26.png", "shime27.png", "shime28.png", "shime29.png"],
-        munch: ["shime30.png", "shime31.png", "shime32.png", "shime33.png"],
-        jump: ["shime37.png"],
-        land: ["shime20.png"],
-        donut: ["shime38.png", "shime39.png", "shime40.png", "shime41.png"]
-    })
+            walk: ["shime1.png", "shime2.png", "shime3.png"],
+            fall: ["shime4.png"],
+            drag: ["shime5.png", "shime6.png", "shime7.png", "shime8.png", "shime9.png", "shime10.png"],
+            idle: ["shime11.png"],
+            climb: ["shime12.png", "shime13.png", "shime14.png"],
+            snack: ["shime15.png", "shime16.png", "shime17.png"],
+            sad: ["shime18.png", "shime21.png"],
+            sit: ["shime19.png"],
+            flat: ["shime20.png"],
+            happy: ["shime22.png"],
+            ceiling: ["shime23.png", "shime24.png", "shime25.png"],
+            pizza: ["shime26.png", "shime27.png", "shime28.png", "shime29.png"],
+            munch: ["shime30.png", "shime31.png", "shime32.png", "shime33.png"],
+            jump: ["shime37.png"],
+            land: ["shime20.png"],
+            donut: ["shime38.png", "shime39.png", "shime40.png", "shime41.png"]
+        })
 
     function animFrame(anim, index) {
         const list = anims[anim];
@@ -373,48 +373,48 @@ Item {
         // The grab area is the shimeji's full image (the whole scaled canvas)
         anchors.fill: parent
         hoverEnabled: false
-        cursorShape: dragging ? Qt.ClosedHandCursor : Qt.OpenHandCursor
+        cursorShape: root.dragging ? Qt.ClosedHandCursor : Qt.OpenHandCursor
         acceptedButtons: Qt.LeftButton
 
         onPressed: mouse => {
-            dragging = true;
-            climbing = false;
-            ceilingWalk = false;
-            walkTarget = -1;
+            root.dragging = true;
+            root.climbing = false;
+            root.ceilingWalk = false;
+            root.walkTarget = -1;
             landTimer.stop();
-            dragOffset = Qt.point(mouse.x, mouse.y);
-            lastX = root.x;
-            lastY = root.y;
-            dragVx = 0;
-            dragVy = 0;
-            vx = 0;
-            vy = 0;
+            root.dragOffset = Qt.point(mouse.x, mouse.y);
+            root.lastX = root.x;
+            root.lastY = root.y;
+            root.dragVx = 0;
+            root.dragVy = 0;
+            root.vx = 0;
+            root.vy = 0;
         }
 
         onPositionChanged: mouse => {
-            if (!dragging)
+            if (!root.dragging)
                 return;
 
-            const newX = Math.max(minX, Math.min(maxX, root.x + mouse.x - dragOffset.x));
-            const newY = Math.max(ceilingY, Math.min(floorY, root.y + mouse.y - dragOffset.y));
-            dragVx = newX - lastX;
-            dragVy = newY - lastY;
-            lastX = newX;
-            lastY = newY;
+            const newX = Math.max(root.minX, Math.min(root.maxX, root.x + mouse.x - root.dragOffset.x));
+            const newY = Math.max(root.ceilingY, Math.min(root.floorY, root.y + mouse.y - root.dragOffset.y));
+            root.dragVx = newX - root.lastX;
+            root.dragVy = newY - root.lastY;
+            root.lastX = newX;
+            root.lastY = newY;
             root.x = newX;
             root.y = newY;
 
             // Pose tracks the drag direction (5-10)
-            const pose = dragPoseFor(dragVx, dragVy);
-            if (Math.abs(dragVx) > 2)
-                facingRight = dragVx > 0;
-            if (pose !== dragPose) {
-                dragPose = pose;
-                frameIndex = dragPose;
+            const pose = root.dragPoseFor(root.dragVx, root.dragVy);
+            if (Math.abs(root.dragVx) > 2)
+                root.facingRight = root.dragVx > 0;
+            if (pose !== root.dragPose) {
+                root.dragPose = pose;
+                root.frameIndex = root.dragPose;
             }
         }
 
-        onReleased: dragging = false
+        onReleased: root.dragging = false
     }
 
     Image {
@@ -473,26 +473,26 @@ Item {
             // Re-roll the period so the loop doesn't become metronomic
             interval = 3500 + Math.random() * 4500;
 
-            if (dragging || climbing || ceilingWalk || !onGround)
+            if (root.dragging || root.climbing || root.ceilingWalk || !root.onGround)
                 return;
 
             const roll = Math.random();
             if (roll < 0.18) {
-                pickIdle();
+                root.pickIdle();
             } else if (roll < 0.42) {
-                walkRandom();
+                root.walkRandom();
             } else if (roll < 0.54) {
-                startSnack();
+                root.startSnack();
             } else if (roll < 0.64) {
-                currentAnim = "pizza";
-                frameIndex = 0;
+                root.currentAnim = "pizza";
+                root.frameIndex = 0;
             } else if (roll < 0.80) {
-                startClimb();
+                root.startClimb();
             } else if (roll < 0.88) {
-                hop();
+                root.hop();
             } else {
-                currentAnim = "sad";
-                frameIndex = 0;
+                root.currentAnim = "sad";
+                root.frameIndex = 0;
             }
         }
     }

@@ -7,7 +7,8 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    title: Tr.tr("Shimeji characters")    isSubPage: true
+    title: Tr.tr("Shimeji characters")
+    isSubPage: true
 
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter

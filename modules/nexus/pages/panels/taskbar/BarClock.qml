@@ -19,7 +19,8 @@ PageBase {
 
         ToggleRow {
             first: true
-            text: Tr.tr("Background")            configNode: root.targetConfig.bar.clock
+            text: Tr.tr("Background")
+            configNode: root.targetConfig.bar.clock
             propertyName: "background"
             checked: root.targetConfig.bar.clock.background
             onToggled: {
@@ -39,7 +40,8 @@ PageBase {
 
         ToggleRow {
             last: true
-            text: Tr.tr("Show icon")            configNode: root.targetConfig.bar.clock
+            text: Tr.tr("Show icon")
+            configNode: root.targetConfig.bar.clock
             propertyName: "showIcon"
             checked: root.targetConfig.bar.clock.showIcon
             onToggled: {

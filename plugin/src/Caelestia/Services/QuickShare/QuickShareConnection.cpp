@@ -140,7 +140,8 @@ QuickShareConnection::QuickShareConnection(const QString& host, int port, QObjec
         req->set_endpoint_id("ABCD");
         QString hostname = QSysInfo::machineHostName();
         if (hostname.isEmpty())
-            hostname = u"CaelestiaClient"_s;        req->set_endpoint_name(hostname.toStdString());
+            hostname = u"CaelestiaClient"_s;
+        req->set_endpoint_name(hostname.toStdString());
 
         QByteArray endpointInfo;
         endpointInfo.append(static_cast<char>(0x3u << 1u)); // Laptop
@@ -149,7 +150,8 @@ QuickShareConnection::QuickShareConnection(const QString& host, int port, QObjec
         }
         QString deviceName = QSysInfo::machineHostName();
         if (deviceName.isEmpty())
-            deviceName = u"CaelestiaClient"_s;        QByteArray nameBytes = deviceName.toUtf8();
+            deviceName = u"CaelestiaClient"_s;
+        QByteArray nameBytes = deviceName.toUtf8();
         if (nameBytes.length() > 255)
             nameBytes.truncate(255);
         endpointInfo.append(static_cast<char>(nameBytes.length()));
@@ -595,7 +597,8 @@ QByteArray QuickShareConnection::unwrapSecureMessage(const QByteArray& secureMes
     securemessage::SecureMessage secMsg;
     if (!secMsg.ParseFromArray(secureMessageData.constData(), static_cast<int>(secureMessageData.size()))) {
         qWarning() << "QuickShareConnection: Failed to parse SecureMessage";
-        return {};    }
+        return {};
+    }
 
     const QByteArray headerAndBodyBytes(
         secMsg.header_and_body().data(), static_cast<qsizetype>(secMsg.header_and_body().size()));
@@ -609,12 +612,14 @@ QByteArray QuickShareConnection::unwrapSecureMessage(const QByteArray& secureMes
     if (static_cast<size_t>(hmacLen) != secMsg.signature().size() ||
         memcmp(hmacResult, secMsg.signature().data(), hmacLen) != 0) {
         qWarning() << "QuickShareConnection: HMAC verification failed";
-        return {};    }
+        return {};
+    }
 
     securemessage::HeaderAndBody headerAndBody;
     if (!headerAndBody.ParseFromArray(headerAndBodyBytes.constData(), static_cast<int>(headerAndBodyBytes.size()))) {
         qWarning() << "QuickShareConnection: Failed to parse HeaderAndBody";
-        return {};    }
+        return {};
+    }
 
     const auto& header = headerAndBody.header();
     QByteArray const iv(header.iv().data(), static_cast<qsizetype>(header.iv().size()));
@@ -638,7 +643,8 @@ QByteArray QuickShareConnection::unwrapSecureMessage(const QByteArray& secureMes
     securegcm::DeviceToDeviceMessage d2dMsg;
     if (!d2dMsg.ParseFromArray(plaintext.constData(), static_cast<int>(plaintext.size()))) {
         qWarning() << "QuickShareConnection: Failed to parse DeviceToDeviceMessage";
-        return {};    }
+        return {};
+    }
 
     // Not a braced init list: protobuf's size() is size_t and QByteArray's is qsizetype,
     // and braces make that narrowing an error rather than a conversion.
@@ -717,7 +723,8 @@ void QuickShareConnection::handlePayloadTransfer(const QByteArray& plaintext) {
     QByteArray const chunkBody(payloadChunk.body().data(), static_cast<qsizetype>(payloadChunk.body().size()));
 
     if (payloadHeader.type() == location::nearby::connections::PayloadTransferFrame::PayloadHeader::FILE) {
-        handleIncomingFileChunk(chunkBody, payloadChunk.offset(), payloadChunk.flags());        return;
+        handleIncomingFileChunk(chunkBody, payloadChunk.offset(), payloadChunk.flags());
+        return;
     }
 
     if (!m_payloadBuffers.contains(payloadId)) {

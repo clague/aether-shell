@@ -104,7 +104,7 @@ Region {
     component R: Region {
         // QtObject regions can never inherit a screen — set it explicitly to
         // avoid a warning per binding evaluation during fullscreen transitions
-        Config.screen: win.screen.name
+        Config.screen: root.win.screen.name
 
         required property Item panel
 

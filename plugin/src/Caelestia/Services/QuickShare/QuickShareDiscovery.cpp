@@ -60,7 +60,8 @@ bool QuickShareDiscovery::startDiscovery() {
         SLOT(onItemNew(int, int, const QString&, const QString&, const QString&, uint)));
 
     QDBusConnection::systemBus().connect(u"org.freedesktop.Avahi"_s, browserPath.value().path(),
-        u"org.freedesktop.Avahi.ServiceBrowser"_s, u"ItemRemove"_s, this,        SLOT(onItemRemove(int, int, const QString&, const QString&, const QString&, uint)));
+        u"org.freedesktop.Avahi.ServiceBrowser"_s, u"ItemRemove"_s, this,
+        SLOT(onItemRemove(int, int, const QString&, const QString&, const QString&, uint)));
 
     m_isDiscovering = true;
     return true;
@@ -145,7 +146,8 @@ bool QuickShareDiscovery::advertise(const QString& deviceName, int port) {
         return false;
     }
 
-    QDBusMessage const commitReply = m_entryGroup->call(u"Commit"_s);    if (commitReply.type() == QDBusMessage::ErrorMessage) {
+    QDBusMessage const commitReply = m_entryGroup->call(u"Commit"_s);
+    if (commitReply.type() == QDBusMessage::ErrorMessage) {
         qWarning() << u"QuickShareDiscovery: Commit failed:"_s << commitReply.errorMessage();
         return false;
     }
@@ -202,7 +204,8 @@ void QuickShareDiscovery::onItemNew(
     if (reply.isValid()) {
         QString const path = reply.value().path();
         QDBusConnection::systemBus().connect(u"org.freedesktop.Avahi"_s, path,
-            u"org.freedesktop.Avahi.ServiceResolver"_s, u"Found"_s, this, SLOT(onServiceResolved(QDBusMessage)));    }
+            u"org.freedesktop.Avahi.ServiceResolver"_s, u"Found"_s, this, SLOT(onServiceResolved(QDBusMessage)));
+    }
 }
 
 namespace {

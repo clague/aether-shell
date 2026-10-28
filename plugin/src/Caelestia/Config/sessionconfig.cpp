@@ -3,6 +3,7 @@
 #include <qjsonobject.h>
 #include <qmetatype.h>
 #include <qset.h>
+
 namespace caelestia::shell::config {
 
 namespace {
@@ -35,7 +36,8 @@ bool collectCustom(const settings::Schema& schema, const QJsonValue& json, QMap<
 
     values = std::move(newValues);
     keys = newKeys;
-    return true;}
+    return true;
+}
 
 } // namespace
 
@@ -109,7 +111,8 @@ QVariantList SessionConfig::buildButtons(bool customOnly) const {
         if (m_icons->schema().get(key)) {
             const auto val = m_icons->value(key);
             if (val.typeId() == QMetaType::QString)
-                icon = val.toString();        }
+                icon = val.toString();
+        }
 
         QStringList command = m_commands->customCommands().value(key, QStringList{ key });
         if (m_commands->schema().get(key)) {
@@ -122,7 +125,8 @@ QVariantList SessionConfig::buildButtons(bool customOnly) const {
             { u"key"_s, key },
             { u"icon"_s, icon },
             { u"command"_s, QVariant::fromValue(command) },
-        });    }
+        });
+    }
 
     return result;
 }

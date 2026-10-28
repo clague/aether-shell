@@ -1,10 +1,10 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import Caelestiaimport Caelestia.Config
+import Caelestia
+import Caelestia.Config
 import Caelestia.Models
 import qs.components
-import qs.components.images
 import qs.components.effects
 import qs.components.images
 import qs.services

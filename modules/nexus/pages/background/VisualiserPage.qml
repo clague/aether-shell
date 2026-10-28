@@ -1,7 +1,8 @@
 import QtQuick
 import QtQuick.Layouts
 import Caelestia.Config
-import Caelestia.I18nimport qs.modules.nexus.common
+import Caelestia.I18n
+import qs.modules.nexus.common
 
 PageBase {
     id: root
@@ -68,8 +69,12 @@ PageBase {
             configNode: root.targetConfig.background.visualiser
             propertyName: "renderer"
             menuItems: [
-                MenuItem { text: qsTr("GPU (Shader)") },
-                MenuItem { text: qsTr("CPU (QPainter)") }
+                MenuItem {
+                    text: qsTr("GPU (Shader)")
+                },
+                MenuItem {
+                    text: qsTr("CPU (QPainter)")
+                }
             ]
             active: root.targetConfig.background.visualiser.renderer === "cpu" ? menuItems[1] : menuItems[0]
             onSelected: item => {

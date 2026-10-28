@@ -5,13 +5,12 @@ import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
 import Caelestia.Config
-import Caelestia.State
 import Caelestia.Services
+import Caelestia.State
 import qs.components
 import qs.components.controls
 import qs.components.effects
 import qs.services
-import qs.daemons
 
 Item {
     id: root

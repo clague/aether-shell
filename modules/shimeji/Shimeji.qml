@@ -1,7 +1,9 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import Quickshell
-import Quickshell.Wayland
 import Quickshell.Io
+import Quickshell.Wayland
 import Caelestia.Config
 import Caelestia.State
 import qs.components
@@ -109,7 +111,7 @@ StyledWindow {
 
             ShimejiSprite {
                 maskHost: root
-                screenSize: Qt.size(shimejiScreen.width, shimejiScreen.height)
+                screenSize: Qt.size(root.shimejiScreen.width, root.shimejiScreen.height)
                 borderThickness: root.borderThickness
                 sizeScale: root.shimejiScale
                 floorOffset: root.floorOffset

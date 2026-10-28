@@ -126,7 +126,6 @@ Item {
         repeat: false
         onTriggered: root.applySourceChange()
     }
-
     Loader {
         asynchronous: true
         anchors.fill: parent
@@ -403,8 +402,8 @@ Item {
 
                 onLoaded: {
                     if (item && img.verifiedPath !== "") {
-                        item.videoSource = root.toFileUrl(img.verifiedPath);
-                        item.autoStart = !WallpaperPauser.paused;
+                        item.videoSource = root.toFileUrl(img.verifiedPath); // qmllint disable missing-property
+                        item.autoStart = !WallpaperPauser.paused; // qmllint disable missing-property
                     }
                 }
 

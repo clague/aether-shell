@@ -122,7 +122,8 @@ StyledRect {
                             // Fahrenheit/Kelvin); display both sensible readings.
                             const fahrenheit = GlobalConfig.services.sensorUnits === TemperatureUnit.Fahrenheit || (GlobalConfig.services.sensorUnits === TemperatureUnit.Auto && GlobalConfig.services.weatherUnits === TemperatureUnit.Fahrenheit);
                             return `${Math.ceil(fahrenheit ? temp * 1.8 + 32 : temp)}°${fahrenheit ? "F" : "C"}`;
-                        }                        color: Cpu.temperature > 90 ? Colours.palette.m3onErrorContainer : Colours.palette.m3secondary
+                        }
+                        color: Cpu.temperature > 90 ? Colours.palette.m3onErrorContainer : Colours.palette.m3secondary
                         font: Tokens.font.title.builders.medium.scale(cpu.width / 112).width(50).build()
                     }
                 }
@@ -159,7 +160,7 @@ StyledRect {
             spacing: Tokens.spacing.large
 
             transform: buttonsTranslate
-            opacity: root.sessionControlsShown ? 1 : 0
+            opacity: hover.hovered ? 1 : 0
 
             Behavior on opacity {
                 Anim {}

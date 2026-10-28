@@ -8,7 +8,6 @@ import Caelestia.State
 import qs.components
 import qs.components.containers
 import qs.services
-import qs.daemons
 
 Variants {
     model: GlobalConfig.hybrid.features.floatingLyrics ? Screens.screens.filter(s => GlobalConfig.forScreen(s.name).background.enabled) : []
@@ -20,9 +19,7 @@ Variants {
 
         // Don't keep two fullscreen surfaces mapped per screen when overlay
         // lyrics are off or disabled — same condition as the content loader
-        readonly property bool lyricsActive: Config.background.desktopLyrics.enabled
-            && Config.background.desktopLyrics.overlay
-            && !(RuntimeState.gameMode && GlobalConfig.utilities.gameMode.disableDesktopLyrics)
+        readonly property bool lyricsActive: Config.background.desktopLyrics.enabled && Config.background.desktopLyrics.overlay && !(RuntimeState.gameMode && GlobalConfig.utilities.gameMode.disableDesktopLyrics)
 
         visible: lyricsActive
 

@@ -9,7 +9,6 @@ import Caelestia.State
 import qs.components
 import qs.components.containers
 import qs.services
-import qs.daemons
 
 Variants {
     model: Screens.screens.filter(s => GlobalConfig.forScreen(s.name).background.enabled)

@@ -19,7 +19,8 @@ PageBase {
 
         ToggleRow {
             first: true
-            text: Tr.tr("Background")            configNode: root.targetConfig.bar.tray
+            text: Tr.tr("Background")
+            configNode: root.targetConfig.bar.tray
             propertyName: "background"
             checked: root.targetConfig.bar.tray.background
             onToggled: {
@@ -50,7 +51,8 @@ PageBase {
         ToggleRow {
             last: true
             text: Tr.tr("Popout on hover")
-            subtext: Tr.tr("Show the tray menu popout when hovering")            configNode: root.targetConfig.bar.popouts
+            subtext: Tr.tr("Show the tray menu popout when hovering")
+            configNode: root.targetConfig.bar.popouts
             propertyName: "tray"
             checked: root.targetConfig.bar.popouts.tray
             onToggled: {

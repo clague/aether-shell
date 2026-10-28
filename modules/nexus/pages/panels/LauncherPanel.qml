@@ -26,7 +26,8 @@ PageBase {
 
         ToggleRow {
             first: true
-            text: Tr.tr("Enabled")            configNode: root.targetConfig.launcher
+            text: Tr.tr("Enabled")
+            configNode: root.targetConfig.launcher
             propertyName: "enabled"
             checked: root.targetConfig.launcher.enabled
             onToggled: {
@@ -36,7 +37,8 @@ PageBase {
 
         ToggleRow {
             text: Tr.tr("Show on hover")
-            subtext: Tr.tr("Reveal when the cursor reaches the screen edge")            configNode: root.targetConfig.launcher
+            subtext: Tr.tr("Reveal when the cursor reaches the screen edge")
+            configNode: root.targetConfig.launcher
             propertyName: "showOnHover"
             checked: root.targetConfig.launcher.showOnHover
             onToggled: {
@@ -52,7 +54,8 @@ PageBase {
             subtext: Tr.tr("Prefix used to run actions in the launcher")
             configNode: root.targetConfig.launcher
             propertyName: "actionPrefix"
-            errorText: Tr.tr("Prefix must not be alphanumeric")            value: root.targetConfig.launcher.actionPrefix === ">" ? "" : root.targetConfig.launcher.actionPrefix
+            errorText: Tr.tr("Prefix must not be alphanumeric")
+            value: root.targetConfig.launcher.actionPrefix === ">" ? "" : root.targetConfig.launcher.actionPrefix
             placeholderText: ">"
             maximumLength: 1
             smallField: true
@@ -73,7 +76,8 @@ PageBase {
 
         StepperRow {
             first: true
-            label: Tr.tr("Max items shown")            configNode: root.targetConfig.launcher
+            label: Tr.tr("Max items shown")
+            configNode: root.targetConfig.launcher
             propertyName: "maxShown"
             value: root.targetConfig.launcher.maxShown
             from: 1
@@ -85,7 +89,8 @@ PageBase {
         }
 
         StepperRow {
-            label: Tr.tr("Max wallpapers")            configNode: root.targetConfig.launcher
+            label: Tr.tr("Max wallpapers")
+            configNode: root.targetConfig.launcher
             propertyName: "maxWallpapers"
             value: root.targetConfig.launcher.maxWallpapers
             from: 1
@@ -99,7 +104,8 @@ PageBase {
         StepperRow {
             last: true
             label: Tr.tr("Drag threshold")
-            subtext: Tr.tr("Pixels dragged before the launcher opens")            configNode: root.targetConfig.launcher
+            subtext: Tr.tr("Pixels dragged before the launcher opens")
+            configNode: root.targetConfig.launcher
             propertyName: "dragThreshold"
             value: root.targetConfig.launcher.dragThreshold
             from: 0
@@ -118,7 +124,8 @@ PageBase {
         ToggleRow {
             first: true
             text: Tr.tr("Vim keybinds")
-            subtext: Tr.tr("Navigate results with Ctrl+hjkl")            configNode: root.targetConfig.launcher
+            subtext: Tr.tr("Navigate results with Ctrl+hjkl")
+            configNode: root.targetConfig.launcher
             propertyName: "vimKeybinds"
             checked: root.targetConfig.launcher.vimKeybinds
             onToggled: {
@@ -129,7 +136,8 @@ PageBase {
         ToggleRow {
             last: true
             text: Tr.tr("Enable dangerous actions")
-            subtext: Tr.tr("Allow actions that shut down or log out")            configNode: root.targetConfig.launcher
+            subtext: Tr.tr("Allow actions that shut down or log out")
+            configNode: root.targetConfig.launcher
             propertyName: "enableDangerousActions"
             checked: root.targetConfig.launcher.enableDangerousActions
             onToggled: {
@@ -144,7 +152,8 @@ PageBase {
 
         ToggleRow {
             first: true
-            text: Tr.tr("Apps")            configNode: root.targetConfig.launcher.useFuzzy
+            text: Tr.tr("Apps")
+            configNode: root.targetConfig.launcher.useFuzzy
             propertyName: "apps"
             checked: root.targetConfig.launcher.useFuzzy.apps
             onToggled: {
@@ -184,7 +193,8 @@ PageBase {
 
         ToggleRow {
             last: true
-            text: Tr.tr("Wallpapers")            configNode: root.targetConfig.launcher.useFuzzy
+            text: Tr.tr("Wallpapers")
+            configNode: root.targetConfig.launcher.useFuzzy
             propertyName: "wallpapers"
             checked: root.targetConfig.launcher.useFuzzy.wallpapers
             onToggled: {

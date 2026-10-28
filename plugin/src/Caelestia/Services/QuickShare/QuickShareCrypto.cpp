@@ -260,7 +260,8 @@ QString QuickShareCrypto::pinCode() const {
         multiplier = (multiplier * kHashBaseMultiplier) % kHashModulo;
     }
 
-    return QString(u"%1"_s).arg(abs(hash), 4, 10, u'0');}
+    return QString(u"%1"_s).arg(abs(hash), 4, 10, u'0');
+}
 
 QByteArray QuickShareCrypto::extractSharedSecret(EVP_PKEY* peerKey) {
     if (!m_dhKey || !peerKey)

@@ -45,7 +45,8 @@ ColumnLayout {
             Toggle {
                 label: qsTr("Do not disturb")
                 checked: Notifs.dnd
-                toggle.onToggled: Notifs.setDnd(checked)            }
+                toggle.onToggled: Notifs.setDnd(checked)
+            }
 
             StyledText {
                 text: PersistentState.doNotDisturb ? qsTr("Notifications off") : qsTr("%1 unread").arg(Notifs.notClosed.length)

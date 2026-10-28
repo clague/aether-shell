@@ -4,7 +4,8 @@ import QtQuick
 import QtQuick.Layouts
 import M3Shapes
 import Caelestia.Config
-import Caelestia.I18nimport qs.components.controls
+import Caelestia.I18n
+import qs.components.controls
 import qs.modules.nexus.common
 
 PageBase {
@@ -153,7 +154,8 @@ PageBase {
 
         ToggleRow {
             first: true
-            text: Tr.tr("Enabled")            configNode: root.targetConfig.dashboard
+            text: Tr.tr("Enabled")
+            configNode: root.targetConfig.dashboard
             propertyName: "enabled"
             checked: root.targetConfig.dashboard.enabled
             onToggled: {
@@ -236,7 +238,8 @@ PageBase {
 
         ToggleRow {
             first: true
-            text: Tr.tr("Dashboard")            configNode: root.targetConfig.dashboard
+            text: Tr.tr("Dashboard")
+            configNode: root.targetConfig.dashboard
             propertyName: "showDashboard"
             checked: root.targetConfig.dashboard.showDashboard
             onToggled: {
@@ -399,7 +402,8 @@ PageBase {
 
         ToggleRow {
             first: true
-            text: Tr.tr("Battery")            configNode: root.targetConfig.dashboard.performance
+            text: Tr.tr("Battery")
+            configNode: root.targetConfig.dashboard.performance
             propertyName: "showBattery"
             checked: root.targetConfig.dashboard.performance.showBattery
             onToggled: {
@@ -449,7 +453,8 @@ PageBase {
 
         ToggleRow {
             last: true
-            text: Tr.tr("Network")            configNode: root.targetConfig.dashboard.performance
+            text: Tr.tr("Network")
+            configNode: root.targetConfig.dashboard.performance
             propertyName: "showNetwork"
             checked: root.targetConfig.dashboard.performance.showNetwork
             onToggled: {
@@ -466,7 +471,8 @@ PageBase {
             first: true
             last: true
             label: Tr.tr("Drag threshold")
-            subtext: Tr.tr("Pixels dragged before the dashboard opens")            configNode: root.targetConfig.dashboard
+            subtext: Tr.tr("Pixels dragged before the dashboard opens")
+            configNode: root.targetConfig.dashboard
             propertyName: "dragThreshold"
             value: root.targetConfig.dashboard.dragThreshold
             from: 0

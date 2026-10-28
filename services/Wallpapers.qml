@@ -14,22 +14,35 @@ Searcher {
     id: root
 
     readonly property string currentNamePath: `${Paths.state}/wallpaper/path.txt`
+
     readonly property list<string> smartArg: GlobalConfig.services.smartScheme ? [] : ["--no-smart"]
+
     readonly property string fallback: Quickshell.shellPath("assets/wallpapers/Gravitation.png")
 
     property bool showPreview: false
+
     property bool enableAnimation: true
+
     readonly property string current: showPreview ? previewPath : actualCurrent
+
     property string previewPath
+
     property string actualCurrent
+
     property bool previewColourLock
+
     property bool pendingPreviewClear
 
     readonly property list<string> validVideoExtensions: ["mp4", "webm", "mkv"]
+
     property string wallpaperMode: "static"
+
     property string cacheBuster: ""
+
     property string rollbackPath: ""
+
     property string rollbackMode: ""
+
     property bool isTrackingRollback: false
 
     // Track and restore the last used wallpaper per mode using low-overhead execution
@@ -97,6 +110,10 @@ Searcher {
     property bool restoreWallpaperMode: false
 
     property var itemBusters: ({})
+
+    property alias weVolume: weAdapter.volume
+
+    property alias weSilent: weAdapter.silent
 
     function djb2_hash(s) {
         if (!s)
@@ -281,6 +298,10 @@ Searcher {
         _extractThumbsProc.running = true;
     }
 
+    onWeVolumeChanged: weStore.writeAdapter()
+
+    onWeSilentChanged: weStore.writeAdapter()
+
     onWallpaperModeChanged: {
         captureRollbackState();
 
@@ -321,11 +342,15 @@ Searcher {
             forward: false
         })
 
+    Component.onCompleted: CUtils.mkdirp(Paths.state + "/wallpaper")
+
     Timer {
         id: colorReleaseTimer
 
         interval: 180
+
         repeat: false
+
         onTriggered: {
             // Safety check: only clear the preview if no new lock has been engaged
             if (!root.previewColourLock && root.pendingPreviewClear) {
@@ -353,7 +378,9 @@ Searcher {
 
     FileView {
         path: `${Paths.state}/wallpaper/enable_animation.txt`
+
         printErrors: false
+
         onLoaded: {
             const val = text().trim();
             if (val === "0")
@@ -365,9 +392,13 @@ Searcher {
 
     FileView {
         path: root.currentNamePath
+
         watchChanges: true
+
         printErrors: false
+
         onFileChanged: reload()
+
         onLoaded: {
             let wall = text().trim();
             if (!wall) {
@@ -387,6 +418,7 @@ Searcher {
                     root.lastStatic = wall;
             }
         }
+
         onLoadFailed: {
             root.actualCurrent = root.fallback;
             root.previewColourLock = false;
@@ -396,7 +428,9 @@ Searcher {
 
     FileView {
         path: `${Paths.state}/wallpaper/last_static.txt`
+
         printErrors: false
+
         onLoaded: {
             const val = text().trim();
             if (val)
@@ -406,7 +440,9 @@ Searcher {
 
     FileView {
         path: `${Paths.state}/wallpaper/last_animated.txt`
+
         printErrors: false
+
         onLoaded: {
             const val = text().trim();
             if (val)
@@ -414,36 +450,22 @@ Searcher {
         }
     }
 
-    function updateCombinedList() {
-        let arr = [];
-        for (let i = 0; i < wallpapers.entries.length; i++) {
-            arr.push(wallpapers.entries[i]);
-        }
-        for (let i = 0; i < weWallpapers.entries.length; i++) {
-            arr.push(weWallpapers.entries[i]);
-        }
-        root.list = arr;
-    }
-
-    property alias weVolume: weAdapter.volume
-    property alias weSilent: weAdapter.silent
-    onWeVolumeChanged: weStore.writeAdapter()
-    onWeSilentChanged: weStore.writeAdapter()
-    
-    Component.onCompleted: CUtils.mkdirp(Paths.state + "/wallpaper")
-
     FileView {
         id: weStore
 
         path: `${Paths.state}/wallpaper/wallpaper-engine.json`
+
         printErrors: false
+
         watchChanges: true
+
         onFileChanged: reload()
 
         JsonAdapter {
             id: weAdapter
 
             property real volume: 0.15
+
             property bool silent: false
         }
     }
@@ -452,9 +474,13 @@ Searcher {
         id: wallpapers
 
         recursive: true
+
         path: Paths.wallsdir
+
         filter: FileSystemModel.Files
+
         nameFilters: Array.from(Images.validImageExtensions).concat(Array.from(Images.validVideoExtensions)).map(e => `*.${e}`).concat(["project.json"])
+
         onEntriesChanged: root.updateCombinedList()
     }
 
@@ -462,9 +488,13 @@ Searcher {
         id: weWallpapers
 
         recursive: true
+
         path: Quickshell.env("HOME") + "/.local/share/Steam/steamapps/workshop/content/431960"
+
         filter: FileSystemModel.Files
+
         nameFilters: ["project.json"]
+
         onEntriesChanged: root.updateCombinedList()
     }
 
@@ -507,8 +537,11 @@ Searcher {
 
     FileView {
         path: "/tmp/caelestia_thumb_ready.txt"
+
         watchChanges: true
+
         printErrors: false
+
         onLoaded: {
             const raw = text().trim();
             if (!raw)
@@ -539,6 +572,7 @@ Searcher {
         id: _extractThumbsProc
 
         command: ["caelestia", "wallpaper", "--extract-thumbs"]
+
         onExited: (exitCode, exitStatus) => { // qmllint disable signal-handler-parameters
             root._refreshing = false;
             root.cacheBuster = Date.now().toString();

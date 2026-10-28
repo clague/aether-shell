@@ -9,12 +9,19 @@ Singleton {
     id: root
 
     readonly property alias running: props.running
+
     readonly property alias paused: props.paused
+
     readonly property alias elapsed: props.elapsed
+
     property int refCount: 0
+
     property bool needsStart
+
     property list<string> startArgs
+
     property bool needsStop
+
     property bool needsPause
 
     function start(extraArgs = []): void {
@@ -37,7 +44,9 @@ Singleton {
         id: props
 
         property bool running: false
+
         property bool paused: false
+
         property real elapsed: 0 // Might get too large for int
 
         reloadableId: "recorder"
@@ -47,7 +56,9 @@ Singleton {
         id: checkProc
 
         running: true
+
         command: ["pidof", "gpu-screen-recorder"]
+
         onExited: code => {
             const running = code === 0;
 
@@ -94,10 +105,11 @@ Singleton {
     }
 
     Connections {
-        enabled: props.running && !props.paused
         function onSecondsChanged(): void {
             props.elapsed++;
         }
+
+        enabled: props.running && !props.paused
 
         target: Time // qmllint disable incompatible-type
     }

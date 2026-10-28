@@ -32,7 +32,8 @@ PageBase {
         }
     ]
 
-    title: Tr.tr("Taskbar")    isSubPage: true
+    title: Tr.tr("Taskbar")
+    isSubPage: true
 
     ColumnLayout {
         anchors.horizontalCenter: parent.horizontalCenter
@@ -49,7 +50,8 @@ PageBase {
         ToggleRow {
             first: true
             text: Tr.tr("Persistent")
-            subtext: Tr.tr("Keep the bar visible at all times")            configNode: root.targetConfig.bar
+            subtext: Tr.tr("Keep the bar visible at all times")
+            configNode: root.targetConfig.bar
             propertyName: "persistent"
             checked: root.targetConfig.bar.persistent
             onToggled: {
@@ -78,7 +80,8 @@ PageBase {
 
         ToggleRow {
             text: Tr.tr("Show on hover")
-            subtext: Tr.tr("Reveal the bar when the cursor reaches the screen edge")            configNode: root.targetConfig.bar
+            subtext: Tr.tr("Reveal the bar when the cursor reaches the screen edge")
+            configNode: root.targetConfig.bar
             propertyName: "showOnHover"
             checked: root.targetConfig.bar.showOnHover
             onToggled: {
@@ -89,7 +92,8 @@ PageBase {
         StepperRow {
             last: true
             label: Tr.tr("Drag threshold")
-            subtext: Tr.tr("Pixels dragged before the bar reveals")            configNode: root.targetConfig.bar
+            subtext: Tr.tr("Pixels dragged before the bar reveals")
+            configNode: root.targetConfig.bar
             propertyName: "dragThreshold"
             value: root.targetConfig.bar.dragThreshold
             from: 0
@@ -116,13 +120,15 @@ PageBase {
         NavRow {
             icon: "workspaces"
             text: Tr.tr("Workspaces")
-            subtext: Tr.tr("Indicators, window icons")            onClicked: root.nState.openSubPage(7)
+            subtext: Tr.tr("Indicators, window icons")
+            onClicked: root.nState.openSubPage(7)
         }
 
         NavRow {
             icon: "web_asset"
             text: Tr.tr("Active window")
-            subtext: Tr.tr("Title display, popout")            onClicked: root.nState.openSubPage(8)
+            subtext: Tr.tr("Title display, popout")
+            onClicked: root.nState.openSubPage(8)
         }
 
         NavRow {
@@ -135,13 +141,15 @@ PageBase {
         NavRow {
             icon: "widgets"
             text: Tr.tr("Tray")
-            subtext: Tr.tr("System tray icons")            onClicked: root.nState.openSubPage(9)
+            subtext: Tr.tr("System tray icons")
+            onClicked: root.nState.openSubPage(9)
         }
 
         NavRow {
             icon: "signal_cellular_alt"
             text: Tr.tr("Status icons")
-            subtext: Tr.tr("Visible indicators")            onClicked: root.nState.openSubPage(10)
+            subtext: Tr.tr("Visible indicators")
+            onClicked: root.nState.openSubPage(10)
         }
 
         NavRow {

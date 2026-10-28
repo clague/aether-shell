@@ -13,7 +13,6 @@ import Quickshell.Services.SystemTray
 import Caelestia.Config
 import qs.services
 import qs.utils
-import qs.daemons
 import qs.modules
 import qs.modules.areapicker
 import qs.modules.background
@@ -22,6 +21,7 @@ import qs.modules.lock
 import qs.modules.overview
 import qs.modules.polkit
 import qs.modules.shimeji
+import qs.daemons
 
 ShellRoot {
     id: root

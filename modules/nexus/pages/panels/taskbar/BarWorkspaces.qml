@@ -20,7 +20,8 @@ PageBase {
         StepperRow {
             first: true
             label: Tr.tr("Shown")
-            subtext: Tr.tr("Number of workspaces displayed")            configNode: root.targetConfig.bar.workspaces
+            subtext: Tr.tr("Number of workspaces displayed")
+            configNode: root.targetConfig.bar.workspaces
             propertyName: "shown"
             value: root.targetConfig.bar.workspaces.shown
             from: 1
@@ -32,7 +33,8 @@ PageBase {
         }
 
         ToggleRow {
-            text: Tr.tr("Active indicator")            configNode: root.targetConfig.bar.workspaces
+            text: Tr.tr("Active indicator")
+            configNode: root.targetConfig.bar.workspaces
             propertyName: "activeIndicator"
             checked: root.targetConfig.bar.workspaces.activeIndicator
             onToggled: {
@@ -74,7 +76,8 @@ PageBase {
         ToggleRow {
             Layout.fillWidth: true
             text: Tr.tr("Show windows")
-            subtext: Tr.tr("Show icons of open windows on each workspace")            configNode: root.targetConfig.bar.workspaces
+            subtext: Tr.tr("Show icons of open windows on each workspace")
+            configNode: root.targetConfig.bar.workspaces
             propertyName: "showWindows"
             checked: root.targetConfig.bar.workspaces.showWindows
             onToggled: {
@@ -83,7 +86,8 @@ PageBase {
         }
 
         ToggleRow {
-            text: Tr.tr("Windows on special workspaces")            configNode: root.targetConfig.bar.workspaces
+            text: Tr.tr("Windows on special workspaces")
+            configNode: root.targetConfig.bar.workspaces
             propertyName: "showWindowsOnSpecialWorkspaces"
             checked: root.targetConfig.bar.workspaces.showWindowsOnSpecialWorkspaces
             onToggled: {
@@ -92,7 +96,8 @@ PageBase {
         }
 
         StepperRow {
-            label: Tr.tr("Max window icons")            configNode: root.targetConfig.bar.workspaces
+            label: Tr.tr("Max window icons")
+            configNode: root.targetConfig.bar.workspaces
             propertyName: "maxWindowIcons"
             value: root.targetConfig.bar.workspaces.maxWindowIcons
             from: 0
@@ -113,5 +118,6 @@ PageBase {
             onToggled: {
                 root.targetConfig.bar.workspaces.perMonitorWorkspaces = checked;
             }
-        }    }
+        }
+    }
 }
