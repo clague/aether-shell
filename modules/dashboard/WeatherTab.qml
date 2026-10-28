@@ -31,8 +31,7 @@ Item {
 
                 StyledText {
                     visible: Config.dashboard.showWeatherLocation !== false
-                    text: Weather.city || Tr.tr("Loading...")
-                    font: Tokens.font.body.builders.large.size(28).weight(Font.DemiBold).build()
+                    text: Weather.city || Tr.tr("Loading...")                    font: Tokens.font.body.builders.large.size(28).weight(Font.DemiBold).build()
                     color: Colours.palette.m3onSurface
                 }
 

@@ -215,15 +215,13 @@ PageBase {
         NavRow {
             icon: "sports_esports"
             text: Tr.tr("Game mode")
-            subtext: Tr.tr("Manage how MiDnight behaves while gaming")
-            onClicked: root.nState.openSubPage(2)
+            subtext: Tr.tr("Manage how MiDnight behaves while gaming")            onClicked: root.nState.openSubPage(2)
         }
 
         NavRow {
             icon: "chat" // Using chat since discord icon might not be available in Material icons
             text: Tr.tr("Discord Rich Presence")
-            subtext: Tr.tr("Broadcast your status to Vesktop")
-            onClicked: root.nState.openSubPage(4)
+            subtext: Tr.tr("Broadcast your status to Vesktop")            onClicked: root.nState.openSubPage(4)
         }
 
         NavRow {

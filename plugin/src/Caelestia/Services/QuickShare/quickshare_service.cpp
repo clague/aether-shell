@@ -12,6 +12,8 @@
 
 #include <algorithm>
 
+using Qt::StringLiterals::operator""_s;
+
 namespace caelestia::services {
 
 using Qt::StringLiterals::operator""_s;
@@ -129,8 +131,7 @@ void QuickShareService::sendFile(const QString& deviceId, const QString& filePat
             QVariantMap entry;
             entry[u"fileName"_s] = QFileInfo(filePath).fileName();
             entry[u"filePath"_s] = filePath;
-            entry[u"timestamp"_s] = QDateTime::currentSecsSinceEpoch();
-            entry[u"direction"_s] = u"sent"_s;
+            entry[u"timestamp"_s] = QDateTime::currentSecsSinceEpoch();            entry[u"direction"_s] = u"sent"_s;
             entry[u"deviceName"_s] = deviceId;
             m_transferHistory.prepend(entry);
             emit transferHistoryChanged();
@@ -208,7 +209,6 @@ void QuickShareService::onNewConnection() {
             emit incomingTransferRequested(
                 conn->deviceName().isEmpty() ? u"Nearby Device"_s : conn->deviceName(), fileName, fileSize);
         });
-
     connect(conn, &QuickShareConnection::pinCodeReady, this, [this](const QString& pinCode) {
         emit incomingTransferPinReady(pinCode);
     });
@@ -223,12 +223,10 @@ void QuickShareService::onNewConnection() {
             entry[u"direction"_s] = u"received"_s;
             entry[u"deviceName"_s] = m_pendingIncomingConnection->deviceName().isEmpty()
                                          ? u"Nearby Device"_s
-                                         : m_pendingIncomingConnection->deviceName();
-            m_transferHistory.prepend(entry);
+                                         : m_pendingIncomingConnection->deviceName();            m_transferHistory.prepend(entry);
             emit transferHistoryChanged();
             saveHistory();
         }
-
         emit transferFinished(u"incoming"_s, success);
 
         if (m_pendingIncomingConnection) {
@@ -260,8 +258,7 @@ void QuickShareService::stopBleWakeupBroadcast() {
 
 void QuickShareService::loadHistory() {
     QString const path =
-        QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + u"/quickshare_history.json"_s;
-    QFile file(path);
+        QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + u"/quickshare_history.json"_s;    QFile file(path);
     if (file.open(QIODevice::ReadOnly)) {
         QJsonDocument const doc = QJsonDocument::fromJson(file.readAll());
         if (doc.isArray()) {
@@ -272,8 +269,7 @@ void QuickShareService::loadHistory() {
 
 void QuickShareService::saveHistory() {
     QString const path =
-        QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + u"/quickshare_history.json"_s;
-    QFile file(path);
+        QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + u"/quickshare_history.json"_s;    QFile file(path);
     if (file.open(QIODevice::WriteOnly)) {
         QJsonArray const arr = QJsonArray::fromVariantList(m_transferHistory);
         QJsonDocument const doc(arr);

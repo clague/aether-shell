@@ -5,6 +5,7 @@
 #include "aiconfig.hpp"
 #include "appearanceconfig.hpp"
 #include "audioconfig.hpp"
+#include "aiconfig.hpp"
 #include "backgroundconfig.hpp"
 #include "barconfig.hpp"
 #include "borderconfig.hpp"
@@ -51,14 +52,14 @@ class ConfigRoot : public settings::RootNode {
     CONFIG_SUBOBJECT(SidebarConfig, sidebar)
     CONFIG_SUBOBJECT(UtilitiesConfig, utilities)
     CONFIG_SUBOBJECT(UserPaths, paths)
+    CONFIG_SUBOBJECT(ShimejiConfig, shimeji)
+    CONFIG_SUBOBJECT(AudioConfig, audio)
+    CONFIG_SUBOBJECT(AiConfig, ai)
 
     // The hybrid feature system (D3). Global: flags do not vary per monitor.
     CONFIG_GLOBAL_SUBOBJECT(HybridConfig, hybrid)
 
-    // MiDnight-only sections
-    CONFIG_SUBOBJECT(AiConfig, ai)
-    CONFIG_SUBOBJECT(AudioConfig, audio)
-    CONFIG_SUBOBJECT(ShimejiConfig, shimeji)
+    // MiDnight-only sections are listed above (ai / audio / shimeji).
 
 public:
     explicit ConfigRoot(const QString& path, ConfigRoot* fallback = nullptr, QObject* parent = nullptr);

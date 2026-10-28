@@ -10,6 +10,8 @@
 
 #include <optional>
 
+using Qt::StringLiterals::operator""_s;
+
 namespace caelestia::services {
 
 using Qt::StringLiterals::operator""_s;
@@ -35,9 +37,8 @@ bool QuickShareDiscovery::startDiscovery() {
 
     QDBusInterface avahiServer(
         u"org.freedesktop.Avahi"_s, u"/"_s, u"org.freedesktop.Avahi.Server"_s, QDBusConnection::systemBus());
-
     if (!avahiServer.isValid()) {
-        qWarning() << "QuickShareDiscovery: Failed to connect to Avahi server";
+        qWarning() << u"QuickShareDiscovery: Failed to connect to Avahi server"_s;
         return false;
     }
 
@@ -46,9 +47,8 @@ bool QuickShareDiscovery::startDiscovery() {
         -1, // AVAHI_PROTO_UNSPEC
         u"_FC9F5ED42C8A._tcp"_s, u"local"_s,
         static_cast<uint>(0)); // flags
-
     if (!browserPath.isValid()) {
-        qWarning() << "QuickShareDiscovery: Failed to create ServiceBrowser:" << browserPath.error().message();
+        qWarning() << u"QuickShareDiscovery: Failed to create ServiceBrowser:"_s << browserPath.error().message();
         return false;
     }
 
@@ -60,8 +60,7 @@ bool QuickShareDiscovery::startDiscovery() {
         SLOT(onItemNew(int, int, const QString&, const QString&, const QString&, uint)));
 
     QDBusConnection::systemBus().connect(u"org.freedesktop.Avahi"_s, browserPath.value().path(),
-        u"org.freedesktop.Avahi.ServiceBrowser"_s, u"ItemRemove"_s, this,
-        SLOT(onItemRemove(int, int, const QString&, const QString&, const QString&, uint)));
+        u"org.freedesktop.Avahi.ServiceBrowser"_s, u"ItemRemove"_s, this,        SLOT(onItemRemove(int, int, const QString&, const QString&, const QString&, uint)));
 
     m_isDiscovering = true;
     return true;
@@ -88,7 +87,6 @@ bool QuickShareDiscovery::advertise(const QString& deviceName, int port) {
 
     QDBusInterface avahiServer(
         u"org.freedesktop.Avahi"_s, u"/"_s, u"org.freedesktop.Avahi.Server"_s, QDBusConnection::systemBus());
-
     if (!avahiServer.isValid())
         return false;
 
@@ -98,7 +96,6 @@ bool QuickShareDiscovery::advertise(const QString& deviceName, int port) {
 
     m_entryGroup = new QDBusInterface(u"org.freedesktop.Avahi"_s, groupPath.value().path(),
         u"org.freedesktop.Avahi.EntryGroup"_s, QDBusConnection::systemBus(), this);
-
     QByteArray endpointId;
     for (int i = 0; i < 4; i++) {
         endpointId.append(static_cast<char>(QRandomGenerator::global()->generate()));
@@ -134,7 +131,7 @@ bool QuickShareDiscovery::advertise(const QString& deviceName, int port) {
         QString::fromLatin1(recordBytes.toBase64(QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals));
 
     QList<QByteArray> txtRecord;
-    txtRecord.append("n=" + endpointInfo.toUtf8());
+    txtRecord.append(QByteArray("n=") + endpointInfo.toUtf8());
 
     QDBusMessage const reply = m_entryGroup->call(u"AddService"_s,
         -1,                   // AVAHI_IF_UNSPEC
@@ -143,15 +140,13 @@ bool QuickShareDiscovery::advertise(const QString& deviceName, int port) {
         serviceName, u"_FC9F5ED42C8A._tcp"_s, u"local"_s,
         QString(), // host
         QVariant::fromValue<quint16>(static_cast<quint16>(port)), QVariant::fromValue(txtRecord));
-
     if (reply.type() == QDBusMessage::ErrorMessage) {
-        qWarning() << "QuickShareDiscovery: AddService failed:" << reply.errorMessage();
+        qWarning() << u"QuickShareDiscovery: AddService failed:"_s << reply.errorMessage();
         return false;
     }
 
-    QDBusMessage const commitReply = m_entryGroup->call(u"Commit"_s);
-    if (commitReply.type() == QDBusMessage::ErrorMessage) {
-        qWarning() << "QuickShareDiscovery: Commit failed:" << commitReply.errorMessage();
+    QDBusMessage const commitReply = m_entryGroup->call(u"Commit"_s);    if (commitReply.type() == QDBusMessage::ErrorMessage) {
+        qWarning() << u"QuickShareDiscovery: Commit failed:"_s << commitReply.errorMessage();
         return false;
     }
     m_isAdvertising = true;
@@ -207,8 +202,7 @@ void QuickShareDiscovery::onItemNew(
     if (reply.isValid()) {
         QString const path = reply.value().path();
         QDBusConnection::systemBus().connect(u"org.freedesktop.Avahi"_s, path,
-            u"org.freedesktop.Avahi.ServiceResolver"_s, u"Found"_s, this, SLOT(onServiceResolved(QDBusMessage)));
-    }
+            u"org.freedesktop.Avahi.ServiceResolver"_s, u"Found"_s, this, SLOT(onServiceResolved(QDBusMessage)));    }
 }
 
 namespace {

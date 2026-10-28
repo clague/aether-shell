@@ -227,8 +227,7 @@ class BarConfig : public settings::ObjectNode {
             LIST_ENTRY(notifications, true),
         }))
     // MiDnight splits the bar into start/center/end sections; BarSections::syncJson
-    // migrates upstream's flat `bar.entries` array into them.
-    CONFIG_SUBOBJECT(BarSections, entries)
+    // migrates upstream's flat `bar.entries` array into them.    CONFIG_SUBOBJECT(BarSections, entries)
     CONFIG_PROPERTY(QStringList, excludedScreens, {})
     CONFIG_PROPERTY(QStringList, peripheralBatteryExcluded, {})
 };

@@ -33,8 +33,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.bar.innerWidth = v
             onReset: {
                 TokenConfig.sizes.bar.resetOption("innerWidth");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -48,8 +47,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.bar.windowPreviewSize = v
             onReset: {
                 TokenConfig.sizes.bar.resetOption("windowPreviewSize");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -63,8 +61,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.bar.trayMenuWidth = v
             onReset: {
                 TokenConfig.sizes.bar.resetOption("trayMenuWidth");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -78,8 +75,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.bar.batteryWidth = v
             onReset: {
                 TokenConfig.sizes.bar.resetOption("batteryWidth");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -93,8 +89,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.bar.networkWidth = v
             onReset: {
                 TokenConfig.sizes.bar.resetOption("networkWidth");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -109,8 +104,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.bar.kbLayoutWidth = v
             onReset: {
                 TokenConfig.sizes.bar.resetOption("kbLayoutWidth");
-            }
-        }
+            }        }
 
         SectionHeader {
             text: Tr.tr("Dashboard Widgets")
@@ -128,8 +122,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.dashboard.userWidth = v
             onReset: {
                 TokenConfig.sizes.dashboard.resetOption("userWidth");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -143,8 +136,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.dashboard.logoSize = v
             onReset: {
                 TokenConfig.sizes.dashboard.resetOption("logoSize");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -158,8 +150,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.dashboard.uptimeSize = v
             onReset: {
                 TokenConfig.sizes.dashboard.resetOption("uptimeSize");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -173,8 +164,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.dashboard.dateTimeWidth = v
             onReset: {
                 TokenConfig.sizes.dashboard.resetOption("dateTimeWidth");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -188,8 +178,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.dashboard.weatherWidth = v
             onReset: {
                 TokenConfig.sizes.dashboard.resetOption("weatherWidth");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -203,8 +192,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.dashboard.mediaWidth = v
             onReset: {
                 TokenConfig.sizes.dashboard.resetOption("mediaWidth");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -218,8 +206,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.dashboard.mediaSectionWidth = v
             onReset: {
                 TokenConfig.sizes.dashboard.resetOption("mediaSectionWidth");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -233,8 +220,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.dashboard.mediaCoverArtSize = v
             onReset: {
                 TokenConfig.sizes.dashboard.resetOption("mediaCoverArtSize");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -248,8 +234,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.dashboard.mediaTabWidth = v
             onReset: {
                 TokenConfig.sizes.dashboard.resetOption("mediaTabWidth");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -264,7 +249,6 @@ PageBase {
             onMoved: v => TokenConfig.sizes.dashboard.mediaTabHeight = v
             onReset: {
                 TokenConfig.sizes.dashboard.resetOption("mediaTabHeight");
-            }
-        }
+            }        }
     }
 }

@@ -3,6 +3,7 @@
 #include <qstring.h>
 #include <qstringlist.h>
 #include <qvariant.h>
+#include <qvariantlist.h>
 
 #include "settings/objectnode.hpp"
 #include "common.hpp"
@@ -44,9 +45,10 @@ class ServiceConfig : public settings::ObjectNode {
             vmap({ { u"from"_s, u"com.github.th_ch.youtube_music"_s }, { u"to"_s, u"YT Music"_s } }),
         }))
     CONFIG_GLOBAL_ENUM_PROPERTY(LyricsBackend, lyricsBackend, LyricsBackend::Auto)
+    // Bluetooth auto-reconnect
     CONFIG_GLOBAL_PROPERTY(QStringList, bluetoothAutoReconnectDevices, {})
 
-    // Discord ARPC Settings
+    // Discord ARPC settings
     CONFIG_GLOBAL_PROPERTY(bool, arpcEnabled, false)
     CONFIG_GLOBAL_PROPERTY(QString, arpcClientId, u"1126685412586733678"_s)
     CONFIG_GLOBAL_PROPERTY(QString, arpcAppName, u"Caelestia Shell"_s)
@@ -59,13 +61,11 @@ class ServiceConfig : public settings::ObjectNode {
     CONFIG_GLOBAL_PROPERTY(QStringList, arpcTargetWindows, {})
     CONFIG_GLOBAL_PROPERTY(bool, arpcCaelestiaInfo, false)
     CONFIG_GLOBAL_PROPERTY(bool, arpcManualOverride, false)
-
-    // Picture-in-Picture Settings
+    // Picture-in-picture
     CONFIG_GLOBAL_PROPERTY(QString, pipPosition, u"bottom right"_s)
     CONFIG_GLOBAL_PROPERTY(bool, pipFollowFocus, false)
     CONFIG_GLOBAL_PROPERTY(bool, pipPaused, false)
-
-    // QuickShare Settings
+    // Quick share
     CONFIG_GLOBAL_PROPERTY(bool, quickShareAutoStart, false)
 };
 

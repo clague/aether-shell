@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import Caelestia.Config
+import Caelestia.State
 import qs.components
 import qs.components.containers
 import qs.services
@@ -16,6 +17,14 @@ Variants {
         id: win
 
         required property ShellScreen modelData
+
+        // Don't keep two fullscreen surfaces mapped per screen when overlay
+        // lyrics are off or disabled — same condition as the content loader
+        readonly property bool lyricsActive: Config.background.desktopLyrics.enabled
+            && Config.background.desktopLyrics.overlay
+            && !(RuntimeState.gameMode && GlobalConfig.utilities.gameMode.disableDesktopLyrics)
+
+        visible: lyricsActive
 
         screen: modelData
         name: "desktopLyricsOverlay"
@@ -38,7 +47,7 @@ Variants {
             readonly property int lyricsBaseMargin: Tokens.padding.large * 2
 
             asynchronous: true
-            active: Config.background.desktopLyrics.enabled && Config.background.desktopLyrics.overlay && !(GameMode.enabled && GlobalConfig.utilities.gameMode.disableDesktopLyrics)
+            active: Config.background.desktopLyrics.enabled && Config.background.desktopLyrics.overlay && !(RuntimeState.gameMode && GlobalConfig.utilities.gameMode.disableDesktopLyrics)
 
             anchors.margins: lyricsBaseMargin
             anchors.leftMargin: Config.bar.position === "left" ? lyricsBaseMargin + lyricsBarZone : lyricsBaseMargin

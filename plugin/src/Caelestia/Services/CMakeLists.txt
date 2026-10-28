@@ -35,15 +35,18 @@ qml_module(caelestia-services
         lyriccandidate.cpp
         lyrics.cpp
         sessionmanager.cpp
+        sessionmanager.hpp
         discordipc.cpp
+        discordipc.hpp
+        networkusage.cpp
+        hyprdevices.cpp
+        hyprextras.cpp
         QuickShare/QuickShareDiscovery.cpp
         QuickShare/QuickShareCrypto.cpp
         QuickShare/QuickShareConnection.cpp
         QuickShare/quickshare_service.cpp
         QuickShare/QuickShareBle.cpp
-        networkusage.cpp
-        hyprdevices.cpp
-        hyprextras.cpp
+        QuickShare/QuickShareBle.hpp
         ${PROTO_SRCS}
     LIBRARIES
         Qt::Concurrent

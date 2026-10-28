@@ -84,14 +84,12 @@ QtObject {
             category: "shell"
         },
         {
-            label: Tr.tr("Hyprland"),
-            icon: "layers",
+            label: Tr.tr("Hyprland"),            icon: "layers",
             description: Tr.tr("Window manager configuration"),
             category: "shell"
         },
         {
-            label: Tr.tr("Services"),
-            icon: "build",
+            label: Tr.tr("Services"),            icon: "build",
             description: Tr.tr("Poll intervals, lyrics backend"),
             category: "shell"
         },

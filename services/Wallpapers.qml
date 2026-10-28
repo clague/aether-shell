@@ -92,10 +92,6 @@ Searcher {
         return grp;
     }
 
-    property alias weVolume: weSettings.volume
-
-    property alias weSilent: weSettings.silent
-
     property bool _refreshing: false
 
     property bool restoreWallpaperMode: false
@@ -418,11 +414,38 @@ Searcher {
         }
     }
 
-    Settings {
-        id: weSettings
+    function updateCombinedList() {
+        let arr = [];
+        for (let i = 0; i < wallpapers.entries.length; i++) {
+            arr.push(wallpapers.entries[i]);
+        }
+        for (let i = 0; i < weWallpapers.entries.length; i++) {
+            arr.push(weWallpapers.entries[i]);
+        }
+        root.list = arr;
+    }
 
-        property real volume: 0.15
-        property bool silent: false
+    property alias weVolume: weAdapter.volume
+    property alias weSilent: weAdapter.silent
+    onWeVolumeChanged: weStore.writeAdapter()
+    onWeSilentChanged: weStore.writeAdapter()
+    
+    Component.onCompleted: CUtils.mkdirp(Paths.state + "/wallpaper")
+
+    FileView {
+        id: weStore
+
+        path: `${Paths.state}/wallpaper/wallpaper-engine.json`
+        printErrors: false
+        watchChanges: true
+        onFileChanged: reload()
+
+        JsonAdapter {
+            id: weAdapter
+
+            property real volume: 0.15
+            property bool silent: false
+        }
     }
 
     FileSystemModel {

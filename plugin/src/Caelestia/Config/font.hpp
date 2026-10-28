@@ -12,6 +12,7 @@ namespace caelestia::shell::config {
 // Defined in tokens.hpp; FontTokens binds the mono sizes to it.
 class AppearanceTokens;
 
+class AppearanceTokens;
 class AppearanceFont;
 class FontStyleBase;
 class IconFontStyle;
@@ -139,6 +140,7 @@ public:
     explicit FontTokens(QObject* parent = nullptr);
 
     void bindFont(AppearanceFont* font);
+    // Binds the appearance tokens layer for mono font sizes
     void bindTokens(AppearanceTokens* tokens);
 
     [[nodiscard]] FontStyle* headline() const;
@@ -157,7 +159,6 @@ signals:
 private:
     void rebuildClock();
     void rebuildScale();
-    void applyMonoTokenSizes();
 
     AppearanceFont* m_font = nullptr;
     AppearanceTokens* m_tokens = nullptr;

@@ -3,7 +3,6 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Caelestia.Config
-import Caelestia.I18n
 import qs.components
 import qs.services
 
@@ -13,41 +12,14 @@ StyledRect {
     readonly property color colour: Colours.palette.m3tertiary
     readonly property int padding: Config.bar.clock.background ? Tokens.padding.medium : Tokens.padding.extraSmall
     readonly property var font: Tokens.font.body.builders.small.scale(1.1)
-    readonly property bool isHorizontal: Config.bar.position === "top" || Config.bar.position === "bottom"
 
-    // Upstream's font metric normaliser, so the hour/minute/second digits line up.
-    function fontFor(text: string, metricWidth: int): font {
-        // We don't count seconds for the max width because it changes too often
-        const scale = text === "11" ? 1.15 : Math.min(1.05, Math.max(hourMetrics.width, minMetrics.width) / metricWidth);
-        return root.font.width(scale * 100).letterSpacing(scale).build();
-    }
+    readonly property bool isHorizontal: Config.bar.position === "top" || Config.bar.position === "bottom"
 
     implicitWidth: isHorizontal ? (horizontalLayout.implicitWidth + root.padding * 2) : Tokens.sizes.bar.innerWidth
     implicitHeight: isHorizontal ? Tokens.sizes.bar.innerWidth : (verticalLayout.implicitHeight + root.padding * 2)
 
     color: Qt.alpha(Colours.tPalette.m3surfaceContainer, Config.bar.clock.background ? Colours.tPalette.m3surfaceContainer.a : 0)
     radius: Tokens.rounding.full
-
-    TextMetrics {
-        id: hourMetrics
-
-        font: root.font.build()
-        text: Time.hourStr
-    }
-
-    TextMetrics {
-        id: minMetrics
-
-        font: root.font.build()
-        text: Time.minuteStr
-    }
-
-    TextMetrics {
-        id: secMetrics
-
-        font: root.font.build()
-        text: Time.format("ss")
-    }
 
     RowLayout {
         id: horizontalLayout
@@ -117,20 +89,7 @@ StyledRect {
         Loader {
             Layout.alignment: Qt.AlignVCenter
             asynchronous: true
-            active: Config.bar.clock.showSeconds
-            visible: active
-
-            sourceComponent: StyledText {
-                text: Time.format("ss")
-                font: root.fontFor(text, secMetrics.width)
-                color: root.colour
-            }
-        }
-
-        Loader {
-            Layout.alignment: Qt.AlignVCenter
-            asynchronous: true
-            active: Units.twelveHourClock
+            active: GlobalConfig.services.useTwelveHourClock
             visible: active
 
             sourceComponent: StyledText {
@@ -198,29 +157,35 @@ StyledRect {
         StyledText {
             Layout.alignment: Qt.AlignHCenter
             text: Time.hourStr
-            font: root.fontFor(text, hourMetrics.width)
+            font: {
+                const scale = text === "11" ? 1.15 : Math.min(1.05, Math.max(hourMetrics.width, minMetrics.width) / hourMetrics.width);
+                return root.font.width(scale * 100).letterSpacing(scale).build();
+            }
             color: root.colour
+
+            TextMetrics {
+                id: hourMetrics
+
+                font: root.font.build()
+                text: Time.hourStr
+            }
         }
 
         StyledText {
             Layout.topMargin: -parent.spacing - 4
             Layout.alignment: Qt.AlignHCenter
             text: Time.minuteStr
-            font: root.fontFor(text, minMetrics.width)
+            font: {
+                const scale = text === "11" ? 1.15 : Math.min(1.05, Math.max(hourMetrics.width, minMetrics.width) / minMetrics.width);
+                return root.font.width(scale * 100).letterSpacing(scale).build();
+            }
             color: root.colour
-        }
 
-        Loader {
-            Layout.topMargin: -parent.spacing - 4
-            Layout.alignment: Qt.AlignHCenter
-            asynchronous: true
-            active: Config.bar.clock.showSeconds
-            visible: active
+            TextMetrics {
+                id: minMetrics
 
-            sourceComponent: StyledText {
-                text: Time.format("ss")
-                font: root.fontFor(text, secMetrics.width)
-                color: root.colour
+                font: root.font.build()
+                text: Time.minuteStr
             }
         }
 
@@ -228,7 +193,7 @@ StyledRect {
             Layout.topMargin: -parent.spacing - 4
             Layout.alignment: Qt.AlignHCenter
             asynchronous: true
-            active: Units.twelveHourClock
+            active: GlobalConfig.services.useTwelveHourClock
             visible: active
 
             sourceComponent: StyledText {

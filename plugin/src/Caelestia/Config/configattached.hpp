@@ -32,7 +32,9 @@ class Config : public QQuickAttachedPropertyPropagator, public QQmlParserStatus 
     Q_PROPERTY(const caelestia::shell::config::SidebarConfig* sidebar READ sidebar NOTIFY sourceChanged)
     Q_PROPERTY(const caelestia::shell::config::UtilitiesConfig* utilities READ utilities NOTIFY sourceChanged)
     Q_PROPERTY(const caelestia::shell::config::UserPaths* paths READ paths NOTIFY sourceChanged)
-
+    Q_PROPERTY(const caelestia::shell::config::ShimejiConfig* shimeji READ shimeji NOTIFY sourceChanged)
+    Q_PROPERTY(const caelestia::shell::config::AudioConfig* audio READ audio NOTIFY sourceChanged)
+    Q_PROPERTY(const caelestia::shell::config::AiConfig* ai READ ai NOTIFY sourceChanged)
 public:
     explicit Config(QObject* parent = nullptr);
 
@@ -52,11 +54,13 @@ public:
     [[nodiscard]] const NotifsConfig* notifs() const;
     [[nodiscard]] const OsdConfig* osd() const;
     [[nodiscard]] const ServiceConfig* services() const;
-    [[nodiscard]] const ShimejiConfig* shimeji() const;
     [[nodiscard]] const SessionConfig* session() const;
     [[nodiscard]] const SidebarConfig* sidebar() const;
     [[nodiscard]] const UtilitiesConfig* utilities() const;
     [[nodiscard]] const UserPaths* paths() const;
+    [[nodiscard]] const ShimejiConfig* shimeji() const;
+    [[nodiscard]] const AudioConfig* audio() const;
+    [[nodiscard]] const AiConfig* ai() const;
 
     [[nodiscard]] Q_INVOKABLE static ConfigRoot* forScreen(const QString& screen);
 

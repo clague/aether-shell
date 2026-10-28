@@ -91,6 +91,7 @@ Item {
     }
 
     PopoutState {
+        Config.screen: root.screen.name
         id: popoutState
 
         sidebarOpen: root.screenState.sidebar

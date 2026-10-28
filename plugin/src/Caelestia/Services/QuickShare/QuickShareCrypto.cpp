@@ -26,6 +26,8 @@ Q_LOGGING_CATEGORY(lcQuickShareCrypto, "caelestia.quickshare.crypto", QtInfoMsg)
 #include "securemessage.pb.h"
 #include "ukey.pb.h"
 
+using Qt::StringLiterals::operator""_s;
+
 namespace caelestia::services {
 
 using Qt::StringLiterals::operator""_s;
@@ -258,8 +260,7 @@ QString QuickShareCrypto::pinCode() const {
         multiplier = (multiplier * kHashBaseMultiplier) % kHashModulo;
     }
 
-    return QString(u"%1"_s).arg(abs(hash), 4, 10, u'0');
-}
+    return QString(u"%1"_s).arg(abs(hash), 4, 10, u'0');}
 
 QByteArray QuickShareCrypto::extractSharedSecret(EVP_PKEY* peerKey) {
     if (!m_dhKey || !peerKey)
@@ -397,7 +398,6 @@ QByteArray QuickShareCrypto::generateClientInit() {
 
     unsigned char hash[SHA512_DIGEST_LENGTH];
     SHA512(reinterpret_cast<const unsigned char*>(finishFrameSerialized.data()), finishFrameSerialized.size(), hash);
-
     securegcm::Ukey2ClientInit clientInit;
     clientInit.set_version(1);
     QByteArray randData;

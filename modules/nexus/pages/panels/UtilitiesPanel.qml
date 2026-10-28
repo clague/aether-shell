@@ -47,8 +47,7 @@ PageBase {
             first: true
             last: true
             text: Tr.tr("Enabled")
-            subtext: Tr.tr("Show the utilities panel")
-            configNode: root.targetConfig.utilities
+            subtext: Tr.tr("Show the utilities panel")            configNode: root.targetConfig.utilities
             propertyName: "enabled"
             checked: root.targetConfig.utilities.enabled
             onToggled: {
@@ -64,8 +63,7 @@ PageBase {
         ToggleRow {
             first: true
             text: Tr.tr("Keep awake")
-            subtext: Tr.tr("Show the idle inhibitor card")
-            configNode: root.targetConfig.utilities.cards
+            subtext: Tr.tr("Show the idle inhibitor card")            configNode: root.targetConfig.utilities.cards
             propertyName: "keepAwake"
             checked: root.targetConfig.utilities.cards.keepAwake
             onToggled: {
@@ -75,8 +73,7 @@ PageBase {
 
         ToggleRow {
             text: Tr.tr("Screen recorder")
-            subtext: Tr.tr("Show the screen recorder card")
-            configNode: root.targetConfig.utilities.cards
+            subtext: Tr.tr("Show the screen recorder card")            configNode: root.targetConfig.utilities.cards
             propertyName: "recorder"
             checked: root.targetConfig.utilities.cards.recorder
             onToggled: {
@@ -87,8 +84,7 @@ PageBase {
         ToggleRow {
             last: true
             text: Tr.tr("Quick toggles")
-            subtext: Tr.tr("Show the quick toggles card")
-            configNode: root.targetConfig.utilities.cards
+            subtext: Tr.tr("Show the quick toggles card")            configNode: root.targetConfig.utilities.cards
             propertyName: "quickToggles"
             checked: root.targetConfig.utilities.cards.quickToggles
             onToggled: {

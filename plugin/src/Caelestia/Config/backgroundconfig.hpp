@@ -43,6 +43,7 @@ class BackgroundVisualiser : public settings::ObjectNode {
     CONFIG_PROPERTY(bool, enabled, false)
     CONFIG_PROPERTY(bool, autoHide, true)
     CONFIG_PROPERTY(bool, blur, false)
+    CONFIG_PROPERTY(QString, renderer, QStringLiteral("gpu"))
     CONFIG_PROPERTY(qreal, rounding, 1)
     CONFIG_PROPERTY(qreal, spacing, 1)
 };
@@ -71,7 +72,7 @@ class DesktopLyrics : public settings::ObjectNode {
     CONFIG_PROPERTY(bool, autoHideFullscreen, true)
     CONFIG_PROPERTY(bool, autoHideTiled, true)
     CONFIG_PROPERTY(qreal, scale, 1.0)
-    CONFIG_PROPERTY(QString, position, QStringLiteral("bottom-center"))
+    CONFIG_PROPERTY(QString, position, u"bottom-center"_s)
     CONFIG_PROPERTY(int, alignment, 1)
     CONFIG_PROPERTY(bool, invertColors, false)
     CONFIG_SUBOBJECT(DesktopLyricsBackground, background)

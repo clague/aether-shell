@@ -11,6 +11,8 @@
 
 using Qt::StringLiterals::operator""_s;
 
+using Qt::StringLiterals::operator""_s;
+
 class QuickShareBleAdvertisementAdaptor : public QDBusAbstractAdaptor {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.bluez.LEAdvertisement1")
@@ -32,7 +34,6 @@ public:
 
     // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
     [[nodiscard]] QVariantMap serviceData() const;
-
 public slots:
     // BlueZ's org.bluez.LEAdvertisement1 method name, exported verbatim by moc.
     // NOLINTNEXTLINE(readability-identifier-naming)

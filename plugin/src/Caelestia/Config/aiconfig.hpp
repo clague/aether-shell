@@ -1,6 +1,7 @@
 #pragma once
 
 #include <qstring.h>
+#include <qstringlist.h>
 
 #include "settings/objectnode.hpp"
 #include "common.hpp"
@@ -28,6 +29,21 @@ class AiConfig : public settings::ObjectNode {
 
     CONFIG_PROPERTY(QString, activeProvider, u"ollama"_s)
     CONFIG_PROPERTY(QString, activeOllamaModel, u"llama3"_s)
+
+    // OpenRouter (cloud, OpenAI-compatible)
+    CONFIG_PROPERTY(bool, enableOpenRouter, false)
+    CONFIG_PROPERTY(QString, openRouterUrl, u"https://openrouter.ai/api/v1"_s)
+    CONFIG_PROPERTY(QString, openRouterApiKey, u""_s)
+    CONFIG_PROPERTY(QString, openRouterModel, u"openrouter/auto"_s)
+
+    // OpenClaw (self-hosted gateway, OpenAI-compatible surface)
+    CONFIG_PROPERTY(bool, enableOpenClaw, false)
+    CONFIG_PROPERTY(QString, openClawUrl, u"http://127.0.0.1:18789"_s)
+    CONFIG_PROPERTY(QString, openClawToken, u""_s)
+    CONFIG_PROPERTY(QString, openClawModel, u"openclaw/default"_s)
+
+    // Model selector recents, stored as "provider|model" entries, newest first
+    CONFIG_PROPERTY(QStringList, recentModels, {})
 };
 
 } // namespace caelestia::shell::config

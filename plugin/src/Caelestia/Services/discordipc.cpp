@@ -7,6 +7,8 @@
 #include <qdir.h>
 #include <qstandardpaths.h>
 
+using Qt::StringLiterals::operator""_s;
+
 namespace caelestia {
 
 using Qt::StringLiterals::operator""_s;
@@ -76,7 +78,6 @@ void DiscordIpc::checkReconnect() {
 
     QString const runtimeDir = QStandardPaths::writableLocation(QStandardPaths::RuntimeLocation);
     QString const pipePath = runtimeDir + u"/discord-ipc-0"_s;
-
     m_socket->connectToServer(pipePath);
 }
 
@@ -131,8 +132,7 @@ void DiscordIpc::processPayload(int opcode, const QJsonObject& payload) {
         if ((payload.contains(u"cmd"_s) && payload[u"cmd"_s].toString() == u"DISPATCH"_s) &&
             (payload.contains(u"evt"_s) && payload[u"evt"_s].toString() == u"READY"_s)) {
             m_connected = true;
-            emit connectedChanged();
-        }
+            emit connectedChanged();        }
 
     } else if (opcode == static_cast<int>(Opcode::Close)) {
         m_socket->abort();

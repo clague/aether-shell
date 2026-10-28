@@ -124,10 +124,17 @@ Scope {
 
         reloadableId: "gameMode"
     }
-
     Connections {
         function onGameModeChanged(): void {
-            root.syncState(true);
+            if (RuntimeState.gameMode) {
+                root.setDynamicConfs();
+                if (GlobalConfig.utilities.toasts.gameModeChanged)
+                    Toaster.toast(Tr.tr("Game mode enabled"), Tr.tr("Disabled Hyprland animations, blur, gaps and shadows"), "gamepad");
+            } else {
+                Hypr.extras.message("reload");
+                if (GlobalConfig.utilities.toasts.gameModeChanged)
+                    Toaster.toast(Tr.tr("Game mode disabled"), Tr.tr("Hyprland settings restored"), "gamepad");
+            }
         }
 
         target: RuntimeState
@@ -136,7 +143,7 @@ Scope {
     Connections {
         function onConfigReloaded(): void {
             if (RuntimeState.gameMode)
-                root.applyGameMode();
+                root.setDynamicConfs();
         }
 
         target: Hypr

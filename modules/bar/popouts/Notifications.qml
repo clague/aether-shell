@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Caelestia.Config
+import Caelestia.State
 import qs.components
 import qs.components.controls
 import qs.services
@@ -44,11 +45,10 @@ ColumnLayout {
             Toggle {
                 label: qsTr("Do not disturb")
                 checked: Notifs.dnd
-                toggle.onToggled: Notifs.setDnd(checked)
-            }
+                toggle.onToggled: Notifs.setDnd(checked)            }
 
             StyledText {
-                text: Notifs.dnd ? qsTr("Notifications off") : qsTr("%1 unread").arg(Notifs.notClosed.length)
+                text: PersistentState.doNotDisturb ? qsTr("Notifications off") : qsTr("%1 unread").arg(Notifs.notClosed.length)
                 color: Colours.palette.m3onSurfaceVariant
                 font.pointSize: Tokens.font.body.small.pointSize
             }

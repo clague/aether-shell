@@ -48,7 +48,6 @@
         /* upstream's rewrite dropped it. See T62.                                             */                      \
         if (screen.isEmpty())                                                                                          \
             return this;                                                                                               \
-                                                                                                                       \
         bool created;                                                                                                  \
         auto* const layer = m_layers.get(screen, this, &created);                                                      \
         if (created)                                                                                                   \

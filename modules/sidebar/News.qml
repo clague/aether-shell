@@ -60,8 +60,7 @@ Item {
             if (xhr.status === 200)
                 root.parseNews(xhr.responseText);
             else
-                root.errorMessage = qsTr("Failed to fetch news (Status: %1)").arg(xhr.status);
-        };
+                root.errorMessage = qsTr("Failed to fetch news (Status: %1)").arg(xhr.status);        };
         xhr.send();
     }
 
@@ -101,7 +100,7 @@ Item {
         }
 
         if (newsModel.count === 0) {
-            errorMessage = qsTr("No news articles found.");
+            root.errorMessage = qsTr("No news articles found.");
         }
     }
 

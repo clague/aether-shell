@@ -19,8 +19,7 @@ PageBase {
 
         ToggleRow {
             first: true
-            text: Tr.tr("Background")
-            configNode: root.targetConfig.bar.clock
+            text: Tr.tr("Background")            configNode: root.targetConfig.bar.clock
             propertyName: "background"
             checked: root.targetConfig.bar.clock.background
             onToggled: {
@@ -40,8 +39,7 @@ PageBase {
 
         ToggleRow {
             last: true
-            text: Tr.tr("Show icon")
-            configNode: root.targetConfig.bar.clock
+            text: Tr.tr("Show icon")            configNode: root.targetConfig.bar.clock
             propertyName: "showIcon"
             checked: root.targetConfig.bar.clock.showIcon
             onToggled: {
@@ -51,9 +49,14 @@ PageBase {
 
         ToggleRow {
             last: true
-            text: Tr.tr("Show seconds")
-            checked: Config.bar.clock.showSeconds
-            onToggled: GlobalConfig.bar.clock.showSeconds = checked
+            text: qsTr("Show seconds")
+            configNode: root.targetConfig.bar.clock
+            propertyName: "showSeconds"
+            checked: root.targetConfig.bar.clock.showSeconds
+            onToggled: {
+                root.targetConfig.bar.clock.showSeconds = checked;
+                root.targetConfig.save();
+            }
         }
     }
 }

@@ -208,34 +208,34 @@ Singleton {
     function getMicVolumeIcon(volume: real, isMuted: bool): string {
         if (!isMuted && volume > 0)
             return "mic";
-        return "mic_off";
-    }
+        return "mic_off";    }
 
     function getSpecialWsIcon(name: string): string {
         name = name.toLowerCase().slice("special:".length);
 
-        for (const iconConfig of GlobalConfig.bar.workspaces.specialWorkspaceIcons)
-            if (matchIconRule(name, iconConfig))
+        for (const iconConfig of GlobalConfig.bar.workspaces.specialWorkspaceIcons)            if (matchIconRule(name, iconConfig))
                 return iconConfig.icon;
 
-        if (name === "special")
+        switch (name) {
+        case "special":
             return "star";
-        if (name === "communication")
+        case "communication":
             return "forum";
-        if (name === "music")
+        case "music":
             return "music_cast";
-        if (name === "todo")
+        case "todo":
             return "checklist";
-        if (name === "sysmon")
-            return "list_alt";
-        return name[0].toUpperCase();
+        case "sysmon":
+            return "monitor_heart";
+        default:
+            return name[0].toUpperCase();
+        }
     }
 
     function getSpecialWsMaterialIcon(name: string): string {
         name = name.toLowerCase().slice("special:".length);
 
-        for (const iconConfig of GlobalConfig.bar.workspaces.specialWorkspaceIcons)
-            if (matchIconRule(name, iconConfig))
+        for (const iconConfig of GlobalConfig.bar.workspaces.specialWorkspaceIcons)            if (matchIconRule(name, iconConfig))
                 return iconConfig.icon;
 
         if (name === "special")

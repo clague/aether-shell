@@ -19,8 +19,7 @@ PageBase {
 
         ToggleRow {
             first: true
-            text: Tr.tr("Enable component")
-            checked: {
+            text: Tr.tr("Enable component")            checked: {
                 const entries = Config.bar.entries;
                 for (const section of [entries.start, entries.center, entries.end]) {
                     for (let i = 0; i < section.count; i++) {
@@ -70,8 +69,7 @@ PageBase {
 
         ToggleRow {
             text: Tr.tr("Show on hover")
-            subtext: Tr.tr("Only show the active window title while hovering")
-            configNode: root.targetConfig.bar.activeWindow
+            subtext: Tr.tr("Only show the active window title while hovering")            configNode: root.targetConfig.bar.activeWindow
             propertyName: "showOnHover"
             checked: root.targetConfig.bar.activeWindow.showOnHover
             onToggled: {
@@ -82,8 +80,7 @@ PageBase {
         ToggleRow {
             last: true
             text: Tr.tr("Popout on hover")
-            subtext: Tr.tr("Show a window details popout when hovering")
-            configNode: root.targetConfig.bar.popouts
+            subtext: Tr.tr("Show a window details popout when hovering")            configNode: root.targetConfig.bar.popouts
             propertyName: "activeWindow"
             checked: root.targetConfig.bar.popouts.activeWindow
             onToggled: {

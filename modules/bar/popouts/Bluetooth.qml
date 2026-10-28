@@ -24,8 +24,7 @@ ColumnLayout {
     StyledText {
         Layout.topMargin: Tokens.padding.medium
         Layout.leftMargin: Tokens.padding.small
-        text: Tr.tr("Bluetooth")
-        font.weight: 500
+        text: Tr.tr("Bluetooth")        font.weight: 500
     }
 
     StyledRect {
@@ -50,8 +49,7 @@ ColumnLayout {
                 toggle.onToggled: {
                     const adapter = Bluetooth.defaultAdapter; // qmllint disable unresolved-type
                     if (adapter)
-                        adapter.enabled = checked;
-                }
+                        adapter.enabled = checked;                }
             }
 
             Toggle {
@@ -86,7 +84,6 @@ ColumnLayout {
 
                 RowLayout {
                     id: device
-
                     required property BluetoothDevice modelData
                     readonly property bool loading: modelData.state === BluetoothDeviceState.Connecting || modelData.state === BluetoothDeviceState.Disconnecting // qmllint disable unresolved-type
 
@@ -100,7 +97,6 @@ ColumnLayout {
                         opacity = 1;
                         scale = 1;
                     }
-
                     Behavior on opacity {
                         Anim {
                             type: Anim.DefaultEffects
@@ -207,8 +203,7 @@ ColumnLayout {
         inactiveColour: Colours.palette.m3primaryContainer
         inactiveOnColour: Colours.palette.m3onPrimaryContainer
         verticalPadding: Tokens.padding.small
-        text: Tr.tr("Open settings")
-        icon: "settings"
+        text: Tr.tr("Open settings")        icon: "settings"
 
         onClicked: root.popouts.detachRequested("bluetooth")
     }

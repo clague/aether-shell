@@ -171,7 +171,6 @@ PathView {
 
     Timer {
         id: previewTimer
-
         interval: 100
         onTriggered: {
             if (root.currentItem)
@@ -189,6 +188,5 @@ PathView {
 
         anchors.fill: parent
         preventStealing: false
-        acceptedButtons: Qt.NoButton
-    }
+        acceptedButtons: Qt.NoButton    }
 }

@@ -13,7 +13,6 @@ Column {
     required property var popouts
 
     property bool _isSidebarOpen: popouts && popouts.sidebarOpen && popouts.isHorizontal && popouts.currentSection === "end"
-
     function formatSeconds(s: int): string {
         const day = Math.floor(s / 86400);
         const hr = Math.floor(s / 3600) % 24;
@@ -53,7 +52,6 @@ Column {
             return Tr.tr("Unknown reason");
         }
     }
-
     spacing: Tokens.spacing.medium
     width: Math.max(Tokens.sizes.bar.batteryWidth, _isSidebarOpen ? Tokens.sizes.sidebar.width - Tokens.padding.extraLargeIncreased : 0)
 

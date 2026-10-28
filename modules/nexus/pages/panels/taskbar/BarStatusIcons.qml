@@ -20,8 +20,7 @@ PageBase {
             bluetooth: Tr.tr("Bluetooth"),
             battery: Tr.tr("Battery"),
             peripheralBattery: Tr.tr("Peripheral battery"),
-            notifications: Tr.tr("Notifications")
-        })
+            notifications: Tr.tr("Notifications")        })
 
     title: Tr.tr("Status icons")
     isSubPage: true
@@ -118,8 +117,7 @@ PageBase {
             first: true
             last: true
             text: Tr.tr("Popout on hover")
-            subtext: Tr.tr("Show a details popout when hovering the status icons")
-            configNode: root.targetConfig.bar.popouts
+            subtext: Tr.tr("Show a details popout when hovering the status icons")            configNode: root.targetConfig.bar.popouts
             propertyName: "statusIcons"
             checked: root.targetConfig.bar.popouts.statusIcons
             onToggled: {

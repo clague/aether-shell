@@ -4,8 +4,10 @@
 
 One Quickshell desktop shell merging **MiDnight Shell** and **OP-Caelestia** on top of
 upstream **Caelestia**. One shell, one config, one CLI — features toggled, not forks juggled.
-
 </div>
+
+> [!WARNING]
+> This project is no longer being maintained by me. I have started work on my own rust based shell. As soon as it is publicly available, you may find it [here](https://github.com/Kiite-Org/KiiteShell).
 
 > [!NOTE]
 > This is a merge of three GPL-3.0 projects: [caelestia-dots/shell](https://github.com/caelestia-dots/shell)
@@ -14,7 +16,6 @@ upstream **Caelestia**. One shell, one config, one CLI — features toggled, not
 > See [Credits](#credits) and `hybrid/docs/provenance.md`.
 
 ## Features
-
 The two forks are about 90% disjoint, so almost everything they added is a feature that is
 either present or absent rather than a choice between two implementations. Each one is a
 flag under `hybrid.features` in `shell.json`, and the settings app (Nexus) has a page for
@@ -38,7 +39,6 @@ them.
 Not flagged, because they are not optional: the bar's Material workspace icons, DND toggle
 and drag-and-drop component editor; the dashboard's terminal, Wallhaven and weather tabs;
 dynamic wallpaper recolouring; and Bezel Mode.
-
 Still to come (Phase 5), each behind a flag of its own when it lands: OP's standalone
 overview and dock windows, its hotspot, its theme manager and its Bluetooth agent.
 
@@ -63,8 +63,7 @@ currently has one implementation; the selector appears when the second lands.
 > [!IMPORTANT]
 > There is no package for this yet — no AUR entry, no flake URL, no installer. Build it from
 > source. The instructions below are the upstream ones and are the only supported path.
-
-Dependencies:
+<details><summary id="dependencies">Dependencies</summary>
 
 -   [`caelestia-cli`](https://github.com/caelestia-dots/cli) — required; the shell's IPC and
     most of its shortcuts go through it.
@@ -89,19 +88,17 @@ Dependencies:
 -   [`ttf-rubik-vf`](https://github.com/googlefonts/rubik)
 -   [`ttf-cascadia-code-nerd`](https://github.com/ryanoasis/nerd-fonts)
 -   `qt6-base`
--   `qt6-declarative`
-Build dependencies:
+-   `qt6-declarative`Build dependencies:
 
-- [`cmake`](https://gitlab.kitware.com/cmake/cmake)
-- [`ninja`](https://github.com/ninja-build/ninja)
-- `qt6-shadertools`
+-   [`cmake`](https://gitlab.kitware.com/cmake/cmake)
+-   [`ninja`](https://github.com/ninja-build/ninja)
+</details>
 
 > [!IMPORTANT]
 > The commands below (and in the "Updating" section) assume `$XDG_CONFIG_HOME` is set.
 > If it is unset, substitute it with the path to your config folder (typically `~/.config`).
 
 Clone into `$XDG_CONFIG_HOME/quickshell/caelestia`, then build and install with `cmake`:
-
 ```sh
 cd $XDG_CONFIG_HOME/quickshell
 git clone <this repository> caelestia
@@ -299,7 +296,6 @@ Use `caelestia wallpaper -h` for more info about this command.
 ## Updating
 
 There is no package yet, so updating means pulling and rebuilding:
-
 ```sh
 cd $XDG_CONFIG_HOME/quickshell/caelestia
 git pull
@@ -379,6 +375,7 @@ hyprctl monitors -j | jq -r '.[].name'
 Options set in these files will **override** the respective options in the global config. Any options not present in
 per-monitor configs will inherit their values from the global config.
 
+
 For example, to automatically hide the bar on the monitor named `DP-1`:
 
 **`~/.config/caelestia/monitors/DP-1/shell.json`**
@@ -413,8 +410,7 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
 > - `services` (`weatherLocation`, `useFahrenheit`, `useFahrenheitPerformance`, `useTwelveHourClock`,
 >   `gpuType`, `visualiserBars`, `audioIncrement`, `brightnessIncrement`, `maxVolume`, `smartScheme`,
 >   `defaultPlayer`, `playerAliases`, `lyricsBackend`)
-> - `paths` (`wallpaperDir`, `lyricsDir`)>
-> </details>
+> - `paths` (`wallpaperDir`, `lyricsDir`)>> </details>
 
 ### Example configuration
 
@@ -437,9 +433,17 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
         "defaultProvider": "ollama",
         "enableCelestialMode": false,
         "enableOllama": true,
-        "ollamaHistoryJson": "[]",
+        "enableOpenClaw": false,
+        "enableOpenRouter": false,
         "ollamaModel": "llama3",
         "ollamaUrl": "http://localhost:11434",
+        "openClawModel": "openclaw/default",
+        "openClawToken": "",
+        "openClawUrl": "http://127.0.0.1:18789",
+        "openRouterApiKey": "",
+        "openRouterModel": "openrouter/auto",
+        "openRouterUrl": "https://openrouter.ai/api/v1",
+        "recentModels": [],
         "saveChatHistory": true,
         "snapToDefaultOllama": true
     },
@@ -767,6 +771,7 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
             "autoHide": true,
             "blur": false,
             "enabled": false,
+            "renderer": "gpu",
             "rounding": 1,
             "spacing": 1
         },
@@ -1150,8 +1155,7 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
         "recolourLogo": true,
         "enableHowdy": true,
         "maxHowdyTries": 3,
-        "triggerHowdyOnWake": true    },
-    "nexus": {
+        "triggerHowdyOnWake": true    },    "nexus": {
         "networkRescanInterval": 15000,
         "wallpapersPerRow": 4
     },
@@ -1161,8 +1165,7 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
         "defaultExpireTimeout": 5000,
         "expandThreshold": 20,
         "expire": true,
-        "fullscreen": "on",
-        "fullscreenExpireTimeout": 2000,
+        "fullscreen": "on",        "fullscreenExpireTimeout": 2000,
         "groupPreviewNum": 3,
         "openExpanded": false
     },
@@ -1199,8 +1202,7 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
         "useFahrenheitPerformance": false,
         "useTwelveHourClock": true,
         "visualiserBars": 60,
-        "weatherLocation": ""    },
-    "session": {
+        "weatherLocation": ""    },    "session": {
         "commands": {
             "hibernate": [
                 "loginctl",
@@ -1412,10 +1414,9 @@ is editing the source.
 Most of what the two forks added is a flag under `hybrid.features` — see
 [Features](#features), or open the Hybrid page in the settings app. Everything else is under
 [configuring](#configuring). If there is no corresponding option, make a feature request.
-
 ### How do I make my colour scheme change to match my wallpaper?
 
-Set a wallpaper via `>wallpaper` in the launcher or `caelestia wallpaper`, and set the scheme to the dynamic scheme via
+Set a wallpaper via `>wallpaper` in the launcher or `caelestia wallpaper`, and set the scheme to the dynamic scheme via 
 `>scheme` in the launcher or `caelestia scheme set`, e.g.:
 
 ```sh
@@ -1455,7 +1456,7 @@ which helped me a lot with learning how to use Quickshell.
 
 Finally, another thank you to all the configs I took inspiration from (only one for now):
 
-- [Axenide/Ax-Shell](https://github.com/Axenide/Ax-Shell)
+-   [Axenide/Ax-Shell](https://github.com/Axenide/Ax-Shell)
 
 [dots-repo]: https://github.com/caelestia-dots/caelestia
 [discord]: https://caelestiashell.com/discord

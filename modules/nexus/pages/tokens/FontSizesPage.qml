@@ -33,8 +33,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.fontSize.small = v
             onReset: {
                 TokenConfig.appearance.fontSize.resetOption("small");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -48,8 +47,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.fontSize.smaller = v
             onReset: {
                 TokenConfig.appearance.fontSize.resetOption("smaller");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -63,8 +61,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.fontSize.normal = v
             onReset: {
                 TokenConfig.appearance.fontSize.resetOption("normal");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -78,8 +75,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.fontSize.larger = v
             onReset: {
                 TokenConfig.appearance.fontSize.resetOption("larger");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -93,8 +89,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.fontSize.large = v
             onReset: {
                 TokenConfig.appearance.fontSize.resetOption("large");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -109,8 +104,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.fontSize.extraLarge = v
             onReset: {
                 TokenConfig.appearance.fontSize.resetOption("extraLarge");
-            }
-        }
+            }        }
 
         SectionHeader {
             text: Tr.tr("Monospace Fonts")
@@ -128,8 +122,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.fontSize.monoSmall = v
             onReset: {
                 TokenConfig.appearance.fontSize.resetOption("monoSmall");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -143,8 +136,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.fontSize.monoMedium = v
             onReset: {
                 TokenConfig.appearance.fontSize.resetOption("monoMedium");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -159,7 +151,6 @@ PageBase {
             onMoved: v => TokenConfig.appearance.fontSize.monoLarge = v
             onReset: {
                 TokenConfig.appearance.fontSize.resetOption("monoLarge");
-            }
-        }
+            }        }
     }
 }

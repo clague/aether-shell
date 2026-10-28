@@ -232,7 +232,7 @@ void FileSystemModel::watchDirIfRecursive(const QString& path) {
                 filters |= QDir::Hidden;
             }
 
-            QDirIterator iter(path, filters, QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
+            QDirIterator iter(path, filters, QDirIterator::Subdirectories);
             QStringList dirs;
             while (iter.hasNext()) {
                 dirs << iter.next();

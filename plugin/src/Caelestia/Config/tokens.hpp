@@ -77,6 +77,7 @@ class FontSizeTokens : public settings::ObjectNode {
     CONFIG_PROPERTY(int, large, 18)
     CONFIG_PROPERTY(int, extraLarge, 28)
 
+    // Monospace font sizes
     CONFIG_PROPERTY(int, monoSmall, 12)
     CONFIG_PROPERTY(int, monoMedium, 14)
     CONFIG_PROPERTY(int, monoLarge, 16)

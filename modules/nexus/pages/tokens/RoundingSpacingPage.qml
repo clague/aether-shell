@@ -33,8 +33,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.rounding.extraSmall = v
             onReset: {
                 TokenConfig.appearance.rounding.resetOption("extraSmall");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -48,8 +47,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.rounding.small = v
             onReset: {
                 TokenConfig.appearance.rounding.resetOption("small");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -63,8 +61,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.rounding.medium = v
             onReset: {
                 TokenConfig.appearance.rounding.resetOption("medium");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -78,8 +75,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.rounding.large = v
             onReset: {
                 TokenConfig.appearance.rounding.resetOption("large");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -93,8 +89,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.rounding.largeIncreased = v
             onReset: {
                 TokenConfig.appearance.rounding.resetOption("largeIncreased");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -108,8 +103,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.rounding.extraLarge = v
             onReset: {
                 TokenConfig.appearance.rounding.resetOption("extraLarge");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -123,8 +117,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.rounding.extraLargeIncreased = v
             onReset: {
                 TokenConfig.appearance.rounding.resetOption("extraLargeIncreased");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -139,8 +132,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.rounding.extraExtraLarge = v
             onReset: {
                 TokenConfig.appearance.rounding.resetOption("extraExtraLarge");
-            }
-        }
+            }        }
 
         SectionHeader {
             text: Tr.tr("Layout Spacing")
@@ -158,8 +150,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.spacing.extraSmall = v
             onReset: {
                 TokenConfig.appearance.spacing.resetOption("extraSmall");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -173,8 +164,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.spacing.small = v
             onReset: {
                 TokenConfig.appearance.spacing.resetOption("small");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -188,8 +178,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.spacing.medium = v
             onReset: {
                 TokenConfig.appearance.spacing.resetOption("medium");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -203,8 +192,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.spacing.large = v
             onReset: {
                 TokenConfig.appearance.spacing.resetOption("large");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -218,8 +206,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.spacing.largeIncreased = v
             onReset: {
                 TokenConfig.appearance.spacing.resetOption("largeIncreased");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -233,8 +220,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.spacing.extraLarge = v
             onReset: {
                 TokenConfig.appearance.spacing.resetOption("extraLarge");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -248,8 +234,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.spacing.extraLargeIncreased = v
             onReset: {
                 TokenConfig.appearance.spacing.resetOption("extraLargeIncreased");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -264,8 +249,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.spacing.extraExtraLarge = v
             onReset: {
                 TokenConfig.appearance.spacing.resetOption("extraExtraLarge");
-            }
-        }
+            }        }
 
         SectionHeader {
             text: Tr.tr("Inner Padding")
@@ -283,8 +267,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.padding.extraSmall = v
             onReset: {
                 TokenConfig.appearance.padding.resetOption("extraSmall");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -298,8 +281,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.padding.small = v
             onReset: {
                 TokenConfig.appearance.padding.resetOption("small");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -313,8 +295,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.padding.medium = v
             onReset: {
                 TokenConfig.appearance.padding.resetOption("medium");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -328,8 +309,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.padding.large = v
             onReset: {
                 TokenConfig.appearance.padding.resetOption("large");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -343,8 +323,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.padding.largeIncreased = v
             onReset: {
                 TokenConfig.appearance.padding.resetOption("largeIncreased");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -358,8 +337,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.padding.extraLarge = v
             onReset: {
                 TokenConfig.appearance.padding.resetOption("extraLarge");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -373,8 +351,7 @@ PageBase {
             onMoved: v => TokenConfig.appearance.padding.extraLargeIncreased = v
             onReset: {
                 TokenConfig.appearance.padding.resetOption("extraLargeIncreased");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -389,7 +366,6 @@ PageBase {
             onMoved: v => TokenConfig.appearance.padding.extraExtraLarge = v
             onReset: {
                 TokenConfig.appearance.padding.resetOption("extraExtraLarge");
-            }
-        }
+            }        }
     }
 }

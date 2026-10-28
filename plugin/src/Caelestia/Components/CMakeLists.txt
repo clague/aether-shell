@@ -25,4 +25,5 @@ qt_add_shaders(caelestia-components "components_shaders"
     FILES
         shaders/roundedmask.frag
         shaders/roundedmask.vert
+        shaders/visualiser.frag
 )

@@ -43,4 +43,10 @@ void RootNode::saveToFile() {
     m_file->write(toJson());
 }
 
+// midnight's save() wrapper: SettingsFile persists itself, so save() is just an
+// explicit flush entry point for callers that still request one.
+void RootNode::save() {
+    saveToFile();
+}
+
 } // namespace caelestia::shell::settings

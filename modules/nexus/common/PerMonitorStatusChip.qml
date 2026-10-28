@@ -18,8 +18,7 @@ IconButton {
     property bool isOverridden: false
 
     function refresh(): void {
-        root.isOverridden = !!root.configNode && root.propertyName !== "" && root.configNode.isOverride(root.propertyName);
-    }
+        root.isOverridden = !!root.configNode && root.propertyName !== "" && root.configNode.isOverride(root.propertyName);    }
 
     visible: root.isOverridden
     icon: "restart_alt"

@@ -30,6 +30,8 @@ Q_LOGGING_CATEGORY(lcQuickShareConn, "caelestia.quickshare.connection", QtInfoMs
 #include "ukey.pb.h"
 #include "wire_format.pb.h"
 
+using Qt::StringLiterals::operator""_s;
+
 namespace caelestia::services {
 
 using Qt::StringLiterals::operator""_s;
@@ -138,8 +140,7 @@ QuickShareConnection::QuickShareConnection(const QString& host, int port, QObjec
         req->set_endpoint_id("ABCD");
         QString hostname = QSysInfo::machineHostName();
         if (hostname.isEmpty())
-            hostname = u"CaelestiaClient"_s;
-        req->set_endpoint_name(hostname.toStdString());
+            hostname = u"CaelestiaClient"_s;        req->set_endpoint_name(hostname.toStdString());
 
         QByteArray endpointInfo;
         endpointInfo.append(static_cast<char>(0x3u << 1u)); // Laptop
@@ -148,8 +149,7 @@ QuickShareConnection::QuickShareConnection(const QString& host, int port, QObjec
         }
         QString deviceName = QSysInfo::machineHostName();
         if (deviceName.isEmpty())
-            deviceName = u"CaelestiaClient"_s;
-        QByteArray nameBytes = deviceName.toUtf8();
+            deviceName = u"CaelestiaClient"_s;        QByteArray nameBytes = deviceName.toUtf8();
         if (nameBytes.length() > 255)
             nameBytes.truncate(255);
         endpointInfo.append(static_cast<char>(nameBytes.length()));
@@ -181,7 +181,7 @@ void QuickShareConnection::sendFile(const QString& filePath) {
 
     QFileInfo const fileInfo(filePath);
     if (!fileInfo.exists()) {
-        qWarning() << "QuickShareConnection: File to send does not exist:" << filePath;
+        qWarning() << u"QuickShareConnection: File to send does not exist:"_s << filePath;
         emit transferFinished(false);
         return;
     }
@@ -205,7 +205,6 @@ void QuickShareConnection::sendFile(const QString& filePath) {
         mimeString = u"application/octet-stream"_s;
 
     fileMeta->set_mime_type(mimeString.toStdString());
-
     if (mimeString.startsWith(u"image/"_s)) {
         fileMeta->set_type(sharing::nearby::FileMetadata::IMAGE);
     } else if (mimeString.startsWith(u"video/"_s)) {
@@ -414,7 +413,7 @@ void QuickShareConnection::onReadyRead() {
 void QuickShareConnection::handleOfflineFrame(const QByteArray& data) {
     location::nearby::connections::OfflineFrame frame;
     if (!frame.ParseFromArray(data.constData(), static_cast<int>(data.size()))) {
-        qWarning() << "QuickShareConnection: Failed to parse initial OfflineFrame";
+        qWarning() << u"QuickShareConnection: Failed to parse initial OfflineFrame"_s;
         return;
     }
 
@@ -451,7 +450,7 @@ void QuickShareConnection::handleUkey2(const QByteArray& data) {
             if (msg.message_type() == securegcm::Ukey2Message::CLIENT_INIT) {
                 QByteArray const serverInit = m_crypto.processClientInit(data);
                 if (serverInit.isEmpty()) {
-                    qWarning() << "QuickShareConnection: m_crypto.processClientInit failed";
+                    qWarning() << u"QuickShareConnection: m_crypto.processClientInit failed"_s;
                 } else {
                     writeLengthPrefixed(m_socket, serverInit);
                 }
@@ -479,7 +478,7 @@ void QuickShareConnection::handleUkey2(const QByteArray& data) {
                 emit stateChanged(m_state);
             } else if (msg.message_type() == securegcm::Ukey2Message::CLIENT_FINISH) {
                 if (!m_crypto.processClientFinished(data)) {
-                    qWarning() << "QuickShareConnection: m_crypto.processClientFinished failed!";
+                    qWarning() << u"QuickShareConnection: m_crypto.processClientFinished failed!"_s;
                 } else {
                     m_state = PostHandshake;
                     emit stateChanged(m_state);
@@ -488,17 +487,17 @@ void QuickShareConnection::handleUkey2(const QByteArray& data) {
                 }
             }
         } else {
-            qWarning() << "QuickShareConnection: Failed to parse Ukey2Message!";
+            qWarning() << u"QuickShareConnection: Failed to parse Ukey2Message!"_s;
         }
     } else {
-        qWarning() << "QuickShareConnection: Received Ukey2 message but handshake is already complete!";
+        qWarning() << u"QuickShareConnection: Received Ukey2 message but handshake is already complete!"_s;
     }
 }
 
 void QuickShareConnection::handlePostHandshake(const QByteArray& data) {
     location::nearby::connections::OfflineFrame frame;
     if (!frame.ParseFromArray(data.constData(), static_cast<int>(data.size()))) {
-        qWarning() << "QuickShareConnection: Failed to parse plaintext CONNECTION_RESPONSE";
+        qWarning() << u"QuickShareConnection: Failed to parse plaintext CONNECTION_RESPONSE"_s;
         return;
     }
 
@@ -596,8 +595,7 @@ QByteArray QuickShareConnection::unwrapSecureMessage(const QByteArray& secureMes
     securemessage::SecureMessage secMsg;
     if (!secMsg.ParseFromArray(secureMessageData.constData(), static_cast<int>(secureMessageData.size()))) {
         qWarning() << "QuickShareConnection: Failed to parse SecureMessage";
-        return {};
-    }
+        return {};    }
 
     const QByteArray headerAndBodyBytes(
         secMsg.header_and_body().data(), static_cast<qsizetype>(secMsg.header_and_body().size()));
@@ -611,14 +609,12 @@ QByteArray QuickShareConnection::unwrapSecureMessage(const QByteArray& secureMes
     if (static_cast<size_t>(hmacLen) != secMsg.signature().size() ||
         memcmp(hmacResult, secMsg.signature().data(), hmacLen) != 0) {
         qWarning() << "QuickShareConnection: HMAC verification failed";
-        return {};
-    }
+        return {};    }
 
     securemessage::HeaderAndBody headerAndBody;
     if (!headerAndBody.ParseFromArray(headerAndBodyBytes.constData(), static_cast<int>(headerAndBodyBytes.size()))) {
         qWarning() << "QuickShareConnection: Failed to parse HeaderAndBody";
-        return {};
-    }
+        return {};    }
 
     const auto& header = headerAndBody.header();
     QByteArray const iv(header.iv().data(), static_cast<qsizetype>(header.iv().size()));
@@ -642,8 +638,7 @@ QByteArray QuickShareConnection::unwrapSecureMessage(const QByteArray& secureMes
     securegcm::DeviceToDeviceMessage d2dMsg;
     if (!d2dMsg.ParseFromArray(plaintext.constData(), static_cast<int>(plaintext.size()))) {
         qWarning() << "QuickShareConnection: Failed to parse DeviceToDeviceMessage";
-        return {};
-    }
+        return {};    }
 
     // Not a braced init list: protobuf's size() is size_t and QByteArray's is qsizetype,
     // and braces make that narrowing an error rather than a conversion.
@@ -654,13 +649,13 @@ QByteArray QuickShareConnection::unwrapSecureMessage(const QByteArray& secureMes
 void QuickShareConnection::handleEncryptedFrame(const QByteArray& data) {
     QByteArray const plaintext = unwrapSecureMessage(data);
     if (plaintext.isEmpty()) {
-        qWarning() << "QuickShareConnection: Failed to unwrap encrypted frame";
+        qWarning() << u"QuickShareConnection: Failed to unwrap encrypted frame"_s;
         return;
     }
 
     location::nearby::connections::OfflineFrame offlineFrame;
     if (!offlineFrame.ParseFromArray(plaintext.constData(), static_cast<int>(plaintext.size()))) {
-        qWarning() << "QuickShareConnection: Failed to parse OfflineFrame from decrypted data";
+        qWarning() << u"QuickShareConnection: Failed to parse OfflineFrame from decrypted data"_s;
         return;
     }
 
@@ -722,8 +717,7 @@ void QuickShareConnection::handlePayloadTransfer(const QByteArray& plaintext) {
     QByteArray const chunkBody(payloadChunk.body().data(), static_cast<qsizetype>(payloadChunk.body().size()));
 
     if (payloadHeader.type() == location::nearby::connections::PayloadTransferFrame::PayloadHeader::FILE) {
-        handleIncomingFileChunk(chunkBody, payloadChunk.offset(), payloadChunk.flags());
-        return;
+        handleIncomingFileChunk(chunkBody, payloadChunk.offset(), payloadChunk.flags());        return;
     }
 
     if (!m_payloadBuffers.contains(payloadId)) {
@@ -744,7 +738,6 @@ void QuickShareConnection::handlePayloadTransfer(const QByteArray& plaintext) {
         sharing::nearby::Frame frame;
         if (!complete.isEmpty() && frame.ParseFromArray(complete.constData(), static_cast<int>(complete.size())))
             handleSharingFrame(frame);
-
         m_payloadBuffers.remove(payloadId);
         m_payloadTotalSizes.remove(payloadId);
     }
@@ -834,7 +827,7 @@ void QuickShareConnection::onDisconnected() {
 
 void QuickShareConnection::onError(QAbstractSocket::SocketError socketError) {
     Q_UNUSED(socketError);
-    qWarning() << "QuickShareConnection error:" << m_socket->errorString();
+    qWarning() << u"QuickShareConnection error:"_s << m_socket->errorString();
     emit transferFinished(false);
 }
 

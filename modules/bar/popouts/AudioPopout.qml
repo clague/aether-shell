@@ -64,6 +64,7 @@ ColumnLayout {
 
                     required property PwNode modelData
 
+                    Layout.fillWidth: true
                     ButtonGroup.group: sinks
                     checked: Audio.sink?.id === modelData.id
                     onClicked: Audio.setAudioSink(modelData)
@@ -102,6 +103,7 @@ ColumnLayout {
 
                     required property PwNode modelData
 
+                    Layout.fillWidth: true
                     ButtonGroup.group: sources
                     checked: Audio.source?.id === modelData.id
                     onClicked: Audio.setAudioSource(modelData)
@@ -113,8 +115,7 @@ ColumnLayout {
 
     StyledText {
         Layout.topMargin: Tokens.spacing.medium
-        text: Tr.tr("Volume (%1)").arg(Audio.muted ? Tr.tr("muted") : `${Math.round(Audio.volume * 100)}%`)
-        font: Tokens.font.body.builders.medium.weight(Font.Medium).build()
+        text: Tr.tr("Volume (%1)").arg(Audio.muted ? Tr.tr("muted") : `${Math.round(Audio.volume * 100)}%`)        font: Tokens.font.body.builders.medium.weight(Font.Medium).build()
     }
 
     CustomMouseArea {

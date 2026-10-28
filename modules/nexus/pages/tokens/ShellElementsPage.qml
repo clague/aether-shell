@@ -33,8 +33,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.launcher.itemWidth = v
             onReset: {
                 TokenConfig.sizes.launcher.resetOption("itemWidth");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -48,8 +47,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.launcher.itemHeight = v
             onReset: {
                 TokenConfig.sizes.launcher.resetOption("itemHeight");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -63,8 +61,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.launcher.wallpaperWidth = v
             onReset: {
                 TokenConfig.sizes.launcher.resetOption("wallpaperWidth");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -79,8 +76,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.launcher.wallpaperHeight = v
             onReset: {
                 TokenConfig.sizes.launcher.resetOption("wallpaperHeight");
-            }
-        }
+            }        }
 
         SectionHeader {
             text: Tr.tr("Notifications")
@@ -98,8 +94,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.notifs.width = v
             onReset: {
                 TokenConfig.sizes.notifs.resetOption("width");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -113,8 +108,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.notifs.image = v
             onReset: {
                 TokenConfig.sizes.notifs.resetOption("image");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -129,8 +123,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.notifs.badge = v
             onReset: {
                 TokenConfig.sizes.notifs.resetOption("badge");
-            }
-        }
+            }        }
 
         SectionHeader {
             text: Tr.tr("OSD & Volume Sliders")
@@ -148,8 +141,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.osd.sliderWidth = v
             onReset: {
                 TokenConfig.sizes.osd.resetOption("sliderWidth");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -164,8 +156,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.osd.sliderHeight = v
             onReset: {
                 TokenConfig.sizes.osd.resetOption("sliderHeight");
-            }
-        }
+            }        }
 
         SectionHeader {
             text: Tr.tr("Desktop Popouts & Panels")
@@ -183,8 +174,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.session.button = v
             onReset: {
                 TokenConfig.sizes.session.resetOption("button");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -198,8 +188,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.sidebar.width = v
             onReset: {
                 TokenConfig.sizes.sidebar.resetOption("width");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -213,8 +202,7 @@ PageBase {
             onMoved: v => TokenConfig.sizes.utilities.width = v
             onReset: {
                 TokenConfig.sizes.utilities.resetOption("width");
-            }
-        }
+            }        }
 
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
@@ -229,7 +217,6 @@ PageBase {
             onMoved: v => TokenConfig.sizes.utilities.toastWidth = v
             onReset: {
                 TokenConfig.sizes.utilities.resetOption("toastWidth");
-            }
-        }
+            }        }
     }
 }

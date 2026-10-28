@@ -45,7 +45,7 @@ Item {
         }
     }
 
-    StyledClippingRect {
+    ClipRect {
         id: previewBox
 
         anchors.horizontalCenter: parent.horizontalCenter

@@ -96,8 +96,7 @@
     };
 
     nativeBuildInputs = [cmake ninja pkg-config];
-    buildInputs = [qt6.qtbase qt6.qtdeclarative qt6.qtshadertools libqalculate pipewire aubio libcava fftw lm_sensors protobuf];
-    dontWrapQtApps = true;
+    buildInputs = [qt6.qtbase qt6.qtdeclarative qt6.qtshadertools libqalculate pipewire aubio libcava fftw lm_sensors protobuf];    dontWrapQtApps = true;
     cmakeFlags =
       [
         (lib.cmakeFeature "ENABLE_MODULES" "plugin")
