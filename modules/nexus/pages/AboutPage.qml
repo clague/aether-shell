@@ -5,7 +5,6 @@ import Caelestia
 import Caelestia.Config
 import Caelestia.I18n
 import qs.components
-import qs.components.controls
 import qs.services
 import qs.utils
 import qs.modules.nexus.common
@@ -15,22 +14,6 @@ PageBase {
 
     // Plugin support is not wired up yet; always 0 for now
     readonly property int pluginCount: 0
-
-    // Ordered to match config::HybridPreset (Recommended, Midnight, Op)
-    readonly property list<MenuItem> presetItems: [
-        MenuItem {
-            text: Tr.tr("Recommended")
-            icon: "recommend"
-        },
-        MenuItem {
-            text: "MiDnight"
-            icon: "dark_mode"
-        },
-        MenuItem {
-            text: "OP"
-            icon: "bolt"
-        }
-    ]
 
     property string quickshellVersion
     property string cliVersion
@@ -129,25 +112,6 @@ PageBase {
                         }
                     }
                 }
-            }
-        }
-
-        SectionHeader {
-            first: true
-            text: Tr.tr("Preset")
-        }
-
-        SelectRow {
-            first: true
-            last: true
-            label: Tr.tr("Starting preset")
-            subtext: Tr.tr("A starting set of features and variants. Choices you make on other pages are kept.")
-            configNode: GlobalConfig.hybrid
-            propertyName: "preset"
-            menuItems: root.presetItems
-            active: root.presetItems[GlobalConfig.hybrid.preset]
-            onSelected: item => {
-                GlobalConfig.hybrid.preset = root.presetItems.indexOf(item);
             }
         }
 

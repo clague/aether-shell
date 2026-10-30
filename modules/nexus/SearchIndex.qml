@@ -447,7 +447,6 @@ QtObject {
         { kind: "row", page: 15, sub: 5, label: Tr.tr("Utilities Drawer Width"), subtext: "", section: Tr.tr("Desktop Popouts & Panels"), subTitle: Tr.tr("Shell Element Sizes"), kw: [] },
         { kind: "row", page: 15, sub: 5, label: Tr.tr("Toast Notification Width"), subtext: "", section: Tr.tr("Desktop Popouts & Panels"), subTitle: Tr.tr("Shell Element Sizes"), kw: [] },
         { kind: "page", page: 16, sub: 0, label: Tr.tr("About"), subtext: Tr.tr("System information, preset, credits"), section: "", subTitle: "", kw: [] },
-        { kind: "row", page: 16, sub: 0, label: Tr.tr("Starting preset"), subtext: Tr.tr("A starting set of features and variants. Choices you make on other pages are kept."), section: Tr.tr("Preset"), subTitle: Tr.tr("About"), kw: [] },
         { kind: "row", page: 16, sub: 0, label: Tr.tr("Hostname"), subtext: "", section: Tr.tr("System"), subTitle: Tr.tr("About"), kw: [] },
         { kind: "row", page: 16, sub: 0, label: Tr.trCtx("Device", "system model name"), subtext: "", section: Tr.tr("System"), subTitle: Tr.tr("About"), kw: [] },
         { kind: "row", page: 16, sub: 0, label: Tr.tr("Distro"), subtext: "", section: Tr.tr("System"), subTitle: Tr.tr("About"), kw: [] },

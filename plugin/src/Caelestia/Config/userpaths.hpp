@@ -24,7 +24,7 @@ QString themeAsset(const settings::Node* self, const QString& file, const QStrin
 // theme is selected. Deliberately a *default* rather than a computed read-only value, which is
 // what OP made these: a default can still be overridden per key, so a user who wants one
 // specific asset from somewhere else keeps that when they switch themes, exactly as an
-// explicitly set feature flag survives a preset change (D8). It also means an empty themeName
+// explicitly set config key survives a default change. It also means an empty themeName
 // is not a special case in every reader -- it is just the fallback.
 //
 // The settings schema moved to static defaults, so the themed value is applied through
@@ -36,8 +36,7 @@ class UserPaths : public settings::ObjectNode {
     CONFIG_NODE_NO_CTOR(UserPaths, settings::ObjectNode)
     // SETTINGS_NODE bundles this with the default constructor; taking the NO_CTOR form to add
     // one drops it, and without it every `Config.paths.*` reader in the tree reports
-    // `Type "caelestia::shell::config::UserPaths" ... not found`. HybridConfig carries it for the
-    // same reason.
+    // `Type "caelestia::shell::config::UserPaths" ... not found`.
     QML_ANONYMOUS
 
     CONFIG_GLOBAL_PROPERTY(
@@ -48,7 +47,7 @@ class UserPaths : public settings::ObjectNode {
         QString, lyricsDir, QStandardPaths::writableLocation(QStandardPaths::MusicLocation) + u"/Lyrics/"_s)
     // The selected theme's folder name under assets/themes, or empty for none. The *name* is
     // stored rather than the expanded paths, so a theme's contents can change and existing
-    // users get the change -- the same reasoning as D8 for presets.
+    // users get the change.
     CONFIG_PROPERTY(QString, themeName, QString())
 
     // Fallbacks are the forks' own artwork, restored on 2026-09-04. The themed default layers
@@ -60,7 +59,7 @@ class UserPaths : public settings::ObjectNode {
     THEMED_PATH(lockNoNotifsPic, "notif.png", "root:/assets/dino.png")
 
 public:
-    // Applies the selected theme's assets to the keys the user has not set (D8).
+    // Applies the selected theme's assets to the keys the user has not set.
     void reresolve();
 
     explicit UserPaths(UserPaths* fallback = nullptr, QObject* parent = nullptr, bool globalOnly = false);

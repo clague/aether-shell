@@ -21,8 +21,8 @@ breaking the shell:
 
 A theme supplies the **default** for those `paths.*` keys; it does not write them. So if you
 have set `paths.mediaGif` yourself, it stays yours through every theme change, and clearing it
-falls back to the current theme. That is the same rule the hybrid presets use for feature flags
-(D8 in `CLAUDE.md`): an explicit value always wins over a layer beneath it.
+falls back to the current theme. An explicit value always wins; clearing it restores the
+theme's default.
 
 With no theme selected, the keys fall back to the shell's own bundled artwork.
 

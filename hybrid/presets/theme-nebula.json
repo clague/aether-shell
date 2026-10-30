@@ -1,7 +1,5 @@
 {
-  "hybrid": {
-    "preset": "recommended"
-  },
+  "hybrid": {},
   "paths": {
     "themeName": "nebula"
   }

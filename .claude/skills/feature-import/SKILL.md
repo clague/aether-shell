@@ -90,18 +90,19 @@ Add a row to `hybrid/docs/provenance.md` **in the same commit**:
 Binary assets get rows too — and check `hybrid/docs/provenance.md`'s asset watchlist. GPL-3.0
 covers the code; it does not launder bundled third-party artwork.
 
-## 5. Put the flag in the presets
+## 5. Add it to the smoke configs
 
-Add the flag to the three preset tables in `plugin/src/Caelestia/Config/hybridconfig.cpp` --
-those are the source of truth for what a preset *means* -- and to the three `hybrid/presets/*.json`
-files that set flags explicitly (`all-on`, `all-off`, `variants-flipped`). The other three name a
-preset and nothing else, so they need no edit. Keep `hybrid/presets/README.md`'s feature count in
-step.
+Put the default on the `CONFIG_GLOBAL_PROPERTY` line in `hybridconfig.hpp` and the switch on the
+Nexus page that uses the feature. There is no preset table any more.
 
-**Do not add a preset per feature.** The six in `hybrid/presets/` each have a distinct job (see the
-table in its README) and the matrix runs every one against two compositor configs, so a file per
-feature multiplies the gate's runtime for very little: `all-off` already proves the feature does not
-instantiate and `all-on` proves it does. Add a preset here only for a *combination* that is
+Also add the flag to the `hybrid/presets/*.json` files that set flags explicitly (`all-on`,
+`all-off`, `variants-flipped`); `theme-nebula` touches only the theme path. Keep
+`hybrid/presets/README.md`'s feature count in step.
+
+**Do not add a preset per feature.** The four in `hybrid/presets/` each have a distinct job (see
+the table in its README) and the matrix runs every one against two compositor configs, so a file
+per feature multiplies the gate's runtime for very little: `all-off` already proves the feature does
+not instantiate and `all-on` proves it does. Add a file here only for a *combination* that is
 interesting on its own -- something deliberately hostile, or two features that interact.
 
 ## 6. Verify

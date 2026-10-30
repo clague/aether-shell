@@ -61,10 +61,8 @@ ENUM(WallpaperTransition,
     // clang-format on
 )
 
-// Which fork's implementation to use for one of the four genuine overlaps (D3/D4).
+// Which fork's implementation to use where both forks ship one (D3/D4).
 ENUM(HybridVariant, Midnight, Op)
-// `custom` is deliberately absent -- it is computed, not stored (D8).
-ENUM(HybridPreset, Recommended, Midnight, Op)
 
 #undef ENUM
 

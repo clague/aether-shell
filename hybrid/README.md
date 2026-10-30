@@ -13,11 +13,11 @@ hybrid/
 │   ├── architecture.md   decision record — read this first
 │   ├── traps.md          T1-T15, the known landmines, with source evidence
 │   └── provenance.md     import ledger + asset licensing watchlist
-├── presets/              preset config layers; smoke-matrix picks these up automatically
+├── presets/              smoke-matrix configs; picked up automatically
 └── tools/
     ├── bootstrap.sh          Phase 0 — remotes, rerere, main branch, reference worktrees
     ├── upstream-status.sh    drift report across all three upstreams
-    ├── smoke-matrix.sh       the verification gate: headless boot under every preset
+    ├── smoke-matrix.sh       the verification gate: headless boot under every smoke config
     ├── dev-shell.sh          isolated dev instance; never touches the installed shell
     └── smoke-ignore.txt      reviewed noise filter for smoke-matrix
 ```

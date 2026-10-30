@@ -1,57 +1,31 @@
 #pragma once
 
-#include <qstring.h>
-
 #include "settings/objectnode.hpp"
 #include "common.hpp"
 #include "enums.hpp"
 
 namespace caelestia::shell::config {
 
-using Qt::StringLiterals::operator""_s;
-
-// A feature or variant with no user value takes the selected preset's (D8). The settings
-// schema moved to static defaults, so the preset lookup is applied through reresolve()
-// when the preset changes or a layer loads, rather than through a callable default.
-#define FEATURE(name) CONFIG_GLOBAL_PROPERTY(bool, name, false)
-#define VARIANT(name)                                                                                                  \
-    CONFIG_GLOBAL_PROPERTY(caelestia::shell::config::HybridVariant::Enum, name, HybridVariant::Midnight)
-
-// One boolean per feature. This is the workhorse of the hybrid design (D3): the two forks
-// are ~90% disjoint, so nearly everything they add is a feature that is either present or
-// absent, not a choice between two implementations.
+// One boolean per feature that costs something when it is on: an extra window, a video
+// decoder, a poll loop. Everything else is always available and has no flag.
 //
-// A flag exists here only once something reads it. Four were removed for failing that:
-//
-//   gpuDetection  upstream ships it unconditionally (Services/gpu.cpp, the GpuType enum).
-//                 A toggle for it would be a lie. OP's contribution is enhanced monitoring,
-//                 which is a service merge (D5), not a feature.
-//   patternLock   never ships as a toggle. It is a lock-screen bypass (D10, trap T3), and
-//                 a switch offering to enable it is exactly the wrong artefact. Recorded
-//                 in the traps, not in the user's settings schema.
-//
-// Each flag's *default* is the selected preset's value, resolved through reresolve() (D8).
-// A user who has never touched a flag follows the preset; one who has
-// keeps their own value, because an override is never re-resolved.
+// A flag is a plain setting now. There is no preset layer: the default below is what a fresh
+// install gets, and the switch on the feature's own settings page is the only way to change it.
 //
 // Everything here is global: a feature flag per monitor is meaningless.
 class HybridFeatures : public settings::ObjectNode {
     CONFIG_NODE(HybridFeatures, settings::ObjectNode)
 
-    // Features that stay off until asked for because they cost something: an extra window or
-    // a poll loop. Everything else is always available -- a launcher mode or a settings page
-    // costs nothing when unused -- so it has no flag and no toggle.
-    //
     //   overview       separate drawer/overlay per screen
     //   videoWallpaper a video decoder per animated wallpaper
     //   badApple       one transparent fullscreen layer per screen
     //   hotspot        nmcli every 10s
     //   btAgent        a background pairing process
-    FEATURE(overview)
-    FEATURE(videoWallpaper)
-    FEATURE(badApple)
-    FEATURE(hotspot)
-    FEATURE(btAgent)
+    CONFIG_GLOBAL_PROPERTY(bool, overview, true)
+    CONFIG_GLOBAL_PROPERTY(bool, videoWallpaper, true)
+    CONFIG_GLOBAL_PROPERTY(bool, badApple, false)
+    CONFIG_GLOBAL_PROPERTY(bool, hotspot, true)
+    CONFIG_GLOBAL_PROPERTY(bool, btAgent, true)
 };
 
 // The four components both forks genuinely implement. Capped at ~6 entries (D4): growth
@@ -60,40 +34,25 @@ class HybridFeatures : public settings::ObjectNode {
 class HybridVariants : public settings::ObjectNode {
     CONFIG_NODE(HybridVariants, settings::ObjectNode)
 
-    VARIANT(lockCentre)
-    VARIANT(audioPopout)
+    // OP's popout is the one non-Midnight default. It was the old recommended preset's value.
+    CONFIG_GLOBAL_ENUM_PROPERTY(HybridVariant, audioPopout, HybridVariant::Op)
 
     // Added in Phase 7. The component audit originally recorded four dual sites; Overview is a
     // fifth -- MiDnight ships modules/drawers/WorkspaceOverview.qml and OP ships
     // modules/overview/, two designs of the same thing (T44).
-    VARIANT(overview)
+    CONFIG_GLOBAL_ENUM_PROPERTY(HybridVariant, overview, HybridVariant::Midnight)
 
     // The sixth entry, which is exactly D4's stated cap. MiDnight's dock is a bar section
     // (bar.dock), OP's a separate auto-hiding panel (dock.*). Same purpose, different objects,
     // and wanting both at once is redundant UI -- which is what makes it a variant.
-    VARIANT(dock)
+    CONFIG_GLOBAL_ENUM_PROPERTY(HybridVariant, dock, HybridVariant::Midnight)
 };
 
 class HybridConfig : public settings::ObjectNode {
-    CONFIG_NODE_NO_CTOR(HybridConfig, settings::ObjectNode)
-    QML_ANONYMOUS
+    CONFIG_NODE(HybridConfig, settings::ObjectNode)
 
-    // The preset *name* is stored, never its expanded values (D8), so "recommended" can be
-    // improved later and existing users receive the improvement. There is no `Custom`
-    // enumerator: custom is the computed state when any flag differs from the preset, which
-    // QML derives rather than stores.
-    CONFIG_GLOBAL_ENUM_PROPERTY(HybridPreset, preset, HybridPreset::Recommended)
     CONFIG_GLOBAL_SUBOBJECT(HybridFeatures, features)
     CONFIG_GLOBAL_SUBOBJECT(HybridVariants, variants)
-
-public:
-    // Applies the selected preset's values to the flags and variants the user has not set (D8).
-    void reresolve();
-
-    explicit HybridConfig(HybridConfig* fallback = nullptr, QObject* parent = nullptr, bool globalOnly = false);
 };
-
-#undef FEATURE
-#undef VARIANT
 
 } // namespace caelestia::shell::config

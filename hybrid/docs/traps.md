@@ -1780,7 +1780,8 @@ The consequence is a piece of work *not* done. The `feature-import` skill listed
 straightforward OP import, and importing those 12 files behind `hybrid.features.overview` would
 have produced two overviews fighting over one boolean — the implementation-registry design D3
 and D5 exist to prevent. It is now marked "do not import": either leave it, or promote
-`overview` to `hybrid.variants` in Phase 7 (four entries to five, inside D4's cap of ~6).
+`overview` to `hybrid.variants` in Phase 7 (four entries to five, inside D4's cap of ~6). The
+list was later trimmed to three when the lock centre proved unimportable (D10).
 
 How it was found is worth keeping. Not by auditing the table, but by asking a mechanical
 question before starting the next import — *which flags have consumers, and do the directories

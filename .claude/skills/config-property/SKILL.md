@@ -58,7 +58,7 @@ Additionally:
    class HybridConfig : public ConfigObject {
        Q_OBJECT
        QML_ANONYMOUS
-       CONFIG_GLOBAL_PROPERTY(QString, preset, u"recommended"_s)
+       CONFIG_GLOBAL_PROPERTY(bool, enabled, true)
    public:
        explicit HybridConfig(QObject* parent = nullptr) : ConfigObject(parent) {}
    };
@@ -69,7 +69,7 @@ Additionally:
    class HybridConfig : public settings::ObjectNode {
        CONFIG_NODE(HybridConfig, settings::ObjectNode)
        QML_ANONYMOUS
-       CONFIG_GLOBAL_PROPERTY(QString, preset, u"recommended"_s)
+       CONFIG_GLOBAL_PROPERTY(bool, enabled, true)
    };
    ```
 
@@ -86,26 +86,20 @@ Additionally:
 
 `hybrid` exists, in `plugin/src/Caelestia/Config/hybridconfig.hpp`:
 
-- `preset` — an enum naming the preset, **never the expanded values** (D8), so presets can be
-  improved for existing users. It serialises as a string: `"preset": "midnight"`.
-- `features` — one boolean per imported feature, 12 of them
+- `features` — one boolean per imported feature that costs something when it is on; five today
 - `variants` — capped at ~6 entries (D4); growth means the design is drifting back toward the
   registry we rejected. Four so far.
 
-Two things about it are unlike the rest of the schema, and both are load-bearing:
-
-**Defaults are functions, not constants.** Every feature and variant resolves its default through a
-`DefaultSpec` lambda that reads the selected preset, so a fresh config that names only a preset is
-complete. Changing `preset` re-resolves them — but only the keys the user has *not* set, via
-`isOverride()`, inside a `WriteScope(node, WriteOrigin::Layer)`. Writing under the ambient origin
-would record the preset's values as user overrides and destroy exactly what D8 exists to preserve.
+Defaults are ordinary constants. There is no preset layer (D8 superseded): the switch on the Nexus
+page that uses the feature is the only control, and a value the user sets stays set.
 
 **A flag only exists once something reads it.** Four were removed for failing that test: two
 features not imported yet, one upstream ships unconditionally, and `patternLock`, which never ships
-as a toggle because it is a lock-screen bypass (D10, trap T3).
+as a toggle because it is a lock-screen bypass (D10, trap T3). A fifth round removed every flag
+whose feature costs nothing when unused.
 
-`hybrid/presets/*.json` are real configs now, not placeholders — a key that is not in the schema
-fails the smoke matrix rather than being quietly ignored. See `hybrid/presets/README.md`.
+`hybrid/presets/*.json` are smoke-matrix inputs, not a settings feature — a key that is not in the
+schema fails the matrix rather than being quietly ignored. See `hybrid/presets/README.md`.
 
 ## Migration
 

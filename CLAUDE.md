@@ -29,10 +29,9 @@ fork centralises that decision in `utils/instance.py`, which honours `$CAELESTIA
 (for a checkout) and `$CAELESTIA_SHELL_CONFIG` before falling back to the historical default,
 and carries a test that greps the subcommand tree for anyone re-hardcoding it.
 
-Phase 7's remaining three -- `lockCentre`, `desktopClock`, `colours` -- have no second
-implementation to select between: OP's side of each is edits to shared files rather than
-separate files. They are declared in the schema and deliberately absent from the Nexus page
-until that is resolved.
+Phase 7's remaining two -- `desktopClock`, `colours` -- have no second implementation to
+select between: OP's side of each is edits to shared files rather than separate files.
+`lockCentre` is a genuine dual site, but Phase 8 blocks its import, so it has no key yet.
 
 Every gate upstream enforces is green on a tree that arrived with all of them failing:
 
@@ -45,7 +44,7 @@ Every gate upstream enforces is green on a tree that arrived with all of them fa
 | `clang-tidy` | 446, never run | 0 |
 | `g++ -Werror` (`build.yml`) | 11, never run | 0 |
 | `clazy -Werror` (`build.yml`) | 9+, never run | 0 |
-| smoke matrix | did not run at all | 6 presets, x2 compositor configs |
+| smoke matrix | did not run at all | 4 presets, x2 compositor configs |
 | `hybrid/tools/plugin-test.sh` | no test of any kind existed | 4 tests, 0 failures |
 | `hybrid/tools/dead-signals.py` | didn't exist; 1 dead signal | 0 of 209 |
 | `hybrid/tools/dead-qml.py` | didn't exist; 5 dead files | 0 of 367 |
@@ -99,8 +98,8 @@ These were settled by source audit on 2026-09-02. Do not re-litigate without new
 | D4 | **`hybrid.variants` is capped at ~6 entries** | If it grows, the design is drifting back toward a registry we deliberately rejected. |
 | D5 | **Services are merged, never dual-implemented** | Both forks *extended* a shared service set. Their diffs are additive and non-overlapping. |
 | D6 | **One CLI**, forked from `dim-ghub/midnight-cli` | All of them install the binary as `caelestia`, so they cannot coexist. Corrected 2026-09-05: the fork source is MiDnight's CLI, not upstream's, because MiDnight's already contains all 665 of upstream's commits (`merge-base` = upstream `HEAD`) and OP ships no CLI at all. There was never a merge to do. Its delta is +3664/−108 across 22 files, not ~850 lines. |
-| D7 | **Upstream catch-up is Phase 2**, before the feature system | Upstream rewrote the config module and rearranged the plugin layout. Build presets on the system we keep. |
-| D8 | **Presets are config layers**, and config stores the preset *name* | Lets "Recommended Hybrid" be improved later for existing users. |
+| D7 | **Upstream catch-up is Phase 2**, before the feature system | Upstream rewrote the config module and rearranged the plugin layout. Build the feature defaults on the system we keep. |
+| D8 | **No presets** (superseded) | Every setting has a static default and one switch on its Nexus page. `hybrid/presets/*.json` are smoke-matrix inputs only. |
 | D9 | **Merge upstream; cherry-pick OP** | Upstream is a true ancestor. OP shares ancestor `ad8dca0a`, so `git cherry-pick -x` works directly. Never rebase onto an upstream. |
 | D10 | **OP's pattern lock does not ship as-is** | It is a lock-screen bypass. See `hybrid/docs/traps.md`. Release blocker. |
 
@@ -126,7 +125,7 @@ modules/  components/  services/  plugin/  shell.qml   ← upstream-shaped. Merg
 scripts/  assets/  .github/                            ← upstream-shaped. Same rule.
 hybrid/                                                ← ours. Upstream will never touch it.
   ├── docs/       architecture, traps, provenance ledger
-  ├── presets/    op.json, midnight.json, recommended.json
+  ├── presets/    smoke-matrix configs (all-on, all-off, variants-flipped, theme-nebula)
   └── tools/      bootstrap, upstream-status, smoke-matrix, dev-shell
 .claude/                                               ← ours (skills + agents)
 ```
@@ -185,14 +184,14 @@ as a second boolean-gated implementation — that is precisely what D3 and D5 ex
 It is either left alone (MiDnight's works and is the baseline) or `overview` is promoted to
 `hybrid.variants` in Phase 7. That was done, and the list then went the other way.
 
-**`hybrid.variants` holds four entries: `lockCentre`, `audioPopout`, `overview`, `dock`.**
-`desktopClock` and `colours` were declared and were removed on 2026-09-05, because neither is a
-dual site and the evidence is mechanical: OP never touched `modules/background/DesktopClock.qml`
-(its copy is identical to upstream's 161 lines), and its `services/Colours.qml` change is +52/−2
-on a service, which D5 merges rather than dual-implements. Three of the four are wired. The
-fourth, `lockCentre`, is a genuine dual site that Phase 8 blocks: OP's `PasswordInput.qml`
-refers to `PatternGrid` eight times, so its lock centre cannot be imported without the
-lock-screen bypass D10 rejects.
+**`hybrid.variants` holds three entries: `audioPopout`, `overview`, `dock`.** All three are
+wired. `desktopClock` and `colours` were declared and were removed on 2026-09-05, because
+neither is a dual site and the evidence is mechanical: OP never touched
+`modules/background/DesktopClock.qml` (its copy is identical to upstream's 161 lines), and its
+`services/Colours.qml` change is +52/−2 on a service, which D5 merges rather than
+dual-implements. `lockCentre` is a genuine dual site that Phase 8 blocks: OP's
+`PasswordInput.qml` refers to `PatternGrid` eight times, so its lock centre cannot be imported
+without the lock-screen bypass D10 rejects. Its key is not declared until then.
 
 The lesson is worth keeping: a `hybrid.variants` entry needs *two implementations that exist as
 files*, not two forks that both have opinions about an area. Four of the original six failed
@@ -201,7 +200,7 @@ that test on inspection, and two of them only failed once someone diffed the act
 ## Verification
 
 `hybrid/tools/smoke-matrix.sh` is the gate. It boots the shell headless
-(`QT_QPA_PLATFORM=offscreen qs -p .`) under every preset and fails on QML errors.
+(`QT_QPA_PLATFORM=offscreen qs -p .`) under every smoke config and fails on QML errors.
 Run it plus `qmllint` and `clang-format` before calling any change done — see the
 `shell-verify` skill.
 

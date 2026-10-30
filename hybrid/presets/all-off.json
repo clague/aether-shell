@@ -1,6 +1,5 @@
 {
   "hybrid": {
-    "preset": "recommended",
     "features": {
       "overview": false,
       "videoWallpaper": false,
@@ -9,7 +8,6 @@
       "btAgent": false
     },
     "variants": {
-      "lockCentre": "midnight",
       "audioPopout": "midnight",
       "overview": "midnight",
       "dock": "midnight"

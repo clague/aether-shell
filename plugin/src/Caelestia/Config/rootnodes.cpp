@@ -15,12 +15,10 @@ using util::i18n::markN;
 
 void loaded(ConfigKind kind, settings::RootNode* layer, const QString& screen) {
     // Dynamic defaults are static now (the settings schema moved off callable defaults), so
-    // every layer that just loaded gets its preset and theme re-applied to what the user did
-    // not set. hybrid() is global only, so skip it for per-screen layers.
+    // every layer that just loaded gets its themed paths re-applied to what the user did not
+    // set.
     if (kind == ConfigKind::Shell) {
         auto const* const config = static_cast<ConfigRoot*>(layer);
-        if (screen.isEmpty())
-            config->hybrid()->reresolve();
         config->paths()->reresolve();
 
         if (!screen.isEmpty() || !config->utilities()->toasts()->configLoaded())

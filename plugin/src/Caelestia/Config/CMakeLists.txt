@@ -12,12 +12,12 @@ qml_module(caelestia-config
         fontbuilder.cpp
         tokensattached.cpp
         anim.cpp
-        hybridconfig.cpp
         userpaths.cpp
         sessionconfig.cpp
         audioconfig.hpp
         aiconfig.hpp
         enums.hpp
+        hybridconfig.hpp
         backgroundconfig.hpp
         barconfig.hpp
         dashboardconfig.hpp

@@ -16,48 +16,33 @@ upstream **Caelestia**. One shell, one config, one CLI — features toggled, not
 > See [Credits](#credits) and `hybrid/docs/provenance.md`.
 
 ## Features
-The two forks are about 90% disjoint, so almost everything they added is a feature that is
-either present or absent rather than a choice between two implementations. Each one is a
-flag under `hybrid.features` in `shell.json`, and the settings app (Nexus) has a page for
-them.
 
-| flag | what it turns on |
-|---|---|
-| `clipboard` | clipboard history in the launcher |
-| `emojiPicker` | emoji search in the launcher |
-| `windowSwitcher` | window switching from the launcher |
-| `keybindViewer` | a browsable list of your Hyprland keybinds |
-| `dock` | the MacOS-style app dock in the bar |
-| `overview` | the workspace overview drawer |
-| `videoWallpaper` | GIF and video wallpapers, paused when nothing can see them |
-| `wallhaven` | browsing and setting wallpapers from wallhaven.cc |
-| `floatingLyrics` | synced lyrics on the desktop |
-| `shimeji` | desktop pets |
-| `badApple` | a shader that plays Bad Apple through the shell's own UI material |
-| `dino` | the Chrome runner, in the notification dock |
+Most imported features cost nothing while unused, so they are simply always available and have no
+switch: clipboard history, emoji search, window switching and the keybind viewer in the launcher;
+Wallhaven; desktop lyrics; theme packs; the Pomodoro timer and scratchpad; the lock-screen power
+confirmation; the Dino game in the notification dock; and MiDnight's dock and Shimeji, which keep
+their own **Enabled** switch on their settings pages.
 
-Not flagged, because they are not optional: the bar's Material workspace icons, DND toggle
-and drag-and-drop component editor; the dashboard's terminal, Wallhaven and weather tabs;
-dynamic wallpaper recolouring; and Bezel Mode.
-Still to come (Phase 5), each behind a flag of its own when it lands: OP's standalone
-overview and dock windows, its hotspot, its theme manager and its Bluetooth agent.
+Only features that cost something when switched on keep a `hybrid.features` flag. Each one has a
+toggle on the Nexus page that uses it:
 
-### Presets
+| flag | default | where the switch lives |
+|---|---|---|
+| `overview` | on | Panels → Taskview |
+| `videoWallpaper` | on | Wallpaper & style |
+| `badApple` | off | Panels → Utilities |
+| `hotspot` | on | Network |
+| `btAgent` | on | Connected devices |
 
-`hybrid.preset` picks a starting set. Anything you change afterwards stays changed — the
-preset *name* is what gets stored, not its expanded values, so a preset can be improved later
-and existing configs receive the improvement.
+Three components genuinely exist in both forks — the audio popout, the workspace overview and the
+dock. Those live under `hybrid.variants` rather than `hybrid.features`, because the choice there is
+*which* implementation, not whether; their selectors are on the Audio, Taskview and Dock pages
+respectively. A fourth, the lock centre, is a genuine dual site but its OP side depends on the
+pattern lock this project rejects (D10), so it has no key until that is resolved.
 
-| preset | what it turns on |
-|---|---|
-| `recommended` | the default: everything both forks do well, novelties off |
-| `midnight` | MiDnight as it ships — its features, none of OP's |
-| `op` | OP as it ships |
+There is no preset layer: every default is static, and the switch on its own page is the only way
+to change it.
 
-Four components genuinely exist in both forks — the lock centre, the audio popout, the
-desktop clock and the colour system. Those live under `hybrid.variants` rather than
-`hybrid.features`, because the choice there is *which* implementation, not whether. Each
-currently has one implementation; the selector appears when the second lands.
 ## Installation
 
 > [!IMPORTANT]
@@ -334,42 +319,38 @@ values.
 
 ### The hybrid section
 
-`hybrid` is the only part of the schema that is not upstream's. It holds the preset name and
-the feature flags described under [Features](#features):
+`hybrid` is the only part of the schema that is not upstream's. It holds the cost-bearing feature
+flags and the fork variants described under [Features](#features):
 
 ```json
 {
     "hybrid": {
-        "preset": "recommended",
         "features": {
-            "dock": true,
             "overview": true,
-            "clipboard": true,
-            "emojiPicker": true,
-            "windowSwitcher": true,
-            "keybindViewer": true,
             "videoWallpaper": true,
-            "wallhaven": true,
-            "floatingLyrics": true,
-            "shimeji": false,
             "badApple": false,
-            "dino": false
+            "hotspot": true,
+            "btAgent": true
+        },
+        "variants": {
+            "audioPopout": "op",
+            "overview": "midnight",
+            "dock": "midnight"
         }
     }
 }
 ```
 
-Every flag defaults to whatever the selected preset says, so a config that names only a
-preset is complete. A flag you set explicitly is yours and is never re-resolved when the
-preset changes — that is the whole point of storing the preset's *name*.
+Every flag is an ordinary setting with the default shown above. A value you set explicitly stays
+set; there is no preset to re-resolve it. Settings the feature does not need are absent from the
+schema and produce a warning rather than being silently ignored.
 
-Where there is something to create, a flag prevents it being created rather than hiding it —
-under the `all-off` preset the gated panels report zero instantiations, not zero visible
-pixels. A few flags gate only a control's visibility, where nothing separate exists to
-create.
+Where there is something to create, a flag prevents it being created rather than hiding it — with
+`overview` off the overlay is never built, not merely invisible. A few flags gate only a control's
+visibility, where nothing separate exists to create.
 
-`hybrid` is global. Per-monitor overrides do not apply to it, because a feature flag per
-monitor is meaningless.
+`hybrid` is global. Per-monitor overrides do not apply to it, because a feature flag per monitor is
+meaningless.
 
 ### Per-monitor configuration
 

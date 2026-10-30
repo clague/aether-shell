@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: caelestia-shell\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 00:46+0800\n"
+"POT-Creation-Date: 2026-10-31 01:09+0800\n"
 "PO-Revision-Date: 2026-10-30 00:00+0800\n"
 "Last-Translator: caelestia-hybrid\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -1416,10 +1416,6 @@ msgid "System information, preset, credits"
 msgstr "系统信息、预设与致谢"
 
 #: modules/nexus/pages/AboutPage.qml
-msgid "Recommended"
-msgstr "推荐"
-
-#: modules/nexus/pages/AboutPage.qml
 msgid "by DiM • Basically Caelestia+"
 msgstr "由 DiM 制作 • 基本上是 Caelestia+"
 
@@ -1439,20 +1435,6 @@ msgstr "你距离成为开发者还有 %1 步。"
 #: modules/nexus/pages/AboutPage.qml
 msgid "You are now a developer!"
 msgstr "你现在是开发者了！"
-
-#: modules/nexus/pages/AboutPage.qml modules/nexus/SearchIndex.qml
-msgid "Preset"
-msgstr "预设"
-
-#: modules/nexus/pages/AboutPage.qml modules/nexus/SearchIndex.qml
-msgid "Starting preset"
-msgstr "起始预设"
-
-#: modules/nexus/pages/AboutPage.qml modules/nexus/SearchIndex.qml
-msgid ""
-"A starting set of features and variants. Choices you make on other pages are "
-"kept."
-msgstr "一组初始功能与变体。你在其他页面所做的选择会保留。"
 
 #: modules/nexus/pages/AboutPage.qml modules/nexus/SearchIndex.qml
 msgid "System"
@@ -7098,6 +7080,20 @@ msgstr "设置"
 #: plugin/src/Caelestia/Config/launcherconfig.hpp
 msgid "Configure the shell"
 msgstr "配置 Shell"
+
+#~ msgid "Recommended"
+#~ msgstr "推荐"
+
+#~ msgid "Preset"
+#~ msgstr "预设"
+
+#~ msgid "Starting preset"
+#~ msgstr "起始预设"
+
+#~ msgid ""
+#~ "A starting set of features and variants. Choices you make on other pages "
+#~ "are kept."
+#~ msgstr "一组初始功能与变体。你在其他页面所做的选择会保留。"
 
 #~ msgid "Hybrid"
 #~ msgstr "混合"

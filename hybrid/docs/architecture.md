@@ -72,7 +72,7 @@ Two consequences:
 
 1. `LayerRegistry` is a config layering system with fallback chains
    (`ConfigRoot(path, fallback, parent)`, `forScreen(name)`). It obsoletes MiDnight's own
-   per-monitor config work, and it is exactly the mechanism presets should be built on.
+   per-monitor config work, and it is the mechanism the feature defaults build on.
 2. Deferring the upstream catch-up makes it strictly worse. It is Phase 2 for that reason.
 
 ---
@@ -103,13 +103,11 @@ periodically — we would be permanently duplicating their work.
 ```jsonc
 {
   "hybrid": {
-    "preset": "recommended",
     "features": {
       "overview": true, "videoWallpaper": true,
       "badApple": false, "hotspot": true, "btAgent": true
     },
     "variants": {
-      "lockCentre": "midnight",
       "audioPopout": "op",
       "overview": "midnight",
       "dock": "midnight"
@@ -121,11 +119,11 @@ periodically — we would be permanently duplicating their work.
 `features` carries only the imported features that cost something when they are on: an extra
 window, a video decoder, a poll loop. A launcher mode or a settings page costs nothing unused, so
 it is simply always available and has no flag (the Hybrid page and its toggles are gone as a
-result). `variants` covers only the four genuine overlaps and is capped at ~6 entries (D4). Growth past that means the design is drifting back
+result). `variants` covers only overlaps that have two implementations to choose between, and is capped at ~6 entries (D4). Growth past that means the design is drifting back
 toward the rejected registry.
 
 Implement `variants` with Loader hosts **only** where the component is weakly referenced —
-`lockCentre` and `audioPopout` are leaves and qualify. Anything inside the Panels/Interactions graph
+`audioPopout` is a leaf and qualifies (the lock centre would too, once its OP side is importable). Anything inside the Panels/Interactions graph
 (T1, T2) gets merged into one implementation with config properties instead.
 
 ### D5 — Services merge, never dual-implement
@@ -147,19 +145,16 @@ You therefore cannot install both. Fork `caelestia-dots/cli`, apply MiDnight's d
 and `--extract-thumbs`, extended `screenshot`, `record --fps`, `search`, astra scheme), ship as
 `caelestia-hybrid-cli` providing `/usr/bin/caelestia`. Upstream the genuinely general parts.
 
-### D8 — Presets are config layers, and config stores the preset name
+### D8 — Superseded: there are no presets
 
-Upstream's `LayerRegistry` already provides fallback chains. A preset becomes a layer *beneath* the
-user's layer: explicit user settings win, unset keys fall through to the preset.
+Presets were planned as config layers beneath the user's layer, with the preset *name* stored so
+"Recommended Hybrid" could improve later. That is gone. Once the always-on features lost their flags
+and the rest moved to the page that uses them, a preset was only a bulk shortcut over five switches
+and a handful of variants — and an invisible one, since the selector had no home that made sense.
 
-Storing the preset *name* rather than its expanded values means "Recommended Hybrid" can be improved
-later and existing users receive the improvement. It also makes migration free — an existing
-`shell.json` with no `hybrid` block is just a user layer, and defaults apply. Nothing corrupts.
-
-Until Phase 2 lands, ship `hybrid/presets/*.json` merged under user config at load.
-
-Four presets: `op`, `midnight`, `recommended`, and "custom" — which is not a stored value but the
-computed state when a user overrides any key.
+Every setting now has a static default in the compiled schema and exactly one switch on its Nexus
+page. `hybrid/presets/*.json` remain as smoke-matrix inputs, not as a settings feature. The variant
+defaults preserve what the old recommended preset chose (`audioPopout` is OP, the rest MiDnight).
 
 ### D9 — Merge upstream, cherry-pick OP
 
@@ -227,17 +222,17 @@ Phase 0   Fork MiDnight. Re-enable check-format + lint CI. Fix the backlog.     
 Phase 1   Offscreen smoke-test harness + preset matrix runner in CI.               ~1 wk
 Phase 2   Merge upstream/main: config rewrite, plugin rearrange, style sweep.     2-4 wks
           Drop MiDnight per-monitor config in favour of LayerRegistry.
-Phase 3   hybrid.features flag system + 4 presets + Nexus preset page.             ~1 wk
+Phase 3   hybrid.features flag system + Nexus feature pages.                       ~1 wk
 Phase 4   Import OP's dock behind its own flag.            <- PROOF OF CONCEPT
 Phase 5   Import OP overview, hotspot/BtAgent/Nmcli, GPU detection, themes.       3-4 wks
 Phase 6   Single merged CLI.                                                       ~1 wk
-Phase 7   The four real variants. Merge where possible; Loader-host only
-          lockCentre and audioPopout.
+Phase 7   The three importable variants. Merge where possible; Loader-host the
+          audio popout. The lock centre waits on Phase 8.
 Phase 8   Security: rework or drop OP's pattern lock. Blocks any release
           shipping pattern auth.
 ```
 
-Phase 2 precedes Phase 3 deliberately: presets are built on the config system we keep, not the one
+Phase 2 precedes Phase 3 deliberately: the feature defaults build on the config system we keep, not the one
 upstream just deleted.
 
 ### Why the dock is the proof-of-concept
