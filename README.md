@@ -88,9 +88,10 @@ currently has one implementation; the selector appears when the second lands.
 -   [`protobuf`](https://github.com/protocolbuffers/protobuf) and
     [`openssl`](https://github.com/openssl/openssl) — for Quick Share
 -   an input method, if you type in more than one script — `fcitx5` (with `fcitx5-qt`) or
-    `ibus`. The shell sets `QT_IM_MODULE=fcitx` by default when it is unset; Hyprland does not
-    forward text-input-v3 to layer surfaces, so the IME has to go through Qt's own plugin. Set
-    `QT_IM_MODULE` yourself to use ibus. See trap T66.
+    `ibus`, **with `QT_IM_MODULE` set in the compositor environment** (`env = QT_IM_MODULE,fcitx`
+    in Hyprland's config, or `hl.env("QT_IM_MODULE", "fcitx")` in the Lua config). Hyprland does
+    not forward text-input-v3 to layer surfaces, so the IME has to go through Qt's own plugin,
+    and that variable is read before the shell starts. See trap T66.
 -   [`ttf-material-symbols-variable`](https://github.com/google/material-design-icons)
 -   [`ttf-rubik-vf`](https://github.com/googlefonts/rubik)
 -   [`ttf-cascadia-code-nerd`](https://github.com/ryanoasis/nerd-fonts)

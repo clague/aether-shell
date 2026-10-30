@@ -5,10 +5,6 @@ pragma ComponentBehavior: Bound
 //@ pragma DefaultEnv QS_DROP_EXPENSIVE_FONTS=1
 //@ pragma DefaultEnv QSG_RENDER_LOOP=threaded
 //@ pragma DefaultEnv QT_QUICK_FLICKABLE_WHEEL_DECELERATION=10000
-// Input methods: Hyprland does not forward text-input-v3 to wlr-layer-shell
-// surfaces, so an IME cannot reach the launcher/sidebar without Qt's own IM plugin
-// (which talks to fcitx/ibus over D-Bus). Only set when the user has not chosen.
-//@ pragma DefaultEnv QT_IM_MODULE=fcitx
 
 import QtQuick
 import QtQml

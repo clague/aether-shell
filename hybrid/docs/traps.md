@@ -2855,19 +2855,27 @@ Two independent facts about this shell combine into that:
    With the variable unset (the default on Wayland, and how this session was configured), Qt
    picks the text-input protocol instead and the page is silent.
 
-The fix is one line in `shell.qml`:
+The fix is in the **session environment**, not in the shell:
 
-```qml
-//@ pragma DefaultEnv QT_IM_MODULE=fcitx
+```lua
+-- ~/.config/hypr/hyprland/env.lua
+hl.env("QT_IM_MODULE", "fcitx")   -- or "ibus"
+hl.env("XMODIFIERS", "@im=fcitx") -- XWayland apps
 ```
 
-`DefaultEnv` rather than `Env`, so a user who has already chosen their module (an ibus user
-setting `QT_IM_MODULE=ibus`, say) keeps their choice; fcitx users get a working default with
-nothing to configure. Verified end to end in the launcher: pinyin preedit and candidates render
-in the search field with `QT_IM_MODULE=fcitx`, and not without it.
+A QML pragma cannot do this: `//@ pragma Env QT_IM_MODULE=fcitx` looks plausible and was
+tried, but Qt creates its platform input context when `QGuiApplication` is constructed, before
+Quickshell reads `shell.qml`, so the module is already chosen. Measured: with the pragma in
+place and the variable absent from the process environment, typing in the launcher stayed
+Latin (`fcitx5-remote -n` unchanged, no preedit); with the same shell started by
+`QT_IM_MODULE=fcitx caelestia shell -d`, fcitx pinyin and emoji candidates commit into the
+search field. `fcitx5-diagnose` also then lists an `org.quickshell` input context with
+`focus:1`.
 
-If the default is wrong for a machine, set `QT_IM_MODULE` in the Hyprland environment --
-`env = QT_IM_MODULE,ibus` -- and `DefaultEnv` will leave it alone.
+One more thing worth knowing for a fresh input context: fcitx starts it on the group's
+`DefaultIM` (`~/.config/fcitx5/profile`), and this session had `keyboard-us` there, so even an
+activated IME typed Latin until the default was changed to `rime`. fcitx rewrites that file on
+exit, so edit it while the daemon is stopped (`fcitx5-remote -e`, edit, `fcitx5 -d`).
 
 The related warning, `qt.qpa.wayland.textinput: Trying to disable X but Y is focused`, is
 QtWayland's own bookkeeping about which surface it thinks has the text-input object. It is a
