@@ -82,7 +82,7 @@ ColumnLayout {
         id: ethRepeater
 
         model: ScriptModel {
-            values: Nmcli.ethernetDevices
+            values: [...Nmcli.ethernetDevices]
         }
 
         delegate: ConnectedRect {

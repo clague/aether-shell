@@ -7,6 +7,7 @@ import Caelestia
 import Caelestia.I18n
 import qs.services
 import qs.utils
+import qs.daemons
 
 // Background half of Nexus > Doctor. Every few minutes it runs the quick checks in scripts/doctor.py
 // at the lowest priority (about a tenth of a second of CPU) and shows a notification when something
