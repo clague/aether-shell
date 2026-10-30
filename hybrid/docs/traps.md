@@ -2872,10 +2872,24 @@ Latin (`fcitx5-remote -n` unchanged, no preedit); with the same shell started by
 search field. `fcitx5-diagnose` also then lists an `org.quickshell` input context with
 `focus:1`.
 
-One more thing worth knowing for a fresh input context: fcitx starts it on the group's
-`DefaultIM` (`~/.config/fcitx5/profile`), and this session had `keyboard-us` there, so even an
-activated IME typed Latin until the default was changed to `rime`. fcitx rewrites that file on
-exit, so edit it while the daemon is stopped (`fcitx5-remote -e`, edit, `fcitx5 -d`).
+Two more things, both measured on a real session after the module was set:
+
+**The plugin itself works**, in the layer-surface launcher and in the Nexus window alike. With
+the shell's input context focused, `fcitx5-diagnose` shows `program:qs frontend:dbus focus:1`.
+Toggling with `Ctrl+Space` and typing gives a normal preedit and candidate list in the search
+field. The earlier symptom of a preedit that committed after one keystroke came from the
+text-input-v3 path, which never had a focused surface to compose on.
+
+**A modifier-only trigger key does not reach fcitx through the Qt plugin.** This session's
+fcitx was configured with `Control+Shift+Shift_L`; pressing it in the shell changed nothing,
+while `Ctrl+Space` toggled between `keyboard-us` and `rime` immediately (verified over D-Bus:
+`CurrentInputMethod` and `State` move together). Use a trigger with a real key in it --
+`Ctrl+Space` is the usual choice -- if an IME has to work in a Quickshell surface.
+
+For a fresh input context fcitx also starts on the group's `DefaultIM`
+(`~/.config/fcitx5/profile`); this session had `keyboard-us`, so even an activated IME typed
+Latin until it was changed to `rime`. fcitx rewrites that file on exit, so edit it while the
+daemon is stopped (`fcitx5-remote -e`, edit, `fcitx5 -d`).
 
 The related warning, `qt.qpa.wayland.textinput: Trying to disable X but Y is focused`, is
 QtWayland's own bookkeeping about which surface it thinks has the text-input object. It is a
