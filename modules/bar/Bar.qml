@@ -175,10 +175,10 @@ Item {
         if (ch?.entryId === "workspaces" && Config.bar.scrollActions.workspaces) {
             // Workspace scroll
             const mon = Hypr.monitorFor(screen);
-            const specialWs = mon?.lastIpcObject.specialWorkspace.name;
+            const specialWs = mon?.lastIpcObject.specialWorkspace?.name;
             if (specialWs?.length > 0)
                 Hypr.dispatch(Hypr.usingLua ? `hl.dsp.workspace.toggle_special("${specialWs.slice(8)}")` : `togglespecialworkspace ${specialWs.slice(8)}`);
-            else if (angleDelta.y < 0 || mon.activeWorkspace?.id > 1)
+            else if (angleDelta.y < 0 || (mon?.activeWorkspace?.id ?? 0) > 1)
                 Hypr.dispatch(Hypr.usingLua ? `hl.dsp.focus({ workspace = "r${angleDelta.y > 0 ? "-" : "+"}1" })` : `workspace r${angleDelta.y > 0 ? "-" : "+"}1`);
         } else if ((isHorizontal ? pos < screen.width / 2 : pos < screen.height / 2) && Config.bar.scrollActions.volume) {
             // Volume scroll on top half
@@ -189,10 +189,12 @@ Item {
         } else if (Config.bar.scrollActions.brightness) {
             // Brightness scroll on bottom half
             const monitor = Brightness.getMonitorForScreen(screen);
-            if (angleDelta.y > 0)
-                monitor.setBrightness(monitor.brightness + GlobalConfig.services.brightnessIncrement);
-            else if (angleDelta.y < 0)
-                monitor.setBrightness(monitor.brightness - GlobalConfig.services.brightnessIncrement);
+            if (monitor) {
+                if (angleDelta.y > 0)
+                    monitor.setBrightness(monitor.brightness + GlobalConfig.services.brightnessIncrement);
+                else if (angleDelta.y < 0)
+                    monitor.setBrightness(monitor.brightness - GlobalConfig.services.brightnessIncrement);
+            }
         }
     }
 

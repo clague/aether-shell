@@ -24,15 +24,22 @@ Singleton {
     readonly property string libdir: Quickshell.env("CAELESTIA_LIB_DIR") || "/usr/lib/caelestia"
 
     function toLocalFile(path: url): string {
+        if (!path)
+            return "";
+        const str = path.toString();
+        if (str.startsWith("root:"))
+            return Quickshell.shellPath(str.replace(/^root:\/*/, ""));
         path = Qt.resolvedUrl(path);
         return path.toString() ? CUtils.toLocalFile(path) : "";
     }
 
     function absolutePath(path: string): string {
+        if (!path)
+            return "";
         return toLocalFile(path.replace(/~|(\$({?)HOME(}?))+/, home).replace(/^root:/, Quickshell.shellDir + "/"));
     }
 
     function shortenHome(path: string): string {
-        return path.replace(home, "~");
+        return path ? path.replace(home, "~") : "";
     }
 }
