@@ -72,6 +72,9 @@ currently has one implementation; the selector appears when the second lands.
     `caelestia`, so you cannot have both, and the merged CLI does not exist yet. Until it
     does, install upstream's and expect those specific extras to be inert.
 -   [`quickshell-git`](https://quickshell.outfoxxed.me) - this has to be the git version, not the latest tagged version
+-   [`hyprmoncfg`](https://github.com/crmne/hyprmoncfg) — optional; the Display page uses it to
+    save and apply monitor layouts. Without it, live layout changes still work, but nothing is
+    persisted and saved profiles are unavailable.
 -   [`ddcutil`](https://github.com/rockowitz/ddcutil)
 -   [`brightnessctl`](https://github.com/Hummer12007/brightnessctl)
 -   [`app2unit`](https://github.com/Vladimir-csp/app2unit)
