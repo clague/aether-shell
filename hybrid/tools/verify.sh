@@ -113,6 +113,13 @@ if [ "$QUICK" = 0 ]; then
     # invisible to gcc, and clang stops at -ferror-limit=20, so re-run until a *clean* run.
     for cc in g++ clazy; do
         step "$cc -Werror"
+        # clazy is an out-of-tree clang plugin and is not packaged everywhere. CI installs
+        # it, so a missing local copy is reported rather than counted as a pass or a
+        # failure; the gate must not silently claim coverage it did not have.
+        if ! command -v "$cc" >/dev/null; then
+            echo "skipped: $cc not installed (CI runs this leg)"
+            continue
+        fi
         cmake -B "$WORK_DIR/$cc-build" "${cfg[@]}" -DCMAKE_CXX_COMPILER="$cc" \
             -DCMAKE_CXX_FLAGS=-Werror >/dev/null || fail=1
         count "$(cmake --build "$WORK_DIR/$cc-build" -- -k 0 2>&1 | grep -cE 'error:|warning:')" diagnostics
