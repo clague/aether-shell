@@ -71,3 +71,34 @@ Source file does not exist: .*/\.face
 # once per process. Fixing it means changing an upstream file for a cosmetic warning,
 # which is the wrong trade (hard rule 6) -- report it upstream instead.
 Tokens\.\w+ accessed without a screen set on Anim
+
+# Qt's text-input-v3 platform plugin, not ours. It fires while layer surfaces are shown and
+# hidden during the interaction drive (the Nexus search field and the launcher take and drop
+# keyboard focus). The message is the plugin's own bookkeeping about which surface it thinks
+# has focus; no QML in this tree can influence it, and it appears on some runs and not others
+# because it races the focus change.
+qt\.qpa\.wayland\.textinput: .*Trying to (disable|enable) .* but .* (is focused|has focus)
+
+# Network fetches at startup, same rule as caelestia.requests above: the Pastafarian calendar
+# is fetched from the internet, and inside a throwaway session the connection is closed
+# before it completes. A boot gate must not depend on someone else's uptime.
+Failed to fetch Pastafarian calendar events
+
+# The host session runs a Firefox whose MPRIS export is already half-removed. Quickshell's
+# player tracker then cannot update a property on it and says so. The object belongs to the
+# host's music player, not to this shell, and there is no player at all in the nested run.
+quickshell\.dbus\.properties: (Error updating property org\.mpris|QDBusError\("org\.freedesktop\.DBus\.Error\.ServiceUnknown")
+
+# Host icon theme, not this repository: the only SVG here is assets/logo.svg and every one of
+# its paths parses. QtSVG emits this while rendering an icon from the system theme.
+qt\.svg: Invalid path data; path truncated
+
+# The Nexus window asks Hyprland to centre itself when it opens (WindowFactory), and a nested
+# compositor never floats it, so the dispatch reports no floating window. Harmless: the window
+# opens at the compositor's default position and the failure is cosmetic. Same message can
+# appear in a live session when the window is tiled rather than floating.
+Dispatch request "hl\.dsp\.window\.center\(.*\)" failed with error "info: =\[C\]:-1: No floating window found"
+
+# The weather service's own location lookup (ip-api), same rule as caelestia.requests: a boot
+# gate must not depend on someone else's uptime, and this API answers 503 often.
+caelestia\.qml\.services\.weather: ip-api request failed

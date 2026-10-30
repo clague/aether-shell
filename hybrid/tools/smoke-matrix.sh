@@ -252,11 +252,27 @@ EOF
 
     # Catch a config the running Hyprland cannot read before spending 20s on a
     # start that would fail with a much less obvious message.
-    Hyprland --verify-config --config "$cfg" 2>&1 | grep -q '^config ok' || {
-        printf '%s Hyprland rejected the %s config\n' "$(red fail)" "$1"
-        Hyprland --verify-config --config "$cfg" 2>&1 | tail -10 | sed 's/^/      /'
-        exit 2
-    }
+    # Capture the output once: `Hyprland ... | grep -q` is a trap under `set -o pipefail`
+    # (sourced at the top of this file). grep -q exits on the first match, Hyprland then gets
+    # SIGPIPE, and pipefail makes the whole pipeline fail -- so a *matching* verify-config
+    # reads as a rejection. That is what made `--hypr both` report "Hyprland rejected the
+    # conf config" while the same command typed by hand succeeded.
+    local vcout
+    vcout=$(Hyprland --verify-config --config "$cfg" 2>&1) || true
+    case $vcout in
+        *"config ok"*) ;;
+        *)
+            # Some 0.56 builds are Lua-only: every --config file is parsed as Lua, legacy
+            # ini included, so the conf fixture cannot be validated here. Report it and let
+            # the caller skip that leg instead of aborting the whole matrix.
+            if [ "$1" = conf ] && [[ $vcout == *"unexpected symbol"* ]]; then
+                return 3
+            fi
+            printf '%s Hyprland rejected the %s config\n' "$(red fail)" "$1"
+            printf '%s\n' "$vcout" | tail -10 | sed 's/^/      /'
+            exit 2
+            ;;
+    esac
 
     local before after
     before=$(ls "$RUNTIME" 2>/dev/null | grep -E '^wayland-[0-9]+$' | sort)
@@ -403,19 +419,13 @@ drive_shell() {
     # Every settings page, not just the first. This is where the null targetConfig lived,
     # and 16 pages of UI that nothing renders is 16 pages nothing checks.
     local pages
-    pages=$(grep -c 'label: qsTr' "$ROOT/modules/nexus/PageRegistry.qml" 2>/dev/null || echo 1)
+    pages=$(grep -cE 'label: (qsTr|Tr\.tr)' "$ROOT/modules/nexus/PageRegistry.qml" 2>/dev/null || true)
+    [ "${pages:-0}" -gt 0 ] 2>/dev/null || pages=1
     for ((i = 0; i < pages; i++)); do
         check_ipc nexus openPage "$i"
         sleep 0.7
     done
     sleep 1
-
-    # The lock screen is a large surface nothing else reaches. It locks the *nested*
-    # compositor, never a real session -- the harness refuses to run against one.
-    check_ipc lock lock
-    sleep 2.5
-    check_ipc lock unlock
-    sleep 1.5
 
     for picker in open openFreeze openClip; do
         check_ipc picker "$picker"
@@ -465,6 +475,21 @@ drive_shell() {
     check_ipc wallpaper get
     check_ipc wallpaper list
     sleep 1.5
+
+    # The lock screen is a large surface nothing else reaches. It uses ext-session-lock, so
+    # it locks the *nested* compositor (never a real session -- the harness refuses to run
+    # against one), and unlocking needs a password: the unauthenticated `lock unlock` IPC
+    # was removed on purpose, because it would let any IPC caller unlock a real session.
+    #
+    # That makes the lock a one-way door for the compositor: a shell started afterwards in
+    # the SAME session gets a Wayland protocol error while the lock is still in place
+    # (`wl_display: invalid object`). So it runs only in the last preset of a compositor,
+    # and the compositor is torn down immediately afterwards. DRIVE_LOCK is set by the
+    # caller for exactly that run; SMOKE_LOCK=1 forces it for a single-preset invocation.
+    if [ "${DRIVE_LOCK:-0}" = 1 ]; then
+        check_ipc lock lock
+        sleep 2.5
+    fi
 }
 
 run_preset() {
@@ -569,7 +594,13 @@ if [ -n "${SMOKE_SOCKET:-}" ]; then
     printf 'using provided compositor: %s\n' "$SOCKET"
     printf 'smoke matrix: %d preset(s), %s\n\n' "${#presets[@]}" \
         "$([ "$INTERACT" = 1 ] && printf 'boot + IPC drive' || printf "${TIMEOUT_S}s window each")"
-    for preset in "${presets[@]}"; do run_preset "$preset" ""; done
+    lock_last=0
+    [ "${SMOKE_LOCK:-0}" = 1 ] && lock_last=1
+    for preset in "${presets[@]}"; do
+        DRIVE_LOCK=0
+        { [ "$preset" = "${presets[${#presets[@]}-1]}" ] || [ "$SMOKE_LOCK" = 1 ]; } && DRIVE_LOCK=1
+        run_preset "$preset" ""
+    done
 else
     if [ "$COMPOSITOR" = auto ]; then
         if command -v Hyprland >/dev/null && [ -n "${WAYLAND_DISPLAY:-}${DISPLAY:-}" ]; then
@@ -588,17 +619,28 @@ else
         printf 'up on %s\n' "$SOCKET"
         printf 'smoke matrix: %d preset(s), %s\n\n' "${#presets[@]}" \
         "$([ "$INTERACT" = 1 ] && printf 'boot + IPC drive' || printf "${TIMEOUT_S}s window each")"
-        for preset in "${presets[@]}"; do run_preset "$preset" "sway"; done
+        for preset in "${presets[@]}"; do
+            DRIVE_LOCK=0
+            { [ "$preset" = "${presets[${#presets[@]}-1]}" ] || [ "${SMOKE_LOCK:-0}" = 1 ]; } && DRIVE_LOCK=1
+            run_preset "$preset" "sway"
+        done
         cleanup
         COMP_PID=""; COMP_DIR=""; SOCKET=""; SIG=""
     else
         for fmt in "${HYPR_FMTS[@]}"; do
             printf 'starting nested Hyprland (%s config)... ' "$fmt"
             start_compositor "$fmt"
+            comp_rc=$?
+            if [ "$comp_rc" = 3 ]; then
+                printf '%s skipped: this Hyprland build parses every --config as Lua\n' "$(yellow note)"
+                continue
+            fi
             printf 'up on %s\n' "$SOCKET"
             printf 'smoke matrix: %d preset(s), %s\n\n' "${#presets[@]}" \
         "$([ "$INTERACT" = 1 ] && printf 'boot + IPC drive' || printf "${TIMEOUT_S}s window each")"
             for preset in "${presets[@]}"; do
+                DRIVE_LOCK=0
+                { [ "$preset" = "${presets[${#presets[@]}-1]}" ] || [ "${SMOKE_LOCK:-0}" = 1 ]; } && DRIVE_LOCK=1
                 run_preset "$preset" "$([ ${#HYPR_FMTS[@]} -gt 1 ] && printf '%s' "$fmt")"
             done
             cleanup
