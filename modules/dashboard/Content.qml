@@ -168,16 +168,11 @@ Item {
 
                         sourceComponent: modelData.component
 
-                        onActiveChanged: if (active)
-                            active = true
-
-                        Component.onCompleted: active = Qt.binding(() => {
-                            if (index === view.currentIndex)
-                                return true;
-                            const vx = Math.floor(view.visibleArea.xPosition * view.contentWidth);
-                            const vex = Math.floor(vx + view.visibleArea.widthRatio * view.contentWidth);
-                            return (vx >= x && vx <= x + implicitWidth) || (vex >= x && vex <= x + implicitWidth);
-                        })
+                        // Keep the current tab and its neighbours loaded. Deciding this from
+                        // the visible rectangle reads this loader's own x/implicitWidth, and
+                        // both change when it loads -- that is the "Binding loop detected for
+                        // property active" warning. Adjacency is geometry-free.
+                        active: Math.abs(index - view.currentIndex) <= 1
                     }
                 }
             }

@@ -52,12 +52,17 @@ StyledRect {
         return (value || "").replace(/bearer\s+[A-Za-z0-9_\-.]+/gi, "bearer [redacted]");
     }
 
-    function setUnavailable(message: string): void {
+    function setUnavailable(message: string, quiet: bool): void {
         const msg = root.redact(message);
         root.lastError = msg;
         BarComponents.GithubStore.lastError = msg;
         BarComponents.GithubStore.available = false;
-        console.error("[GitHubWidget] " + msg);
+        // An unconfigured widget is the default state, not a fault: log it as info so a
+        // fresh install does not open with an ERROR line.
+        if (quiet)
+            console.info("[GitHubWidget] " + msg);
+        else
+            console.error("[GitHubWidget] " + msg);
     }
 
     implicitWidth: isHorizontal ? (cells.implicitWidth + root.padding * 2) : Tokens.sizes.bar.innerWidth
@@ -108,7 +113,8 @@ StyledRect {
         command: ["bash", "-c", `
         set -Eeuo pipefail
         export GITHUB_TOKEN="$(secret-tool lookup service caelestia-shell account github 2>/dev/null || echo '')"
-        : "\${GITHUB_TOKEN:?Missing GITHUB_TOKEN}"
+        # Not configured is a normal state: exit quietly and let the widget show nothing.
+        [ -n "\${GITHUB_TOKEN:-}" ] || exit 0
 
         # Resolve login via token if GITHUB_USERNAME is unset
         login="\${GITHUB_USERNAME-}"
@@ -183,6 +189,10 @@ PY
             }
 
             const raw = out.text.trim();
+            if (raw.length === 0) {
+                root.setUnavailable("no GitHub token configured", true);
+                return;
+            }
             try {
                 const obj = JSON.parse(raw);
                 if (obj.errors) {

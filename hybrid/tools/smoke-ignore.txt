@@ -63,14 +63,11 @@ Source file does not exist: .*/\.face
 # KNOWN BUGS - real defects, suppressed only so the gate stays useful.
 # Each line here is debt. Delete the entry when the bug is fixed, not before.
 # =============================================================================
+#
+# No entries right now. The last one -- an Anim reading Tokens.rounding without a screen,
+# which cannot inherit one because a NumberAnimation is not an item -- is fixed in
+# components/PolkitDialog.qml by reading the token from an item instead.
 
-# Upstream's components/Anim.qml reads Tokens.anim.durations, and Anim is a
-# NumberAnimation -- not a QQuickItem -- so its attached Tokens can never inherit a
-# screen and always resolves against the global layer. Animation durations do not vary
-# per monitor, so the value is right; upstream's own diagnostic just cannot tell. Fires
-# once per process. Fixing it means changing an upstream file for a cosmetic warning,
-# which is the wrong trade (hard rule 6) -- report it upstream instead.
-Tokens\.\w+ accessed without a screen set on Anim
 
 # Qt's text-input-v3 platform plugin, not ours. It fires while layer surfaces are shown and
 # hidden during the interaction drive (the Nexus search field and the launcher take and drop

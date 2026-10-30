@@ -152,7 +152,9 @@ StyledWindow {
                 Anim {
                     target: dialogBg
                     property: "radius"
-                    to: Tokens.rounding.large
+                    // Read from an item: Tokens is per-screen, and a NumberAnimation cannot
+                    // inherit a screen, so reading it here warned once per process.
+                    to: dialogBg.animRadius
                     duration: 500
                 }
             }
@@ -261,6 +263,8 @@ StyledWindow {
 
         StyledRect {
             id: dialogBg
+
+            readonly property real animRadius: Tokens.rounding.large
 
             anchors.fill: parent
             radius: dialogContainer.initialRadius

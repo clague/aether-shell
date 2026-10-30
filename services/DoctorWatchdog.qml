@@ -98,8 +98,13 @@ Singleton {
         command: ["nice", "-n", "19", "python3", root.script, "check", "--watch"]
         stdout: StdioCollector {
             onStreamFinished: {
+                // Empty output means the helper did not run (missing script, no python-dbus
+                // and friends); that is reported by the page, not as a JSON parse error.
+                const raw = text.trim();
+                if (raw.length === 0)
+                    return;
                 try {
-                    root.handle(JSON.parse(text));
+                    root.handle(JSON.parse(raw));
                 } catch (e) {
                     console.warn("[doctor-watchdog] could not read the checks:", e);
                 }

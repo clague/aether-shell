@@ -153,6 +153,8 @@ Singleton {
         id: cfgFile
 
         path: root.configFile
+        // A missing file is the first run, not a fault: onLoadFailed writes the defaults.
+        printErrors: false
 
         onLoaded: {
             try {

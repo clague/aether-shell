@@ -58,7 +58,10 @@ Singleton {
     }
 
     function restartShell(): void {
-        Quickshell.execDetached(["setsid", "-f", "sh", "-c", `sleep 0.5; exec "${Quickshell.shellPath("scripts/startup-shell.sh")}" -r`]);
+        // caelestia-cli is a hard dependency of this shell and `shell -r` is the supported
+        // restart path. OP's tree has scripts/startup-shell.sh; this one does not, so the
+        // button used to exec a missing file. Quickshell exposes no programmatic reload.
+        Quickshell.execDetached(["caelestia", "shell", "-r"]);
     }
 
     function setSizeAdjust(percent: int): void {
@@ -242,8 +245,11 @@ Singleton {
         command: ["python3", root.script, "status"]
         stdout: StdioCollector {
             onStreamFinished: {
+                const raw = text.trim();
+                if (raw.length === 0)
+                    return;
                 try {
-                    const d = JSON.parse(text);
+                    const d = JSON.parse(raw);
                     root.enabled = d.enabled;
                     root.sansChoices = d.sansChoices;
                     root.monoChoices = d.monoChoices;
