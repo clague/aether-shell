@@ -132,9 +132,12 @@ PageBase {
         }
 
         NavRow {
+            // The bar's dock section only exists in MiDnight's dock implementation. OP's
+            // independent panel has its own page under Panels > Dock.
+            visible: GlobalConfig.hybrid.variants.dock === HybridVariant.Midnight
             icon: "dock"
-            text: Tr.tr("Dock")
-            subtext: Tr.tr("Positioning, recoloring")
+            text: Tr.tr("Bar dock")
+            subtext: Tr.tr("Dock section inside the taskbar")
             onClicked: root.nState.openSubPage(12)
         }
 

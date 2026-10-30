@@ -148,7 +148,7 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            text: Tr.tr("Blur")
+            text: Tr.tr("Blur background")
             configNode: root.targetConfig.background.desktopClock.background
             propertyName: "blur"
             checked: root.targetConfig.background.desktopClock.background.blur
@@ -192,7 +192,7 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            label: Tr.tr("Blur strength")
+            label: Tr.tr("Shadow blur")
             configNode: root.targetConfig.background.desktopClock.shadow
             propertyName: "blur"
             value: root.targetConfig.background.desktopClock.shadow.blur / 2.0

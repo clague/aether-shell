@@ -101,6 +101,15 @@ PageBase {
             text: Tr.tr("Quick toggles")
         }
 
+        InfoRow {
+            first: true
+            last: true
+            Layout.fillWidth: true
+            icon: "info"
+            label: Tr.tr("Shown in the utilities panel")
+            subtext: Tr.tr("Pick which quick toggles the panel offers; the toggles themselves stay on their own pages.")
+        }
+
         ToggleRow {
             first: true
             text: Tr.tr("Wi-Fi")
@@ -175,8 +184,8 @@ PageBase {
         }
 
         ToggleRow {
-            text: Tr.tr("Bad Apple")
-            subtext: Tr.tr("Play the Bad Apple animation")
+            text: Tr.tr("Bad Apple toggle")
+            subtext: Tr.tr("Offer the Bad Apple animation in the panel")
             disabled: !Config.utilities.cards.quickToggles
             checked: root.isToggleOn("badapple")
             onToggled: root.setToggleOn("badapple", checked)

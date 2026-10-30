@@ -54,7 +54,7 @@ HyprlandFocusGrab will not work\.
 Learn why \$XDG_CURRENT_DESKTOP sucks
 
 # No PipeWire in the container, so the audio worker cannot open a stream.
-caelestia\.services\.ac\.worker: init: failed to connect stream
+aether\.services\.ac\.worker: init: failed to connect stream
 
 # No icon theme is installed. The shell asks for a themed icon, gets nothing, and draws its
 # own fallback -- which is the behaviour, not a defect.

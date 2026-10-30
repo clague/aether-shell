@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aether-shell\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 01:46+0800\n"
+"POT-Creation-Date: 2026-10-31 07:47+0800\n"
 "PO-Revision-Date: 2026-10-30 00:00+0800\n"
 "Last-Translator: caelestia-hybrid\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -525,8 +525,7 @@ msgid "CPU"
 msgstr "CPU"
 
 #: modules/dashboard/Performance.qml
-#: modules/nexus/pages/panels/DashboardPanel.qml
-#: modules/nexus/pages/ServicesPage.qml modules/nexus/SearchIndex.qml
+#: modules/nexus/pages/panels/DashboardPanel.qml modules/nexus/SearchIndex.qml
 msgid "GPU"
 msgstr "GPU"
 
@@ -1300,7 +1299,6 @@ msgstr "仪表盘、任务栏、启动器、侧边栏"
 
 #: modules/nexus/PageRegistry.qml modules/nexus/pages/AppsPage.qml
 #: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
-#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
 #: modules/nexus/pages/panels/LauncherPanel.qml modules/nexus/SearchIndex.qml
 msgid "Apps"
 msgstr "应用"
@@ -1845,15 +1843,14 @@ msgstr "不透明度"
 
 #: modules/nexus/pages/background/DesktopClockPage.qml
 #: modules/nexus/pages/background/DesktopLyricsPage.qml
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+#: modules/nexus/pages/background/VisualiserPage.qml
 #: modules/nexus/SearchIndex.qml
-msgid "Blur"
-msgstr "模糊"
+msgid "Blur background"
+msgstr "模糊背景"
 
 #: modules/nexus/pages/background/DesktopClockPage.qml
 #: modules/nexus/pages/background/DesktopLyricsPage.qml
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-#: modules/nexus/SearchIndex.qml
+#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
 msgid "Shadow"
 msgstr "阴影"
 
@@ -1866,8 +1863,8 @@ msgstr "启用阴影"
 #: modules/nexus/pages/background/DesktopClockPage.qml
 #: modules/nexus/pages/background/DesktopLyricsPage.qml
 #: modules/nexus/SearchIndex.qml
-msgid "Blur strength"
-msgstr "模糊强度"
+msgid "Shadow blur"
+msgstr "阴影模糊"
 
 #: modules/nexus/pages/background/DesktopLyricsPage.qml
 #: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
@@ -1954,11 +1951,6 @@ msgstr "自动隐藏可视化"
 #: modules/nexus/SearchIndex.qml
 msgid "Hide visualiser when a window is open"
 msgstr "有窗口打开时隐藏可视化"
-
-#: modules/nexus/pages/background/VisualiserPage.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Blur background"
-msgstr "模糊背景"
 
 #: modules/nexus/pages/background/VisualiserPage.qml
 #: modules/nexus/SearchIndex.qml
@@ -2400,111 +2392,6 @@ msgstr "确定吗？"
 msgid "Fix"
 msgstr "修复"
 
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
-msgid "Hyprland appearance"
-msgstr "Hyprland 外观"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Stored in hypr-vars.lua"
-msgstr "保存在 hypr-vars.lua"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-#: modules/nexus/SearchIndex.qml
-msgid ""
-"Hyprland reads this file at startup; clear a row to remove its override."
-msgstr "Hyprland 启动时读取此文件；清除某一行即可移除对应覆盖。"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Blur enabled"
-msgstr "启用模糊"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Blur special workspace"
-msgstr "模糊特殊工作区"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Blur popups"
-msgstr "模糊弹出窗口"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Blur input methods"
-msgstr "模糊输入法窗口"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Blur size"
-msgstr "模糊大小"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Blur passes"
-msgstr "模糊迭代次数"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Blur Xray"
-msgstr "Xray 模糊"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Shadow enabled"
-msgstr "启用阴影"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Shadow range"
-msgstr "阴影范围"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Shadow render power"
-msgstr "阴影渲染强度"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Shadow colour"
-msgstr "阴影颜色"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Gaps"
-msgstr "间隙"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Workspace gaps"
-msgstr "工作区间距"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Window gaps in"
-msgstr "窗口内间距"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Window gaps out"
-msgstr "窗口外间距"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Single window gaps out"
-msgstr "单窗口外间距"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Window styling"
-msgstr "窗口样式"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
-msgid "Window opacity"
-msgstr "窗口不透明度"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Window rounding"
-msgstr "窗口圆角"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Window border size"
-msgstr "窗口边框粗细"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Active window border colour"
-msgstr "活动窗口边框颜色"
-
-#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
-msgid "Inactive window border colour"
-msgstr "非活动窗口边框颜色"
-
 #: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
 #: modules/nexus/pages/hyprland/HyprlandPage.qml modules/nexus/SearchIndex.qml
 msgid "Keybinds"
@@ -2564,6 +2451,10 @@ msgid "Advanced configuration options"
 msgstr "高级配置选项"
 
 #: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+msgid "Keybind apps"
+msgstr "快捷键应用"
+
+#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
 #: modules/nexus/pages/panels/DashboardPanel.qml modules/nexus/SearchIndex.qml
 msgid "Terminal"
 msgstr "终端"
@@ -2609,9 +2500,8 @@ msgid "Gesture fingers more"
 msgstr "更多手势手指数"
 
 #: modules/nexus/pages/hyprland/HyprVariablesPage.qml
-#: modules/nexus/pages/ServicesPage.qml modules/nexus/SearchIndex.qml
-msgid "Volume step"
-msgstr "音量步进"
+msgid "Hyprland volume step"
+msgstr "Hyprland 音量步进"
 
 #: modules/nexus/pages/hyprland/HyprVariablesPage.qml
 msgid "Cursor theme"
@@ -2753,12 +2643,8 @@ msgid "Glass"
 msgstr "玻璃"
 
 #: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
-msgid "Blur behind the overview"
-msgstr "概览背后的模糊"
-
-#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
-msgid "Frosted glass instead of a plain dim backdrop"
-msgstr "使用磨砂玻璃而非纯暗色背景"
+msgid "Window opacity"
+msgstr "窗口不透明度"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
 #, qt-format
@@ -2953,9 +2839,98 @@ msgstr "字体文件"
 msgid "Press again to remove %1"
 msgstr "再次按下以移除 %1"
 
+#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
+msgid "Stored in hypr-vars.lua"
+msgstr "保存在 hypr-vars.lua"
+
+#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
+msgid ""
+"Hyprland reads this file at startup; clear a row to remove its override."
+msgstr "Hyprland 启动时读取此文件；清除某一行即可移除对应覆盖。"
+
+#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
+msgid "Blur"
+msgstr "模糊"
+
 #: modules/nexus/pages/LookAndFeelPage.qml
-msgid "Blur, shadows, gaps and window borders from hypr-vars.lua"
-msgstr "hypr-vars.lua 中的模糊、阴影、间距与窗口边框"
+msgid "Blur enabled"
+msgstr "启用模糊"
+
+#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
+msgid "Blur behind the overview"
+msgstr "概览背后的模糊"
+
+#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
+msgid "Frosted glass instead of a plain dim backdrop"
+msgstr "使用磨砂玻璃而非纯暗色背景"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Blur special workspace"
+msgstr "模糊特殊工作区"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Blur popups"
+msgstr "模糊弹出窗口"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Blur input methods"
+msgstr "模糊输入法窗口"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Blur size"
+msgstr "模糊大小"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Blur passes"
+msgstr "模糊迭代次数"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Blur Xray"
+msgstr "Xray 模糊"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Shadow enabled"
+msgstr "启用阴影"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Shadow range"
+msgstr "阴影范围"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Shadow render power"
+msgstr "阴影渲染强度"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Shadow colour"
+msgstr "阴影颜色"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Gaps"
+msgstr "间隙"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Workspace gaps"
+msgstr "工作区间距"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Single window gaps"
+msgstr "单窗口间距"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Window styling"
+msgstr "窗口样式"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Window rounding"
+msgstr "窗口圆角"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Active window border colour"
+msgstr "活动窗口边框颜色"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Inactive window border colour"
+msgstr "非活动窗口边框颜色"
 
 #: modules/nexus/pages/network/AddNetworkPage.qml
 #: modules/nexus/pages/NetworkPage.qml modules/nexus/SearchIndex.qml
@@ -3723,7 +3698,6 @@ msgstr "打开仪表盘前需拖动的像素数"
 #: modules/nexus/pages/panels/DockPanel.qml
 #: modules/nexus/pages/panels/taskbar/BarComponents.qml
 #: modules/nexus/pages/panels/taskbar/BarDock.qml
-#: modules/nexus/pages/panels/TaskbarPanel.qml
 #: modules/nexus/pages/PanelsPage.qml modules/nexus/SearchIndex.qml
 msgid "Dock"
 msgstr "程序坞"
@@ -4332,7 +4306,7 @@ msgstr "光标到达屏幕边缘时显示状态栏"
 msgid "Pixels dragged before the bar reveals"
 msgstr "显示状态栏前需拖动的像素数"
 
-#: modules/nexus/pages/panels/TaskbarPanel.qml
+#: modules/nexus/pages/panels/TaskbarPanel.qml modules/nexus/SearchIndex.qml
 msgid "Components"
 msgstr "组件"
 
@@ -4348,9 +4322,13 @@ msgstr "指示器、窗口图标"
 msgid "Title display, popout"
 msgstr "标题显示、弹窗"
 
-#: modules/nexus/pages/panels/TaskbarPanel.qml
-msgid "Positioning, recoloring"
-msgstr "定位、重着色"
+#: modules/nexus/pages/panels/TaskbarPanel.qml modules/nexus/SearchIndex.qml
+msgid "Bar dock"
+msgstr "栏内程序坞"
+
+#: modules/nexus/pages/panels/TaskbarPanel.qml modules/nexus/SearchIndex.qml
+msgid "Dock section inside the taskbar"
+msgstr "任务栏内的程序坞区域"
 
 #: modules/nexus/pages/panels/TaskbarPanel.qml
 msgid "System tray icons"
@@ -4434,6 +4412,16 @@ msgid "Show the quick toggles card"
 msgstr "显示快捷开关卡片"
 
 #: modules/nexus/pages/panels/UtilitiesPanel.qml modules/nexus/SearchIndex.qml
+msgid "Shown in the utilities panel"
+msgstr "在实用工具面板中显示"
+
+#: modules/nexus/pages/panels/UtilitiesPanel.qml modules/nexus/SearchIndex.qml
+msgid ""
+"Pick which quick toggles the panel offers; the toggles themselves stay on "
+"their own pages."
+msgstr "选择面板提供哪些快捷开关；开关本身仍在各自页面。"
+
+#: modules/nexus/pages/panels/UtilitiesPanel.qml modules/nexus/SearchIndex.qml
 msgid "Toggle wireless networking"
 msgstr "切换无线网络"
 
@@ -4494,12 +4482,12 @@ msgid "Show the wallpaper picker menu"
 msgstr "显示壁纸选择菜单"
 
 #: modules/nexus/pages/panels/UtilitiesPanel.qml modules/nexus/SearchIndex.qml
-msgid "Bad Apple"
-msgstr "Bad Apple"
+msgid "Bad Apple toggle"
+msgstr "Bad Apple 开关"
 
 #: modules/nexus/pages/panels/UtilitiesPanel.qml modules/nexus/SearchIndex.qml
-msgid "Play the Bad Apple animation"
-msgstr "播放 Bad Apple 动画"
+msgid "Offer the Bad Apple animation in the panel"
+msgstr "在面板中提供 Bad Apple 动画"
 
 #: modules/nexus/pages/panels/UtilitiesPanel.qml modules/nexus/SearchIndex.qml
 msgid "Pause video wallpaper"
@@ -4834,8 +4822,8 @@ msgstr "开启"
 
 #: modules/nexus/pages/services/NotificationsPage.qml
 #: modules/nexus/SearchIndex.qml
-msgid "Show in fullscreen"
-msgstr "在全屏中显示"
+msgid "Show notifications in fullscreen"
+msgstr "通知在全屏时显示"
 
 #: modules/nexus/pages/services/NotificationsPage.qml
 #: modules/nexus/SearchIndex.qml
@@ -4886,6 +4874,11 @@ msgstr "折叠前每组显示的通知数"
 #: modules/nexus/SearchIndex.qml
 msgid "Toasts"
 msgstr "提示"
+
+#: modules/nexus/pages/services/NotificationsPage.qml
+#: modules/nexus/SearchIndex.qml
+msgid "Show toasts in fullscreen"
+msgstr "提示在全屏时显示"
 
 #: modules/nexus/pages/services/NotificationsPage.qml
 #: modules/nexus/SearchIndex.qml
@@ -5141,6 +5134,10 @@ msgstr "自动"
 msgid "Input increments"
 msgstr "输入步进"
 
+#: modules/nexus/pages/ServicesPage.qml modules/nexus/SearchIndex.qml
+msgid "Volume step"
+msgstr "音量步进"
+
 #: modules/nexus/pages/ServicesPage.qml
 msgid "Amount the volume changes per scroll (%)"
 msgstr "每次滚动时的音量变化量 (%)"
@@ -5184,6 +5181,10 @@ msgstr "自动启动与可发现性设置"
 #: modules/nexus/pages/ServicesPage.qml modules/nexus/SearchIndex.qml
 msgid "Hardware"
 msgstr "硬件"
+
+#: modules/nexus/pages/ServicesPage.qml modules/nexus/SearchIndex.qml
+msgid "GPU override"
+msgstr "GPU 覆盖"
 
 #: modules/nexus/pages/ServicesPage.qml
 #, qt-format
@@ -7080,6 +7081,30 @@ msgstr "设置"
 #: plugin/src/Aether/Config/launcherconfig.hpp
 msgid "Configure the shell"
 msgstr "配置 Shell"
+
+#~ msgid "Positioning, recoloring"
+#~ msgstr "定位、重着色"
+
+#~ msgid "Blur strength"
+#~ msgstr "模糊强度"
+
+#~ msgid "Hyprland appearance"
+#~ msgstr "Hyprland 外观"
+
+#~ msgid "Window gaps in"
+#~ msgstr "窗口内间距"
+
+#~ msgid "Window gaps out"
+#~ msgstr "窗口外间距"
+
+#~ msgid "Window border size"
+#~ msgstr "窗口边框粗细"
+
+#~ msgid "Blur, shadows, gaps and window borders from hypr-vars.lua"
+#~ msgstr "hypr-vars.lua 中的模糊、阴影、间距与窗口边框"
+
+#~ msgid "Bad Apple"
+#~ msgstr "Bad Apple"
 
 #~ msgid "by DiM • Basically Caelestia+"
 #~ msgstr "由 DiM 制作 • 基本上是 Caelestia+"

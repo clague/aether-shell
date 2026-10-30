@@ -69,9 +69,6 @@ QtObject {
                 Component {
                     LookAndFeelPage {}
                 }
-                Component {
-                    HyprAppearancePage {}
-                }
             }
         },
         // Desktop

@@ -228,7 +228,7 @@ PageBase {
         SelectRow {
             Layout.fillWidth: true
             last: true
-            label: Tr.tr("GPU")
+            label: Tr.tr("GPU override")
             subtext: Gpu.name ? Tr.tr("Monitoring: %1").arg(Gpu.name) : Tr.tr("Override for GPU type")
             menuOnTop: true
             menuItems: root.gpuItems

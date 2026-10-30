@@ -190,7 +190,7 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            text: Tr.tr("Blur")
+            text: Tr.tr("Blur background")
             configNode: root.targetConfig.background.desktopLyrics.background
             propertyName: "blur"
             checked: root.targetConfig.background.desktopLyrics.background.blur
@@ -234,7 +234,7 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            label: Tr.tr("Blur strength")
+            label: Tr.tr("Shadow blur")
             configNode: root.targetConfig.background.desktopLyrics.shadow
             propertyName: "blur"
             value: root.targetConfig.background.desktopLyrics.shadow.blur / 2.0

@@ -9,6 +9,10 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
+    // When OP's dock owns the bottom edge it also decides which of the two opens on hover;
+    // the launcher's own switch would only be able to break that pairing.
+    readonly property bool dockControlsReveal: Config.dock.enabled && GlobalConfig.hybrid.variants.dock === HybridVariant.Op
+
     title: Tr.tr("Launcher")
     isSubPage: true
 
@@ -36,6 +40,7 @@ PageBase {
         }
 
         ToggleRow {
+            visible: !root.dockControlsReveal
             text: Tr.tr("Show on hover")
             subtext: Tr.tr("Reveal when the cursor reaches the screen edge")
             configNode: root.targetConfig.launcher

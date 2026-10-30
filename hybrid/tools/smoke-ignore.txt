@@ -52,7 +52,7 @@ QObject::installEventFilter\(\): Cannot filter events for objects in a different
 #
 # This does hide a genuinely malformed request, so if a feature that talks to the network
 # stops working, read the log with this file emptied before believing the gate.
-caelestia\.requests: \w+: request failed with error
+aether\.requests: \w+: request failed with error
 
 # The user avatar lives at ~/.face by convention and most accounts do not have one. The
 # dashboard and lock screen both draw a placeholder icon behind it, so a missing file is
@@ -76,7 +76,7 @@ Source file does not exist: .*/\.face
 # because it races the focus change.
 qt\.qpa\.wayland\.textinput: .*Trying to (disable|enable) .* but .* (is focused|has focus)
 
-# Network fetches at startup, same rule as caelestia.requests above: the Pastafarian calendar
+# Network fetches at startup, same rule as aether.requests above: the Pastafarian calendar
 # is fetched from the internet, and inside a throwaway session the connection is closed
 # before it completes. A boot gate must not depend on someone else's uptime.
 Failed to fetch Pastafarian calendar events
@@ -96,6 +96,6 @@ qt\.svg: Invalid path data; path truncated
 # appear in a live session when the window is tiled rather than floating.
 Dispatch request "hl\.dsp\.window\.center\(.*\)" failed with error "info: =\[C\]:-1: No floating window found"
 
-# The weather service's own location lookup (ip-api), same rule as caelestia.requests: a boot
+# The weather service's own location lookup (ip-api), same rule as aether.requests: a boot
 # gate must not depend on someone else's uptime, and this API answers 503 often.
-caelestia\.qml\.services\.weather: ip-api request failed
+aether\.qml\.services\.weather: ip-api request failed

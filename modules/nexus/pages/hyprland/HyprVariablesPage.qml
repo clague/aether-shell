@@ -28,7 +28,7 @@ PageBase {
 
         SectionHeader {
             first: true
-            text: Tr.tr("Apps")
+            text: Tr.tr("Keybind apps")
         }
 
         AppRow {
@@ -98,7 +98,7 @@ PageBase {
 
         HyprIntRow {
             first: true
-            label: Tr.tr("Volume step")
+            label: Tr.tr("Hyprland volume step")
             varKey: "volumeStep"
             from: 1
             to: 100

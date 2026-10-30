@@ -54,7 +54,7 @@ PageBase {
 
         SelectRow {
             first: true
-            label: Tr.tr("Show in fullscreen")
+            label: Tr.tr("Show notifications in fullscreen")
             subtext: Tr.tr("Whether notifications appear over fullscreen apps")
             configNode: root.targetConfig.notifs
             propertyName: "fullscreen"
@@ -123,7 +123,7 @@ PageBase {
 
         SelectRow {
             first: true
-            label: Tr.tr("Show in fullscreen")
+            label: Tr.tr("Show toasts in fullscreen")
             subtext: Tr.tr("Whether toasts appear over fullscreen apps")
             configNode: root.targetConfig.utilities.toasts
             propertyName: "fullscreen"
