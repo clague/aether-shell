@@ -35,6 +35,11 @@ StyledWindow {
         return hasFullscreenOnNormalWs;
     }
 
+    // PropertyChanges is not an item, so Tokens there cannot inherit a screen and
+    // `Tokens.spacing.extraLarge` evaluated to undefined (TypeError in the state bindings,
+    // and the bar margins never applied). Read it from contentItem, which has a screen.
+    readonly property real islandsMargin: GlobalConfig.appearance.islands ? contentItem.Tokens.spacing.extraLarge : 0
+
     property real fsTransitionProg: hasFullscreen ? 1 : 0
     readonly property real sdfBorderOffset: 2 * fsTransitionProg // SDFs joins are not exact, so offset by 2px to ensure nothing shows
     readonly property real borderThickness: contentItem.Config.border.thickness * (1 - fsTransitionProg)
@@ -368,9 +373,9 @@ StyledWindow {
                 PropertyChanges {
                     bar.width: bar.implicitWidth
                     bar.height: undefined
-                    bar.anchors.topMargin: GlobalConfig.appearance.islands ? Tokens.spacing.extraLarge : 0
-                    bar.anchors.bottomMargin: GlobalConfig.appearance.islands ? Tokens.spacing.extraLarge : 0
-                    bar.anchors.leftMargin: GlobalConfig.appearance.islands ? Tokens.spacing.extraLarge : 0
+                    bar.anchors.topMargin: root.islandsMargin
+                    bar.anchors.bottomMargin: root.islandsMargin
+                    bar.anchors.leftMargin: root.islandsMargin
                     bar.anchors.rightMargin: 0
                 }
             },
@@ -389,10 +394,10 @@ StyledWindow {
                 PropertyChanges {
                     bar.width: bar.implicitWidth
                     bar.height: undefined
-                    bar.anchors.topMargin: GlobalConfig.appearance.islands ? Tokens.spacing.extraLarge : 0
-                    bar.anchors.bottomMargin: GlobalConfig.appearance.islands ? Tokens.spacing.extraLarge : 0
+                    bar.anchors.topMargin: root.islandsMargin
+                    bar.anchors.bottomMargin: root.islandsMargin
                     bar.anchors.leftMargin: 0
-                    bar.anchors.rightMargin: GlobalConfig.appearance.islands ? Tokens.spacing.extraLarge : 0
+                    bar.anchors.rightMargin: root.islandsMargin
                 }
             },
             State {
@@ -410,9 +415,9 @@ StyledWindow {
                 PropertyChanges {
                     bar.width: undefined
                     bar.height: bar.implicitHeight
-                    bar.anchors.leftMargin: GlobalConfig.appearance.islands ? Tokens.spacing.extraLarge : 0
-                    bar.anchors.rightMargin: GlobalConfig.appearance.islands ? Tokens.spacing.extraLarge : 0
-                    bar.anchors.topMargin: GlobalConfig.appearance.islands ? Tokens.spacing.extraLarge : 0
+                    bar.anchors.leftMargin: root.islandsMargin
+                    bar.anchors.rightMargin: root.islandsMargin
+                    bar.anchors.topMargin: root.islandsMargin
                     bar.anchors.bottomMargin: 0
                 }
             },
@@ -431,9 +436,9 @@ StyledWindow {
                 PropertyChanges {
                     bar.width: undefined
                     bar.height: bar.implicitHeight
-                    bar.anchors.leftMargin: GlobalConfig.appearance.islands ? Tokens.spacing.extraLarge : 0
-                    bar.anchors.rightMargin: GlobalConfig.appearance.islands ? Tokens.spacing.extraLarge : 0
-                    bar.anchors.bottomMargin: GlobalConfig.appearance.islands ? Tokens.spacing.extraLarge : 0
+                    bar.anchors.leftMargin: root.islandsMargin
+                    bar.anchors.rightMargin: root.islandsMargin
+                    bar.anchors.bottomMargin: root.islandsMargin
                     bar.anchors.topMargin: 0
                 }
             }
