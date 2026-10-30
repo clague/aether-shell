@@ -54,7 +54,12 @@ StyledWindow {
     function getImgPath(): string {
         if (!modelData)
             return "";
-        let path = Paths.absolutePath(String(contentItem.Config.shimeji.path));
+        // The key is `directory` since the config merge; reading `path` silently produced
+        // "<cwd>/undefined/" and every sprite failed to load.
+        const configured = contentItem.Config.shimeji.directory;
+        if (!configured)
+            return "";
+        let path = Paths.absolutePath(String(configured));
         if (!path)
             return "";
 
