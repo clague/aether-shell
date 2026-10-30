@@ -168,7 +168,7 @@ void HyprExtras::connectSocket() {
 void HyprExtras::socketError(QLocalSocket::LocalSocketError error) {
     if (!m_socketValid) {
         qCWarning(lcHypr) << "socketError: unable to connect to Hyprland event socket:" << error;
-        QTimer::singleShot(3000, this, [this]() {
+        QTimer::singleShot(3000, this, [this] {
             connectSocket();
         });
     } else {
@@ -182,7 +182,7 @@ void HyprExtras::socketStateChanged(QLocalSocket::LocalSocketState state) {
             qCWarning(lcHypr) << "socketStateChanged: Hyprland event socket disconnected, scheduling reconnection...";
         }
         m_socketValid = false;
-        QTimer::singleShot(2000, this, [this]() {
+        QTimer::singleShot(2000, this, [this] {
             connectSocket();
         });
         return;

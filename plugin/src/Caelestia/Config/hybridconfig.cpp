@@ -140,7 +140,9 @@ void HybridConfig::reresolve() {
     for (const auto& desc : m_variants->schema().descriptors()) {
         if (desc.isNode || m_variants->isOverride(desc.key))
             continue;
-        m_variants->setValue(desc.key, presetVariant(m_variants, desc.key));
+        // QVariant must carry the enum type: a bare enum converts to int and the settings
+        // layer rejects it, which silently left every preset on the static Midnight default.
+        m_variants->setValue(desc.key, QVariant::fromValue(presetVariant(m_variants, desc.key)));
     }
 }
 
