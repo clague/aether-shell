@@ -57,7 +57,9 @@ DECL = re.compile(
     r"|function\s+(\w+)"
     r"|signal\s+(\w+)"
     # `component Foo: QtObject {}` is a nested type, reached as Singleton.Foo.
-    r"|component\s+(\w+))",
+    r"|component\s+(\w+)"
+    # `enum Mode { ... }` is a type-level enum, reached as Singleton.Mode.
+    r"|enum\s+(\w+))",
     re.M,
 )
 
