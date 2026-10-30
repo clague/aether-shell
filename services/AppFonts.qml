@@ -29,6 +29,9 @@ Singleton {
 
     readonly property string script: Quickshell.shellPath("scripts/app-fonts.py")
 
+    // One script call at a time; later ones wait their turn
+    property var queue: []
+
     function refresh(): void {
         statusProc.running = true;
     }
@@ -102,8 +105,7 @@ Singleton {
         }, null, 4));
     }
 
-    // One script call at a time; later ones wait their turn
-    property var queue: []
+
 
     function run(args: var): void {
         queue = queue.concat([args]);
