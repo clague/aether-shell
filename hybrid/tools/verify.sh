@@ -59,7 +59,11 @@ cmake --build "$BUILD_DIR" 2>&1 | tail -1
 
 step "qmlformat"
 n=0
+# Generated files are exempt: scripts/gen-nexus-search-index.py owns their exact bytes and
+# its --check mode verifies them, so reformatting here would only fight the generator.
+GEN='modules/nexus/SearchIndex.qml'
 for f in $(git ls-files '*.qml'); do
+    [ "$f" = "$GEN" ] && continue
     /usr/lib/qt6/bin/qmlformat "$f" | diff -q "$f" - >/dev/null 2>&1 || { echo "  DRIFT $f"; n=$((n + 1)); }
 done
 count "$n" drift
