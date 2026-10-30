@@ -169,12 +169,12 @@ Item {
                 anchors.fill: parent
                 nState.screen: root.screen
                 nState.animatingContainer: nexus.opacity < 1
-                nState.currentPageIdx: ({
-                        "appearance": 0,
-                        "network": 3,
-                        "bluetooth": 4,
-                        "audio": 5
-                    })[root.queuedMode] ?? 0
+                // The bar can detach the popout straight onto a settings page. Look the page up
+                // by its mode so reordering the Nexus sidebar does not silently open the wrong one.
+                nState.currentPageIdx: {
+                    const i = PageRegistry.pages.findIndex(p => p.mode === root.queuedMode);
+                    return i >= 0 ? i : 0;
+                }
                 onClose: root.close()
             }
         }

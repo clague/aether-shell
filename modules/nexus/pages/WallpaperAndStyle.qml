@@ -339,65 +339,37 @@ PageBase {
         }
 
         SectionHeader {
-            text: Tr.tr("Appearance")
+            text: Tr.tr("Desktop elements")
         }
 
-        ToggleRow {
+        NavRow {
             first: true
-            Layout.fillWidth: true
-            text: Tr.tr("Bezel mode (Pitch black)")
-            subtext: Tr.tr("Make the shell pitch black to blend with display bezels")
-            checked: GlobalConfig.appearance.pitchBlack
-            onToggled: GlobalConfig.appearance.pitchBlack = checked
+            icon: "schedule"
+            text: Tr.tr("Desktop clock")
+            subtext: root.targetConfig.background.desktopClock.enabled ? Tr.tr("Enabled") : Tr.tr("Disabled")
+            onClicked: root.nState.openSubPage(7)
         }
 
-        ToggleRow {
-            Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
-            Layout.fillWidth: true
-            text: Tr.tr("Islands")
-            subtext: Tr.tr("Everything appears as its own floating widget (Very Experimental)")
-            checked: GlobalConfig.appearance.islands
-            onToggled: GlobalConfig.appearance.islands = checked
+        NavRow {
+            icon: "lyrics"
+            text: Tr.tr("Desktop lyrics")
+            subtext: root.targetConfig.background.desktopLyrics.enabled ? Tr.tr("Enabled") : Tr.tr("Disabled")
+            onClicked: root.nState.openSubPage(8)
         }
 
-        ToggleRow {
-            Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
-            Layout.fillWidth: true
-            text: Tr.tr("Transparency")
-            checked: Colours.transparency.enabled
-            onToggled: {
-                GlobalConfig.appearance.transparency.enabled = checked;
-                GlobalConfig.utilities.toasts.transparency = checked;
-            }
+        NavRow {
+            icon: "equalizer"
+            text: Tr.tr("Background visualiser")
+            subtext: root.targetConfig.background.visualiser.enabled ? Tr.tr("Enabled") : Tr.tr("Disabled")
+            onClicked: root.nState.openSubPage(9)
         }
 
-        SliderRow {
-            Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
-            Layout.fillWidth: true
-            label: Tr.tr("Base transparency level")
-            value: Colours.transparency.base
-            valueLabel: Math.round(value * 100) + "%"
-            onMoved: v => GlobalConfig.appearance.transparency.base = v
-            enabled: Colours.transparency.enabled
-        }
-
-        SliderRow {
-            Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
-            Layout.fillWidth: true
-            label: Tr.tr("Layer transparency level")
-            value: Colours.transparency.layers
-            valueLabel: Math.round(value * 100) + "%"
-            onMoved: v => GlobalConfig.appearance.transparency.layers = v
-            enabled: Colours.transparency.enabled
-        }
-
-        ToggleRow {
-            Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
-            Layout.fillWidth: true
+        NavRow {
             last: true
-            text: Tr.tr("Dark theme")
-            checked: !Colours.light
-            onToggled: Colours.setMode(checked ? "dark" : "light")
+            icon: "pets"
+            text: Tr.tr("Shimeji characters")
+            subtext: root.targetConfig.shimeji.enabled ? Tr.tr("Enabled") : Tr.tr("Disabled")
+            onClicked: root.nState.openSubPage(10)
         }
     }
 }

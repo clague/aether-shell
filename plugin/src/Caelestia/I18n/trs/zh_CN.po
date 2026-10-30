@@ -2,6 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: caelestia-shell\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-31 00:21+0800\n"
 "PO-Revision-Date: 2026-10-30 00:00+0800\n"
 "Last-Translator: caelestia-hybrid\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -320,24 +321,21 @@ msgstr "键盘锁定"
 msgid "Capslock: %1"
 msgstr "大写锁定：%1"
 
-#: modules/bar/popouts/LockStatus.qml
-#: modules/nexus/pages/background/BackgroundPage.qml
-#: modules/nexus/pages/DisplayPage.qml
+#: modules/bar/popouts/LockStatus.qml modules/nexus/pages/DisplayPage.qml
 #: modules/nexus/pages/panels/DashboardPanel.qml
 #: modules/nexus/pages/panels/DockPanel.qml
 #: modules/nexus/pages/panels/LauncherPanel.qml
 #: modules/nexus/pages/panels/OsdPanel.qml
 #: modules/nexus/pages/panels/SidebarPanel.qml
 #: modules/nexus/pages/panels/UtilitiesPanel.qml
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
-#: modules/nexus/SearchIndex.qml
+#: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
 msgid "Enabled"
 msgstr "已启用"
 
 #: modules/bar/popouts/LockStatus.qml
-#: modules/nexus/pages/background/BackgroundPage.qml
 #: modules/nexus/pages/network/EthernetDetailPage.qml
 #: modules/nexus/pages/services/QuickSharePage.qml
+#: modules/nexus/pages/WallpaperAndStyle.qml
 msgid "Disabled"
 msgstr "已禁用"
 
@@ -771,7 +769,8 @@ msgid "Apply this layout?"
 msgstr "应用此布局？"
 
 #: modules/displays/DisplayProfileAsk.qml
-msgid "You can still go back afterwards: the layout is only kept if you confirm it."
+msgid ""
+"You can still go back afterwards: the layout is only kept if you confirm it."
 msgstr "之后仍可返回：只有确认后才会保留该布局。"
 
 #: modules/displays/DisplayProfileAsk.qml
@@ -824,7 +823,9 @@ msgstr "没有匹配的快捷键"
 msgid ""
 "Try adding .lua files to\n"
 "~/.config/caelestia/animations/"
-msgstr "尝试将 .lua 文件添加到\n~/.config/caelestia/animations/"
+msgstr ""
+"尝试将 .lua 文件添加到\n"
+"~/.config/caelestia/animations/"
 
 #: modules/launcher/items/CalcItem.qml
 msgid "Calculating..."
@@ -872,7 +873,9 @@ msgid "Expressive"
 msgstr "富有表现力"
 
 #: modules/launcher/services/M3Variants.qml
-msgid "A medium chroma palette. The primary palette's hue is different from the seed colour, for variety."
+msgid ""
+"A medium chroma palette. The primary palette's hue is different from the "
+"seed colour, for variety."
 msgstr "中等饱和度调色板。为增加变化，主色板的色相与种子颜色不同。"
 
 #: modules/launcher/services/M3Variants.qml
@@ -881,7 +884,9 @@ msgid "Fidelity"
 msgstr "忠实"
 
 #: modules/launcher/services/M3Variants.qml
-msgid "Matches the seed colour, even if the seed colour is very bright (high chroma)."
+msgid ""
+"Matches the seed colour, even if the seed colour is very bright (high "
+"chroma)."
 msgstr "与种子颜色匹配，即使种子颜色非常明亮（高饱和度）。"
 
 #: modules/launcher/services/M3Variants.qml
@@ -1018,7 +1023,9 @@ msgstr "面部尝试次数已达上限。请使用密码。"
 msgid ""
 "Caps lock and Num lock are ON.\n"
 "Keyboard layout: %1"
-msgstr "大写锁定和数字锁定已开启。\n键盘布局：%1"
+msgstr ""
+"大写锁定和数字锁定已开启。\n"
+"键盘布局：%1"
 
 #. TRANSLATORS: %1 = the active keyboard layout name, e.g. "English (US)"
 #: modules/lock/center/StateMessage.qml
@@ -1270,27 +1277,8 @@ msgid "Wallpaper & style"
 msgstr "壁纸与样式"
 
 #: modules/nexus/PageRegistry.qml modules/nexus/SearchIndex.qml
-msgid "Wallpaper, fonts, colours"
-msgstr "壁纸、字体、颜色"
-
-#: modules/nexus/PageRegistry.qml
-#: modules/nexus/pages/background/BackgroundPage.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Background elements"
-msgstr "背景元素"
-
-#: modules/nexus/PageRegistry.qml modules/nexus/SearchIndex.qml
-msgid "Clock, lyrics, visualiser, shimeji"
-msgstr "时钟、歌词、可视化、桌宠"
-
-#: modules/nexus/PageRegistry.qml modules/nexus/pages/TokensPage.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Shell Tokens"
-msgstr "Shell 令牌"
-
-#: modules/nexus/PageRegistry.qml modules/nexus/SearchIndex.qml
-msgid "Modify interface spacing, rounding, and sizing"
-msgstr "调整界面间距、圆角与尺寸"
+msgid "Wallpaper, colours, themes and desktop elements"
+msgstr "壁纸、颜色、主题与桌面元素"
 
 #: modules/nexus/PageRegistry.qml modules/nexus/pages/LookAndFeelPage.qml
 #: modules/nexus/SearchIndex.qml
@@ -1298,8 +1286,37 @@ msgid "Look & feel"
 msgstr "外观与体验"
 
 #: modules/nexus/PageRegistry.qml modules/nexus/SearchIndex.qml
-msgid "Density, spacing and other opt-in visual options"
-msgstr "密度、间距及其他可选视觉选项"
+msgid "Density, glass, motion, fonts and Hyprland variables"
+msgstr "密度、毛玻璃、动效、字体与 Hyprland 变量"
+
+#: modules/nexus/PageRegistry.qml modules/nexus/pages/HybridPage.qml
+#: modules/nexus/pages/PanelsPage.qml modules/nexus/SearchIndex.qml
+msgid "Panels"
+msgstr "面板"
+
+#: modules/nexus/PageRegistry.qml modules/nexus/SearchIndex.qml
+msgid "Dashboard, taskbar, launcher, sidebar"
+msgstr "仪表盘、任务栏、启动器、侧边栏"
+
+#: modules/nexus/PageRegistry.qml modules/nexus/pages/AppsPage.qml
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+#: modules/nexus/pages/panels/LauncherPanel.qml modules/nexus/SearchIndex.qml
+msgid "Apps"
+msgstr "应用"
+
+#: modules/nexus/PageRegistry.qml modules/nexus/SearchIndex.qml
+msgid "Default apps, favourites, hidden apps"
+msgstr "默认应用、收藏、隐藏的应用"
+
+#: modules/nexus/PageRegistry.qml modules/nexus/pages/hyprland/HyprlandPage.qml
+#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
+msgid "Hyprland"
+msgstr "Hyprland"
+
+#: modules/nexus/PageRegistry.qml modules/nexus/SearchIndex.qml
+msgid "Window manager configuration"
+msgstr "窗口管理器配置"
 
 #: modules/nexus/PageRegistry.qml modules/nexus/pages/DisplayPage.qml
 #: modules/nexus/pages/panels/LauncherPanel.qml modules/nexus/SearchIndex.qml
@@ -1353,44 +1370,6 @@ msgstr "诊断"
 msgid "Check Wi-Fi, Bluetooth, audio, displays and services"
 msgstr "检查 Wi-Fi、Bluetooth、音频、显示器和各项服务"
 
-#: modules/nexus/PageRegistry.qml modules/nexus/pages/HybridPage.qml
-#: modules/nexus/pages/PanelsPage.qml modules/nexus/SearchIndex.qml
-msgid "Panels"
-msgstr "面板"
-
-#: modules/nexus/PageRegistry.qml modules/nexus/SearchIndex.qml
-msgid "Dashboard, taskbar, launcher, sidebar"
-msgstr "仪表盘、任务栏、启动器、侧边栏"
-
-#: modules/nexus/PageRegistry.qml modules/nexus/pages/AppsPage.qml
-#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
-#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
-#: modules/nexus/pages/panels/LauncherPanel.qml modules/nexus/SearchIndex.qml
-msgid "Apps"
-msgstr "应用"
-
-#: modules/nexus/PageRegistry.qml modules/nexus/SearchIndex.qml
-msgid "Default apps, favourites, hidden apps"
-msgstr "默认应用、收藏、隐藏的应用"
-
-#: modules/nexus/PageRegistry.qml modules/nexus/pages/hyprland/HyprlandPage.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Hyprland"
-msgstr "Hyprland"
-
-#: modules/nexus/PageRegistry.qml modules/nexus/SearchIndex.qml
-msgid "Window manager configuration"
-msgstr "窗口管理器配置"
-
-#: modules/nexus/PageRegistry.qml modules/nexus/pages/ServicesPage.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Services"
-msgstr "服务"
-
-#: modules/nexus/PageRegistry.qml modules/nexus/SearchIndex.qml
-msgid "Poll intervals, lyrics backend"
-msgstr "轮询间隔、歌词后端"
-
 #: modules/nexus/PageRegistry.qml modules/nexus/pages/LanguageAndRegion.qml
 #: modules/nexus/SearchIndex.qml
 msgid "Language & region"
@@ -1400,14 +1379,14 @@ msgstr "语言与地区"
 msgid "UI language, weather location, display units"
 msgstr "界面语言、天气位置、显示单位"
 
-#: modules/nexus/PageRegistry.qml modules/nexus/pages/HybridPage.qml
+#: modules/nexus/PageRegistry.qml modules/nexus/pages/ServicesPage.qml
 #: modules/nexus/SearchIndex.qml
-msgid "Hybrid"
-msgstr "混合"
+msgid "Services"
+msgstr "服务"
 
 #: modules/nexus/PageRegistry.qml modules/nexus/SearchIndex.qml
-msgid "Features imported from each fork, and which one wins"
-msgstr "从各分支导入的功能，以及哪一个优先"
+msgid "Poll intervals, integrations, lyrics backend"
+msgstr "轮询间隔、集成与歌词后端"
 
 #: modules/nexus/PageRegistry.qml modules/nexus/pages/PowerIdlePage.qml
 #: modules/nexus/SearchIndex.qml
@@ -1417,6 +1396,24 @@ msgstr "电源与空闲"
 #: modules/nexus/PageRegistry.qml modules/nexus/SearchIndex.qml
 msgid "Idle timeouts, sleep and screen-off behaviour"
 msgstr "空闲超时、睡眠与熄屏行为"
+
+#: modules/nexus/PageRegistry.qml modules/nexus/pages/TokensPage.qml
+#: modules/nexus/SearchIndex.qml
+msgid "Shell Tokens"
+msgstr "Shell 令牌"
+
+#: modules/nexus/PageRegistry.qml modules/nexus/SearchIndex.qml
+msgid "Modify interface spacing, rounding, and sizing"
+msgstr "调整界面间距、圆角与尺寸"
+
+#: modules/nexus/PageRegistry.qml modules/nexus/pages/HybridPage.qml
+#: modules/nexus/SearchIndex.qml
+msgid "Hybrid"
+msgstr "混合"
+
+#: modules/nexus/PageRegistry.qml modules/nexus/SearchIndex.qml
+msgid "Features imported from each fork, and which one wins"
+msgstr "从各分支导入的功能，以及哪一个优先"
 
 #: modules/nexus/PageRegistry.qml modules/nexus/pages/AboutPage.qml
 #: modules/nexus/SearchIndex.qml
@@ -1578,11 +1575,14 @@ msgid "Browse installed apps, set favourites and hidden"
 msgstr "浏览已安装应用，设置收藏与隐藏"
 
 #: modules/nexus/pages/audio/AppVolumes.qml modules/nexus/pages/AudioPage.qml
+#: modules/nexus/SearchIndex.qml
 msgid "App routing & volumes"
 msgstr "应用路由与音量"
 
 #: modules/nexus/pages/audio/AppVolumes.qml
-msgid "Adjust the volume of individual apps and route them to specific output devices."
+msgid ""
+"Adjust the volume of individual apps and route them to specific output "
+"devices."
 msgstr "调整各个应用的音量，并将其路由到指定的输出设备。"
 
 #: modules/nexus/pages/audio/AppVolumes.qml modules/nexus/pages/AudioPage.qml
@@ -1616,11 +1616,11 @@ msgctxt "no audio outputs"
 msgid "No output devices"
 msgstr "无输出设备"
 
-#: modules/nexus/pages/AudioPage.qml
+#: modules/nexus/pages/AudioPage.qml modules/nexus/SearchIndex.qml
 msgid "Combined Audio Output"
 msgstr "组合音频输出"
 
-#: modules/nexus/pages/AudioPage.qml
+#: modules/nexus/pages/AudioPage.qml modules/nexus/SearchIndex.qml
 msgid "Simultaneous playback across multiple devices"
 msgstr "在多个设备上同时播放"
 
@@ -1716,30 +1716,6 @@ msgstr "为特定应用静音通知声音"
 msgid "Add"
 msgstr "添加"
 
-#: modules/nexus/pages/background/BackgroundPage.qml
-#: modules/nexus/pages/background/DesktopClockPage.qml
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Desktop clock"
-msgstr "桌面时钟"
-
-#: modules/nexus/pages/background/BackgroundPage.qml
-#: modules/nexus/pages/background/DesktopLyricsPage.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Desktop lyrics"
-msgstr "桌面歌词"
-
-#: modules/nexus/pages/background/BackgroundPage.qml
-#: modules/nexus/pages/background/VisualiserPage.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Background visualiser"
-msgstr "背景可视化"
-
-#: modules/nexus/pages/background/BackgroundPage.qml
-#: modules/nexus/pages/background/ShimejiPage.qml modules/nexus/SearchIndex.qml
-msgid "Shimeji characters"
-msgstr "Shimeji 角色"
-
 #: modules/nexus/pages/background/DesktopClockPage.qml
 #: modules/nexus/pages/background/DesktopLyricsPage.qml
 msgid "Top Left"
@@ -1786,6 +1762,11 @@ msgid "Bottom Right"
 msgstr "右下"
 
 #: modules/nexus/pages/background/DesktopClockPage.qml
+#: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
+msgid "Desktop clock"
+msgstr "桌面时钟"
+
+#: modules/nexus/pages/background/DesktopClockPage.qml
 #: modules/nexus/pages/background/DesktopLyricsPage.qml
 #: modules/nexus/pages/background/ShimejiPage.qml
 #: modules/nexus/pages/background/VisualiserPage.qml
@@ -1810,7 +1791,7 @@ msgstr "启用桌面时钟"
 #: modules/nexus/pages/background/DesktopClockPage.qml
 #: modules/nexus/pages/background/DesktopLyricsPage.qml
 #: modules/nexus/pages/background/VisualiserPage.qml
-#: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
+#: modules/nexus/SearchIndex.qml
 msgid "Appearance"
 msgstr "外观"
 
@@ -1860,14 +1841,14 @@ msgstr "不透明度"
 
 #: modules/nexus/pages/background/DesktopClockPage.qml
 #: modules/nexus/pages/background/DesktopLyricsPage.qml
-#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
 #: modules/nexus/SearchIndex.qml
 msgid "Blur"
 msgstr "模糊"
 
 #: modules/nexus/pages/background/DesktopClockPage.qml
 #: modules/nexus/pages/background/DesktopLyricsPage.qml
-#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
 #: modules/nexus/SearchIndex.qml
 msgid "Shadow"
 msgstr "阴影"
@@ -1883,6 +1864,11 @@ msgstr "启用阴影"
 #: modules/nexus/SearchIndex.qml
 msgid "Blur strength"
 msgstr "模糊强度"
+
+#: modules/nexus/pages/background/DesktopLyricsPage.qml
+#: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
+msgid "Desktop lyrics"
+msgstr "桌面歌词"
 
 #: modules/nexus/pages/background/DesktopLyricsPage.qml
 #: modules/nexus/SearchIndex.qml
@@ -1924,6 +1910,11 @@ msgstr "有平铺窗口打开时隐藏歌词"
 msgid "Invert the lyrics color when using light wallpaper"
 msgstr "使用浅色壁纸时反转歌词颜色"
 
+#: modules/nexus/pages/background/ShimejiPage.qml
+#: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
+msgid "Shimeji characters"
+msgstr "Shimeji 角色"
+
 #: modules/nexus/pages/background/ShimejiPage.qml modules/nexus/SearchIndex.qml
 msgid "Enable Shimeji"
 msgstr "启用 Shimeji"
@@ -1939,6 +1930,11 @@ msgstr "有窗口打开时隐藏 Shimeji"
 #: modules/nexus/pages/background/ShimejiPage.qml modules/nexus/SearchIndex.qml
 msgid "Shimeji count per screen"
 msgstr "每块屏幕的 Shimeji 数量"
+
+#: modules/nexus/pages/background/VisualiserPage.qml
+#: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
+msgid "Background visualiser"
+msgstr "背景可视化"
 
 #: modules/nexus/pages/background/VisualiserPage.qml
 #: modules/nexus/SearchIndex.qml
@@ -1975,14 +1971,13 @@ msgstr "圆角"
 msgid "Spacing"
 msgstr "间距"
 
-#. TRANSLATORS: bars of a spectrum analyser, not the taskbar
 #: modules/nexus/pages/background/VisualiserPage.qml
-#: modules/nexus/pages/ServicesPage.qml modules/nexus/SearchIndex.qml
+#: modules/nexus/SearchIndex.qml
 msgid "Visualiser bars"
 msgstr "可视化条数"
 
 #: modules/nexus/pages/background/VisualiserPage.qml
-#: modules/nexus/pages/ServicesPage.qml modules/nexus/SearchIndex.qml
+#: modules/nexus/SearchIndex.qml
 msgid "Number of bars in the audio visualisers"
 msgstr "音频可视化中的条形数量"
 
@@ -2253,8 +2248,12 @@ msgid "%1 Hz"
 msgstr "%1 Hz"
 
 #: modules/nexus/pages/DisplayPage.qml
-msgid "This scale cannot be sent to apps exactly, so some may look blurry or misplaced. 100% or 83% are safer."
-msgstr "此缩放比例无法精确传给应用，因此部分应用可能显示模糊或错位。100% 或 83% 更稳妥。"
+msgid ""
+"This scale cannot be sent to apps exactly, so some may look blurry or "
+"misplaced. 100% or 83% are safer."
+msgstr ""
+"此缩放比例无法精确传给应用，因此部分应用可能显示模糊或错位。100% 或 83% 更稳"
+"妥。"
 
 #: modules/nexus/pages/DisplayPage.qml
 msgid "Makes everything on this display larger or smaller"
@@ -2359,7 +2358,9 @@ msgid "Watch in the background"
 msgstr "在后台监视"
 
 #: modules/nexus/pages/DoctorPage.qml modules/nexus/SearchIndex.qml
-msgid "Look for new problems every few minutes and show a notification. Uses almost no CPU, and pauses in game mode"
+msgid ""
+"Look for new problems every few minutes and show a notification. Uses almost "
+"no CPU, and pauses in game mode"
 msgstr "每隔几分钟查找新问题并显示通知。几乎不占用 CPU，并在游戏模式下暂停"
 
 #: modules/nexus/pages/DoctorPage.qml modules/nexus/SearchIndex.qml
@@ -2597,6 +2598,110 @@ msgstr "MiDnight 的抽屉，或 OP 的轮播与窗口网格"
 msgid "MiDnight's bar section, or OP's auto-hiding panel"
 msgstr "MiDnight 的状态栏区块，或 OP 的自动隐藏面板"
 
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
+msgid "Hyprland appearance"
+msgstr "Hyprland 外观"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+#: modules/nexus/SearchIndex.qml
+msgid "Stored in hypr-vars.lua"
+msgstr "保存在 hypr-vars.lua"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+#: modules/nexus/SearchIndex.qml
+msgid "Hyprland reads this file at startup; clear a row to remove its override."
+msgstr "Hyprland 启动时读取此文件；清除某一行即可移除对应覆盖。"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Blur enabled"
+msgstr "启用模糊"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Blur special workspace"
+msgstr "模糊特殊工作区"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Blur popups"
+msgstr "模糊弹出窗口"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Blur input methods"
+msgstr "模糊输入法窗口"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Blur size"
+msgstr "模糊大小"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Blur passes"
+msgstr "模糊迭代次数"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Blur Xray"
+msgstr "Xray 模糊"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Shadow enabled"
+msgstr "启用阴影"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Shadow range"
+msgstr "阴影范围"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Shadow render power"
+msgstr "阴影渲染强度"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Shadow colour"
+msgstr "阴影颜色"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Gaps"
+msgstr "间隙"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Workspace gaps"
+msgstr "工作区间距"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Window gaps in"
+msgstr "窗口内间距"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Window gaps out"
+msgstr "窗口外间距"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Single window gaps out"
+msgstr "单窗口外间距"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Window styling"
+msgstr "窗口样式"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
+msgid "Window opacity"
+msgstr "窗口不透明度"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Window rounding"
+msgstr "窗口圆角"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Window border size"
+msgstr "窗口边框粗细"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Active window border colour"
+msgstr "活动窗口边框颜色"
+
+#: modules/nexus/pages/hyprland/HyprAppearancePage.qml
+msgid "Inactive window border colour"
+msgstr "非活动窗口边框颜色"
+
 #: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
 #: modules/nexus/pages/hyprland/HyprlandPage.qml modules/nexus/SearchIndex.qml
 msgid "Keybinds"
@@ -2637,9 +2742,9 @@ msgstr "%1 — 同时绑定到 %2"
 msgid "Variables"
 msgstr "变量"
 
-#: modules/nexus/pages/hyprland/HyprlandPage.qml modules/nexus/SearchIndex.qml
-msgid "Manage your hyprland variables"
-msgstr "管理你的 Hyprland 变量"
+#: modules/nexus/pages/hyprland/HyprlandPage.qml
+msgid "Default apps, touchpad and misc variables"
+msgstr "默认应用、触摸板与杂项变量"
 
 #: modules/nexus/pages/hyprland/HyprlandPage.qml modules/nexus/SearchIndex.qml
 msgid "Manage your hyprland keybinds"
@@ -2656,16 +2761,66 @@ msgid "Advanced configuration options"
 msgstr "高级配置选项"
 
 #: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+#: modules/nexus/pages/panels/DashboardPanel.qml modules/nexus/SearchIndex.qml
+msgid "Terminal"
+msgstr "终端"
+
+#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+msgid "Browser"
+msgstr "浏览器"
+
+#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+msgid "Editor"
+msgstr "编辑器"
+
+#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+msgid "File Explorer"
+msgstr "文件管理器"
+
+#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+msgid "Audio Settings"
+msgstr "音频设置"
+
+#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
 msgid "Touchpad"
 msgstr "触摸板"
 
 #: modules/nexus/pages/hyprland/HyprVariablesPage.qml
-msgid "Gaps"
-msgstr "间隙"
+msgid "Disable typing"
+msgstr "打字时禁用触摸板"
 
 #: modules/nexus/pages/hyprland/HyprVariablesPage.qml
-msgid "Window styling"
-msgstr "窗口样式"
+msgid "Scroll factor"
+msgstr "滚动系数"
+
+#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+msgid "Gesture fingers"
+msgstr "手势手指数"
+
+#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+msgid "Workspace swipe fingers"
+msgstr "工作区滑动手指数"
+
+#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+msgid "Gesture fingers more"
+msgstr "更多手势手指数"
+
+#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+#: modules/nexus/pages/ServicesPage.qml modules/nexus/SearchIndex.qml
+msgid "Volume step"
+msgstr "音量步进"
+
+#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+msgid "Cursor theme"
+msgstr "光标主题"
+
+#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+msgid "Cursor size"
+msgstr "光标大小"
+
+#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+msgid "Sleep gesture command"
+msgstr "睡眠手势命令"
 
 #: modules/nexus/pages/LanguageAndRegion.qml
 #: modules/nexus/pages/WallpaperAndStyle.qml
@@ -2802,10 +2957,6 @@ msgstr "概览背后的模糊"
 msgid "Frosted glass instead of a plain dim backdrop"
 msgstr "使用磨砂玻璃而非纯暗色背景"
 
-#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
-msgid "Window opacity"
-msgstr "窗口不透明度"
-
 #: modules/nexus/pages/LookAndFeelPage.qml
 #, qt-format
 msgid "How see-through app windows are (%1% is your config's value)"
@@ -2816,7 +2967,9 @@ msgid "Solid text windows"
 msgstr "文本窗口保持不透明"
 
 #: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
-msgid "Browsers, editors, notes and document viewers stay fully opaque for easier reading"
+msgid ""
+"Browsers, editors, notes and document viewers stay fully opaque for easier "
+"reading"
 msgstr "浏览器、编辑器、笔记和文档查看器保持完全不透明，便于阅读"
 
 #: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
@@ -2826,6 +2979,43 @@ msgstr "将玻璃效果重置为默认"
 #: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
 msgid "Back to the look from your config"
 msgstr "恢复为配置中的外观"
+
+#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
+msgid "Shell appearance"
+msgstr "Shell 外观"
+
+#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
+msgid "Bezel mode (Pitch black)"
+msgstr "边框模式（纯黑）"
+
+#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
+msgid "Make the shell pitch black to blend with display bezels"
+msgstr "使 shell 变为纯黑以与显示器边框融合"
+
+#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
+msgid "Islands"
+msgstr "岛屿"
+
+#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
+msgid "Everything appears as its own floating widget (Very Experimental)"
+msgstr "所有内容都以独立的浮动小组件呈现（非常实验性）"
+
+#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
+#: services/Colours.qml
+msgid "Transparency"
+msgstr "透明度"
+
+#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
+msgid "Base transparency level"
+msgstr "基础透明度"
+
+#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
+msgid "Layer transparency level"
+msgstr "图层透明度"
+
+#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
+msgid "Dark theme"
+msgstr "深色主题"
 
 #: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
 msgid "Motion"
@@ -2910,15 +3100,21 @@ msgstr "文字大小"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
 #, qt-format
-msgid "Fonts are scaled to read like the default ones (×%1 for the sans font, ×%2 for the monospace font). Change this to taste, in %"
-msgstr "字体将缩放至与默认字体相近的阅读效果（无衬线字体 ×%1，等宽字体 ×%2）。可按喜好以 % 为单位调整"
+msgid ""
+"Fonts are scaled to read like the default ones (×%1 for the sans font, ×%2 "
+"for the monospace font). Change this to taste, in %"
+msgstr ""
+"字体将缩放至与默认字体相近的阅读效果（无衬线字体 ×%1，等宽字体 ×%2）。可按喜"
+"好以 % 为单位调整"
 
 #: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
 msgid "Restart the shell to use your new font"
 msgstr "重启 Shell 以使用新字体"
 
 #: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
-msgid "The shell only sees fonts that were installed when it started. Until then it shows another font"
+msgid ""
+"The shell only sees fonts that were installed when it started. Until then it "
+"shows another font"
 msgstr "Shell 只能识别启动时已安装的字体。在此之前会显示其他字体"
 
 #: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
@@ -2953,6 +3149,10 @@ msgstr "字体文件"
 #, qt-format
 msgid "Press again to remove %1"
 msgstr "再次按下以移除 %1"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Blur, shadows, gaps and window borders from hypr-vars.lua"
+msgstr "hypr-vars.lua 中的模糊、阴影、间距与窗口边框"
 
 #: modules/nexus/pages/network/AddNetworkPage.qml
 #: modules/nexus/pages/NetworkPage.qml modules/nexus/SearchIndex.qml
@@ -3025,8 +3225,12 @@ msgstr "添加 VPN 提供商"
 
 #. TRANSLATORS: the four names in brackets are provider identifiers, leave them untranslated
 #: modules/nexus/pages/network/AddVpnPage.qml
-msgid "Built-in names (wireguard, warp, tailscale, netbird) auto-fill their commands. For others, provide the connect/disconnect commands."
-msgstr "内置名称（wireguard、warp、tailscale、netbird）会自动填充其命令。其他名称请提供连接/断开命令。"
+msgid ""
+"Built-in names (wireguard, warp, tailscale, netbird) auto-fill their "
+"commands. For others, provide the connect/disconnect commands."
+msgstr ""
+"内置名称（wireguard、warp、tailscale、netbird）会自动填充其命令。其他名称请提"
+"供连接/断开命令。"
 
 #: modules/nexus/pages/network/AddVpnPage.qml
 msgid "Provider name"
@@ -3586,8 +3790,8 @@ msgid "Tabs"
 msgstr "标签页"
 
 #: modules/nexus/pages/panels/DashboardPanel.qml modules/nexus/SearchIndex.qml
-msgid "Terminal"
-msgstr "终端"
+msgid "Splash"
+msgstr "启动画面"
 
 #: modules/nexus/pages/panels/DashboardPanel.qml modules/nexus/SearchIndex.qml
 msgid "Hyprland splash"
@@ -3891,8 +4095,12 @@ msgid "Shortcut toggle"
 msgstr "快捷键切换"
 
 #: modules/nexus/pages/panels/OverviewPanel.qml
-msgid "Press your configured overview hotkey or run `caelestia ipc overview toggle` to open the taskview at any time."
-msgstr "按下你配置的概览热键，或运行 `caelestia ipc overview toggle`，随时打开任务视图。"
+msgid ""
+"Press your configured overview hotkey or run `caelestia ipc overview toggle` "
+"to open the taskview at any time."
+msgstr ""
+"按下你配置的概览热键，或运行 `caelestia ipc overview toggle`，随时打开任务视"
+"图。"
 
 #: modules/nexus/pages/panels/SidebarPanel.qml
 #: modules/nexus/pages/PanelsPage.qml modules/nexus/SearchIndex.qml
@@ -4133,7 +4341,6 @@ msgid "Rotate text in the opposite direction when the bar is vertical"
 msgstr "状态栏垂直时向相反方向旋转文字"
 
 #: modules/nexus/pages/panels/taskbar/BarSpotify.qml
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
 #: modules/nexus/SearchIndex.qml
 msgid "Auto-hide"
 msgstr "自动隐藏"
@@ -4150,7 +4357,8 @@ msgstr "水平音量滑块"
 
 #: modules/nexus/pages/panels/taskbar/BarSpotify.qml
 #: modules/nexus/SearchIndex.qml
-msgid "Place a horizontal volume slider below the playback controls in the popout"
+msgid ""
+"Place a horizontal volume slider below the playback controls in the popout"
 msgstr "在弹窗的播放控制下方放置水平音量滑块"
 
 #: modules/nexus/pages/panels/taskbar/BarStatusIcons.qml
@@ -5065,10 +5273,6 @@ msgstr "自动"
 msgid "Input increments"
 msgstr "输入步进"
 
-#: modules/nexus/pages/ServicesPage.qml modules/nexus/SearchIndex.qml
-msgid "Volume step"
-msgstr "音量步进"
-
 #: modules/nexus/pages/ServicesPage.qml
 msgid "Amount the volume changes per scroll (%)"
 msgstr "每次滚动时的音量变化量 (%)"
@@ -5089,21 +5293,9 @@ msgstr "最大音量"
 msgid "Upper limit for output volume (%)"
 msgstr "输出音量上限 (%)"
 
-#: modules/nexus/pages/ServicesPage.qml modules/nexus/SearchIndex.qml
-msgid "Service tuning"
-msgstr "服务调优"
-
 #: modules/nexus/pages/ServicesPage.qml
-#: modules/nexus/pages/wallandstyle/ColourSelect.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Smart colour scheme"
-msgstr "智能配色方案"
-
-#: modules/nexus/pages/ServicesPage.qml
-#: modules/nexus/pages/wallandstyle/ColourSelect.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Derive theme mode and variant from the wallpaper"
-msgstr "从壁纸推导主题模式与变体"
+msgid "Integrations"
+msgstr "集成"
 
 #: modules/nexus/pages/ServicesPage.qml
 msgid "Manage how MiDnight behaves while gaming"
@@ -5120,6 +5312,10 @@ msgstr "配置画中画位置与焦点行为"
 #: modules/nexus/pages/ServicesPage.qml
 msgid "Auto-start and discoverability settings"
 msgstr "自动启动与可发现性设置"
+
+#: modules/nexus/pages/ServicesPage.qml modules/nexus/SearchIndex.qml
+msgid "Hardware"
+msgstr "硬件"
 
 #: modules/nexus/pages/ServicesPage.qml
 #, qt-format
@@ -5534,6 +5730,16 @@ msgstr "颜色"
 
 #: modules/nexus/pages/wallandstyle/ColourSelect.qml
 #: modules/nexus/SearchIndex.qml
+msgid "Smart colour scheme"
+msgstr "智能配色方案"
+
+#: modules/nexus/pages/wallandstyle/ColourSelect.qml
+#: modules/nexus/SearchIndex.qml
+msgid "Derive theme mode and variant from the wallpaper"
+msgstr "从壁纸推导主题模式与变体"
+
+#: modules/nexus/pages/wallandstyle/ColourSelect.qml
+#: modules/nexus/SearchIndex.qml
 msgid "Scheme Settings"
 msgstr "配色方案设置"
 
@@ -5556,86 +5762,6 @@ msgstr "方案变体"
 #: modules/nexus/SearchIndex.qml
 msgid "Select the color distribution algorithm"
 msgstr "选择颜色分配算法"
-
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Desktop & background"
-msgstr "桌面与背景"
-
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Display clock widget directly on the desktop wallpaper"
-msgstr "直接在桌面壁纸上显示时钟小组件"
-
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Background audio visualiser"
-msgstr "背景音频可视化"
-
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Render live audio visualiser bars on the background"
-msgstr "在背景上渲染实时音频可视化条形"
-
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Automatically hide visualiser when no audio is playing"
-msgstr "无音频播放时自动隐藏可视化"
-
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Blur effect"
-msgstr "模糊效果"
-
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Apply soft blur to background visualiser bars"
-msgstr "对背景可视化条形应用柔和模糊"
-
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Bar rounding"
-msgstr "条形圆角"
-
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Corner rounding multiplier for visualiser bars"
-msgstr "可视化条形的圆角倍率"
-
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Bar spacing"
-msgstr "条形间距"
-
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Spacing multiplier between visualiser bars"
-msgstr "可视化条形之间的间距倍率"
-
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Borders & Rounding"
-msgstr "边框与圆角"
-
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Border thickness"
-msgstr "边框粗细"
-
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Global border thickness (pixels)"
-msgstr "全局边框粗细（像素）"
-
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Corner rounding"
-msgstr "圆角半径"
-
-#: modules/nexus/pages/wallandstyle/DesktopBackground.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Global corner rounding radius (pixels)"
-msgstr "全局圆角半径（像素）"
 
 #: modules/nexus/pages/wallandstyle/ThemeSelect.qml
 #: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
@@ -5670,8 +5796,19 @@ msgid "Theme Package Guide"
 msgstr "主题包指南"
 
 #: modules/nexus/pages/wallandstyle/ThemeSelect.qml
-msgid "<b>1.</b> Create a folder in <b>~/.local/share/caelestia/themes/[ThemeName]/</b><br><b>2.</b> Add your wallpaper: <b>wallpaper.jpg</b> (or <b>wallpaper.png</b>)<br><b>3.</b> <i>(Optional)</i> Add <b>lock.gif</b>, <b>media.gif</b>, <b>session.gif</b> and <b>notif.png</b> in the same folder<br><b>4.</b> Your theme appears automatically here and via <b>:theme</b> in the launcher!"
-msgstr "<b>1.</b> 在 <b>~/.local/share/caelestia/themes/[ThemeName]/</b> 中创建一个文件夹<br><b>2.</b> 添加你的壁纸：<b>wallpaper.jpg</b>（或 <b>wallpaper.png</b>）<br><b>3.</b> <i>（可选）</i> 在同一文件夹中添加 <b>lock.gif</b>、<b>media.gif</b>、<b>session.gif</b> 和 <b>notif.png</b><br><b>4.</b> 你的主题会自动出现在这里，并可通过启动器中的 <b>:theme</b> 使用！"
+msgid ""
+"<b>1.</b> Create a folder in <b>~/.local/share/caelestia/themes/[ThemeName]/"
+"</b><br><b>2.</b> Add your wallpaper: <b>wallpaper.jpg</b> (or "
+"<b>wallpaper.png</b>)<br><b>3.</b> <i>(Optional)</i> Add <b>lock.gif</b>, "
+"<b>media.gif</b>, <b>session.gif</b> and <b>notif.png</b> in the same "
+"folder<br><b>4.</b> Your theme appears automatically here and via <b>:theme</"
+"b> in the launcher!"
+msgstr ""
+"<b>1.</b> 在 <b>~/.local/share/caelestia/themes/[ThemeName]/</b> 中创建一个文"
+"件夹<br><b>2.</b> 添加你的壁纸：<b>wallpaper.jpg</b>（或 <b>wallpaper.png</"
+"b>）<br><b>3.</b> <i>（可选）</i> 在同一文件夹中添加 <b>lock.gif</b>、"
+"<b>media.gif</b>、<b>session.gif</b> 和 <b>notif.png</b><br><b>4.</b> 你的主"
+"题会自动出现在这里，并可通过启动器中的 <b>:theme</b> 使用！"
 
 #: modules/nexus/pages/wallandstyle/WallpaperEnginePage.qml
 #: modules/nexus/pages/wallandstyle/WallpaperSelect.qml
@@ -5778,42 +5915,9 @@ msgstr "窗口后方时暂停动态壁纸"
 msgid "Animate wallpaper transitions"
 msgstr "为壁纸切换添加动画"
 
-#: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
-msgid "Bezel mode (Pitch black)"
-msgstr "边框模式（纯黑）"
-
-#: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
-msgid "Make the shell pitch black to blend with display bezels"
-msgstr "使 shell 变为纯黑以与显示器边框融合"
-
-#: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
-msgid "Islands"
-msgstr "岛屿"
-
-#: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
-msgid "Everything appears as its own floating widget (Very Experimental)"
-msgstr "所有内容都以独立的浮动小组件呈现（非常实验性）"
-
-#: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
-#: services/Colours.qml
-msgid "Transparency"
-msgstr "透明度"
-
-#: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
-msgid "Base transparency level"
-msgstr "基础透明度"
-
-#: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
-msgid "Layer transparency level"
-msgstr "图层透明度"
-
-#: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
-msgid "Dark theme"
-msgstr "深色主题"
-
-#: modules/nexus/SearchIndex.qml
-msgid "App volumes"
-msgstr "应用音量"
+#: modules/nexus/pages/WallpaperAndStyle.qml
+msgid "Desktop elements"
+msgstr "桌面元素"
 
 #: modules/nexus/SearchResults.qml
 msgid "Search results"
@@ -6654,7 +6758,7 @@ msgid_plural "%n minutes"
 msgstr[0] "%n 分钟"
 
 #: plugin/src/Caelestia/Config/rootnodes.cpp
-#, qt-plural-format, c-format
+#, c-format, qt-plural-format
 msgid "Config loaded with %n issue."
 msgid_plural "Config loaded with %n issues."
 msgstr[0] "配置已加载，存在 %n 个问题。"
@@ -7094,3 +7198,69 @@ msgstr "设置"
 #: plugin/src/Caelestia/Config/launcherconfig.hpp
 msgid "Configure the shell"
 msgstr "配置 Shell"
+
+#~ msgid "Wallpaper, fonts, colours"
+#~ msgstr "壁纸、字体、颜色"
+
+#~ msgid "Background elements"
+#~ msgstr "背景元素"
+
+#~ msgid "Clock, lyrics, visualiser, shimeji"
+#~ msgstr "时钟、歌词、可视化、桌宠"
+
+#~ msgid "Density, spacing and other opt-in visual options"
+#~ msgstr "密度、间距及其他可选视觉选项"
+
+#~ msgid "Service tuning"
+#~ msgstr "服务调优"
+
+#~ msgid "Desktop & background"
+#~ msgstr "桌面与背景"
+
+#~ msgid "Display clock widget directly on the desktop wallpaper"
+#~ msgstr "直接在桌面壁纸上显示时钟小组件"
+
+#~ msgid "Background audio visualiser"
+#~ msgstr "背景音频可视化"
+
+#~ msgid "Render live audio visualiser bars on the background"
+#~ msgstr "在背景上渲染实时音频可视化条形"
+
+#~ msgid "Automatically hide visualiser when no audio is playing"
+#~ msgstr "无音频播放时自动隐藏可视化"
+
+#~ msgid "Blur effect"
+#~ msgstr "模糊效果"
+
+#~ msgid "Apply soft blur to background visualiser bars"
+#~ msgstr "对背景可视化条形应用柔和模糊"
+
+#~ msgid "Bar rounding"
+#~ msgstr "条形圆角"
+
+#~ msgid "Corner rounding multiplier for visualiser bars"
+#~ msgstr "可视化条形的圆角倍率"
+
+#~ msgid "Bar spacing"
+#~ msgstr "条形间距"
+
+#~ msgid "Spacing multiplier between visualiser bars"
+#~ msgstr "可视化条形之间的间距倍率"
+
+#~ msgid "Borders & Rounding"
+#~ msgstr "边框与圆角"
+
+#~ msgid "Border thickness"
+#~ msgstr "边框粗细"
+
+#~ msgid "Global border thickness (pixels)"
+#~ msgstr "全局边框粗细（像素）"
+
+#~ msgid "Corner rounding"
+#~ msgstr "圆角半径"
+
+#~ msgid "Global corner rounding radius (pixels)"
+#~ msgstr "全局圆角半径（像素）"
+
+#~ msgid "App volumes"
+#~ msgstr "应用音量"

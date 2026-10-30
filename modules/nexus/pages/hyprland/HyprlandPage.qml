@@ -19,7 +19,7 @@ PageBase {
             first: true
             icon: "data_object"
             text: Tr.tr("Variables")
-            subtext: Tr.tr("Manage your hyprland variables")
+            subtext: Tr.tr("Default apps, touchpad and misc variables")
             onClicked: root.nState.openSubPage(1)
         }
 

@@ -6,32 +6,41 @@ import Caelestia.I18n
 QtObject {
     id: root
 
+    // The order here must match PageCompRegistry.pageComps
     readonly property list<var> pages: [
         // Appearance
         {
             label: Tr.tr("Wallpaper & style"),
             icon: "palette",
-            description: Tr.tr("Wallpaper, fonts, colours"),
-            category: "appearance"
-        },
-        {
-            label: Tr.tr("Background elements"),
-            icon: "wallpaper",
-            description: Tr.tr("Clock, lyrics, visualiser, shimeji"),
-            category: "appearance"
-        },
-        {
-            label: Tr.tr("Shell Tokens"),
-            icon: "tune",
-            description: Tr.tr("Modify interface spacing, rounding, and sizing"),
+            description: Tr.tr("Wallpaper, colours, themes and desktop elements"),
             category: "appearance",
-            developerOnly: true
+            mode: "appearance"
         },
         {
             label: Tr.tr("Look & feel"),
             icon: "tune",
-            description: Tr.tr("Density, spacing and other opt-in visual options"),
+            description: Tr.tr("Density, glass, motion, fonts and Hyprland variables"),
             category: "appearance"
+        },
+
+        // Desktop
+        {
+            label: Tr.tr("Panels"),
+            icon: "dock_to_bottom",
+            description: Tr.tr("Dashboard, taskbar, launcher, sidebar"),
+            category: "desktop"
+        },
+        {
+            label: Tr.tr("Apps"),
+            icon: "apps",
+            description: Tr.tr("Default apps, favourites, hidden apps"),
+            category: "desktop"
+        },
+        {
+            label: Tr.tr("Hyprland"),
+            icon: "layers",
+            description: Tr.tr("Window manager configuration"),
+            category: "desktop"
         },
 
         // Connectivity
@@ -45,20 +54,23 @@ QtObject {
             label: Tr.tr("Network"),
             icon: "wifi",
             description: Tr.tr("Wi-Fi, ethernet, VPN"),
-            category: "connectivity"
+            category: "connectivity",
+            mode: "network"
         },
         {
             label: Tr.tr("Connected devices"),
             icon: "devices_other",
             description: Tr.tr("Bluetooth, pairing"),
             category: "connectivity",
+            mode: "bluetooth",
             noFill: true
         },
         {
             label: Tr.tr("Audio"),
             icon: "volume_up",
             description: Tr.tr("App volumes, sound devices"),
-            category: "connectivity"
+            category: "connectivity",
+            mode: "audio"
         },
 
         // System
@@ -80,53 +92,38 @@ QtObject {
             description: Tr.tr("Check Wi-Fi, Bluetooth, audio, displays and services"),
             category: "system"
         },
-
-        // Shell
-        {
-            label: Tr.tr("Panels"),
-            icon: "dock_to_bottom",
-            description: Tr.tr("Dashboard, taskbar, launcher, sidebar"),
-            category: "shell"
-        },
-        {
-            label: Tr.tr("Apps"),
-            icon: "apps",
-            description: Tr.tr("Default apps, favourites, hidden apps"),
-            category: "shell"
-        },
-        {
-            label: Tr.tr("Hyprland"),
-            icon: "layers",
-            description: Tr.tr("Window manager configuration"),
-            category: "shell"
-        },
-        {
-            label: Tr.tr("Services"),
-            icon: "build",
-            description: Tr.tr("Poll intervals, lyrics backend"),
-            category: "shell"
-        },
         {
             label: Tr.tr("Language & region"),
             icon: "globe",
             description: Tr.tr("UI language, weather location, display units"),
-            category: "shell"
+            category: "system"
         },
-
-        // Hybrid
         {
-            label: Tr.tr("Hybrid"),
-            icon: "merge",
-            description: Tr.tr("Features imported from each fork, and which one wins"),
-            category: "hybrid"
+            label: Tr.tr("Services"),
+            icon: "build",
+            description: Tr.tr("Poll intervals, integrations, lyrics backend"),
+            category: "system"
         },
-
-        // Power & idle
         {
             label: Tr.tr("Power & idle"),
             icon: "power_settings_new",
             description: Tr.tr("Idle timeouts, sleep and screen-off behaviour"),
-            category: "shell"
+            category: "system"
+        },
+
+        // Advanced
+        {
+            label: Tr.tr("Shell Tokens"),
+            icon: "tune",
+            description: Tr.tr("Modify interface spacing, rounding, and sizing"),
+            category: "advanced",
+            developerOnly: true
+        },
+        {
+            label: Tr.tr("Hybrid"),
+            icon: "merge",
+            description: Tr.tr("Features imported from each fork, and which one wins"),
+            category: "advanced"
         },
 
         // About

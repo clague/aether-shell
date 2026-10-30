@@ -50,17 +50,6 @@ QtObject {
                     ThemeSelect {}
                 }
                 Component {
-                    DesktopBackground {}
-                }
-            }
-        },
-        Component {
-            // Background elements
-            StackPage {
-                Component {
-                    BackgroundPage {}
-                }
-                Component {
                     DesktopClockPage {}
                 }
                 Component {
@@ -75,118 +64,17 @@ QtObject {
             }
         },
         Component {
-            // Shell Tokens
-            StackPage {
-                Component {
-                    TokensPage {}
-                }
-                Component {
-                    RoundingSpacingPage {}
-                }
-                Component {
-                    FontSizesPage {}
-                }
-                Component {
-                    BarDashboardPage {}
-                }
-                Component {
-                    WindowLockPage {}
-                }
-                Component {
-                    ShellElementsPage {}
-                }
-            }
-        },
-        Component {
             // Look & feel
             StackPage {
                 Component {
                     LookAndFeelPage {}
                 }
-            }
-        },
-
-        // Connectivity
-        Component {
-            // Display
-            StackPage {
                 Component {
-                    DisplayPage {}
+                    HyprAppearancePage {}
                 }
             }
         },
-        Component {
-            // Network
-            StackPage {
-                Component {
-                    NetworkPage {}
-                }
-                Component {
-                    EthernetDetailPage {}
-                }
-                Component {
-                    AddNetworkPage {}
-                }
-                Component {
-                    NetworkDetailPage {}
-                }
-                Component {
-                    AddVpnPage {}
-                }
-                Component {
-                    AllNetworksPage {}
-                }
-                Component {
-                    SavedNetworksPage {}
-                }
-                Component {
-                    HotspotPage {}
-                }
-            }
-        },
-        Component {
-            // Bluetooth
-            StackPage {
-                Component {
-                    BluetoothPage {}
-                }
-                Component {
-                    BtDeviceInfo {}
-                }
-                Component {
-                    BluetoothPairing {}
-                }
-            }
-        },
-        Component {
-            // Audio
-            StackPage {
-                Component {
-                    AudioPage {}
-                }
-                Component {
-                    AppVolumes {}
-                }
-            }
-        },
-
-        // System
-        Component {
-            PlaceholderComp {}
-        },
-        Component {
-            PlaceholderComp {}
-        },
-        Component {
-            // Doctor
-            StackPage {
-                Component {
-                    DoctorPage {}
-                }
-            }
-        },
-
-        // Shell
+        // Desktop
         Component {
             // Panels
             StackPage {
@@ -282,6 +170,94 @@ QtObject {
                 }
             }
         },
+        // Connectivity
+        Component {
+            // Display
+            StackPage {
+                Component {
+                    DisplayPage {}
+                }
+            }
+        },
+        Component {
+            // Network
+            StackPage {
+                Component {
+                    NetworkPage {}
+                }
+                Component {
+                    EthernetDetailPage {}
+                }
+                Component {
+                    AddNetworkPage {}
+                }
+                Component {
+                    NetworkDetailPage {}
+                }
+                Component {
+                    AddVpnPage {}
+                }
+                Component {
+                    AllNetworksPage {}
+                }
+                Component {
+                    SavedNetworksPage {}
+                }
+                Component {
+                    HotspotPage {}
+                }
+            }
+        },
+        Component {
+            // Bluetooth
+            StackPage {
+                Component {
+                    BluetoothPage {}
+                }
+                Component {
+                    BtDeviceInfo {}
+                }
+                Component {
+                    BluetoothPairing {}
+                }
+            }
+        },
+        Component {
+            // Audio
+            StackPage {
+                Component {
+                    AudioPage {}
+                }
+                Component {
+                    AppVolumes {}
+                }
+            }
+        },
+        // System
+        Component {
+            // Updates
+            PlaceholderComp {}
+        },
+        Component {
+            // Plugins
+            PlaceholderComp {}
+        },
+        Component {
+            // Doctor
+            StackPage {
+                Component {
+                    DoctorPage {}
+                }
+            }
+        },
+        Component {
+            // Language & region
+            StackPage {
+                Component {
+                    LanguageAndRegion {}
+                }
+            }
+        },
         Component {
             // Services
             StackPage {
@@ -309,32 +285,45 @@ QtObject {
             }
         },
         Component {
-            // Language & region
-            StackPage {
-                Component {
-                    LanguageAndRegion {}
-                }
-            }
-        },
-
-        // Hybrid
-        Component {
-            StackPage {
-                Component {
-                    HybridPage {}
-                }
-            }
-        },
-
-        // Power & idle
-        Component {
+            // Power & idle
             StackPage {
                 Component {
                     PowerIdlePage {}
                 }
             }
         },
-
+        // Advanced
+        Component {
+            // Shell Tokens
+            StackPage {
+                Component {
+                    TokensPage {}
+                }
+                Component {
+                    RoundingSpacingPage {}
+                }
+                Component {
+                    FontSizesPage {}
+                }
+                Component {
+                    BarDashboardPage {}
+                }
+                Component {
+                    WindowLockPage {}
+                }
+                Component {
+                    ShellElementsPage {}
+                }
+            }
+        },
+        Component {
+            // Hybrid
+            StackPage {
+                Component {
+                    HybridPage {}
+                }
+            }
+        },
         // About
         Component {
             StackPage {

@@ -42,6 +42,7 @@ VerticalFadeFlickable {
                             icon: page.icon,
                             description: page.description,
                             category: page.category,
+                            developer: page.developerOnly ?? false,
                             noFill: page.noFill ?? false
                         });
                     }
@@ -57,6 +58,12 @@ VerticalFadeFlickable {
 
                 readonly property bool isCurrentPage: modelData.originalIndex === root.nState.currentPageIdx
 
+                // The developer-only page grows in when it is unlocked, and the row above it
+                // rounds off; both used to be found by a hardcoded index.
+                readonly property bool isDeveloperPage: modelData.developer
+
+                readonly property bool isBeforeDeveloperPage: index + 1 < list.model.length && list.model[index + 1].developer
+
                 readonly property bool isCategoryStart: index === 0 || list.model[index - 1].category !== modelData.category
 
                 readonly property bool isCategoryEnd: index === list.model.length - 1 || list.model[index + 1].category !== modelData.category
@@ -70,14 +77,14 @@ VerticalFadeFlickable {
                 clip: true
 
                 Component.onCompleted: {
-                    if (modelData.originalIndex === 2 && root.nState.justUnlockedDevMode) {
+                    if (item.isDeveloperPage && root.nState.justUnlockedDevMode) {
                         animHeight = 0;
                         animSlide = 0;
                         heightAnim.start();
                         slideAnim.start();
                         isUnlocking = true;
                         unlockTimer.start();
-                    } else if (modelData.originalIndex === 1 && root.nState.justUnlockedDevMode) {
+                    } else if (item.isBeforeDeveloperPage && root.nState.justUnlockedDevMode) {
                         isUnlocking = true;
                         unlockTimer.start();
                     }
@@ -92,21 +99,21 @@ VerticalFadeFlickable {
                     return targetH * animHeight;
                 }
 
-                opacity: modelData.originalIndex === 2 ? animSlide : 1.0
+                opacity: item.isDeveloperPage ? animSlide : 1.0
 
                 transform: Translate {
-                    y: item.modelData.originalIndex === 2 ? (1 - item.animSlide) * -40 : 0
+                    y: item.isDeveloperPage ? (1 - item.animSlide) * -40 : 0
                 }
 
                 color: isCurrentPage ? Colours.palette.m3secondaryContainer : Colours.layer(Colours.palette.m3surfaceContainerHigh, 2)
 
-                topLeftRadius: stateLayer.pressed ? Tokens.rounding.medium : isCurrentPage ? Tokens.rounding.extraLargeIncreased : (isUnlocking && modelData.originalIndex === 2) ? Tokens.rounding.extraLarge : isCategoryStart ? Tokens.rounding.extraLarge : Tokens.rounding.extraSmall
+                topLeftRadius: stateLayer.pressed ? Tokens.rounding.medium : isCurrentPage ? Tokens.rounding.extraLargeIncreased : (isUnlocking && isDeveloperPage) ? Tokens.rounding.extraLarge : isCategoryStart ? Tokens.rounding.extraLarge : Tokens.rounding.extraSmall
 
-                topRightRadius: stateLayer.pressed ? Tokens.rounding.medium : isCurrentPage ? Tokens.rounding.extraLargeIncreased : (isUnlocking && modelData.originalIndex === 2) ? Tokens.rounding.extraLarge : isCategoryStart ? Tokens.rounding.extraLarge : Tokens.rounding.extraSmall
+                topRightRadius: stateLayer.pressed ? Tokens.rounding.medium : isCurrentPage ? Tokens.rounding.extraLargeIncreased : (isUnlocking && isDeveloperPage) ? Tokens.rounding.extraLarge : isCategoryStart ? Tokens.rounding.extraLarge : Tokens.rounding.extraSmall
 
-                bottomLeftRadius: stateLayer.pressed ? Tokens.rounding.medium : isCurrentPage ? Tokens.rounding.extraLargeIncreased : (isUnlocking && modelData.originalIndex === 1) ? Tokens.rounding.extraLarge : isCategoryEnd ? Tokens.rounding.extraLarge : Tokens.rounding.extraSmall
+                bottomLeftRadius: stateLayer.pressed ? Tokens.rounding.medium : isCurrentPage ? Tokens.rounding.extraLargeIncreased : (isUnlocking && isBeforeDeveloperPage) ? Tokens.rounding.extraLarge : isCategoryEnd ? Tokens.rounding.extraLarge : Tokens.rounding.extraSmall
 
-                bottomRightRadius: stateLayer.pressed ? Tokens.rounding.medium : isCurrentPage ? Tokens.rounding.extraLargeIncreased : (isUnlocking && modelData.originalIndex === 1) ? Tokens.rounding.extraLarge : isCategoryEnd ? Tokens.rounding.extraLarge : Tokens.rounding.extraSmall
+                bottomRightRadius: stateLayer.pressed ? Tokens.rounding.medium : isCurrentPage ? Tokens.rounding.extraLargeIncreased : (isUnlocking && isBeforeDeveloperPage) ? Tokens.rounding.extraLarge : isCategoryEnd ? Tokens.rounding.extraLarge : Tokens.rounding.extraSmall
 
                 Timer {
                     id: unlockTimer
@@ -164,7 +171,7 @@ VerticalFadeFlickable {
                     anchors.margins: Tokens.padding.large
                     spacing: Tokens.spacing.medium
 
-                    opacity: item.modelData.originalIndex === 2 ? item.animSlide : 1.0
+                    opacity: item.isDeveloperPage ? item.animSlide : 1.0
 
                     StyledRect {
                         Layout.fillHeight: true

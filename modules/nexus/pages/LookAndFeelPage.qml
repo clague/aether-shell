@@ -194,6 +194,68 @@ PageBase {
         }
 
         SectionHeader {
+            text: Tr.tr("Shell appearance")
+        }
+
+        ToggleRow {
+            first: true
+            Layout.fillWidth: true
+            text: Tr.tr("Bezel mode (Pitch black)")
+            subtext: Tr.tr("Make the shell pitch black to blend with display bezels")
+            checked: GlobalConfig.appearance.pitchBlack
+            onToggled: GlobalConfig.appearance.pitchBlack = checked
+        }
+
+        ToggleRow {
+            Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
+            Layout.fillWidth: true
+            text: Tr.tr("Islands")
+            subtext: Tr.tr("Everything appears as its own floating widget (Very Experimental)")
+            checked: GlobalConfig.appearance.islands
+            onToggled: GlobalConfig.appearance.islands = checked
+        }
+
+        ToggleRow {
+            Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
+            Layout.fillWidth: true
+            text: Tr.tr("Transparency")
+            checked: Colours.transparency.enabled
+            onToggled: {
+                GlobalConfig.appearance.transparency.enabled = checked;
+                GlobalConfig.utilities.toasts.transparency = checked;
+            }
+        }
+
+        SliderRow {
+            Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
+            Layout.fillWidth: true
+            label: Tr.tr("Base transparency level")
+            value: Colours.transparency.base
+            valueLabel: Math.round(value * 100) + "%"
+            onMoved: v => GlobalConfig.appearance.transparency.base = v
+            enabled: Colours.transparency.enabled
+        }
+
+        SliderRow {
+            Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
+            Layout.fillWidth: true
+            label: Tr.tr("Layer transparency level")
+            value: Colours.transparency.layers
+            valueLabel: Math.round(value * 100) + "%"
+            onMoved: v => GlobalConfig.appearance.transparency.layers = v
+            enabled: Colours.transparency.enabled
+        }
+
+        ToggleRow {
+            Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
+            Layout.fillWidth: true
+            last: true
+            text: Tr.tr("Dark theme")
+            checked: !Colours.light
+            onToggled: Colours.setMode(checked ? "dark" : "light")
+        }
+
+        SectionHeader {
             text: Tr.tr("Motion")
         }
 
@@ -472,6 +534,19 @@ PageBase {
                     onTriggered: fontItem.armed = false
                 }
             }
+        }
+
+        SectionHeader {
+            text: Tr.tr("Hyprland")
+        }
+
+        NavRow {
+            first: true
+            last: true
+            icon: "blur_on"
+            text: Tr.tr("Hyprland appearance")
+            subtext: Tr.tr("Blur, shadows, gaps and window borders from hypr-vars.lua")
+            onClicked: root.nState.openSubPage(1)
         }
     }
 }
