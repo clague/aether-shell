@@ -228,15 +228,20 @@ PageBase {
 
                         Repeater {
                             model: [
-                                { id: -1, name: Tr.tr("System Default"), isBt: false, isComb: false, node: null },
+                                {
+                                    id: -1,
+                                    name: Tr.tr("System Default"),
+                                    isBt: false,
+                                    isComb: false,
+                                    node: null
+                                },
                                 ...Audio.sinks.filter(s => s).map(s => ({
-                                    id: s.id,
-                                    name: s.description || s.name,
-                                    isBt: s.properties?.["device.api"] === "bluez5",
-                                    isComb: s.name === Audio.combinedModuleName,
-                                    node: s
-                                }))
-                            ]
+                                            id: s.id,
+                                            name: s.description || s.name,
+                                            isBt: s.properties?.["device.api"] === "bluez5",
+                                            isComb: s.name === Audio.combinedModuleName,
+                                            node: s
+                                        }))]
 
                             delegate: StyledRect {
                                 id: sinkOption

@@ -44,7 +44,7 @@ Singleton {
     readonly property bool isCombinedSinkActive: combinedSinkNode !== null
     property bool routingStateLoaded: false
 
-    signal routingChanged()
+    signal routingChanged
 
     function getStreamTargetId(stream: PwNode): int {
         if (!stream)
@@ -306,11 +306,7 @@ Singleton {
         const isHdmi = desc.includes("hdmi") || desc.includes("displayport") || name.includes("hdmi") || profDesc.includes("hdmi");
         if (isHdmi) {
             const nick = (props["node.nick"] || "").trim();
-            const isGenericName = /^hdmi(\s*\/\s*displayport)?\s*[0-9]+$/i.test(desc.trim()) ||
-                                  /^built-in audio digital stereo \(hdmi\)$/i.test(desc.trim()) ||
-                                  /^hdmi\s+[0-9]+$/i.test(desc.trim()) ||
-                                  /^displayport\s+[0-9]+$/i.test(desc.trim()) ||
-                                  /^hdmi\s*\/\s*dp,\s*pcm=[0-9]+$/i.test(desc.trim());
+            const isGenericName = /^hdmi(\s*\/\s*displayport)?\s*[0-9]+$/i.test(desc.trim()) || /^built-in audio digital stereo \(hdmi\)$/i.test(desc.trim()) || /^hdmi\s+[0-9]+$/i.test(desc.trim()) || /^displayport\s+[0-9]+$/i.test(desc.trim()) || /^hdmi\s*\/\s*dp,\s*pcm=[0-9]+$/i.test(desc.trim());
             // If it has a generic unassigned HDMI hardware name and no custom EDID monitor nick, treat as non-existing
             if (isGenericName && (nick === "" || nick.toLowerCase().includes("hdmi") || nick.toLowerCase().includes("displayport")))
                 return false;
@@ -527,10 +523,10 @@ Singleton {
             if (err === FileViewError.FileNotFound) {
                 root.routingStateLoaded = true;
                 Qt.callLater(() => routingStorage.setText(JSON.stringify({
-                    combinedEnabled: false,
-                    combinedSinkMembers: [],
-                    sinkVolumeTrims: {}
-                }, null, 2)));
+                        combinedEnabled: false,
+                        combinedSinkMembers: [],
+                        sinkVolumeTrims: {}
+                    }, null, 2)));
             }
         }
     }
