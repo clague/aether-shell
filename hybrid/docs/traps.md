@@ -2833,3 +2833,44 @@ The general shape, and the reason this is worth writing down rather than just fi
 crosses three boundaries between the click and the effect -- UI to node, node to store, store to
 consumer -- and a gate that watches one boundary reports success no matter what happens at the
 other two. T62 sat at the second, and gates existed for neither the second nor the third.
+## T66 — Input methods reach layer surfaces through Qt's plugin, not text-input-v3
+
+Symptom: Chinese/Japanese input works everywhere else on the session, and typing *Latin*
+into the launcher works, but pressing the IME toggle there produces nothing. fcitx5's
+`diagnose` shows its focused input context on the previously focused window (for example a
+terminal), never on `org.quickshell`.
+
+Two independent facts about this shell combine into that:
+
+1. **The drawers live on one persistent wlr-layer-shell surface.** `modules/drawers/ContentWindow.qml`
+   is created once at startup with `keyboardFocus` flipping between `None` and `OnDemand`, and
+   it takes the keyboard through `HyprlandFocusGrab` when a drawer opens. The grab delivers
+   *key events* -- which is why typing and Escape work -- but it is not a surface focus, and
+   Hyprland does not forward `zwp_text_input_v3` to layer surfaces at all. Measured with
+   `WAYLAND_DEBUG=1`: the client creates the text-input object once and never receives
+   `enter`. A toplevel in the same process (the Nexus window) does receive it, and the IME works
+   there, which is what made the difference visible.
+2. Qt's own input-context plugin talks to the IME over D-Bus and does not need the compositor
+   to route anything, so it works on a layer surface -- but only if `QT_IM_MODULE` names it.
+   With the variable unset (the default on Wayland, and how this session was configured), Qt
+   picks the text-input protocol instead and the page is silent.
+
+The fix is one line in `shell.qml`:
+
+```qml
+//@ pragma DefaultEnv QT_IM_MODULE=fcitx
+```
+
+`DefaultEnv` rather than `Env`, so a user who has already chosen their module (an ibus user
+setting `QT_IM_MODULE=ibus`, say) keeps their choice; fcitx users get a working default with
+nothing to configure. Verified end to end in the launcher: pinyin preedit and candidates render
+in the search field with `QT_IM_MODULE=fcitx`, and not without it.
+
+If the default is wrong for a machine, set `QT_IM_MODULE` in the Hyprland environment --
+`env = QT_IM_MODULE,ibus` -- and `DefaultEnv` will leave it alone.
+
+The related warning, `qt.qpa.wayland.textinput: Trying to disable X but Y is focused`, is
+QtWayland's own bookkeeping about which surface it thinks has the text-input object. It is a
+consequence of several surfaces existing in one process and is not itself the fault. The
+`TextInput` warnings do not indicate whether an IME is working; the `fcitx5-diagnose` focus
+list does.
