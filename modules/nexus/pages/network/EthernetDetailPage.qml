@@ -43,17 +43,9 @@ PageBase {
 
     property bool savingConfig: false
 
-    readonly property bool hasIpv4Changes: root.ipLoaded && (
-        root.ipMethod !== root.origMethod ||
-        (root.ipMethod === "manual" && (addressField.text.trim() !== root.origAddress || gatewayField.text.trim() !== root.origGateway)) ||
-        ((root.ipMethod === "manual" || root.ipMethod === "auto-dns") && dnsField.text.trim() !== root.origDns)
-    )
+    readonly property bool hasIpv4Changes: root.ipLoaded && (root.ipMethod !== root.origMethod || (root.ipMethod === "manual" && (addressField.text.trim() !== root.origAddress || gatewayField.text.trim() !== root.origGateway)) || ((root.ipMethod === "manual" || root.ipMethod === "auto-dns") && dnsField.text.trim() !== root.origDns))
 
-    readonly property bool hasIpv6Changes: root.ipv6Loaded && (
-        root.ipv6Method !== root.origIpv6Method ||
-        (root.ipv6Method === "manual" && (addressFieldIpv6.text.trim() !== root.origIpv6Address || gatewayFieldIpv6.text.trim() !== root.origIpv6Gateway)) ||
-        ((root.ipv6Method === "manual" || root.ipv6Method === "auto-dns") && dnsFieldIpv6.text.trim() !== root.origIpv6Dns)
-    )
+    readonly property bool hasIpv6Changes: root.ipv6Loaded && (root.ipv6Method !== root.origIpv6Method || (root.ipv6Method === "manual" && (addressFieldIpv6.text.trim() !== root.origIpv6Address || gatewayFieldIpv6.text.trim() !== root.origIpv6Gateway)) || ((root.ipv6Method === "manual" || root.ipv6Method === "auto-dns") && dnsFieldIpv6.text.trim() !== root.origIpv6Dns))
 
     readonly property bool hasChanges: root.hasIpv4Changes || root.hasIpv6Changes
 
@@ -83,13 +75,7 @@ PageBase {
             if (!cfg)
                 return;
             root.ipv6Method = cfg.method;
-            methodSelectIpv6.active = cfg.method === "manual" ? manualItemIpv6 : (
-                cfg.method === "auto-dns" ? autoDnsItemIpv6 : (
-                    cfg.method === "link-local" ? linkLocalItemIpv6 : (
-                        cfg.method === "disabled" ? disabledItemIpv6 : autoItemIpv6
-                    )
-                )
-            );
+            methodSelectIpv6.active = cfg.method === "manual" ? manualItemIpv6 : (cfg.method === "auto-dns" ? autoDnsItemIpv6 : (cfg.method === "link-local" ? linkLocalItemIpv6 : (cfg.method === "disabled" ? disabledItemIpv6 : autoItemIpv6)));
             addressFieldIpv6.text = cfg.address;
             gatewayFieldIpv6.text = cfg.gateway;
             dnsFieldIpv6.text = cfg.dns;
@@ -518,7 +504,8 @@ PageBase {
                 inputMethodHints: Qt.ImhNoPredictiveText
                 validate: text => {
                     const trimmed = (text || "").trim();
-                    if (!trimmed) return true;
+                    if (!trimmed)
+                        return true;
                     const parts = trimmed.split(",");
                     const ipRegex = /^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:))$/;
                     return parts.every(p => ipRegex.test(p.trim()));

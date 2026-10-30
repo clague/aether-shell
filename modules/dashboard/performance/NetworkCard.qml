@@ -54,11 +54,7 @@ StyledRect {
             SparklineItem {
                 id: sparkline
 
-                readonly property real bufferMax: Math.max(
-                    NetworkUsage.downloadBuffer && NetworkUsage.downloadBuffer.maximum ? NetworkUsage.downloadBuffer.maximum : 0,
-                    NetworkUsage.uploadBuffer && NetworkUsage.uploadBuffer.maximum ? NetworkUsage.uploadBuffer.maximum : 0,
-                    1024
-                )
+                readonly property real bufferMax: Math.max(NetworkUsage.downloadBuffer && NetworkUsage.downloadBuffer.maximum ? NetworkUsage.downloadBuffer.maximum : 0, NetworkUsage.uploadBuffer && NetworkUsage.uploadBuffer.maximum ? NetworkUsage.uploadBuffer.maximum : 0, 1024)
                 property real targetMax: bufferMax
                 property real smoothMax: bufferMax
 
