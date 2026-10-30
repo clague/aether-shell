@@ -159,8 +159,6 @@ Singleton {
         }, null, 4));
     }
 
-
-
     function run(args: var): void {
         queue = queue.concat([args]);
         if (!busy)

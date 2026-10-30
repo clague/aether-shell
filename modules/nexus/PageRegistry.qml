@@ -27,7 +27,6 @@ QtObject {
             category: "appearance",
             developerOnly: true
         },
-
         {
             label: Tr.tr("Look & feel"),
             icon: "tune",

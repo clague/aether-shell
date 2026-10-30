@@ -97,7 +97,6 @@ QtObject {
                 }
             }
         },
-
         Component {
             // Look & feel
             StackPage {
