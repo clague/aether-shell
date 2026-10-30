@@ -19,17 +19,39 @@ ColumnLayout {
         id: searchField
 
         z: 3
+
         Layout.fillWidth: true
 
         placeholderText: Tr.tr("Search settings")
+
         font: Tokens.font.body.large
 
         bg.color: Colours.tPalette.m3surfaceContainerLowest
+
         bg.border.color: Colours.palette.m3outlineVariant
+
         searchIcon.fontStyle: Tokens.font.icon.medium
+
         searchIcon.anchors.leftMargin: Tokens.padding.largeIncreased
+
         clearIcon.font: Tokens.font.icon.medium
+
         clearIcon.padding: Tokens.padding.extraSmall
+
+        Keys.onDownPressed: root.nState.searchMove(1)
+
+        Keys.onUpPressed: root.nState.searchMove(-1)
+
+        Keys.onReturnPressed: root.nState.searchActivate()
+
+        Keys.onEnterPressed: root.nState.searchActivate()
+
+        Keys.onEscapePressed: event => {
+            if (text.length > 0)
+                clear();
+            else
+                event.accepted = false;
+        }
 
         Behavior on bg.border.color {
             CAnim {}
@@ -37,23 +59,53 @@ ColumnLayout {
 
         Binding {
             target: root.nState
+
             property: "searchOpen"
+
             value: searchField.text.length > 0
+        }
+
+        Binding {
+            target: root.nState
+
+            property: "searchText"
+
+            value: searchField.text
+        }
+
+        Connections {
+            function onFocusSearch(): void {
+                searchField.forceActiveFocus();
+                searchField.selectAll();
+            }
+
+            function onClearSearch(): void {
+                searchField.clear();
+            }
+
+            target: root.nState
         }
     }
 
     MonitorTargetSelector {
         z: 2
+
         Layout.fillWidth: true
+
         nState: root.nState
     }
 
     NavLocations {
         z: 1
+
         Layout.fillWidth: true
+
         Layout.fillHeight: true
+
         Layout.topMargin: -topMargin
+
         Layout.bottomMargin: -bottomMargin
+
         nState: root.nState
     }
 }
