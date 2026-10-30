@@ -170,6 +170,10 @@ bool CUtils::writeFile(const QString& path, const QString& content) {
     return true;
 }
 
+QString CUtils::findExecutable(const QString& name) {
+    return QStandardPaths::findExecutable(name);
+}
+
 qreal CUtils::clamp(qreal value, qreal min, qreal max) {
     return qBound(min, value, max);
 }

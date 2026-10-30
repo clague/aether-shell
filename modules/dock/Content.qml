@@ -79,7 +79,7 @@ Item {
     readonly property bool hasContent: GlobalConfig.dock.pinnedApps.length > 0 || runningOnlyApps.length > 0
 
     // ── Helpers ──────────────────────────────────────────────────────
-    function getAppEntry(id: string) {
+    function getAppEntry(id: string): var {
         if (!id)
             return null;
         for (let i = 0; i < Apps.list.length; ++i) {
@@ -392,7 +392,7 @@ Item {
 
     // ── Connections & background handlers ────────────────────────────
     Connections {
-        function onDockChanged() {
+        function onDockChanged(): void {
             if (!root.screenState.dock) {
                 root.editMode = false;
                 contextMenu.close();
