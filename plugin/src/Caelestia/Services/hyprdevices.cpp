@@ -116,8 +116,11 @@ bool HyprKeyboard::updateLastIpcObject(const QJsonObject& object) {
     if (last.value(u"active_keymap"_s) != object.value(u"active_keymap"_s)) {
         dirty = true;
         emit activeKeymapChanged();
-        if (isMain && !last.value(u"active_keymap"_s).toString().isEmpty())
-            toastKbLayout(object.value(u"active_keymap"_s).toString());
+        // A virtual or half-configured keyboard can report an empty or literal "error"
+        // keymap; toasting "Layout changed to: error" is noise, not information.
+        const auto keymap = object.value(u"active_keymap"_s).toString();
+        if (isMain && !last.value(u"active_keymap"_s).toString().isEmpty() && !keymap.isEmpty() && keymap != u"error"_s)
+            toastKbLayout(keymap);
     }
     if (last.value(u"capsLock"_s) != object.value(u"capsLock"_s)) {
         dirty = true;
