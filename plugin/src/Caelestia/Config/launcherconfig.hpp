@@ -166,6 +166,12 @@ class LauncherConfig : public settings::ObjectNode {
                 { u"command"_s, QStringList{ u"autocomplete"_s, u"animations"_s } },
             }),
             vmap({
+                { u"name"_s, markCtx(u"Transparency"_s, u"launcher action"_s) },
+                { u"icon"_s, u"opacity"_s },
+                { u"description"_s, mark(u"Toggle transparency and blur"_s) },
+                { u"command"_s, QStringList{ u"toggleTransparency"_s } },
+            }),
+            vmap({
                 { u"name"_s, markCtx(u"Settings"_s, u"launcher action"_s) },
                 { u"icon"_s, u"settings"_s },
                 { u"description"_s, mark(u"Configure the shell"_s) },

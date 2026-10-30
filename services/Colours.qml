@@ -5,6 +5,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Caelestia.Config
+import Caelestia.I18n
 import Caelestia.Images
 import Caelestia.State
 import qs.services
@@ -85,6 +86,20 @@ Singleton {
             const propName = name.startsWith("term") ? name : `m3${name}`;
             if (colours.hasOwnProperty(propName))
                 colours[propName] = `#${colour}`;
+        }
+    }
+
+    function toggleTransparency(notify: bool): void {
+        const nextState = !transparency.enabled;
+        GlobalConfig.appearance.transparency.enabled = nextState;
+        if (notify ?? false) {
+            Quickshell.execDetached([
+                "notify-send",
+                "-a", "Caelestia",
+                "-i", "opacity",
+                Tr.tr("Transparency"),
+                nextState ? Tr.tr("Transparency & blur enabled") : Tr.tr("Transparency & blur disabled")
+            ]);
         }
     }
 
