@@ -19,6 +19,9 @@ CustomMouseArea {
     required property bool fullscreen
 
     property point dragStart
+    // A press that moves this far is a drag, not a click. Needed because the click that ends
+    // the drag opening a drawer would otherwise hit the outside-click close below.
+    property bool draggedSincePress
     property bool dashboardShortcutActive
     property bool osdShortcutActive
     property bool utilitiesShortcutActive
@@ -100,14 +103,17 @@ CustomMouseArea {
     acceptedButtons: fullscreen ? Qt.NoButton : Qt.AllButtons
     hoverEnabled: true
 
-    onPressed: event => dragStart = Qt.point(event.x, event.y)
+    onPressed: event => {
+        draggedSincePress = false;
+        dragStart = Qt.point(event.x, event.y);
+    }
 
     // The launcher and sidebar hold real keyboard focus (they need it for the IME), which
     // means no focus grab is available to close them when the user clicks elsewhere. Close
     // them here instead: this MouseArea receives the click because the mask covers the whole
     // window while they are open, and panels sit above it so clicks inside still work.
     onClicked: event => {
-        if (event.button !== Qt.LeftButton)
+        if (event.button !== Qt.LeftButton || root.draggedSincePress)
             return;
         if (root.screenState.launcher && !inBottomPanel(root.panels.launcher, event.x, event.y))
             root.screenState.launcher = false;
@@ -146,6 +152,9 @@ CustomMouseArea {
     }
 
     onPositionChanged: event => {
+        if (pressed && !draggedSincePress && (Math.abs(event.x - dragStart.x) > 5 || Math.abs(event.y - dragStart.y) > 5))
+            draggedSincePress = true;
+
         if (popouts.isDetached)
             return;
 
