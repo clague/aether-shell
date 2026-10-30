@@ -189,27 +189,8 @@ PageBase {
             onMoved: v => GlobalConfig.services.maxVolume = v / 100
         }
 
-        // Service tuning
         SectionHeader {
-            text: Tr.tr("Service tuning")
-        }
-
-        StepperRow {
-            // TRANSLATORS: bars of a spectrum analyser, not the taskbar
-            label: Tr.tr("Visualiser bars")
-            subtext: Tr.tr("Number of bars in the audio visualisers")
-            value: GlobalConfig.services.visualiserBars
-            from: 10
-            to: 120
-            stepSize: 2
-            onMoved: v => GlobalConfig.services.visualiserBars = v
-        }
-
-        ToggleRow {
-            text: Tr.tr("Smart colour scheme")
-            subtext: Tr.tr("Derive theme mode and variant from the wallpaper")
-            checked: GlobalConfig.services.smartScheme
-            onToggled: GlobalConfig.services.smartScheme = checked
+            text: Tr.tr("Integrations")
         }
 
         NavRow {
@@ -238,6 +219,10 @@ PageBase {
             text: Tr.tr("Quick Share")
             subtext: Tr.tr("Auto-start and discoverability settings")
             onClicked: root.nState.openSubPage(6)
+        }
+
+        SectionHeader {
+            text: Tr.tr("Hardware")
         }
 
         SelectRow {

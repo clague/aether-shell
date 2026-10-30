@@ -290,9 +290,9 @@ PageBase {
             }
         }
 
-        // General
+        // Splash
         SectionHeader {
-            text: Tr.tr("General")
+            text: Tr.tr("Splash")
         }
 
         ToggleRow {
