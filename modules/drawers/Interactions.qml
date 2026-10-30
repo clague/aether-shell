@@ -127,7 +127,7 @@ CustomMouseArea {
             if (Config.sidebar.showOnHover && !sidebarShortcutActive)
                 screenState.sidebar = false;
 
-            if (root.dockActive && Config.dock.showOnHover && !panels.dock.contextMenuOpen)
+            if (root.dockActive && Config.dock.showOnHover && !panels.dock?.contextMenuOpen)
                 dockHideTimer.start();
         }
     }
@@ -298,7 +298,7 @@ CustomMouseArea {
                 if (showDock) {
                     dockHideTimer.stop();
                     screenState.dock = true;
-                } else if (screenState.dock && !dockHideTimer.running && !panels.dock.contextMenuOpen)
+                } else if (screenState.dock && !dockHideTimer.running && !panels.dock?.contextMenuOpen)
                     dockHideTimer.start();
             }
         }
