@@ -3,7 +3,7 @@
 pragma Singleton
 
 import QtQuick
-import Caelestia.I18n
+import Aether.I18n
 
 QtObject {
     readonly property list<var> entries: [
@@ -452,7 +452,7 @@ QtObject {
         { kind: "row", page: 16, sub: 0, label: Tr.tr("Distro"), subtext: "", section: Tr.tr("System"), subTitle: Tr.tr("About"), kw: [] },
         { kind: "row", page: 16, sub: 0, label: Tr.tr("Kernel"), subtext: "", section: Tr.tr("System"), subTitle: Tr.tr("About"), kw: [] },
         { kind: "row", page: 16, sub: 0, label: Tr.tr("Firmware"), subtext: "", section: Tr.tr("System"), subTitle: Tr.tr("About"), kw: [] },
-        { kind: "row", page: 16, sub: 0, label: Tr.trCtx("Shell", "the caelestia shell itself, not a unix shell"), subtext: "", section: Tr.tr("Software"), subTitle: Tr.tr("About"), kw: [] },
+        { kind: "row", page: 16, sub: 0, label: Tr.trCtx("Shell", "the Aether shell itself, not a unix shell"), subtext: "", section: Tr.tr("Software"), subTitle: Tr.tr("About"), kw: [] },
         { kind: "row", page: 16, sub: 0, label: Tr.trCtx("CLI", "the caelestia command line tool"), subtext: "", section: Tr.tr("Software"), subTitle: Tr.tr("About"), kw: [] },
         { kind: "row", page: 16, sub: 0, label: Tr.tr("Loaded plugins"), subtext: "", section: Tr.tr("Plugins"), subTitle: Tr.tr("About"), kw: [] },
     ]

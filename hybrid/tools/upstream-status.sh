@@ -83,7 +83,7 @@ for pair in "caelestia:caelestia/main" "op:op/main" "midnight:midnight/main"; do
 
         # Flag the changes most likely to hurt (traps T7, T10).
         risky=$(git diff --name-only "$base" "$ref" \
-            | grep -E '^plugin/src/Caelestia/(Config|Settings|Plugins)/|^modules/drawers/|^services/(Audio|Colours|Wallpapers)\.qml' \
+            | grep -E '^plugin/src/Aether/(Config|Settings|Plugins)/|^modules/drawers/|^services/(Audio|Colours|Wallpapers)\.qml' \
             || true)
         if [ -n "$risky" ]; then
             printf '  \033[1;33mhigh-risk paths in this range:\033[0m\n'

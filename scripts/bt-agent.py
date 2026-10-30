@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bluetooth pairing agent for Caelestia shell.
+"""Bluetooth pairing agent for Aether shell.
 
 Registers as a BlueZ Agent1 on the system D-Bus and communicates
 with the Quickshell UI via a Unix domain socket using newline-delimited JSON.

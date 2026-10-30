@@ -5,7 +5,7 @@ import QtQuick
 import QtQml
 import Quickshell
 import Quickshell.Hyprland
-import Caelestia.Config
+import Aether.Config
 import qs.services
 
 Singleton {

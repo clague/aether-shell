@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render the shimeji sprite set for the Caelestia sparkle.
+"""Render the shimeji sprite set for the Aether sparkle.
 
 modules/shimeji/ShimejiSprite.qml names its frames by number, so the filenames are fixed:
 only the sixteen listed there are ever loaded, and those are the only ones generated. The

@@ -12,7 +12,7 @@
 
 #include "QuickShare/QuickShareDiscovery.cpp" // NOLINT(bugprone-suspicious-include)
 
-using caelestia::services::deviceNameFromTxtRecords;
+using aether::services::deviceNameFromTxtRecords;
 
 namespace {
 

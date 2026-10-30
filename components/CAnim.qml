@@ -1,5 +1,5 @@
 import QtQuick
-import Caelestia.Config
+import Aether.Config
 
 ColorAnimation {
     duration: Tokens.anim.durations.expressiveSlowEffects

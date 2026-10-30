@@ -31,7 +31,7 @@ exist yet.
 
 ## Status
 
-The `hybrid` block is real: `plugin/src/Caelestia/Config/hybridconfig.hpp` backs it, every key has a
+The `hybrid` block is real: `plugin/src/Aether/Config/hybridconfig.hpp` backs it, every key has a
 schema entry, and every flag has a consumer. A key that is *not* in that schema is rejected rather
 than ignored — `settings::Node` warns on unknown keys, wrong types and bad enum values, and
 `smoke-matrix.sh` treats those warnings as failures.

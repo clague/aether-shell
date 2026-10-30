@@ -1,9 +1,9 @@
 pragma Singleton
 
 import QtQuick
-import Caelestia
-import Caelestia.Config
-import Caelestia.Services
+import Aether
+import Aether.Config
+import Aether.Services
 
 QtObject {
     id: root

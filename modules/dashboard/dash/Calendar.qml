@@ -6,8 +6,8 @@ import QtQuick.Effects
 import QtQuick.Layouts
 import QtQuick.Shapes
 import M3Shapes
-import Caelestia.Config
-import Caelestia.I18n
+import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.controls
 import qs.components.effects

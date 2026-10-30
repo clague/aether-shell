@@ -2,7 +2,7 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
-import Caelestia
+import Aether
 
 // Read/write access to ~/.config/caelestia/hypr-vars.lua, the override table that the Hyprland
 // config requires next to its own variables. Nexus uses it from Hyprland > Variables (input and

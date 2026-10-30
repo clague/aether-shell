@@ -3,9 +3,9 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Effects
 import QtQuick.Layouts
-import Caelestia.Config
-import Caelestia.I18n
-import Caelestia.Services
+import Aether.Config
+import Aether.I18n
+import Aether.Services
 import qs.components
 import qs.components.containers
 import qs.components.controls

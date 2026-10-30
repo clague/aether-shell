@@ -4,7 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
-import Caelestia.Config
+import Aether.Config
 import qs.components
 import qs.components.containers
 import qs.components.controls
@@ -25,7 +25,7 @@ Item {
 
     readonly property string prompt: {
         const user = Quickshell.env("USER") || "user";
-        return user + "@" + (root.hostname !== "" ? root.hostname : "caelestia");
+        return user + "@" + (root.hostname !== "" ? root.hostname : "aether");
     }
 
     function ansiToHtml(ansiStr) {

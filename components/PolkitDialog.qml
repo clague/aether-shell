@@ -7,7 +7,7 @@ import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.Polkit 0.1
 import M3Shapes
-import Caelestia.Config
+import Aether.Config
 import qs.components
 import qs.components.containers
 import qs.services

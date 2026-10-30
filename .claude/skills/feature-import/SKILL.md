@@ -17,7 +17,7 @@ one per PR.
 
 Before starting, check three things:
 
-1. **Does upstream already have it?** Look in `$CAELESTIA_REFS/upstream` first. Upstream absorbed
+1. **Does upstream already have it?** Look in `$AETHER_REFS/upstream` first. Upstream absorbed
    `NetworkUsage` into C++ and built config layering that supersedes MiDnight's per-monitor work
    (T7). Importing something upstream has since implemented is pure debt.
 2. **Do both forks have it?** If so, the default is **one merged implementation with config
@@ -32,7 +32,7 @@ writing anything.
 ## 1. Scope the import
 
 ```bash
-REFS=${CAELESTIA_REFS:-../caelestia-refs}
+REFS=${AETHER_REFS:-../aether-refs}
 SRC=op          # or midnight
 
 # What files does the feature span?
@@ -141,7 +141,7 @@ not exist yet, or an asset question. Check `git ls-files` before planning any of
 | Overview | `op` | **Do not import as a feature.** 12 files under `modules/overview/`, but MiDnight also ships `modules/drawers/WorkspaceOverview.qml` (447 lines), it is already in this tree, and `hybrid.features.overview` already gates it. This is a dual site (the fifth), so it is a `hybrid.variants` question for Phase 7, not an import. |
 | Hotspot | `op` | **Done** — PR #2, `hybrid.features.hotspot`. `dnsmasq` is a runtime *message* from `nmcli`, not a build dependency. Shipped a published default PSK and logged the generated one; see T41. |
 | BtAgent | `op` | **Done** — PR #4, `hybrid.features.btAgent`. Adds `python-dbus` and `python-gobject` runtime deps. Its agent claims the system default BlueZ role, so its lifetime is tied to the dialog rather than the shell; see T43. |
-| GPU detection | `op` | C++: `plugin/src/Caelestia/Services/gpu.{cpp,hpp}`. Upstream has since typed GPU kind as an enum — check for overlap. |
+| GPU detection | `op` | C++: `plugin/src/Aether/Services/gpu.{cpp,hpp}`. Upstream has since typed GPU kind as an enum — check for overlap. |
 | Theme manager | `op` | Ships large binary theme assets with **unresolved licensing**. Import the code; hold the assets. |
 | Pattern lock | `op` | **Blocked (T3, D10).** Security defect. Do not import without the rework. |
 | Wallpaper features | `midnight` | **Already here — not an import.** `services/Wallpapers.qml` is 525 lines in this tree (upstream 125, MiDnight 486, merged forward in Phase 2). The state model *is* the feature (T6). The only open part is the CLI: `--extract-thumbs` lives in the separate `caelestia-dots/cli` repo (D6), which is not this repository. |

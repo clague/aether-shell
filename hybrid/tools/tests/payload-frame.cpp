@@ -14,8 +14,8 @@
 
 #include "QuickShare/QuickShareConnection.cpp" // NOLINT(bugprone-suspicious-include)
 
-using caelestia::services::disconnectionFrame;
-using caelestia::services::fileChunkFrame;
+using aether::services::disconnectionFrame;
+using aether::services::fileChunkFrame;
 namespace nc = location::nearby::connections;
 
 namespace {

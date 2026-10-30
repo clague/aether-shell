@@ -2,9 +2,9 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import M3Shapes
-import Caelestia
-import Caelestia.Config
-import Caelestia.Multimedia
+import Aether
+import Aether.Config
+import Aether.Multimedia
 import qs.components
 import qs.components.effects
 import qs.services

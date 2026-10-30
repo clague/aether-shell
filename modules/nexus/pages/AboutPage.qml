@@ -1,9 +1,9 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
-import Caelestia
-import Caelestia.Config
-import Caelestia.I18n
+import Aether
+import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.services
 import qs.utils
@@ -73,14 +73,14 @@ PageBase {
                 StyledText {
                     Layout.alignment: Qt.AlignHCenter
                     Layout.topMargin: Tokens.spacing.small
-                    text: "MiDnight"
+                    text: "Aether"
                     font: Tokens.font.headline.builders.large.width(110).build()
                 }
 
                 StyledText {
                     Layout.alignment: Qt.AlignHCenter
                     Layout.topMargin: Tokens.spacing.small
-                    text: Tr.tr("by DiM • Basically Caelestia+")
+                    text: Tr.tr("MiDnight × OP-Caelestia on Caelestia")
                     color: Colours.palette.m3onSurfaceVariant
                     font: Tokens.font.label.medium
                     opacity: 0.8
@@ -155,7 +155,7 @@ PageBase {
 
         InfoRow {
             first: true
-            label: Tr.trCtx("Shell", "the caelestia shell itself, not a unix shell")
+            label: Tr.trCtx("Shell", "the Aether shell itself, not a unix shell")
             value: CUtils.version || "…"
         }
 

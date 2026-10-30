@@ -18,7 +18,7 @@ set -euo pipefail
 cd "$(git rev-parse --show-toplevel)"
 ROOT=$PWD
 
-DEV_HOME=${CAELESTIA_DEV_HOME:-${XDG_DATA_HOME:-$HOME/.local/share}/caelestia-hybrid-dev}
+DEV_HOME=${AETHER_DEV_HOME:-${XDG_DATA_HOME:-$HOME/.local/share}/aether-dev}
 BUILD_DIR=${BUILD_DIR:-$ROOT/build}
 QS=${QS:-qs}
 PRESET=recommended
@@ -54,8 +54,8 @@ CFG_FILE=$CFG_HOME/caelestia/shell.json
 if [ "$RESET" = 1 ]; then
     # Scoped to DEV_HOME only. Guard against a mis-set env var pointing at something real.
     case $DEV_HOME in
-        */caelestia-hybrid-dev) printf '%s resetting %s\n' "$(blue ==\>)" "$DEV_HOME"; rm -rf "$DEV_HOME" ;;
-        *) printf '%s CAELESTIA_DEV_HOME does not end in caelestia-hybrid-dev; refusing to --reset %s\n' "$(red fail)" "$DEV_HOME"; exit 2 ;;
+        */aether-dev) printf '%s resetting %s\n' "$(blue ==\>)" "$DEV_HOME"; rm -rf "$DEV_HOME" ;;
+        *) printf '%s AETHER_DEV_HOME does not end in aether-dev; refusing to --reset %s\n' "$(red fail)" "$DEV_HOME"; exit 2 ;;
     esac
 fi
 

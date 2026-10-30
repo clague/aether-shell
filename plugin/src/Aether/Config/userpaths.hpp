@@ -1,0 +1,70 @@
+#pragma once
+
+#include <qstandardpaths.h>
+#include <qstring.h>
+
+#include "settings/objectnode.hpp"
+#include "common.hpp"
+
+namespace aether::shell::config {
+
+using Qt::StringLiterals::operator""_s;
+
+// Lets a lambda default containing commas pass through a macro argument in one piece, as
+// hybridconfig.hpp does for the same reason.
+namespace detail {
+
+// Defined in userpaths.cpp. `self` is the UserPaths node, so the theme name is read from the
+// sibling key rather than passed in.
+QString themeAsset(const settings::Node* self, const QString& file, const QString& fallback);
+
+} // namespace detail
+
+// A themed path defaults to the selected theme's copy of `file`, and to `fallback` when no
+// theme is selected. Deliberately a *default* rather than a computed read-only value, which is
+// what OP made these: a default can still be overridden per key, so a user who wants one
+// specific asset from somewhere else keeps that when they switch themes, exactly as an
+// explicitly set config key survives a default change. It also means an empty themeName
+// is not a special case in every reader -- it is just the fallback.
+//
+// The settings schema moved to static defaults, so the themed value is applied through
+// reresolve() (see userpaths.cpp for the key->asset table) when the theme changes or a layer
+// loads; until then the static fallback applies.
+#define THEMED_PATH(name, file, fallback) CONFIG_PROPERTY(QString, name, u##fallback##_s)
+
+class UserPaths : public settings::ObjectNode {
+    CONFIG_NODE_NO_CTOR(UserPaths, settings::ObjectNode)
+    // SETTINGS_NODE bundles this with the default constructor; taking the NO_CTOR form to add
+    // one drops it, and without it every `Config.paths.*` reader in the tree reports
+    // `Type "aether::shell::config::UserPaths" ... not found`.
+    QML_ANONYMOUS
+
+    CONFIG_GLOBAL_PROPERTY(
+        QString, wallpaperDir, QStandardPaths::writableLocation(QStandardPaths::PicturesLocation) + u"/Wallpapers"_s)
+    CONFIG_PROPERTY(
+        QString, cacheDir, QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation) + u"/caelestia"_s)
+    CONFIG_GLOBAL_PROPERTY(
+        QString, lyricsDir, QStandardPaths::writableLocation(QStandardPaths::MusicLocation) + u"/Lyrics/"_s)
+    // The selected theme's folder name under assets/themes, or empty for none. The *name* is
+    // stored rather than the expanded paths, so a theme's contents can change and existing
+    // users get the change.
+    CONFIG_PROPERTY(QString, themeName, QString())
+
+    // Fallbacks are the forks' own artwork, restored on 2026-09-04. The themed default layers
+    // over them: with no theme selected these resolve exactly as they did before this feature
+    // existed, which is what makes the flag safe to ship on by default.
+    THEMED_PATH(sessionGif, "session.gif", "root:/assets/kurukuru.gif")
+    THEMED_PATH(mediaGif, "media.gif", "root:/assets/bongocat.gif")
+    THEMED_PATH(noNotifsPic, "notif.png", "root:/assets/dino.png")
+    THEMED_PATH(lockNoNotifsPic, "notif.png", "root:/assets/dino.png")
+
+public:
+    // Applies the selected theme's assets to the keys the user has not set.
+    void reresolve();
+
+    explicit UserPaths(UserPaths* fallback = nullptr, QObject* parent = nullptr, bool globalOnly = false);
+};
+
+#undef THEMED_PATH
+
+} // namespace aether::shell::config

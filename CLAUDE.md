@@ -1,4 +1,4 @@
-# Caelestia Hybrid — project constitution
+# Aether — project constitution
 
 A single merged Quickshell desktop shell combining **MiDnight Shell** and **OP-Caelestia**
 on top of upstream **Caelestia**. One shell, one config, one CLI — features toggled, not forks juggled.
@@ -82,7 +82,7 @@ that reported CI green — they were never run locally, and a `clazy` finding is
 `hybrid/docs/phase2-upstream-catchup.md` records every merge decision and the API mapping from
 the old `ConfigObject` to `settings::ObjectNode`.
 
-The remote is `https://github.com/YoavR1/caelestia-hybrid` and `main` is pushed. The shell runs
+The remote is `https://github.com/clague/aether-shell` and `main` is pushed. The shell runs
 on real hardware; `hybrid/tools/hw-verify.sh` drives a live session and is the only gate that
 can see a feature that loads correctly and is then unreachable (T54).
 
@@ -132,15 +132,15 @@ hybrid/                                                ← ours. Upstream will n
 
 ## Reference checkouts
 
-`bootstrap.sh` creates read-only worktrees of all three upstreams at `$CAELESTIA_REFS`
-(default `../caelestia-refs/`):
+`bootstrap.sh` creates read-only worktrees of all three upstreams at `$AETHER_REFS`
+(default `../aether-refs/`):
 
 ```
-../caelestia-refs/upstream    caelestia-dots/shell   @ caelestia/main
-../caelestia-refs/op          OVERxPOWERED/…         @ op/main
-../caelestia-refs/midnight    dim-ghub/midnight-shell@ midnight/main
-../caelestia-refs/cli-upstream.git  caelestia-dots/cli     (bare)
-../caelestia-refs/cli-midnight.git  dim-ghub/midnight-cli  (bare)
+../aether-refs/upstream    caelestia-dots/shell   @ caelestia/main
+../aether-refs/op          OVERxPOWERED/…         @ op/main
+../aether-refs/midnight    dim-ghub/midnight-shell@ midnight/main
+../aether-refs/cli-upstream.git  caelestia-dots/cli     (bare)
+../aether-refs/cli-midnight.git  dim-ghub/midnight-cli  (bare)
 ```
 
 Agents and skills read these. Never edit them; they are throwaway checkouts.

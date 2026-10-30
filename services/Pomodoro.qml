@@ -2,7 +2,7 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
-import Caelestia.Config
+import Aether.Config
 
 Singleton {
     id: root

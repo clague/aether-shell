@@ -25,8 +25,8 @@ ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || ROOT=$(cd "$(dirname "$0")/
 cd "$ROOT"
 
 BUILD_DIR=${BUILD_DIR:-$ROOT/build}
-SVC=$ROOT/plugin/src/Caelestia/Services
-GEN=$BUILD_DIR/plugin/src/Caelestia/Services
+SVC=$ROOT/plugin/src/Aether/Services
+GEN=$BUILD_DIR/plugin/src/Aether/Services
 FILTER=${1:-}
 
 if [ ! -f "$GEN/ukey.pb.cc" ]; then
@@ -34,7 +34,7 @@ if [ ! -f "$GEN/ukey.pb.cc" ]; then
     # or on how the tree is tagged. CMake derives both from the local checkout otherwise.
     echo "building $BUILD_DIR first" >&2
     cmake -B "$BUILD_DIR" -G Ninja -DVERSION= -DGIT_REVISION= >/dev/null 2>&1 || exit 1
-    cmake --build "$BUILD_DIR" --target caelestia-services >/dev/null 2>&1 || exit 1
+    cmake --build "$BUILD_DIR" --target aether-services >/dev/null 2>&1 || exit 1
 fi
 
 # moc output is spread over SEVERAL hashed subdirectories -- beattracker's and QuickShare's
@@ -42,7 +42,7 @@ fi
 # directory holds them all. Guard on the find result, not on a dirname: `dirname ""` is "."
 # and "." is a directory, so a missing autogen tree would otherwise sail past the check and
 # fail later at the compile with a much worse message.
-AUTOGEN_ROOT=$GEN/caelestia-services_autogen
+AUTOGEN_ROOT=$GEN/aether-services_autogen
 moc() {
     local f
     f=$(find "$AUTOGEN_ROOT" -name "$1" 2>/dev/null | head -1)

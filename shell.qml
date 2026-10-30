@@ -10,7 +10,7 @@ import QtQuick
 import QtQml
 import Quickshell
 import Quickshell.Services.SystemTray
-import Caelestia.Config
+import Aether.Config
 import qs.services
 import qs.utils
 import qs.modules

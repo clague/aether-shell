@@ -2,9 +2,9 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Templates
-import Caelestia
-import Caelestia.Components
-import Caelestia.Config
+import Aether
+import Aether.Components
+import Aether.Config
 import qs.components
 import qs.services
 

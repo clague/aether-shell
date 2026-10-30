@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
-import Caelestia
+import Aether
 import qs.components
 import qs.components.effects
 import qs.services
@@ -84,10 +84,10 @@ MouseArea {
 
     function save(): void {
         const isSearch = root.loader.searchMode;
-        const tmpfile = isSearch ? Qt.resolvedUrl("/tmp/caelestia-search.png") : Qt.resolvedUrl(`/tmp/caelestia-picker-${Quickshell.processId}-${Date.now()}.png`);
+        const tmpfile = isSearch ? Qt.resolvedUrl("/tmp/aether-search.png") : Qt.resolvedUrl(`/tmp/aether-picker-${Quickshell.processId}-${Date.now()}.png`);
         CUtils.saveItem(screencopy, tmpfile, Qt.rect(Math.ceil(rsx), Math.ceil(rsy), Math.floor(sw), Math.floor(sh)), path => {
             if (isSearch) {
-                Quickshell.execDetached(["touch", "/tmp/caelestia-search.done"]);
+                Quickshell.execDetached(["touch", "/tmp/aether-search.done"]);
             } else if (root.loader.clipboardOnly) {
                 Quickshell.execDetached(["caelestia", "screenshot", "--copy", "--file", path]);
             } else {

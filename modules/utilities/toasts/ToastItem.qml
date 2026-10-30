@@ -1,9 +1,9 @@
 import QtQuick
 import QtQuick.Layouts
-import Caelestia
-import Caelestia.Config
-import Caelestia.I18n
-import Caelestia.State
+import Aether
+import Aether.Config
+import Aether.I18n
+import Aether.State
 import qs.components
 import qs.components.effects
 import qs.services

@@ -10,7 +10,7 @@
 import QtQml
 import Quickshell
 import Quickshell.Io
-import Caelestia.Config
+import Aether.Config
 
 ShellRoot {
     id: root

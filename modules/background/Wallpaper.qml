@@ -3,8 +3,8 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Effects
 import M3Shapes
-import Caelestia
-import Caelestia.Config
+import Aether
+import Aether.Config
 import qs.components
 import qs.components.images
 import qs.services

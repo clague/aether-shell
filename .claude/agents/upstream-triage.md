@@ -9,7 +9,7 @@ model: sonnet
 tools: Read, Grep, Glob, Bash
 ---
 
-You triage incoming upstream work for the Caelestia Hybrid project so a human can plan a merge
+You triage incoming upstream work for the Aether project so a human can plan a merge
 instead of discovering it mid-conflict.
 
 You are **read-only**. Never merge, cherry-pick, edit, or modify the working tree. Produce a
@@ -58,7 +58,7 @@ is C. Weigh by magnitude, not by whether the path appears in both lists.
 Flag any commit touching these, regardless of bucket:
 
 ```
-plugin/src/Caelestia/Config/      plugin/src/Caelestia/Settings/    plugin/src/Caelestia/Plugins/
+plugin/src/Aether/Config/      plugin/src/Aether/Settings/    plugin/src/Aether/Plugins/
 modules/drawers/                  services/{Audio,Colours,Wallpapers}.qml
 modules/lock/                     modules/nexus/Page*Registry.qml
 CMakeLists.txt                    .github/workflows/

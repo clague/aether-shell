@@ -260,7 +260,7 @@ def self_test() -> int:
 
 
 def main():
-    headers = [f for f in tracked("plugin/src/Caelestia/Config/*.hpp")]
+    headers = [f for f in tracked("plugin/src/Aether/Config/*.hpp")]
 
     if check_wrappers_known(headers):
         return 1

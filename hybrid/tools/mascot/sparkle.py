@@ -1,4 +1,4 @@
-"""Draw the Caelestia sparkle -- the shell's own mascot -- as SVG.
+"""Draw the Aether sparkle -- the shell's own mascot -- as SVG.
 
 The shape is the four-pointed sparkle from assets/logo.svg, softened into a character: the
 same concave-sided star, the same cyan (#6AE5E1), with a face. That is the point -- the

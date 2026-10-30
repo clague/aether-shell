@@ -6,7 +6,7 @@ import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Services.UPower
-import Caelestia.Config
+import Aether.Config
 import qs.utils
 
 Singleton {

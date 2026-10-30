@@ -3,8 +3,8 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import Caelestia
-import Caelestia.I18n
+import Aether
+import Aether.I18n
 import qs.services
 import qs.utils
 import qs.daemons

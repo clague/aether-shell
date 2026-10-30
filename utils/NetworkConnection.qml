@@ -1,8 +1,8 @@
 pragma Singleton
 
 import QtQuick
-import Caelestia
-import Caelestia.I18n
+import Aether
+import Aether.I18n
 import qs.services
 
 /**

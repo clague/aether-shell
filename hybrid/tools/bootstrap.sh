@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Phase 0 — turn this directory into the Caelestia Hybrid repository.
+# Phase 0 — turn this directory into the Aether Hybrid repository.
 #
 # Idempotent: safe to re-run. Never deletes anything, never touches a running shell.
 #
 #   ./hybrid/tools/bootstrap.sh
 #
 # Env:
-#   CAELESTIA_REFS   where to put read-only upstream worktrees (default ../caelestia-refs)
+#   AETHER_REFS   where to put read-only upstream worktrees (default ../aether-refs)
 
 set -euo pipefail
 
@@ -16,7 +16,7 @@ die()  { printf '\033[1;31m fail\033[0m %s\n' "$*" >&2; exit 1; }
 
 cd "$(dirname "$0")/../.."
 ROOT=$PWD
-REFS=${CAELESTIA_REFS:-$ROOT/../caelestia-refs}
+REFS=${AETHER_REFS:-$ROOT/../aether-refs}
 
 UPSTREAM_CAELESTIA=https://github.com/caelestia-dots/shell
 UPSTREAM_OP=https://github.com/OVERxPOWERED/op-caelestia-shell
@@ -147,7 +147,7 @@ Bootstrap complete.
   Remotes    origin(none yet) caelestia op midnight
   Branch     main  <- midnight/main
   rerere     enabled
-  Refs       see $CAELESTIA_REFS
+  Refs       see $AETHER_REFS
 
 Next (Phase 0):
   1. git remote add origin <your fork url>

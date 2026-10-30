@@ -1,8 +1,8 @@
-<h1 align=center>Caelestia Hybrid</h1>
+<h1 align=center>Aether</h1>
 
 <div align=center>
 
-One Quickshell desktop shell merging **MiDnight Shell** and **OP-Caelestia** on top of
+Aether is a Quickshell desktop shell merging **MiDnight Shell** and **OP-Caelestia** on top of
 upstream **Caelestia**. One shell, one config, one CLI — features toggled, not forks juggled.
 </div>
 
@@ -94,7 +94,7 @@ to change it.
 Clone into `$XDG_CONFIG_HOME/quickshell/caelestia`, then build and install with `cmake`:
 ```sh
 cd $XDG_CONFIG_HOME/quickshell
-git clone <this repository> caelestia
+git clone <this repository> aether
 
 cd caelestia
 cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/
@@ -110,7 +110,7 @@ sudo cmake --install build
 > [!TIP]
 > You can customise the installation location via the CMake flags `INSTALL_LIBDIR`, `INSTALL_QMLDIR`, and
 > `INSTALL_QSCONFDIR` for the libraries (e.g. the version helper), QML plugin, and Quickshell config directories
-> respectively. If you set the `INSTALL_LIBDIR` flag, the `CAELESTIA_LIB_DIR` variable must also be set to
+> respectively. If you set the `INSTALL_LIBDIR` flag, the `AETHER_LIB_DIR` variable must also be set to
 > the same directory in your system's environment.
 >
 > For example, installing to `~/.config/quickshell/caelestia` for easy local changes:

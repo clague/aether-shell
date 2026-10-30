@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
-import Caelestia
-import Caelestia.Config
+import Aether
+import Aether.Config
 import qs.components
 import qs.services
 import qs.modules.launcher.services
@@ -56,7 +56,7 @@ Item {
         Item {
             id: imagePreview
 
-            property string imagePath: (root.modelData?.isImage ?? false) ? "/tmp/caelestia-clipboard/" + (root.modelData?.id ?? "") + ".png" : ""
+            property string imagePath: (root.modelData?.isImage ?? false) ? "/tmp/aether-clipboard/" + (root.modelData?.id ?? "") + ".png" : ""
 
             width: (root.modelData?.isImage ?? false) ? 120 : 0
             height: (root.modelData?.isImage ?? false) ? 80 : 0

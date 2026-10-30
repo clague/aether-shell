@@ -1,5 +1,5 @@
 {
-  description = "Desktop shell for Caelestia dots";
+  description = "Desktop shell for Aether";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -37,7 +37,7 @@
     packages = eachSystem (system: let
       pkgs = pkgsOf.${system};
     in rec {
-      caelestia-shell = pkgs.callPackage ./nix {
+      aether-shell = pkgs.callPackage ./nix {
         rev = self.rev or self.dirtyRev;
         stdenv = pkgs.clangStdenv;
         quickshell = inputs.quickshell.packages.${system}.default.override {
@@ -47,21 +47,21 @@
         caelestia-cli = inputs.caelestia-cli.packages.${system}.default;
         m3shapes = inputs.m3shapes.packages.${system}.default;
       };
-      with-cli = caelestia-shell.override {withCli = true;};
-      debug = caelestia-shell.override {debug = true;};
-      default = caelestia-shell;
+      with-cli = aether-shell.override {withCli = true;};
+      debug = aether-shell.override {debug = true;};
+      default = aether-shell;
     });
 
     devShells = eachSystem (system: {
       default = let
         pkgs = pkgsOf.${system};
-        shell = self.packages.${system}.caelestia-shell;
+        shell = self.packages.${system}.aether-shell;
         mkShell = pkgs.mkShell.override {stdenv = shell.stdenv;};
       in
         mkShell {
           inputsFrom = [shell shell.plugin shell.extras];
           packages = with pkgs; [clazy material-symbols rubik nerd-fonts.caskaydia-cove];
-          CAELESTIA_XKB_RULES_PATH = "${pkgs.xkeyboard-config}/share/xkeyboard-config-2/rules/base.lst";
+          AETHER_XKB_RULES_PATH = "${pkgs.xkeyboard-config}/share/xkeyboard-config-2/rules/base.lst";
         };
     });
 

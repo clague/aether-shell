@@ -28,13 +28,13 @@ Item {
     signal animationCompleted
 
     implicitWidth: 128
-    implicitHeight: 153.8
+    implicitHeight: 128
 
     Item {
         id: logo
 
         readonly property real designWidth: 128
-        readonly property real designHeight: 153.8
+        readonly property real designHeight: 128
 
         property color topColour: "#EBF4FF"
         property color bottomColour: "#FFFFFF"
@@ -76,22 +76,44 @@ Item {
             CAnim {}
         }
 
+        // Orbit, rotated so it passes behind the middle of the A
+        Shape {
+            anchors.fill: parent
+            preferredRendererType: Shape.CurveRenderer
+            rotation: -14
+            opacity: 0.85
+
+            ShapePath {
+                fillColor: "transparent"
+                strokeColor: logo.starColour
+                strokeWidth: 2
+
+                PathAngleArc {
+                    centerX: 64
+                    centerY: 72
+                    radiusX: 53
+                    radiusY: 19
+                    startAngle: 0
+                    sweepAngle: 360
+                }
+            }
+        }
+
+        // The A: two legs and a crossbar
         Shape {
             id: topShape
 
-            anchors.centerIn: parent
-            width: logo.designWidth
-            height: logo.designHeight
-            scale: Math.min(logo.width / width, logo.height / height)
-            transformOrigin: Item.Center
+            anchors.fill: parent
             preferredRendererType: Shape.CurveRenderer
 
             ShapePath {
-                fillColor: logo.topColour
-                strokeColor: "transparent"
+                fillColor: "transparent"
+                strokeColor: logo.topColour
+                strokeWidth: 10.5
+                capStyle: ShapePath.RoundCap
 
                 PathSvg {
-                    path: "M47.474182 3.813545C51.044545 2.290673 54.665273 1.054265 58.310545 0.094006C60.981455 -0.609544 62.593091 2.802400 60.671091 4.785891C39.451273 26.684727 32.200182 59.995455 44.913636 89.803091C57.627091 119.610364 86.687636 137.433455 117.180545 137.276000C119.942364 137.261636 121.289455 140.786364 118.933091 142.227091C115.716909 144.193455 112.318364 145.950909 108.747818 147.473818C69.077091 164.394182 23.201091 145.951273 6.280836 106.280545C-10.639436 66.609818 7.803418 20.733818 47.474182 3.813545Z"
+                    path: "M27 106 L62 26"
                 }
             }
         }
@@ -103,11 +125,24 @@ Item {
             preferredRendererType: Shape.CurveRenderer
 
             ShapePath {
-                fillColor: logo.bottomColour
-                strokeColor: "transparent"
+                fillColor: "transparent"
+                strokeColor: logo.bottomColour
+                strokeWidth: 10.5
+                capStyle: ShapePath.RoundCap
 
                 PathSvg {
-                    path: "M53.987818 50.725818C53.811455 50.767636 53.636909 50.811273 53.462364 50.854909C53.647818 50.809455 53.822364 50.765818 53.987818 50.725818Z"
+                    path: "M101 106 L66 26"
+                }
+            }
+
+            ShapePath {
+                fillColor: "transparent"
+                strokeColor: logo.bottomColour
+                strokeWidth: 9
+                capStyle: ShapePath.RoundCap
+
+                PathSvg {
+                    path: "M42 82 L86 82"
                 }
             }
         }
@@ -124,7 +159,7 @@ Item {
                 strokeColor: "transparent"
 
                 PathSvg {
-                    path: "M87.655636 26.065091C87.061091 30.299636 84.152000 43.170545 70.657455 44.748727C70.484727 44.768727 70.484727 45.016000 70.657455 45.036000C84.152000 46.614182 87.064727 59.486909 87.659273 63.719636C87.682909 63.888727 87.926545 63.888727 87.950182 63.719636C88.544727 59.485091 91.453818 46.614182 104.948364 45.036000C105.121091 45.016000 105.121091 44.768727 104.948364 44.748727C91.453818 43.170545 88.541091 30.297818 87.946545 26.065091C87.922909 25.896000 87.679273 25.896000 87.655636 26.065091Z"
+                    path: "M64 5 L67 16 L78 19 L67 22 L64 33 L61 22 L50 19 L61 16 Z"
                 }
             }
         }
@@ -141,7 +176,7 @@ Item {
                 strokeColor: "transparent"
 
                 PathSvg {
-                    path: "M118.639091 57.443273C118.195455 60.063273 116.440909 66.288727 109.730000 67.337818C109.562727 67.363273 109.562727 67.597818 109.730000 67.623273C116.440909 68.672364 118.197273 74.899636 118.640909 77.517818C118.668182 77.679636 118.902727 77.679636 118.930000 77.517818C119.373636 74.897818 121.128182 68.672364 127.839091 67.623273C128.006364 67.597818 128.006364 67.363273 127.839091 67.337818C121.128182 66.288727 119.371818 60.061455 118.928182 57.443273C118.900909 57.281455 118.666364 57.281455 118.639091 57.443273Z"
+                    path: "M102 39 L104 43 L108 45 L104 47 L102 51 L100 47 L96 45 L100 43 Z"
                 }
             }
         }
@@ -158,7 +193,7 @@ Item {
                 strokeColor: "transparent"
 
                 PathSvg {
-                    path: "M98.111455 77.694000C97.727818 79.744909 96.360545 84.099455 91.602364 84.957636C91.440545 84.986727 91.440545 85.212182 91.602364 85.241273C96.360545 86.099455 97.729636 90.452182 98.113273 92.504909C98.142364 92.664909 98.371455 92.664909 98.402364 92.504909C98.786000 90.454000 100.153273 86.099455 104.911455 85.241273C105.073273 85.212182 105.073273 84.986727 104.911455 84.957636C100.153273 84.099455 98.784182 79.746727 98.400545 77.694000C98.371455 77.534000 98.142364 77.534000 98.111455 77.694000Z"
+                    path: "M24 90 L25.5 94.5 L30 96 L25.5 97.5 L24 102 L22.5 97.5 L18 96 L22.5 94.5 Z"
                 }
             }
         }

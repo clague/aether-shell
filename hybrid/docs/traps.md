@@ -75,7 +75,7 @@ onPatternFinished: code => {
 }
 ```
 
-`plugin/src/Caelestia/Config/lockconfig.hpp`:
+`plugin/src/Aether/Config/lockconfig.hpp`:
 
 ```cpp
 CONFIG_GLOBAL_PROPERTY(bool, enablePattern, true)
@@ -102,7 +102,7 @@ Dropping the feature is a legitimate alternative and costs nothing else in the p
 
 ## T4 — `configDir()` is hardcoded; directory naming does not isolate a dev instance
 
-`plugin/src/Caelestia/Config/common.cpp`:
+`plugin/src/Aether/Config/common.cpp`:
 
 ```cpp
 QString configDir() {
@@ -115,7 +115,7 @@ Installing QML to `~/.config/quickshell/caelestia-hybrid` still reads the **same
 driver over one file.
 
 - **Workaround in use:** `hybrid/tools/dev-shell.sh` overrides `XDG_CONFIG_HOME`.
-- **Proper fix (small, upstreamable):** make `configDir()` honour `$CAELESTIA_CONFIG_DIR`.
+- **Proper fix (small, upstreamable):** make `configDir()` honour `$AETHER_CONFIG_DIR`.
 
 ---
 
@@ -357,7 +357,7 @@ Wallpaper-engine volume/silent and the pauser's settings therefore never persist
 Adding an explicit `location:` does **not** help — `WallpaperPauser` already had one and still
 failed, which is the clue: the failure is at QSettings construction, before the location matters.
 
-**Fixed** in `plugin/src/Caelestia/Config/appidentity.cpp`, a `Q_COREAPP_STARTUP_FUNCTION` that
+**Fixed** in `plugin/src/Aether/Config/appidentity.cpp`, a `Q_COREAPP_STARTUP_FUNCTION` that
 fills in `organizationName` and `organizationDomain` (and `applicationName` if a host ever leaves
 it empty). Quickshell sets `applicationName` to `quickshell` and nothing else, so supplying the
 missing half is the entire fix. Verified by running with a fixed `XDG_CONFIG_HOME` and reading the
@@ -396,7 +396,7 @@ Two files in the tree hit a `qmllint` 6.11.2 false positive: the import is repor
 
 | File | Import | Symbol | Uses |
 |---|---|---|---|
-| `modules/Shortcuts.qml` | `Caelestia.Config` | `GlobalConfig` | 7 |
+| `modules/Shortcuts.qml` | `Aether.Config` | `GlobalConfig` | 7 |
 | `modules/launcher/services/Animations.qml` | `qs.utils` | `Paths` | 2 |
 
 It is not simply "used only in a template literal" — that alone is credited correctly. A minimal
@@ -414,7 +414,7 @@ plain property binding.
 **Handling.** Keep the import and silence the one line:
 
 ```qml
-import Caelestia.Config // qmllint disable unused-imports
+import Aether.Config // qmllint disable unused-imports
 ```
 
 Before adding one of these, *prove* it: delete the import, re-lint the file, and confirm you get
@@ -494,12 +494,12 @@ While the two layouts agreed this was invisible. After the upstream config rewri
 types between modules it produced a contradiction that looks like a qmllint bug and is not:
 
 ```
-Info:    Unused import [unused-imports]          import Caelestia.Images
+Info:    Unused import [unused-imports]          import Aether.Images
 Warning: Cannot resolve alias "wallLuminance"    analyser.luminance
 ```
 
 The import is "unused" because `ImageAnalyser` was never found in it — the installed
-`Caelestia.Images` has `IUtils` but not `ImageAnalyser`, which in that layout lives in the
+`Aether.Images` has `IUtils` but not `ImageAnalyser`, which in that layout lives in the
 root `Caelestia`. `IUtils` resolved; `ImageAnalyser` did not; same module, same file.
 
 **`--bare` is the fix.** It drops the default import directory, after which `-I` order is
@@ -556,7 +556,7 @@ only the run after that was clean. Re-run until a *clean* run, never until a *sh
 because "nothing in this tree can exercise a real Quick Share transfer". That was true of a
 *transfer* and false of the *handshake* — see T20.
 
-The generated `.pb.cc` files are not ours to lint; `plugin/src/Caelestia/Services/CMakeLists.txt`
+The generated `.pb.cc` files are not ours to lint; `plugin/src/Aether/Services/CMakeLists.txt`
 now sets `COMPILE_OPTIONS "-w"` on `${PROTO_SRCS}`. Use `-w` rather than naming the specific
 warning: the set changes with the protoc and compiler version, and `-w` is understood by
 gcc, clang and clazy alike.
@@ -643,7 +643,7 @@ accepting it. Here the class had no I/O in it at all.
 **Symptom:** the dashboard's media shapes morph on a timer instead of on the beat, and
 drift out of phase with the music. No warning, no error, no lint finding.
 
-`plugin/src/Caelestia/Services/beattracker.hpp` declares the signal twice, on two different
+`plugin/src/Aether/Services/beattracker.hpp` declares the signal twice, on two different
 classes:
 
 ```cpp
@@ -1059,7 +1059,7 @@ Both were found by planting a dead key and watching the checker stay green (T23)
 
 ### How to re-run the sweep by hand
 
-Extract every `CONFIG_*PROPERTY(type, name, …)` from `plugin/src/Caelestia/Config/*.hpp`, then
+Extract every `CONFIG_*PROPERTY(type, name, …)` from `plugin/src/Aether/Config/*.hpp`, then
 look for `.name` or `"name"` in the QML and for the bare name in C++ **excluding the
 declaration lines themselves**. Three things it must handle, each of which produced a false
 positive first time:
@@ -1857,7 +1857,7 @@ that lets work proceed. This is the same shape as T23 (a gate that could not fai
 nothing): *the check passed* and *the check was performed* are different claims.
 
 The finding itself was real and pre-existing. `Toaster` is a C++ type registered by
-`plugin/src/Caelestia/toaster.cpp`, so it arrives with `import Caelestia`; `BtAgent.qml` uses
+`plugin/src/Aether/toaster.cpp`, so it arrives with `import Aether`; `BtAgent.qml` uses
 only that and `GlobalConfig`, and OP's `import qs.services` was dead in the source. Removed.
 
 ## T46 — The pairing agent outlived every shell that started it
@@ -2485,7 +2485,7 @@ The cause is that no `qs.*` module has a `qmldir`. Only two exist in the whole t
 (`modules/nexus/pages/background`, `.../hyprland`), both hand-written for something else, and
 nothing generates one. Without it qmllint never resolves the type behind `Paths` or `Colours`,
 so it cannot know what members they have, and it says nothing rather than guessing. This is the
-same root cause as the note in `caelestia-conventions` that `import ".."` does not carry
+same root cause as the note in `aether-conventions` that `import ".."` does not carry
 qmldir singleton registration -- the consequence is just much larger than it looks.
 
 Why it matters more than a typo class usually would: **QML is silent about this at runtime

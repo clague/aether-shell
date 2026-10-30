@@ -25,7 +25,7 @@ export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}
 : "${HYPRLAND_INSTANCE_SIGNATURE:=$(ls -t "$XDG_RUNTIME_DIR/hypr" 2>/dev/null | head -1)}"
 export HYPRLAND_INSTANCE_SIGNATURE
 
-CFG=${CAELESTIA_CONFIG:-$HOME/.config/caelestia/shell.json}
+CFG=${AETHER_CONFIG:-$HOME/.config/caelestia/shell.json}
 SETTLE=${SETTLE:-3}
 
 G=$'\033[1;32m'; R=$'\033[1;31m'; Y=$'\033[0;33m'; N=$'\033[0m'

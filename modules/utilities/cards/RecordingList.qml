@@ -4,9 +4,9 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Widgets
-import Caelestia.Config
-import Caelestia.I18n
-import Caelestia.Models
+import Aether.Config
+import Aether.I18n
+import Aether.Models
 import qs.components
 import qs.components.containers
 import qs.components.controls

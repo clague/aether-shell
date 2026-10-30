@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Wayland
-import Caelestia.Config
+import Aether.Config
 import qs.components
 import qs.modules.nexus
 import qs.modules.windowinfo

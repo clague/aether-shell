@@ -1,0 +1,49 @@
+qml_module(aether-config
+    URI Aether.Config
+    INCLUDE_PREFIX config
+    SOURCES
+        common.cpp
+        appidentity.cpp
+        rootnodes.cpp
+        configattached.cpp
+        appearanceconfig.cpp
+        borderconfig.cpp
+        font.cpp
+        fontbuilder.cpp
+        tokensattached.cpp
+        anim.cpp
+        userpaths.cpp
+        sessionconfig.cpp
+        audioconfig.hpp
+        aiconfig.hpp
+        enums.hpp
+        hybridconfig.hpp
+        backgroundconfig.hpp
+        barconfig.hpp
+        dashboardconfig.hpp
+        dockconfig.hpp
+        generalconfig.hpp
+        launcherconfig.hpp
+        lockconfig.hpp
+        nexusconfig.hpp
+        notifsconfig.hpp
+        osdconfig.hpp
+        serviceconfig.hpp
+        sessionconfig.hpp
+        shimejiconfig.hpp
+        sidebarconfig.hpp
+        userpaths.hpp
+        utilitiesconfig.hpp
+        tokens.hpp
+    LIBRARIES
+        Qt::Quick
+        Qt::QuickControls2
+    DEPENDENCIES
+        Aether.Settings
+)
+target_link_libraries(aether-config PUBLIC
+    Qt::Gui
+    aether-util
+    aether-core
+    aether-settings
+)

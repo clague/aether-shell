@@ -4,9 +4,9 @@ import QtQuick
 import QtQuick.Shapes
 import Quickshell
 import M3Shapes
-import Caelestia
-import Caelestia.Config
-import Caelestia.Services
+import Aether
+import Aether.Config
+import Aether.Services
 import qs.components
 import qs.components.widgets
 import qs.services

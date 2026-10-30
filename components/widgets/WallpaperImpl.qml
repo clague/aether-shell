@@ -1,9 +1,9 @@
 import QtQuick
-import Caelestia
-import Caelestia.Config
-import Caelestia.Multimedia
-import Caelestia.Shaders
-import Caelestia.State
+import Aether
+import Aether.Config
+import Aether.Multimedia
+import Aether.Shaders
+import Aether.State
 import qs.services
 
 Item {

@@ -1,7 +1,7 @@
 ---
 name: config-property
 description: >-
-  Add, rename, or remove a setting in the Caelestia Hybrid shell — the config schema is compiled
+  Add, rename, or remove a setting in the Aether shell — the config schema is compiled
   C++, not dynamic JSON, so this is a multi-file recipe spanning a config header, the config root,
   CMake, and Nexus UI. Use whenever adding a config option, feature flag, toggle, slider or
   preference, wiring a hybrid.features or hybrid.variants key, or when a hand-edited shell.json
@@ -16,7 +16,7 @@ is why, not a bug.
 
 ## Which config system am I in?
 
-Check `plugin/src/Caelestia/Config/` before writing:
+Check `plugin/src/Aether/Config/` before writing:
 
 | Present | System | Base class | Registered in |
 |---|---|---|---|
@@ -38,9 +38,9 @@ values, service toggles, CLI paths. Feature flags are global.
 
 ## Recipe — new property on an existing object
 
-1. **Header.** Add the macro to the relevant `plugin/src/Caelestia/Config/<area>config.hpp`,
+1. **Header.** Add the macro to the relevant `plugin/src/Aether/Config/<area>config.hpp`,
    grouped with related properties, in the file's existing order.
-2. **Consume it in QML** as `GlobalConfig.<area>.<name>` (`import Caelestia.Config`).
+2. **Consume it in QML** as `GlobalConfig.<area>.<name>` (`import Aether.Config`).
 3. **Nexus UI.** Add a row to the matching page under `modules/nexus/pages/`. Use the existing
    common controls — `SelectRow`, `SliderRow`, `StepperRow`, `SwitchRow` — rather than a bespoke
    control. Note both forks modified these common rows, so check the current signatures.
@@ -51,7 +51,7 @@ values, service toggles, CLI paths. Feature flags are global.
 
 Additionally:
 
-1. Create `plugin/src/Caelestia/Config/<area>config.hpp`.
+1. Create `plugin/src/Aether/Config/<area>config.hpp`.
 
    Old system:
    ```cpp
@@ -77,14 +77,14 @@ Additionally:
    `GlobalConfig` (old) or `rootnodes.hpp`'s `ConfigRoot` (new).
 3. **Old system only:** add a matching `Q_MOC_INCLUDE("hybridconfig.hpp")` and a forward
    declaration. Omitting it produces a confusing moc-time failure, not a clear error.
-4. **CMake.** Add the header to `plugin/src/Caelestia/Config/CMakeLists.txt`.
+4. **CMake.** Add the header to `plugin/src/Aether/Config/CMakeLists.txt`.
 5. **Nexus page.** New page needs entries in both `modules/nexus/PageRegistry.qml` (label, icon,
    description, category) and `modules/nexus/PageCompRegistry.qml` (the component). Both forks
    modified both files — check current shape.
 
 ## The `hybrid` block
 
-`hybrid` exists, in `plugin/src/Caelestia/Config/hybridconfig.hpp`:
+`hybrid` exists, in `plugin/src/Aether/Config/hybridconfig.hpp`:
 
 - `features` — one boolean per imported feature that costs something when it is on; five today
 - `variants` — capped at ~6 entries (D4); growth means the design is drifting back toward the

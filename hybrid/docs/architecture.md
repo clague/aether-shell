@@ -1,6 +1,6 @@
 # Architecture
 
-Decision record for Caelestia Hybrid. Written 2026-09-02 from a source audit of all three
+Decision record for Aether. Written 2026-09-02 from a source audit of all three
 upstreams at the commits recorded in `CLAUDE.md`.
 
 ---
@@ -61,7 +61,7 @@ In the 13 days after the fork points, upstream shipped 197 files, +6416/-5048, i
 
 - `refactor(config): rewrite config module (#1861)`
 - `refactor: rearrange plugin layout (#1896)`
-- A new `plugin/src/Caelestia/Settings/` C++ module — `schema`, `node`, `rootnode`, `objectnode`,
+- A new `plugin/src/Aether/Settings/` C++ module — `schema`, `node`, `rootnode`, `objectnode`,
   `listnode`, `settingsfile`, `codecs`, `changebatcher`, `quarantine`, and **`layerregistry.hpp`**
 - `feat(services): migrate NetworkUsage from QML to C++ (#1860)` — which both forks wrote in QML
 - A mass style sweep (scoped enums, `u""_s`, include ordering, clang-tidy)
@@ -83,7 +83,7 @@ Two consequences:
 
 Porting OP into MiDnight moves ~8.9k lines that are unusually well-isolated: `modules/dock/` (3
 files), `modules/overview/` (12), `services/{Hotspot,BtAgent,Nmcli}.qml`,
-`plugin/src/Caelestia/Services/gpu.{cpp,hpp}`, the theme manager, ~10 Nexus pages, and theme assets.
+`plugin/src/Aether/Services/gpu.{cpp,hpp}`, the theme manager, ~10 Nexus pages, and theme assets.
 Estimate: 2-3 weeks.
 
 Porting MiDnight into OP moves 33.5k lines across 456 files including 54 C++ files. Months.

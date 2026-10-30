@@ -4,8 +4,8 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import M3Shapes
-import Caelestia.Config
-import Caelestia.Services
+import Aether.Config
+import Aether.Services
 import qs.components
 import qs.components.controls
 import qs.components.effects

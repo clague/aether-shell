@@ -1,6 +1,6 @@
 # `hybrid/` — project-owned code
 
-Everything under this directory belongs to Caelestia Hybrid. Upstream will never touch it, so it
+Everything under this directory belongs to Aether. Upstream will never touch it, so it
 never conflicts on a sync.
 
 The inverse rule matters just as much: **never put project-owned files in an upstream-shaped path**

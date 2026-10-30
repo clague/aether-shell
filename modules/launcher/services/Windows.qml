@@ -2,7 +2,7 @@ pragma Singleton
 
 import QtQuick
 import Quickshell.Hyprland
-import Caelestia.Config
+import Aether.Config
 
 QtObject {
     id: root

@@ -1,7 +1,7 @@
 ---
 name: shell-verify
 description: >-
-  The verification gate for Caelestia Hybrid — build, qmlformat, clang-format, qmllint, and the
+  The verification gate for Aether — build, qmlformat, clang-format, qmllint, and the
   nested-compositor preset smoke matrix. Use before claiming any change is done, after importing
   a feature, after resolving an upstream merge, and whenever asked whether something builds,
   passes, or works. Also use when a QML error, binding loop, or startup crash needs reproducing,

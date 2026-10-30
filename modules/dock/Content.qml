@@ -4,7 +4,7 @@ import QtQuick
 import QtQml.Models
 import Quickshell
 import Quickshell.Widgets
-import Caelestia.Config
+import Aether.Config
 import qs.components
 import qs.services
 import qs.modules.launcher.services

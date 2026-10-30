@@ -1,6 +1,6 @@
 import QtQuick
 import Quickshell
-import Caelestia.I18n
+import Aether.I18n
 import qs.components.controls
 import qs.services
 

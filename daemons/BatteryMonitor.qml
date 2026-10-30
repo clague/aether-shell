@@ -1,10 +1,10 @@
 import QtQuick
 import Quickshell
 import Quickshell.Services.UPower
-import Caelestia
-import Caelestia.Config
-import Caelestia.I18n
-import Caelestia.Services
+import Aether
+import Aether.Config
+import Aether.I18n
+import Aether.Services
 
 Scope {
     id: root

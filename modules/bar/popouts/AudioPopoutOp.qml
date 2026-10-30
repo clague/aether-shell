@@ -5,7 +5,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell.Widgets
 import Quickshell.Services.Pipewire
-import Caelestia.Config
+import Aether.Config
 import qs.components
 import qs.components.containers
 import qs.components.controls

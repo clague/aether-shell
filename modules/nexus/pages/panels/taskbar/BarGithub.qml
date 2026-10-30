@@ -4,8 +4,8 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
-import Caelestia.Config
-import Caelestia.I18n
+import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.controls
 import qs.services
@@ -29,7 +29,7 @@ PageBase {
         if (!token) {
             Quickshell.execDetached(["secret-tool", "clear", "service", "caelestia-shell", "account", "github"]);
         } else {
-            Quickshell.execDetached(["bash", "-c", "secret-tool store --label=\"Caelestia GitHub Token\" service caelestia-shell account github <<< \"$1\"", "--", token]);
+            Quickshell.execDetached(["bash", "-c", "secret-tool store --label=\"Aether GitHub Token\" service caelestia-shell account github <<< \"$1\"", "--", token]);
         }
     }
 

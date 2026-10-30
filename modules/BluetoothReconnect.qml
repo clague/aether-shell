@@ -1,7 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Bluetooth
-import Caelestia.Config
+import Aether.Config
 
 Scope {
     id: root

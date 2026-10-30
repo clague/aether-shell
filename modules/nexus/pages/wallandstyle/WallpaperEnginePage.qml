@@ -2,10 +2,10 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
-import Caelestia
-import Caelestia.Config
-import Caelestia.I18n
-import Caelestia.Models
+import Aether
+import Aether.Config
+import Aether.I18n
+import Aether.Models
 import qs.services
 import qs.modules.nexus.common
 

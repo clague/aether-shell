@@ -94,7 +94,7 @@ if("${GIT_REVISION}" STREQUAL "")
     set(GIT_REVISION "unknown")
 endif()
 
-project(caelestia-shell VERSION ${VERSION} LANGUAGES CXX)
+project(aether-shell VERSION ${VERSION} LANGUAGES CXX)
 
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     set(CMAKE_INSTALL_PREFIX "/" CACHE PATH "Installation prefix" FORCE)

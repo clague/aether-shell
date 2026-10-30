@@ -4,9 +4,9 @@ import QtQuick
 import QtCore
 import Quickshell
 import Quickshell.Io
-import Caelestia
-import Caelestia.Config
-import Caelestia.Models
+import Aether
+import Aether.Config
+import Aether.Models
 import qs.services
 import qs.utils
 

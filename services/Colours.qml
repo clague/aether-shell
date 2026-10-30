@@ -4,10 +4,10 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import Caelestia.Config
-import Caelestia.I18n
-import Caelestia.Images
-import Caelestia.State
+import Aether.Config
+import Aether.I18n
+import Aether.Images
+import Aether.State
 import qs.services
 import qs.utils
 import qs.daemons
@@ -93,7 +93,7 @@ Singleton {
         const nextState = !transparency.enabled;
         GlobalConfig.appearance.transparency.enabled = nextState;
         if (notify ?? false) {
-            Quickshell.execDetached(["notify-send", "-a", "Caelestia", "-i", "opacity", Tr.tr("Transparency"), nextState ? Tr.tr("Transparency & blur enabled") : Tr.tr("Transparency & blur disabled")]);
+            Quickshell.execDetached(["notify-send", "-a", "Aether", "-i", "opacity", Tr.tr("Transparency"), nextState ? Tr.tr("Transparency & blur enabled") : Tr.tr("Transparency & blur disabled")]);
         }
     }
 

@@ -1,11 +1,11 @@
 import "../../../components/controls"
 import QtQuick
 import QtQuick.Layouts
-import Caelestia
-import Caelestia.Blobs
-import Caelestia.Config
-import Caelestia.I18n
-import Caelestia.Services
+import Aether
+import Aether.Blobs
+import Aether.Config
+import Aether.I18n
+import Aether.Services
 import qs.components
 import qs.services
 

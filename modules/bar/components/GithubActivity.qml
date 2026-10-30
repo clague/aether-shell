@@ -3,7 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell.Io
 import M3Shapes
-import Caelestia.Config
+import Aether.Config
 import qs.components
 import qs.services
 import qs.modules.bar.components as BarComponents

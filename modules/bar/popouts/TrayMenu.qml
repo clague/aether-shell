@@ -4,8 +4,8 @@ import QtQuick
 import QtQuick.Controls
 import Quickshell
 import Quickshell.Widgets
-import Caelestia.Config
-import Caelestia.I18n
+import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.services
 

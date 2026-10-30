@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
-import Caelestia.Config
+import Aether.Config
 import qs.components.misc
 import qs.services
 

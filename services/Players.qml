@@ -4,10 +4,10 @@ import QtQml
 import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Mpris
-import Caelestia
-import Caelestia.Config
-import Caelestia.I18n
-import Caelestia.Services
+import Aether
+import Aether.Config
+import Aether.I18n
+import Aether.Services
 import qs.components.misc
 
 Singleton {

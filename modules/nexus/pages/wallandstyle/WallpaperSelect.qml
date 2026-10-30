@@ -3,11 +3,11 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Caelestia.Components
-import Caelestia.Config
-import Caelestia.I18n
-import Caelestia.Images
-import Caelestia.Models
+import Aether.Components
+import Aether.Config
+import Aether.I18n
+import Aether.Images
+import Aether.Models
 import qs.components
 import qs.components.controls
 import qs.components.filedialog

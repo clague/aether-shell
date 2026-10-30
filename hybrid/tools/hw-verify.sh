@@ -145,7 +145,7 @@ HOVER_BLOCKED=0
 # default so this tracks the source, and let a user shell.json win.
 CFG=$HOME/.config/caelestia/shell.json
 hover_enabled() {
-    local mod=$1 hpp="$ROOT/plugin/src/Caelestia/Config/${mod}config.hpp" def user
+    local mod=$1 hpp="$ROOT/plugin/src/Aether/Config/${mod}config.hpp" def user
     def=$(grep -oP 'CONFIG_PROPERTY\(bool, showOnHover, \K(true|false)' "$hpp" 2>/dev/null | head -1)
     user=$(python3 -c 'import json,sys;d=json.load(open(sys.argv[1]));v=d.get(sys.argv[2],{}).get("showOnHover");print("" if v is None else str(v).lower())' "$CFG" "$mod" 2>/dev/null)
     [ -n "$user" ] && { echo "$user"; return; }

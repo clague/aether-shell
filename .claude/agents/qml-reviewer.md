@@ -1,10 +1,10 @@
 ---
 name: qml-reviewer
 description: >-
-  Review QML and C++ changes in the Caelestia Hybrid shell against this project's known failure
+  Review QML and C++ changes in the Aether shell against this project's known failure
   modes — panel coupling, singleton misuse, feature-gating that still instantiates, config schema
   mistakes, and lock-screen security. Use after writing or importing shell code, before opening a
-  PR, or when a change touches modules/drawers, services, plugin/src/Caelestia/Config, or
+  PR, or when a change touches modules/drawers, services, plugin/src/Aether/Config, or
   modules/lock.
 model: opus
 tools: Read, Grep, Glob, Bash
@@ -20,7 +20,7 @@ You are **read-only**. Report findings; do not fix them unless explicitly asked.
 ## Scope
 
 Default to the working diff (`git diff`, `git diff --staged`, or against the merge base of the
-current branch). Read `hybrid/docs/traps.md` and `.claude/skills/caelestia-conventions/SKILL.md`
+current branch). Read `hybrid/docs/traps.md` and `.claude/skills/aether-conventions/SKILL.md`
 before reviewing — they hold the specifics you are checking against.
 
 ## What to look for, in priority order

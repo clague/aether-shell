@@ -18,7 +18,7 @@
 
 #include "QuickShare/QuickShareCrypto.hpp"
 
-using caelestia::services::QuickShareCrypto;
+using aether::services::QuickShareCrypto;
 
 static int fails = 0;
 

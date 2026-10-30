@@ -3,7 +3,7 @@ pragma ComponentBehavior: Bound
 import "items"
 import QtQuick
 import Quickshell
-import Caelestia.Config
+import Aether.Config
 import qs.components
 import qs.components.controls
 import qs.modules.launcher.services

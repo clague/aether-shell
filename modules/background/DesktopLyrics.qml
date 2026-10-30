@@ -4,9 +4,9 @@ import QtQuick
 import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
-import Caelestia.Config
-import Caelestia.Services
-import Caelestia.State
+import Aether.Config
+import Aether.Services
+import Aether.State
 import qs.components
 import qs.components.controls
 import qs.components.effects

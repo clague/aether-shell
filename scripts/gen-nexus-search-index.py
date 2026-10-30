@@ -270,7 +270,7 @@ def main() -> int:
         "pragma Singleton",
         "",
         "import QtQuick",
-        "import Caelestia.I18n",
+        "import Aether.I18n",
         "",
         "QtObject {",
         "    readonly property list<var> entries: [",

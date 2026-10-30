@@ -6,10 +6,10 @@ import Quickshell
 import Quickshell.Bluetooth
 import Quickshell.Io
 import Quickshell.Services.Pipewire
-import Caelestia
-import Caelestia.Config
-import Caelestia.I18n
-import Caelestia.Services
+import Aether
+import Aether.Config
+import Aether.I18n
+import Aether.Services
 import qs.utils
 
 Singleton {

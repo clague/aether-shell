@@ -6,9 +6,9 @@ import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Io
 import Quickshell.Widgets
-import Caelestia
-import Caelestia.Config
-import Caelestia.I18n
+import Aether
+import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.containers
 import qs.components.controls
@@ -33,7 +33,7 @@ PageBase {
         if (!token) {
             Quickshell.execDetached(["secret-tool", "clear", "service", "caelestia-shell", "account", "steamgriddb"]);
         } else {
-            Quickshell.execDetached(["bash", "-c", "secret-tool store --label=\"Caelestia SteamGridDB Key\" service caelestia-shell account steamgriddb <<< \"$1\"", "--", token]);
+            Quickshell.execDetached(["bash", "-c", "secret-tool store --label=\"Aether SteamGridDB Key\" service caelestia-shell account steamgriddb <<< \"$1\"", "--", token]);
         }
     }
 
@@ -79,8 +79,8 @@ PageBase {
             last: true
             text: Tr.tr("Broadcast MiDnight info")
             subtext: Tr.tr("Broadcast shell uptime and system info")
-            checked: GlobalConfig.services.arpcCaelestiaInfo
-            onToggled: GlobalConfig.services.arpcCaelestiaInfo = checked
+            checked: GlobalConfig.services.arpcAetherInfo
+            onToggled: GlobalConfig.services.arpcAetherInfo = checked
         }
 
         SectionHeader {

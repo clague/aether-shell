@@ -4,7 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import M3Shapes
-import Caelestia.Config
+import Aether.Config
 import qs.components
 import qs.services
 import qs.utils

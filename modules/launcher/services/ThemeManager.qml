@@ -4,8 +4,8 @@ pragma ComponentBehavior: Bound
 import ".."
 import QtQuick
 import Quickshell
-import Caelestia.Config
-import Caelestia.Models
+import Aether.Config
+import Aether.Models
 import qs.services
 import qs.utils
 

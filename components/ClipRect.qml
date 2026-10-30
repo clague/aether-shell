@@ -1,5 +1,5 @@
 import QtQuick
-import Caelestia.Components
+import Aether.Components
 
 Item {
     id: root

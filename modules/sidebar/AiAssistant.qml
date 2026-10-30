@@ -7,8 +7,8 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import M3Shapes
-import Caelestia.Blobs
-import Caelestia.Config
+import Aether.Blobs
+import Aether.Config
 import qs.components
 import qs.components.containers
 import qs.components.controls

@@ -29,7 +29,7 @@ description: >-
 ```
 
 It reports, per upstream: commits behind, merge-base, incoming diffstat, changed areas, and
-flags high-risk paths (`plugin/src/Caelestia/{Config,Settings,Plugins}/`, `modules/drawers/`,
+flags high-risk paths (`plugin/src/Aether/{Config,Settings,Plugins}/`, `modules/drawers/`,
 `services/{Audio,Colours,Wallpapers}.qml`).
 
 For anything more than a handful of commits, hand the range to the `upstream-triage` agent to
@@ -79,7 +79,7 @@ The first `caelestia` sync is the big one, and it is deliberately Phase 2 rather
   replaced by `settings::ObjectNode`/`RootNode` and the `CONFIG_NODE` macro
 - `refactor: rearrange plugin layout (#1896)` — both forks still carry the old layout
   (`Internal/`, `appdb`, `imageanalyser`)
-- A new `plugin/src/Caelestia/Settings/` module including `layerregistry.hpp`
+- A new `plugin/src/Aether/Settings/` module including `layerregistry.hpp`
 - `feat(services): migrate NetworkUsage from QML to C++ (#1860)`
 - A mass style sweep — scoped enums, `u""_s`, sorted includes, clang-tidy
 

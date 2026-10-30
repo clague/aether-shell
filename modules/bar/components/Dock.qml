@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Widgets
-import Caelestia.Config
+import Aether.Config
 import qs.components
 import qs.components.controls
 import qs.components.effects

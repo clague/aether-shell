@@ -252,7 +252,7 @@ def c_crashes():
 
 
 def c_plugin():
-    built = ROOT / "build/qml/Caelestia"
+    built = ROOT / "build/qml/Aether"
     libs = list(built.rglob("*.so")) if built.is_dir() else []
     if not libs:
         return check("plugin", "Shell plugin build", "info", "No local build; using the system plugin")

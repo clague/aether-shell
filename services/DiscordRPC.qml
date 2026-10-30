@@ -3,9 +3,9 @@ pragma Singleton
 import QtQuick
 import Quickshell.Hyprland
 import Quickshell.Io
-import Caelestia
-import Caelestia.Config
-import Caelestia.Services
+import Aether
+import Aether.Config
+import Aether.Services
 import qs.services
 import qs.utils
 
@@ -129,8 +129,8 @@ Item {
             return;
         }
 
-        // Priority 3: Caelestia Info
-        if (GlobalConfig.services.arpcCaelestiaInfo) {
+        // Priority 3: Aether Info
+        if (GlobalConfig.services.arpcAetherInfo) {
             let os = SysInfo.osPrettyName || SysInfo.osName || "Linux";
             let kernel = SysInfo.kernel ? SysInfo.kernel : "";
             let qsVersion = CUtils.version ? " (v" + CUtils.version + ")" : "";
@@ -154,7 +154,7 @@ Item {
                 buttons: [
                     {
                         label: "Website",
-                        url: "https://caelestiashell.com"
+                        url: "https://github.com/clague/aether-shell"
                     },
                     {
                         label: "GitHub",
@@ -369,7 +369,7 @@ Item {
             root.updatePresence();
         }
 
-        function onArpcCaelestiaInfoChanged() {
+        function onArpcAetherInfoChanged() {
             root.updatePresence();
         }
 

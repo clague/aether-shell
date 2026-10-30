@@ -1,5 +1,5 @@
 import QtQuick
-import Caelestia.Config
+import Aether.Config
 import qs.components
 import qs.components.effects
 import qs.services
@@ -25,11 +25,11 @@ Item {
     Loader {
         asynchronous: true
         anchors.centerIn: parent
-        sourceComponent: SysInfo.isDefaultLogo ? caelestiaLogo : distroIcon
+        sourceComponent: SysInfo.isDefaultLogo ? aetherLogo : distroIcon
     }
 
     Component {
-        id: caelestiaLogo
+        id: aetherLogo
 
         Logo {
             implicitWidth: Math.round(Tokens.font.body.large.pointSize * 1.6)

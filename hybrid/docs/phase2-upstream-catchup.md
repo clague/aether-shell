@@ -107,7 +107,7 @@ configs.
 
 ## The last file, and how it shrank
 
-`plugin/src/Caelestia/Config/sessionconfig.{hpp,cpp}` was the only thing left after the
+`plugin/src/Aether/Config/sessionconfig.{hpp,cpp}` was the only thing left after the
 merge commit. MiDnight added user-defined session buttons: arbitrary keys under
 `session.icons` and `session.commands`, surfaced to QML as `Config.session.buttons` and
 `Config.session.customButtons` (used by `modules/session/Content.qml` and

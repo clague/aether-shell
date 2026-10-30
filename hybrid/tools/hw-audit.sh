@@ -86,10 +86,10 @@ if [ "$LIST_ONLY" = "1" ]; then
     done
     echo
     echo "${B}nexus pages${N}"
-    grep -oP 'label: qsTr\("\K[^"]+' "$ROOT/modules/nexus/PageRegistry.qml" | nl -w4 -s'  '
+    grep -oP 'label: (?:qsTr|Tr\.tr)\("\K[^"]+' "$ROOT/modules/nexus/PageRegistry.qml" | nl -w4 -s'  '
     echo
     echo "${B}hybrid features${N}"
-    grep -oP '^\s*FEATURE\(\K\w+' "$ROOT/plugin/src/Caelestia/Config/hybridconfig.hpp" | tr '\n' ' '
+    grep -oP '^\s*CONFIG_GLOBAL_PROPERTY\(bool, \K\w+' "$ROOT/plugin/src/Aether/Config/hybridconfig.hpp" | tr '\n' ' '
     echo; exit 0
 fi
 
@@ -214,7 +214,7 @@ json.dump(d, open(path, "w"), indent=2)
 PY
     }
 
-    for feat in $(grep -oP '^\s*FEATURE\(\K\w+' "$ROOT/plugin/src/Caelestia/Config/hybridconfig.hpp"); do
+    for feat in $(grep -oP '^\s*CONFIG_GLOBAL_PROPERTY\(bool, \K\w+' "$ROOT/plugin/src/Aether/Config/hybridconfig.hpp"); do
         before=$(logn)
         set_feature "$feat" true;  sleep 1.6
         set_feature "$feat" false; sleep 1.6
@@ -241,7 +241,7 @@ PY
     }
     echo
     echo "${B}variants (both sides loaded, then restored)${N}"
-    for var in $(grep -oP '^\s*VARIANT\(\K\w+' "$ROOT/plugin/src/Caelestia/Config/hybridconfig.hpp"); do
+    for var in $(grep -oP '^\s*CONFIG_GLOBAL_ENUM_PROPERTY\(HybridVariant, \K\w+' "$ROOT/plugin/src/Aether/Config/hybridconfig.hpp"); do
         before=$(logn)
         set_variant "$var" Midnight; sleep 1.8
         set_variant "$var" Op;       sleep 1.8

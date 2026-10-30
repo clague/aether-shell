@@ -4,8 +4,8 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import Caelestia
-import Caelestia.Config
+import Aether
+import Aether.Config
 import qs.services
 
 Singleton {
@@ -18,7 +18,7 @@ Singleton {
     property string statusText: active ? qsTr("Broadcasting") : qsTr("Disabled")
 
     // --- Hotspot Configuration ---
-    property string ssid: "Caelestia-Hotspot"
+    property string ssid: "Aether-Hotspot"
 
     // Deliberately empty. `nmcli device wifi hotspot` generates a password when none is
     // given (see nmcli(1): "If not provided, nmcli will generate a password"), so every

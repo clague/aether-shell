@@ -3,14 +3,14 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
-import Caelestia.Config
+import Aether.Config
 
 QtObject {
     id: root
 
     property var items: []
 
-    readonly property string imageCacheDir: "/tmp/caelestia-clipboard"
+    readonly property string imageCacheDir: "/tmp/aether-clipboard"
 
     property Component waitTimer: Component {
         Timer {

@@ -3,10 +3,10 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Bluetooth
-import Caelestia.Components
-import Caelestia.Config
-import Caelestia.I18n
-import Caelestia.State
+import Aether.Components
+import Aether.Config
+import Aether.I18n
+import Aether.State
 import qs.components
 import qs.components.controls
 import qs.services
