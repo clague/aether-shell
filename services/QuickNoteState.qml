@@ -19,6 +19,11 @@ Singleton {
     property var fileTags: ({}) // { fileName: [tag1, tag2] }
     property string activeTagFilter: "all"
 
+    // False until the notes folder has been created and listed once: the editor binds its
+    // FileView to currentFilePath, and reading a path that does not exist yet logs a warning
+    // on first use.
+    property bool ready: false
+
     property string activeAppClass: ""
     property string activeAppTitle: ""
     property string activeTimestamp: ""
@@ -190,13 +195,29 @@ Singleton {
     }
 
     Process {
+        id: touchDefault
+
+        onExited: (code, status) => { // qmllint disable signal-handler-parameters
+            if (code === 0)
+                root.availableFiles = [root.currentFileName];
+            root.ready = true;
+        }
+    }
+
+    Process {
         id: filesProc
 
         stdout: StdioCollector {
             onStreamFinished: {
                 const list = text.trim().split("\n").map(f => f.trim()).filter(f => f.length > 0);
-                if (list.length > 0)
+                if (list.length > 0) {
                     root.availableFiles = list;
+                    root.ready = true;
+                } else {
+                    // First use: create the default note so opening the scratchpad does not
+                    // read a file that does not exist (FileView logs a warning for that).
+                    touchDefault.exec(["touch", root.currentFilePath]);
+                }
             }
         }
     }

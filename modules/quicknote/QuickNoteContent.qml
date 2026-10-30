@@ -77,7 +77,7 @@ Item {
     FileView {
         id: noteFile
 
-        path: QuickNoteState.currentFilePath
+        path: QuickNoteState.ready ? QuickNoteState.currentFilePath : ""
 
         onLoaded: {
             textEditor.text = text();
