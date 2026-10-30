@@ -48,7 +48,9 @@ TextFieldBase {
         color: root.placeholderTextColor
         font: root.font
 
-        opacity: root.text ? 0 : 1
+        // `text` stays empty while an IME is composing, so the placeholder would sit under
+        // the preedit. Hide it for the composition as well.
+        opacity: root.text || root.inputMethodComposing ? 0 : 1
 
         Behavior on opacity {
             Anim {
