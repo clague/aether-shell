@@ -65,6 +65,11 @@ StyledWindow {
         return thresholds.length > 0 ? Math.max(...thresholds) : 0;
     }
 
+    // The launcher and the sidebar contain text fields. A Hyprland focus grab forwards keys
+    // but does not activate the surface, so Qt's input context stays disabled and the IME
+    // cannot compose there. Those two get real keyboard focus instead.
+    readonly property bool textDrawerOpen: (screenState.launcher && contentItem.Config.launcher.enabled) || (screenState.sidebar && contentItem.Config.sidebar.enabled)
+
     Config.screen: screen.name
 
     onHasFullscreenChanged: {
@@ -77,9 +82,11 @@ StyledWindow {
     name: "drawers"
     WlrLayershell.exclusionMode: ExclusionMode.Ignore
     WlrLayershell.layer: (fsTransitionProg > 0 && contentItem.Config.general.showOverFullscreen) || (hasSpecialWorkspace && hasFullscreenOnNormalWs) ? WlrLayer.Overlay : WlrLayer.Top
-    WlrLayershell.keyboardFocus: screenState.launcher || screenState.session || screenState.dashboard || screenState.sidebar || panels.popouts.hasCurrent ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+    WlrLayershell.keyboardFocus: textDrawerOpen ? WlrKeyboardFocus.Exclusive : (screenState.session || screenState.dashboard || panels.popouts.hasCurrent ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None)
 
-    mask: hasFullscreen ? emptyRegion : regions
+    // Text drawers use exclusive keyboard focus, so there is no focus grab to notice an
+    // outside click; take the whole surface as input instead and close on a click outside.
+    mask: hasFullscreen ? emptyRegion : (textDrawerOpen ? fullRegion : regions)
 
     anchors.top: true
     anchors.bottom: true
@@ -110,6 +117,15 @@ StyledWindow {
         }
     }
 
+    Region {
+        id: fullRegion
+
+        x: 0
+        y: 0
+        width: root.width
+        height: root.height
+    }
+
     Regions {
         id: regions
 
@@ -121,19 +137,19 @@ StyledWindow {
     HyprlandFocusGrab {
         id: focusGrab
 
-        active: {
-            const s = root.screenState;
-            const conf = root.contentItem.Config;
-            if (s.workspaceDrawer)
-                return true;
-            if ((s.launcher && conf.launcher.enabled) || (s.session && conf.session.enabled) || (s.sidebar && conf.sidebar.enabled))
-                return true;
-            if (!conf.dashboard.showOnHover && s.dashboard && conf.dashboard.enabled)
-                return true;
-            if (panels.popouts.currentName.startsWith("traymenu") && (panels.popouts.current as StackView)?.depth > 1)
-                return true;
-            return false;
-        }
+        active: !root.textDrawerOpen && (() => {
+                const s = root.screenState;
+                const conf = root.contentItem.Config;
+                if (s.workspaceDrawer)
+                    return true;
+                if ((s.launcher && conf.launcher.enabled) || (s.session && conf.session.enabled) || (s.sidebar && conf.sidebar.enabled))
+                    return true;
+                if (!conf.dashboard.showOnHover && s.dashboard && conf.dashboard.enabled)
+                    return true;
+                if (panels.popouts.currentName.startsWith("traymenu") && (panels.popouts.current as StackView)?.depth > 1)
+                    return true;
+                return false;
+            })()
         windows: [root]
         onCleared: {
             root.screenState.workspaceDrawer = false;
@@ -144,6 +160,17 @@ StyledWindow {
             panels.popouts.hasCurrent = false;
             bar.closeTray();
         }
+    }
+
+    Connections {
+        function onActiveToplevelChanged(): void {
+            if (!root.textDrawerOpen || !Hyprland.activeToplevel)
+                return;
+            root.screenState.launcher = false;
+            root.screenState.sidebar = false;
+        }
+
+        target: Hyprland
     }
 
     StyledRect {
