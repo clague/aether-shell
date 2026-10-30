@@ -63,7 +63,7 @@ Column {
         sourceComponent: AnimatedImage {
             width: Tokens.sizes.session.button
             height: Tokens.sizes.session.button
-                playing: visible
+            playing: visible
             asynchronous: true
             speed: Config.general.sessionGifSpeed
             source: Paths.absolutePath(Config.paths.sessionGif)
