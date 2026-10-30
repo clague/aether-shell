@@ -71,7 +71,6 @@ Searcher {
         Theme {}
     }
 
-
     component Theme: QtObject {
         required property FileSystemEntry modelData
         readonly property string folder: modelData?.name ?? ""

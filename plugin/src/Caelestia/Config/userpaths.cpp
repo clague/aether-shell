@@ -16,8 +16,8 @@ QString themeAsset(const settings::Node* self, const QString& file, const QStrin
         return fallback;
     // Themes the user added (~/.local/share/caelestia/themes/<name>/) win over the bundled ones,
     // so a packaged read-only install can still have themes.
-    const QString userPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
-        + u"/caelestia/themes/"_s + theme + u'/' + file;
+    const QString userPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) +
+                             u"/caelestia/themes/"_s + theme + u'/' + file;
     if (QFileInfo::exists(userPath))
         return userPath;
     return u"root:/assets/themes/"_s + theme + u'/' + file;

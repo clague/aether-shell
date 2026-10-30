@@ -64,11 +64,15 @@ Item {
         scale: root.showPomodoro ? 1 : 0.95
 
         Behavior on opacity {
-            Anim { type: Anim.FastEffects }
+            Anim {
+                type: Anim.FastEffects
+            }
         }
 
         Behavior on scale {
-            Anim { type: Anim.DefaultSpatial }
+            Anim {
+                type: Anim.DefaultSpatial
+            }
         }
 
         // Top bar with mode switcher
@@ -204,11 +208,7 @@ Item {
 
                         radius: 2.5
 
-                        color: index < Pomodoro.cycleCount
-                            ? Colours.palette.m3primary
-                            : (index === Pomodoro.cycleCount && Pomodoro.mode === Pomodoro.Mode.Focus
-                                ? Qt.alpha(Colours.palette.m3primary, 0.6)
-                                : Colours.tPalette.m3outline)
+                        color: index < Pomodoro.cycleCount ? Colours.palette.m3primary : (index === Pomodoro.cycleCount && Pomodoro.mode === Pomodoro.Mode.Focus ? Qt.alpha(Colours.palette.m3primary, 0.6) : Colours.tPalette.m3outline)
 
                         Behavior on color {
                             CAnim {}
@@ -266,11 +266,15 @@ Item {
         scale: root.showPomodoro ? 0.95 : 1
 
         Behavior on opacity {
-            Anim { type: Anim.FastEffects }
+            Anim {
+                type: Anim.FastEffects
+            }
         }
 
         Behavior on scale {
-            Anim { type: Anim.DefaultSpatial }
+            Anim {
+                type: Anim.DefaultSpatial
+            }
         }
 
         ColumnLayout {

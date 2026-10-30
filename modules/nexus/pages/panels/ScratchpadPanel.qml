@@ -199,7 +199,8 @@ PageBase {
                     let count = 0;
                     for (let i = 0; i < QuickNoteState.availableFiles.length; i++) {
                         const tags = QuickNoteState.getTagsForFile(QuickNoteState.availableFiles[i]);
-                        if (tags.includes(modelData)) count++;
+                        if (tags.includes(modelData))
+                            count++;
                     }
                     return count;
                 }

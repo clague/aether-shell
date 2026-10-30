@@ -11,23 +11,7 @@ Item {
     // Total shapes in the heap
     readonly property int count: 38
 
-    readonly property list<int> shapePool: [
-        MaterialShape.Circle,
-        MaterialShape.Cookie4Sided,
-        MaterialShape.Cookie6Sided,
-        MaterialShape.Sunny,
-        MaterialShape.VerySunny,
-        MaterialShape.SoftBurst,
-        MaterialShape.Pentagon,
-        MaterialShape.Gem,
-        MaterialShape.Arch,
-        MaterialShape.Arrow,
-        MaterialShape.Pill,
-        MaterialShape.Triangle,
-        MaterialShape.Diamond,
-        MaterialShape.Clover4Leaf,
-        MaterialShape.Heart
-    ]
+    readonly property list<int> shapePool: [MaterialShape.Circle, MaterialShape.Cookie4Sided, MaterialShape.Cookie6Sided, MaterialShape.Sunny, MaterialShape.VerySunny, MaterialShape.SoftBurst, MaterialShape.Pentagon, MaterialShape.Gem, MaterialShape.Arch, MaterialShape.Arrow, MaterialShape.Pill, MaterialShape.Triangle, MaterialShape.Diamond, MaterialShape.Clover4Leaf, MaterialShape.Heart]
 
     property real idlePhase: 0.0
 
@@ -66,26 +50,12 @@ Item {
     function getShapeColor(colorIdx: int): color {
         switch (Pomodoro.mode) {
         case Pomodoro.Mode.ShortBreak:
-            return [
-                Colours.palette.m3tertiary,
-                Colours.palette.m3tertiaryContainer,
-                Colours.palette.m3secondary,
-                Colours.palette.m3outlineVariant
-            ][colorIdx];
+            return [Colours.palette.m3tertiary, Colours.palette.m3tertiaryContainer, Colours.palette.m3secondary, Colours.palette.m3outlineVariant][colorIdx];
         case Pomodoro.Mode.LongBreak:
-            return [
-                Colours.palette.m3secondary,
-                Colours.palette.m3secondaryContainer,
-                Colours.palette.m3primary,
-                Colours.palette.m3outlineVariant
-            ][colorIdx];
-        default: // Focus
-            return [
-                Colours.palette.m3primary,
-                Colours.palette.m3primaryContainer,
-                Colours.palette.m3secondary,
-                Colours.palette.m3tertiaryContainer
-            ][colorIdx];
+            return [Colours.palette.m3secondary, Colours.palette.m3secondaryContainer, Colours.palette.m3primary, Colours.palette.m3outlineVariant][colorIdx];
+        default:
+            // Focus
+            return [Colours.palette.m3primary, Colours.palette.m3primaryContainer, Colours.palette.m3secondary, Colours.palette.m3tertiaryContainer][colorIdx];
         }
     }
 

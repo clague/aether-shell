@@ -74,7 +74,8 @@ Scope {
 
         function close(): void {
             const s = ShellState.forActive();
-            if (s) s.quicknote = false;
+            if (s)
+                s.quicknote = false;
         }
 
         function toggle(): void {

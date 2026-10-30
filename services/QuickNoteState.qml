@@ -38,7 +38,8 @@ Singleton {
 
     function addCustomTag(tag: string): void {
         const clean = (tag ?? "").trim().replace(/^#/, "").toLowerCase();
-        if (!clean || customTags.includes(clean)) return;
+        if (!clean || customTags.includes(clean))
+            return;
         customTags = [...customTags, clean];
         saveConfig();
     }
@@ -55,8 +56,10 @@ Singleton {
                 changed = true;
             }
         }
-        if (changed) fileTags = updated;
-        if (activeTagFilter === clean) activeTagFilter = "all";
+        if (changed)
+            fileTags = updated;
+        if (activeTagFilter === clean)
+            activeTagFilter = "all";
         saveConfig();
     }
 
@@ -65,7 +68,8 @@ Singleton {
     }
 
     function toggleTagForFile(fileName: string, tag: string): void {
-        if (!fileName) return;
+        if (!fileName)
+            return;
         const clean = (tag ?? "").trim().replace(/^#/, "").toLowerCase();
         const updated = Object.assign({}, fileTags);
         const curTags = updated[fileName] ? [...updated[fileName]] : [];
@@ -86,7 +90,8 @@ Singleton {
 
     function createNewNote(fileName: string, initialTag = ""): void {
         let name = (fileName ?? "").trim();
-        if (!name) return;
+        if (!name)
+            return;
         if (!name.endsWith(".txt") && !name.endsWith(".md")) {
             name += ".txt";
         }

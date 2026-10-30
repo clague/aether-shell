@@ -280,15 +280,11 @@ Item {
 
                             radius: Tokens.rounding.full
 
-                            color: isSelected
-                                ? Colours.palette.m3primaryContainer
-                                : (isAssignedToCurrent ? Colours.palette.m3secondaryContainer : Colours.layer(Colours.palette.m3surfaceContainerHigh, 0))
+                            color: isSelected ? Colours.palette.m3primaryContainer : (isAssignedToCurrent ? Colours.palette.m3secondaryContainer : Colours.layer(Colours.palette.m3surfaceContainerHigh, 0))
 
                             border.width: 1
 
-                            border.color: isSelected
-                                ? Colours.palette.m3primary
-                                : (isAssignedToCurrent ? Colours.palette.m3secondary : Colours.palette.m3outlineVariant)
+                            border.color: isSelected ? Colours.palette.m3primary : (isAssignedToCurrent ? Colours.palette.m3secondary : Colours.palette.m3outlineVariant)
 
                             Row {
                                 id: tagChipLayout
@@ -316,9 +312,7 @@ Item {
 
                                     font.weight: tagChip.isSelected || tagChip.isAssignedToCurrent ? Font.Bold : Font.Normal
 
-                                    color: tagChip.isSelected
-                                        ? Colours.palette.m3onPrimaryContainer
-                                        : (tagChip.isAssignedToCurrent ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface)
+                                    color: tagChip.isSelected ? Colours.palette.m3onPrimaryContainer : (tagChip.isAssignedToCurrent ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurface)
 
                                     anchors.verticalCenter: parent.verticalCenter
                                 }
