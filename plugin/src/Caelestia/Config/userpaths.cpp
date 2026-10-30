@@ -1,5 +1,7 @@
 #include "userpaths.hpp"
 
+#include <qfileinfo.h>
+
 #include "settings/common.hpp"
 
 namespace caelestia::shell::config {
@@ -10,7 +12,15 @@ namespace detail {
 
 QString themeAsset(const settings::Node* self, const QString& file, const QString& fallback) {
     const QString theme = self ? self->value(u"themeName"_s).toString() : QString();
-    return theme.isEmpty() ? fallback : u"root:/assets/themes/"_s + theme + u'/' + file;
+    if (theme.isEmpty())
+        return fallback;
+    // Themes the user added (~/.local/share/caelestia/themes/<name>/) win over the bundled ones,
+    // so a packaged read-only install can still have themes.
+    const QString userPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation)
+        + u"/caelestia/themes/"_s + theme + u'/' + file;
+    if (QFileInfo::exists(userPath))
+        return userPath;
+    return u"root:/assets/themes/"_s + theme + u'/' + file;
 }
 
 } // namespace detail
