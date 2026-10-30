@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtQuick.Window
 import Caelestia.Blobs
 import Caelestia.Config
 import qs.components
@@ -22,7 +23,12 @@ Item {
 
     signal close
 
-    Config.screen: nState.targetScreen
+    // Tokens are per-screen. `targetScreen` is the *config target* and is deliberately empty
+    // in Global mode ("applies to all monitors"), but Tokens still needs a real screen: with
+    // none, every padding/spacing/font read warns and falls back to the global appearance.
+    // The window's own screen supplies the tokens; page configs keep resolving through
+    // nState.targetScreen (see PageBase.targetConfig).
+    Config.screen: nState.targetScreen.length > 0 ? nState.targetScreen : (Screen.name ?? "")
 
     // Sized from the screen height, but never wider than the screen (a rotated, portrait display
     // is taller than it is wide, which used to make the window many times wider than the screen)

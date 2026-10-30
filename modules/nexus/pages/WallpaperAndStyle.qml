@@ -347,7 +347,7 @@ PageBase {
             Layout.fillWidth: true
             text: Tr.tr("Bezel mode (Pitch black)")
             subtext: Tr.tr("Make the shell pitch black to blend with display bezels")
-            checked: Config.appearance.pitchBlack
+            checked: GlobalConfig.appearance.pitchBlack
             onToggled: GlobalConfig.appearance.pitchBlack = checked
         }
 
