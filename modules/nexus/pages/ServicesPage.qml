@@ -194,7 +194,7 @@ PageBase {
             text: Tr.tr("Service tuning")
         }
 
-        SliderRow {
+        StepperRow {
             // TRANSLATORS: bars of a spectrum analyser, not the taskbar
             label: Tr.tr("Visualiser bars")
             subtext: Tr.tr("Number of bars in the audio visualisers")
