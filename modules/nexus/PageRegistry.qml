@@ -68,7 +68,6 @@ QtObject {
             description: Tr.tr("Manage plugins"),
             category: "system"
         },
-
         {
             label: Tr.tr("Doctor"),
             icon: "health_and_safety",
