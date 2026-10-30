@@ -45,7 +45,8 @@ void SparklineItem::drawLine(QPainter* painter, CircularBuffer* buffer, const QC
     const qreal startX = w - (len - 1) * stepX - stepX * m_slideProgress + stepX;
 
     const auto clampY = [h](qreal val, qreal max) -> qreal {
-        if (max <= 0.0) return h;
+        if (max <= 0.0)
+            return h;
         return std::clamp(h - (val / max) * h, 0.0, h);
     };
 

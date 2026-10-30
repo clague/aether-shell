@@ -116,8 +116,8 @@ QString CUtils::toLocalFile(const QUrl& url) {
         const QString relative = QDir::current().absoluteFilePath(path);
         if (QFile::exists(relative))
             return relative;
-        const QString xdgConfig = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation)
-            + QStringLiteral("/quickshell/caelestia/") + path;
+        const QString xdgConfig = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) +
+                                  QStringLiteral("/quickshell/caelestia/") + path;
         if (QFile::exists(xdgConfig))
             return xdgConfig;
         return relative;

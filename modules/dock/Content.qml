@@ -113,16 +113,12 @@ Item {
         const openSpecial = (toplevel.monitor ?? Hypr.focusedMonitor)?.lastIpcObject?.specialWorkspace?.name ?? "";
         if (openSpecial.startsWith("special:") && !wsName?.startsWith("special:")) {
             const specialName = openSpecial.slice("special:".length);
-            Hypr.dispatch(Hypr.usingLua
-                ? `hl.dsp.workspace.toggle_special("${specialName}")`
-                : `togglespecialworkspace ${specialName}`);
+            Hypr.dispatch(Hypr.usingLua ? `hl.dsp.workspace.toggle_special("${specialName}")` : `togglespecialworkspace ${specialName}`);
         }
 
         // First switch to the workspace (proven pattern)
         if (wsName) {
-            Hypr.dispatch(Hypr.usingLua
-                ? `hl.dsp.focus({ workspace = "${wsName}" })`
-                : `workspace ${wsName}`);
+            Hypr.dispatch(Hypr.usingLua ? `hl.dsp.focus({ workspace = "${wsName}" })` : `workspace ${wsName}`);
         }
 
         // Then focus the specific window

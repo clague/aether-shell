@@ -93,13 +93,7 @@ Singleton {
         const nextState = !transparency.enabled;
         GlobalConfig.appearance.transparency.enabled = nextState;
         if (notify ?? false) {
-            Quickshell.execDetached([
-                "notify-send",
-                "-a", "Caelestia",
-                "-i", "opacity",
-                Tr.tr("Transparency"),
-                nextState ? Tr.tr("Transparency & blur enabled") : Tr.tr("Transparency & blur disabled")
-            ]);
+            Quickshell.execDetached(["notify-send", "-a", "Caelestia", "-i", "opacity", Tr.tr("Transparency"), nextState ? Tr.tr("Transparency & blur enabled") : Tr.tr("Transparency & blur disabled")]);
         }
     }
 
