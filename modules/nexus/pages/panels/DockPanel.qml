@@ -13,6 +13,16 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
+    // Ordered to match config::HybridVariant (Midnight, Op)
+    readonly property list<MenuItem> variantItems: [
+        MenuItem {
+            text: "MiDnight"
+        },
+        MenuItem {
+            text: "OP"
+        }
+    ]
+
     function getAppName(appId: string): string {
         const entry = DesktopEntries.heuristicLookup(appId);
         return entry?.name ?? appId;
@@ -76,6 +86,24 @@ PageBase {
             subtext: Tr.tr("Scrolling over the dock opens the application launcher")
             checked: Config.dock.scrollToLauncher
             onToggled: GlobalConfig.dock.scrollToLauncher = checked
+        }
+
+        SectionHeader {
+            text: Tr.tr("Implementation")
+        }
+
+        SelectRow {
+            first: true
+            last: true
+            label: Tr.tr("Dock implementation")
+            subtext: Tr.tr("MiDnight's bar section, or OP's auto-hiding panel")
+            configNode: GlobalConfig.hybrid.variants
+            propertyName: "dock"
+            menuItems: root.variantItems
+            active: root.variantItems[GlobalConfig.hybrid.variants.dock === HybridVariant.Op ? 1 : 0]
+            onSelected: item => {
+                GlobalConfig.hybrid.variants.dock = root.variantItems.indexOf(item) === 1 ? HybridVariant.Op : HybridVariant.Midnight;
+            }
         }
 
         // Behaviour & Dimensions

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: caelestia-shell\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 00:21+0800\n"
+"POT-Creation-Date: 2026-10-31 00:46+0800\n"
 "PO-Revision-Date: 2026-10-30 00:00+0800\n"
 "Last-Translator: caelestia-hybrid\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -326,6 +326,7 @@ msgstr "大写锁定：%1"
 #: modules/nexus/pages/panels/DockPanel.qml
 #: modules/nexus/pages/panels/LauncherPanel.qml
 #: modules/nexus/pages/panels/OsdPanel.qml
+#: modules/nexus/pages/panels/OverviewPanel.qml
 #: modules/nexus/pages/panels/SidebarPanel.qml
 #: modules/nexus/pages/panels/UtilitiesPanel.qml
 #: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
@@ -346,7 +347,6 @@ msgstr "数字锁定：%1"
 
 #: modules/bar/popouts/Network.qml
 #: modules/dashboard/performance/NetworkCard.qml modules/nexus/PageRegistry.qml
-#: modules/nexus/pages/HybridPage.qml
 #: modules/nexus/pages/network/NetworkDetailPage.qml
 #: modules/nexus/pages/NetworkPage.qml
 #: modules/nexus/pages/panels/DashboardPanel.qml
@@ -1289,8 +1289,8 @@ msgstr "外观与体验"
 msgid "Density, glass, motion, fonts and Hyprland variables"
 msgstr "密度、毛玻璃、动效、字体与 Hyprland 变量"
 
-#: modules/nexus/PageRegistry.qml modules/nexus/pages/HybridPage.qml
-#: modules/nexus/pages/PanelsPage.qml modules/nexus/SearchIndex.qml
+#: modules/nexus/PageRegistry.qml modules/nexus/pages/PanelsPage.qml
+#: modules/nexus/SearchIndex.qml
 msgid "Panels"
 msgstr "面板"
 
@@ -1406,23 +1406,18 @@ msgstr "Shell 令牌"
 msgid "Modify interface spacing, rounding, and sizing"
 msgstr "调整界面间距、圆角与尺寸"
 
-#: modules/nexus/PageRegistry.qml modules/nexus/pages/HybridPage.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Hybrid"
-msgstr "混合"
-
-#: modules/nexus/PageRegistry.qml modules/nexus/SearchIndex.qml
-msgid "Features imported from each fork, and which one wins"
-msgstr "从各分支导入的功能，以及哪一个优先"
-
 #: modules/nexus/PageRegistry.qml modules/nexus/pages/AboutPage.qml
 #: modules/nexus/SearchIndex.qml
 msgid "About"
 msgstr "关于"
 
 #: modules/nexus/PageRegistry.qml modules/nexus/SearchIndex.qml
-msgid "System information, credits"
-msgstr "系统信息、致谢"
+msgid "System information, preset, credits"
+msgstr "系统信息、预设与致谢"
+
+#: modules/nexus/pages/AboutPage.qml
+msgid "Recommended"
+msgstr "推荐"
 
 #: modules/nexus/pages/AboutPage.qml
 msgid "by DiM • Basically Caelestia+"
@@ -1444,6 +1439,20 @@ msgstr "你距离成为开发者还有 %1 步。"
 #: modules/nexus/pages/AboutPage.qml
 msgid "You are now a developer!"
 msgstr "你现在是开发者了！"
+
+#: modules/nexus/pages/AboutPage.qml modules/nexus/SearchIndex.qml
+msgid "Preset"
+msgstr "预设"
+
+#: modules/nexus/pages/AboutPage.qml modules/nexus/SearchIndex.qml
+msgid "Starting preset"
+msgstr "起始预设"
+
+#: modules/nexus/pages/AboutPage.qml modules/nexus/SearchIndex.qml
+msgid ""
+"A starting set of features and variants. Choices you make on other pages are "
+"kept."
+msgstr "一组初始功能与变体。你在其他页面所做的选择会保留。"
 
 #: modules/nexus/pages/AboutPage.qml modules/nexus/SearchIndex.qml
 msgid "System"
@@ -1499,7 +1508,7 @@ msgstr "所有应用"
 msgid "App info"
 msgstr "应用信息"
 
-#: modules/nexus/pages/apps/AppInfo.qml modules/nexus/pages/HybridPage.qml
+#: modules/nexus/pages/apps/AppInfo.qml
 #: modules/nexus/pages/panels/LauncherPanel.qml
 #: modules/nexus/pages/PanelsPage.qml modules/nexus/SearchIndex.qml
 msgid "Launcher"
@@ -1716,6 +1725,18 @@ msgstr "为特定应用静音通知声音"
 msgid "Add"
 msgstr "添加"
 
+#: modules/nexus/pages/AudioPage.qml modules/nexus/SearchIndex.qml
+msgid "Bar popout"
+msgstr "顶栏弹窗"
+
+#: modules/nexus/pages/AudioPage.qml modules/nexus/SearchIndex.qml
+msgid "Audio popout"
+msgstr "音频弹窗"
+
+#: modules/nexus/pages/AudioPage.qml modules/nexus/SearchIndex.qml
+msgid "Which fork's audio panel the bar opens"
+msgstr "状态栏打开哪个分支的音频面板"
+
 #: modules/nexus/pages/background/DesktopClockPage.qml
 #: modules/nexus/pages/background/DesktopLyricsPage.qml
 msgid "Top Left"
@@ -1774,6 +1795,7 @@ msgstr "桌面时钟"
 #: modules/nexus/pages/panels/DockPanel.qml
 #: modules/nexus/pages/panels/LauncherPanel.qml
 #: modules/nexus/pages/panels/OsdPanel.qml
+#: modules/nexus/pages/panels/OverviewPanel.qml
 #: modules/nexus/pages/panels/SidebarPanel.qml
 #: modules/nexus/pages/panels/UtilitiesPanel.qml
 #: modules/nexus/pages/TokensPage.qml
@@ -2154,6 +2176,14 @@ msgctxt "bluetooth MAC address"
 msgid "Address"
 msgstr "地址"
 
+#: modules/nexus/pages/BluetoothPage.qml modules/nexus/SearchIndex.qml
+msgid "Bluetooth pairing agent"
+msgstr "Bluetooth 配对代理"
+
+#: modules/nexus/pages/BluetoothPage.qml modules/nexus/SearchIndex.qml
+msgid "Answer pairing requests from other devices. Takes effect on restart"
+msgstr "响应其他设备的配对请求。重启后生效"
+
 #: modules/nexus/pages/BluetoothPage.qml
 msgid "No saved devices"
 msgstr "无已保存的设备"
@@ -2388,216 +2418,6 @@ msgstr "确定吗？"
 msgid "Fix"
 msgstr "修复"
 
-#: modules/nexus/pages/HybridPage.qml
-msgid "Recommended"
-msgstr "推荐"
-
-#: modules/nexus/pages/HybridPage.qml
-msgid "MiDnight"
-msgstr "MiDnight"
-
-#: modules/nexus/pages/HybridPage.qml
-msgid "OP"
-msgstr "OP"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Preset"
-msgstr "预设"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "A starting set of features. Anything you change below stays changed."
-msgstr "初始功能集。你在下方所做的任何更改都会保留。"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/pages/panels/DockPanel.qml
-#: modules/nexus/pages/panels/taskbar/BarComponents.qml
-#: modules/nexus/pages/panels/taskbar/BarDock.qml
-#: modules/nexus/pages/panels/TaskbarPanel.qml
-#: modules/nexus/pages/PanelsPage.qml modules/nexus/SearchIndex.qml
-msgid "Dock"
-msgstr "程序坞"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "A separate dock window with pinned and running apps"
-msgstr "独立的程序坞窗口，显示固定和正在运行的应用"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Overview"
-msgstr "概览"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Workspace overview with window thumbnails"
-msgstr "带窗口缩略图的工作区概览"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Clipboard history"
-msgstr "剪贴板历史"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Search and paste from the launcher"
-msgstr "从启动器搜索并粘贴"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Emoji picker"
-msgstr "Emoji 选择器"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Search emoji from the launcher"
-msgstr "从启动器搜索 Emoji"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Window switcher"
-msgstr "窗口切换器"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Switch windows from the launcher"
-msgstr "从启动器切换窗口"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Keybind viewer"
-msgstr "快捷键查看器"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Browse Hyprland keybinds from the launcher"
-msgstr "从启动器浏览 Hyprland 快捷键"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Video wallpapers"
-msgstr "视频壁纸"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Animated wallpapers, paused when nothing can see them"
-msgstr "动态壁纸，无人可见时暂停"
-
-#: modules/nexus/pages/HybridPage.qml
-#: modules/nexus/pages/wallandstyle/WallhavenPage.qml
-#: modules/nexus/pages/wallandstyle/WallpaperSelect.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Wallhaven"
-msgstr "Wallhaven"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Browse and set wallpapers from wallhaven.cc"
-msgstr "从 wallhaven.cc 浏览并设置壁纸"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Floating lyrics"
-msgstr "浮动歌词"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Show synced lyrics on the desktop"
-msgstr "在桌面上显示同步歌词"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Theme packs"
-msgstr "主题包"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Swap wallpaper and shell artwork as a named set"
-msgstr "以命名套件的形式切换壁纸与 Shell 配图"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Pomodoro timer"
-msgstr "番茄钟"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "A focus/break timer next to the dashboard clock"
-msgstr "仪表盘时钟旁的专注/休息计时器"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Scratchpad"
-msgstr "速记本"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "A keyboard-driven notes overlay with tags"
-msgstr "可用键盘操作、带标签的笔记浮层"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Background doctor"
-msgstr "后台诊断"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Run the health checks periodically and toast when something changes"
-msgstr "定期运行健康检查，有变化时弹出提示"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Confirm power actions on the lock screen"
-msgstr "在锁屏上确认电源操作"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Ask before shutdown, reboot or logout from the lock screen"
-msgstr "从锁屏关机、重启或注销前先询问"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/pages/NetworkPage.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Hotspot"
-msgstr "热点"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Share this machine's connection as a Wi-Fi access point"
-msgstr "将此机器的连接共享为 Wi-Fi 接入点"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Bluetooth pairing agent"
-msgstr "Bluetooth 配对代理"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Answer pairing requests from other devices. Takes effect on restart"
-msgstr "响应其他设备的配对请求。重启后生效"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "For fun"
-msgstr "趣味"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Shimeji"
-msgstr "Shimeji"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Desktop pets that wander across your screens"
-msgstr "在各屏幕间游走的桌面宠物"
-
-#: modules/nexus/pages/HybridPage.qml
-#: modules/nexus/pages/panels/UtilitiesPanel.qml modules/nexus/SearchIndex.qml
-msgid "Bad Apple"
-msgstr "Bad Apple"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "You know what this is"
-msgstr "你知道这是什么"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Dino game"
-msgstr "恐龙游戏"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "The Chrome runner, in the notification dock"
-msgstr "通知栏中的 Chrome 跑酷小游戏"
-
-#: modules/nexus/pages/HybridPage.qml
-#: modules/nexus/pages/panels/LauncherPanel.qml modules/nexus/SearchIndex.qml
-msgid "Variants"
-msgstr "变体"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Audio popout"
-msgstr "音频弹窗"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Which fork's audio panel the bar opens"
-msgstr "状态栏打开哪个分支的音频面板"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "Workspace overview"
-msgstr "工作区概览"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "MiDnight's drawer, or OP's carousel and window grid"
-msgstr "MiDnight 的抽屉，或 OP 的轮播与窗口网格"
-
-#: modules/nexus/pages/HybridPage.qml modules/nexus/SearchIndex.qml
-msgid "MiDnight's bar section, or OP's auto-hiding panel"
-msgstr "MiDnight 的状态栏区块，或 OP 的自动隐藏面板"
-
 #: modules/nexus/pages/hyprland/HyprAppearancePage.qml
 #: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
 msgid "Hyprland appearance"
@@ -2610,7 +2430,8 @@ msgstr "保存在 hypr-vars.lua"
 
 #: modules/nexus/pages/hyprland/HyprAppearancePage.qml
 #: modules/nexus/SearchIndex.qml
-msgid "Hyprland reads this file at startup; clear a row to remove its override."
+msgid ""
+"Hyprland reads this file at startup; clear a row to remove its override."
 msgstr "Hyprland 启动时读取此文件；清除某一行即可移除对应覆盖。"
 
 #: modules/nexus/pages/hyprland/HyprAppearancePage.qml
@@ -3706,6 +3527,18 @@ msgstr "%1 ms"
 msgid "Add provider"
 msgstr "添加提供商"
 
+#: modules/nexus/pages/NetworkPage.qml modules/nexus/SearchIndex.qml
+msgid "Hotspot"
+msgstr "热点"
+
+#: modules/nexus/pages/NetworkPage.qml modules/nexus/SearchIndex.qml
+msgid "Enable hotspot"
+msgstr "启用热点"
+
+#: modules/nexus/pages/NetworkPage.qml modules/nexus/SearchIndex.qml
+msgid "Show the hotspot page and keep its status up to date"
+msgstr "显示热点页面并持续更新其状态"
+
 #: modules/nexus/pages/panels/DashboardPanel.qml
 msgid "Circle"
 msgstr "圆形"
@@ -3905,6 +3738,14 @@ msgstr "拖动阈值"
 msgid "Pixels dragged before the dashboard opens"
 msgstr "打开仪表盘前需拖动的像素数"
 
+#: modules/nexus/pages/panels/DockPanel.qml
+#: modules/nexus/pages/panels/taskbar/BarComponents.qml
+#: modules/nexus/pages/panels/taskbar/BarDock.qml
+#: modules/nexus/pages/panels/TaskbarPanel.qml
+#: modules/nexus/pages/PanelsPage.qml modules/nexus/SearchIndex.qml
+msgid "Dock"
+msgstr "程序坞"
+
 #: modules/nexus/pages/panels/DockPanel.qml modules/nexus/SearchIndex.qml
 msgid "Show the application dock at the bottom of the screen"
 msgstr "在屏幕底部显示应用程序坞"
@@ -3924,6 +3765,19 @@ msgstr "滚动打开启动器"
 #: modules/nexus/pages/panels/DockPanel.qml modules/nexus/SearchIndex.qml
 msgid "Scrolling over the dock opens the application launcher"
 msgstr "在程序坞上滚动可打开应用启动器"
+
+#: modules/nexus/pages/panels/DockPanel.qml
+#: modules/nexus/pages/panels/OverviewPanel.qml modules/nexus/SearchIndex.qml
+msgid "Implementation"
+msgstr "实现方式"
+
+#: modules/nexus/pages/panels/DockPanel.qml modules/nexus/SearchIndex.qml
+msgid "Dock implementation"
+msgstr "程序坞实现"
+
+#: modules/nexus/pages/panels/DockPanel.qml modules/nexus/SearchIndex.qml
+msgid "MiDnight's bar section, or OP's auto-hiding panel"
+msgstr "MiDnight 的状态栏区块，或 OP 的自动隐藏面板"
 
 #: modules/nexus/pages/panels/DockPanel.qml modules/nexus/SearchIndex.qml
 msgid "Behaviour & Sizing"
@@ -4009,6 +3863,10 @@ msgstr "操作"
 msgid "Schemes"
 msgstr "配色方案"
 
+#: modules/nexus/pages/panels/LauncherPanel.qml modules/nexus/SearchIndex.qml
+msgid "Variants"
+msgstr "变体"
+
 #: modules/nexus/pages/panels/LauncherPanel.qml
 #: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
 msgid "Wallpapers"
@@ -4075,6 +3933,10 @@ msgid "Taskview"
 msgstr "任务视图"
 
 #: modules/nexus/pages/panels/OverviewPanel.qml modules/nexus/SearchIndex.qml
+msgid "Workspace overview with window thumbnails"
+msgstr "带窗口缩略图的工作区概览"
+
+#: modules/nexus/pages/panels/OverviewPanel.qml modules/nexus/SearchIndex.qml
 msgid "View options"
 msgstr "视图选项"
 
@@ -4085,6 +3947,14 @@ msgstr "活动标签页"
 #: modules/nexus/pages/panels/OverviewPanel.qml modules/nexus/SearchIndex.qml
 msgid "Initial view when opening the fullscreen overview"
 msgstr "打开全屏概览时的初始视图"
+
+#: modules/nexus/pages/panels/OverviewPanel.qml modules/nexus/SearchIndex.qml
+msgid "Taskview implementation"
+msgstr "任务视图实现"
+
+#: modules/nexus/pages/panels/OverviewPanel.qml modules/nexus/SearchIndex.qml
+msgid "MiDnight's drawer, or OP's carousel and window grid"
+msgstr "MiDnight 的抽屉，或 OP 的轮播与窗口网格"
 
 #: modules/nexus/pages/panels/OverviewPanel.qml
 msgid "Shortcuts & Gestures"
@@ -4642,6 +4512,10 @@ msgid "Show the wallpaper picker menu"
 msgstr "显示壁纸选择菜单"
 
 #: modules/nexus/pages/panels/UtilitiesPanel.qml modules/nexus/SearchIndex.qml
+msgid "Bad Apple"
+msgstr "Bad Apple"
+
+#: modules/nexus/pages/panels/UtilitiesPanel.qml modules/nexus/SearchIndex.qml
 msgid "Play the Bad Apple animation"
 msgstr "播放 Bad Apple 动画"
 
@@ -4660,6 +4534,18 @@ msgstr "暂停画中画"
 #: modules/nexus/pages/panels/UtilitiesPanel.qml modules/nexus/SearchIndex.qml
 msgid "Pause or resume picture-in-picture"
 msgstr "暂停或继续画中画"
+
+#: modules/nexus/pages/panels/UtilitiesPanel.qml modules/nexus/SearchIndex.qml
+msgid "Fun"
+msgstr "趣味"
+
+#: modules/nexus/pages/panels/UtilitiesPanel.qml modules/nexus/SearchIndex.qml
+msgid "Bad Apple overlay"
+msgstr "Bad Apple 覆盖层"
+
+#: modules/nexus/pages/panels/UtilitiesPanel.qml modules/nexus/SearchIndex.qml
+msgid "Enable the fullscreen animation (one transparent layer per screen)"
+msgstr "启用全屏动画（每个屏幕一个透明图层）"
 
 #: modules/nexus/pages/PanelsPage.qml
 msgctxt "panel status"
@@ -5810,6 +5696,12 @@ msgstr ""
 "<b>media.gif</b>、<b>session.gif</b> 和 <b>notif.png</b><br><b>4.</b> 你的主"
 "题会自动出现在这里，并可通过启动器中的 <b>:theme</b> 使用！"
 
+#: modules/nexus/pages/wallandstyle/WallhavenPage.qml
+#: modules/nexus/pages/wallandstyle/WallpaperSelect.qml
+#: modules/nexus/SearchIndex.qml
+msgid "Wallhaven"
+msgstr "Wallhaven"
+
 #: modules/nexus/pages/wallandstyle/WallpaperEnginePage.qml
 #: modules/nexus/pages/wallandstyle/WallpaperSelect.qml
 #: modules/nexus/SearchIndex.qml
@@ -5902,6 +5794,14 @@ msgstr "重着色强度"
 #: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
 msgid "Video Hardware Decoder"
 msgstr "视频硬件解码器"
+
+#: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
+msgid "Video wallpapers"
+msgstr "视频壁纸"
+
+#: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
+msgid "Animated wallpapers, paused when nothing can see them"
+msgstr "动态壁纸，无人可见时暂停"
 
 #: modules/nexus/pages/WallpaperAndStyle.qml modules/nexus/SearchIndex.qml
 msgid "Pause animated wallpapers on battery"
@@ -7198,6 +7098,108 @@ msgstr "设置"
 #: plugin/src/Caelestia/Config/launcherconfig.hpp
 msgid "Configure the shell"
 msgstr "配置 Shell"
+
+#~ msgid "Hybrid"
+#~ msgstr "混合"
+
+#~ msgid "Features imported from each fork, and which one wins"
+#~ msgstr "从各分支导入的功能，以及哪一个优先"
+
+#~ msgid "MiDnight"
+#~ msgstr "MiDnight"
+
+#~ msgid "OP"
+#~ msgstr "OP"
+
+#~ msgid "A separate dock window with pinned and running apps"
+#~ msgstr "独立的程序坞窗口，显示固定和正在运行的应用"
+
+#~ msgid "Overview"
+#~ msgstr "概览"
+
+#~ msgid "Clipboard history"
+#~ msgstr "剪贴板历史"
+
+#~ msgid "Search and paste from the launcher"
+#~ msgstr "从启动器搜索并粘贴"
+
+#~ msgid "Emoji picker"
+#~ msgstr "Emoji 选择器"
+
+#~ msgid "Search emoji from the launcher"
+#~ msgstr "从启动器搜索 Emoji"
+
+#~ msgid "Window switcher"
+#~ msgstr "窗口切换器"
+
+#~ msgid "Switch windows from the launcher"
+#~ msgstr "从启动器切换窗口"
+
+#~ msgid "Keybind viewer"
+#~ msgstr "快捷键查看器"
+
+#~ msgid "Browse Hyprland keybinds from the launcher"
+#~ msgstr "从启动器浏览 Hyprland 快捷键"
+
+#~ msgid "Browse and set wallpapers from wallhaven.cc"
+#~ msgstr "从 wallhaven.cc 浏览并设置壁纸"
+
+#~ msgid "Floating lyrics"
+#~ msgstr "浮动歌词"
+
+#~ msgid "Show synced lyrics on the desktop"
+#~ msgstr "在桌面上显示同步歌词"
+
+#~ msgid "Theme packs"
+#~ msgstr "主题包"
+
+#~ msgid "Swap wallpaper and shell artwork as a named set"
+#~ msgstr "以命名套件的形式切换壁纸与 Shell 配图"
+
+#~ msgid "Pomodoro timer"
+#~ msgstr "番茄钟"
+
+#~ msgid "A focus/break timer next to the dashboard clock"
+#~ msgstr "仪表盘时钟旁的专注/休息计时器"
+
+#~ msgid "Scratchpad"
+#~ msgstr "速记本"
+
+#~ msgid "A keyboard-driven notes overlay with tags"
+#~ msgstr "可用键盘操作、带标签的笔记浮层"
+
+#~ msgid "Background doctor"
+#~ msgstr "后台诊断"
+
+#~ msgid "Run the health checks periodically and toast when something changes"
+#~ msgstr "定期运行健康检查，有变化时弹出提示"
+
+#~ msgid "Confirm power actions on the lock screen"
+#~ msgstr "在锁屏上确认电源操作"
+
+#~ msgid "Ask before shutdown, reboot or logout from the lock screen"
+#~ msgstr "从锁屏关机、重启或注销前先询问"
+
+#~ msgid "Share this machine's connection as a Wi-Fi access point"
+#~ msgstr "将此机器的连接共享为 Wi-Fi 接入点"
+
+#~ msgid "Shimeji"
+#~ msgstr "Shimeji"
+
+#~ msgid "Desktop pets that wander across your screens"
+#~ msgstr "在各屏幕间游走的桌面宠物"
+
+#~ msgid "You know what this is"
+#~ msgstr "你知道这是什么"
+
+#~ msgid "Dino game"
+#~ msgstr "恐龙游戏"
+
+#~ msgid "The Chrome runner, in the notification dock"
+#~ msgstr "通知栏中的 Chrome 跑酷小游戏"
+
+#~ msgid "Workspace overview"
+#~ msgstr "工作区概览"
 
 #~ msgid "Wallpaper, fonts, colours"
 #~ msgstr "壁纸、字体、颜色"

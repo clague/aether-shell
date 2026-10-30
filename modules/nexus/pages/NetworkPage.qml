@@ -352,13 +352,26 @@ PageBase {
         }
 
         // ---- Hotspot ---------------------------------------------------------
-        // Only the entry point is gated. The page itself is a Component in the stack, so
-        // it is not built until it is pushed, and the Hotspot singleton is not created
-        // until the page reads it -- with the feature off, neither ever happens.
-        RowButton {
+        // The flag keeps the Hotspot singleton (and its nmcli poll) from existing unless the
+        // user asks for it. The page itself is a Component in the stack, so it is not built
+        // until it is pushed.
+        SectionHeader {
             Layout.topMargin: Tokens.spacing.large
-            Layout.fillWidth: true
+            text: Tr.tr("Hotspot")
+        }
+
+        ToggleRow {
             first: true
+            last: !GlobalConfig.hybrid.features.hotspot
+            text: Tr.tr("Enable hotspot")
+            subtext: Tr.tr("Show the hotspot page and keep its status up to date")
+            configNode: GlobalConfig.hybrid.features
+            propertyName: "hotspot"
+            checked: GlobalConfig.hybrid.features.hotspot
+            onToggled: GlobalConfig.hybrid.features.hotspot = checked
+        }
+
+        RowButton {
             last: true
             icon: "wifi_tethering"
             text: Tr.tr("Hotspot")

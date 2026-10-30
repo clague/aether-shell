@@ -270,11 +270,9 @@ WlSessionLockSurface {
     }
 
     // Confirmation for the lock screen's session buttons. Loaded rather than merely hidden:
-    // with the feature off it must not exist at all, and it is only reachable through
-    // requestPowerConfirm() below.
+    // it is only reachable through requestPowerConfirm() below.
     Loader {
         anchors.fill: parent
-        active: GlobalConfig.hybrid.features.lockPowerConfirm
 
         sourceComponent: PowerConfirm {
             active: root.powerConfirmActive

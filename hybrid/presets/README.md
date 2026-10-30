@@ -4,7 +4,9 @@ A preset is a config **layer beneath** the user's own settings (architecture.md,
 settings win, unset keys fall through to the preset. Config stores the preset *name*, never its
 expanded values, so a preset can be improved later and existing users receive the improvement.
 
-These files serve two jobs at once, and it is worth keeping them straight. Three of them name a
+Only features that cost something when they are on -- an extra window, a decoder, a poll loop --
+have a flag at all; the rest are always available and have no toggle. These files serve two jobs at
+once, and it is worth keeping them straight. Three of them name a
 preset and nothing else, which is what a real user's config looks like. The other three set flags
 *explicitly*, on purpose, to exercise the override path — a user who has touched a switch. All six
 are inputs to `smoke-matrix.sh`.
@@ -14,8 +16,8 @@ are inputs to `smoke-matrix.sh`.
 | `recommended.json` | `recommended` | none | the default a fresh install gets |
 | `midnight.json` | `midnight` | none | MiDnight's features, none of OP's |
 | `op.json` | `op` | none | OP's features, none of MiDnight's |
-| `all-on.json` | `recommended` | all 17 features true, all variants `op` | everything instantiated at once |
-| `all-off.json` | `recommended` | all 17 features false, all variants `midnight` | nothing instantiated |
+| `all-on.json` | `recommended` | all five features true, all variants `op` | everything instantiated at once |
+| `all-off.json` | `recommended` | all five features false, all variants `midnight` | nothing instantiated |
 | `variants-flipped.json` | `recommended` | mixed features, variants deliberately inconsistent | no two components agreeing |
 | `theme-nebula.json` | `recommended` | `paths.themeName` | the only preset touching a non-`hybrid` key: proves a themed path default resolves through `themeName` and falls back when it is unset |
 

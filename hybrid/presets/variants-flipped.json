@@ -2,25 +2,11 @@
   "hybrid": {
     "preset": "recommended",
     "features": {
-      "dock": true,
       "overview": true,
-      "clipboard": true,
-      "emojiPicker": true,
-      "windowSwitcher": true,
-      "keybindViewer": true,
       "videoWallpaper": true,
-      "wallhaven": true,
-      "floatingLyrics": true,
-      "shimeji": false,
       "badApple": false,
-      "dino": false,
       "hotspot": true,
-      "themeManager": true,
-      "btAgent": false,
-      "lockPowerConfirm": true,
-      "pomodoro": true,
-      "quicknote": true,
-      "doctorWatchdog": true
+      "btAgent": false
     },
     "variants": {
       "lockCentre": "op",

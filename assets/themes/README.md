@@ -2,7 +2,7 @@
 
 A theme is a directory here whose name is what `paths.themeName` stores. Selecting one is a
 matter of that single key: **Settings → Wallpaper & style → Themes**, or `>theme ` in the
-launcher when `hybrid.features.themeManager` is on.
+launcher.
 
 ## What a theme contains
 

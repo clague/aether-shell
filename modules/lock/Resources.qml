@@ -185,9 +185,9 @@ StyledRect {
         required property list<string> command
 
         function exec(): void {
-            // Ask first, when the feature is on. Our lock screen ran these immediately, so a
-            // stray click on the lock screen could power the machine off mid-work.
-            if (GlobalConfig.hybrid.features.lockPowerConfirm && root.lock) {
+            // Ask first. Our lock screen used to run these immediately, so a stray click on
+            // the lock screen could power the machine off mid-work.
+            if (root.lock) {
                 root.lock.requestPowerConfirm(command); // qmllint disable missing-property
                 return;
             }

@@ -261,7 +261,6 @@ PageBase {
                 type: IconTextButton.Tonal
                 horizontalPadding: Tokens.padding.extraLarge
                 verticalPadding: Tokens.padding.medium
-                visible: GlobalConfig.hybrid.features.themeManager
                 onClicked: root.nState.openSubPage(6) // Themes page
             }
         }
@@ -308,6 +307,16 @@ PageBase {
             menuItems: root.hwDecoderItems
             active: root.hwDecoderItems[root.hwDecoderToIndex(WallpaperPauser.hwDecoder)]
             onSelected: item => WallpaperPauser.hwDecoder = root.hwDecoderValues[root.hwDecoderItems.indexOf(item)]
+        }
+
+        ToggleRow {
+            Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
+            Layout.fillWidth: true
+
+            text: Tr.tr("Video wallpapers")
+            subtext: Tr.tr("Animated wallpapers, paused when nothing can see them")
+            checked: GlobalConfig.hybrid.features.videoWallpaper
+            onToggled: GlobalConfig.hybrid.features.videoWallpaper = checked
         }
 
         ToggleRow {

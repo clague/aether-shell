@@ -198,5 +198,20 @@ PageBase {
             checked: root.isToggleOn("pipPause")
             onToggled: root.setToggleOn("pipPause", checked)
         }
+
+        SectionHeader {
+            text: Tr.tr("Fun")
+        }
+
+        ToggleRow {
+            first: true
+            last: true
+            text: Tr.tr("Bad Apple overlay")
+            subtext: Tr.tr("Enable the fullscreen animation (one transparent layer per screen)")
+            configNode: GlobalConfig.hybrid.features
+            propertyName: "badApple"
+            checked: GlobalConfig.hybrid.features.badApple
+            onToggled: GlobalConfig.hybrid.features.badApple = checked
+        }
     }
 }

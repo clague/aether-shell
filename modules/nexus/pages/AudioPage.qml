@@ -14,6 +14,16 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
+    // Ordered to match config::HybridVariant (Midnight, Op)
+    readonly property list<MenuItem> variantItems: [
+        MenuItem {
+            text: "MiDnight"
+        },
+        MenuItem {
+            text: "OP"
+        }
+    ]
+
     function addApp() {
         let appName = silenceAppInput.text.trim();
         if (appName !== "") {
@@ -526,6 +536,24 @@ PageBase {
                         }
                     }
                 }
+            }
+        }
+
+        SectionHeader {
+            text: Tr.tr("Bar popout")
+        }
+
+        SelectRow {
+            first: true
+            last: true
+            label: Tr.tr("Audio popout")
+            subtext: Tr.tr("Which fork's audio panel the bar opens")
+            configNode: GlobalConfig.hybrid.variants
+            propertyName: "audioPopout"
+            menuItems: root.variantItems
+            active: root.variantItems[GlobalConfig.hybrid.variants.audioPopout === HybridVariant.Op ? 1 : 0]
+            onSelected: item => {
+                GlobalConfig.hybrid.variants.audioPopout = root.variantItems.indexOf(item) === 1 ? HybridVariant.Op : HybridVariant.Midnight;
             }
         }
     }

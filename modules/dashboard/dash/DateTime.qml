@@ -11,9 +11,7 @@ import qs.services
 Item {
     id: root
 
-    readonly property bool pomodoroEnabled: GlobalConfig.hybrid.features.pomodoro
-
-    property bool showPomodoro: pomodoroEnabled && GlobalConfig.dashboard.pomodoro.defaultToPomodoro
+    property bool showPomodoro: GlobalConfig.dashboard.pomodoro.defaultToPomodoro
 
     readonly property color pomodoroColour: {
         switch (Pomodoro.mode) {
@@ -40,7 +38,6 @@ Item {
         anchors.right: parent.right
         anchors.margins: Tokens.padding.extraSmall
         z: 20
-        visible: root.pomodoroEnabled
 
         type: IconButton.Text
         icon: root.showPomodoro ? "schedule" : "timer"

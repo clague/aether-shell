@@ -13,6 +13,16 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
+    // Ordered to match config::HybridVariant (Midnight, Op)
+    readonly property list<MenuItem> variantItems: [
+        MenuItem {
+            text: "MiDnight"
+        },
+        MenuItem {
+            text: "OP"
+        }
+    ]
+
     readonly property list<MenuItem> tabItems: [
         MenuItem {
             text: Tr.tr("Workspaces carousel")
@@ -37,9 +47,24 @@ PageBase {
         width: root.cappedWidth
         spacing: Tokens.spacing.extraSmall / 2
 
-        // View options
         SectionHeader {
             first: true
+            text: Tr.tr("General")
+        }
+
+        ToggleRow {
+            first: true
+            last: true
+            text: Tr.tr("Enabled")
+            subtext: Tr.tr("Workspace overview with window thumbnails")
+            configNode: GlobalConfig.hybrid.features
+            propertyName: "overview"
+            checked: GlobalConfig.hybrid.features.overview
+            onToggled: GlobalConfig.hybrid.features.overview = checked
+        }
+
+        // View options
+        SectionHeader {
             text: Tr.tr("View options")
         }
 
@@ -51,6 +76,24 @@ PageBase {
             menuItems: root.tabItems
             active: root.tabItems[Math.max(0, Math.min(2, OverviewState.activeTab))]
             onSelected: item => OverviewState.activeTab = root.tabItems.indexOf(item)
+        }
+
+        SectionHeader {
+            text: Tr.tr("Implementation")
+        }
+
+        SelectRow {
+            first: true
+            last: true
+            label: Tr.tr("Taskview implementation")
+            subtext: Tr.tr("MiDnight's drawer, or OP's carousel and window grid")
+            configNode: GlobalConfig.hybrid.variants
+            propertyName: "overview"
+            menuItems: root.variantItems
+            active: root.variantItems[GlobalConfig.hybrid.variants.overview === HybridVariant.Op ? 1 : 0]
+            onSelected: item => {
+                GlobalConfig.hybrid.variants.overview = root.variantItems.indexOf(item) === 1 ? HybridVariant.Op : HybridVariant.Midnight;
+            }
         }
 
         // Integration & Controls

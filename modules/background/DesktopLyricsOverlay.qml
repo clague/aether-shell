@@ -10,7 +10,7 @@ import qs.components.containers
 import qs.services
 
 Variants {
-    model: GlobalConfig.hybrid.features.floatingLyrics ? Screens.screens.filter(s => GlobalConfig.forScreen(s.name).background.enabled) : []
+    model: Screens.screens.filter(s => GlobalConfig.forScreen(s.name).background.enabled)
 
     StyledWindow {
         id: win

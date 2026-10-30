@@ -82,10 +82,10 @@ ShellRoot {
         sourceComponent: Overview {}
     }
     AreaPicker {}
-    // OP's scratchpad overlay. Its window is lazy per screen; the feature gate decides
-    // whether the scope exists at all, the per-screen ScreenState.quicknote whether it opens.
+    // OP's scratchpad overlay. Its window is lazy per screen; ScreenState.quicknote decides
+    // whether it opens.
     Loader {
-        active: GlobalConfig.hybrid.features.quicknote
+        active: true
 
         sourceComponent: QuickNote {}
     }
@@ -100,7 +100,7 @@ ShellRoot {
     PolkitModule {}
 
     Variants {
-        model: Quickshell.screens.filter(s => GlobalConfig.hybrid.features.shimeji && (GlobalConfig.shimeji?.enabled ?? false) && (GlobalConfig.shimeji?.directory.length ?? 0) > 0 && !Strings.testRegexList(GlobalConfig.shimeji?.excludedScreens ?? [], s.name))
+        model: Quickshell.screens.filter(s => (GlobalConfig.shimeji?.enabled ?? false) && (GlobalConfig.shimeji?.directory.length ?? 0) > 0 && !Strings.testRegexList(GlobalConfig.shimeji?.excludedScreens ?? [], s.name))
 
         Shimeji {
             shimejiCount: GlobalConfig.shimeji?.count ?? 1

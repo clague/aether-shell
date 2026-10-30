@@ -38,6 +38,15 @@ PageBase {
             }
         }
 
+        ToggleRow {
+            text: Tr.tr("Bluetooth pairing agent")
+            subtext: Tr.tr("Answer pairing requests from other devices. Takes effect on restart")
+            configNode: GlobalConfig.hybrid.features
+            propertyName: "btAgent"
+            checked: GlobalConfig.hybrid.features.btAgent
+            onToggled: GlobalConfig.hybrid.features.btAgent = checked
+        }
+
         ItemList {
             id: savedList
 

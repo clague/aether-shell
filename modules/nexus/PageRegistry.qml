@@ -119,18 +119,11 @@ QtObject {
             category: "advanced",
             developerOnly: true
         },
-        {
-            label: Tr.tr("Hybrid"),
-            icon: "merge",
-            description: Tr.tr("Features imported from each fork, and which one wins"),
-            category: "advanced"
-        },
-
         // About
         {
             label: Tr.tr("About"),
             icon: "info",
-            description: Tr.tr("System information, credits"),
+            description: Tr.tr("System information, preset, credits"),
             category: "about"
         },
     ]

@@ -38,25 +38,20 @@ using Qt::StringLiterals::operator""_s;
 class HybridFeatures : public settings::ObjectNode {
     CONFIG_NODE(HybridFeatures, settings::ObjectNode)
 
-    FEATURE(dock)
+    // Features that stay off until asked for because they cost something: an extra window or
+    // a poll loop. Everything else is always available -- a launcher mode or a settings page
+    // costs nothing when unused -- so it has no flag and no toggle.
+    //
+    //   overview       separate drawer/overlay per screen
+    //   videoWallpaper a video decoder per animated wallpaper
+    //   badApple       one transparent fullscreen layer per screen
+    //   hotspot        nmcli every 10s
+    //   btAgent        a background pairing process
     FEATURE(overview)
-    FEATURE(clipboard)
-    FEATURE(emojiPicker)
-    FEATURE(windowSwitcher)
-    FEATURE(keybindViewer)
     FEATURE(videoWallpaper)
-    FEATURE(wallhaven)
-    FEATURE(floatingLyrics)
-    FEATURE(shimeji)
     FEATURE(badApple)
-    FEATURE(dino)
     FEATURE(hotspot)
     FEATURE(btAgent)
-    FEATURE(themeManager)
-    FEATURE(pomodoro)
-    FEATURE(quicknote)
-    FEATURE(doctorWatchdog)
-    FEATURE(lockPowerConfirm)
 };
 
 // The four components both forks genuinely implement. Capped at ~6 entries (D4): growth

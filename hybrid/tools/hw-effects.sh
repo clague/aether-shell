@@ -43,8 +43,8 @@ border.thickness|24|reserved|[24, 88, 24, 24]|border thickness scales every edge
 appearance.islands|true|reserved|[10, 88, 10, 10]|islands widens the bar's reserved zone
 bar.excludedScreens|["LVDS-1"]|reserved|[10, 10, 10, 10]|an excluded screen gets no bar
 background.wallpaperEnabled|false|layer:caelestia-background|level=1|no wallpaper drops the background out of the wallpaper layer
-hybrid.features.floatingLyrics|false|layer:caelestia-desktopLyricsOverlay|absent|the lyrics overlay is not created when its feature is off
-hybrid.features.floatingLyrics|true|layer:caelestia-desktopLyricsOverlay|level=3|and is created when it is on
+background.desktopLyrics.enabled|false|layer:caelestia-desktopLyricsOverlay|absent|the lyrics overlay is not mapped when lyrics are off
+background.desktopLyrics.enabled|true|layer:caelestia-desktopLyricsOverlay|level=3|and is mapped when they are on
 EOP
 )
 
@@ -84,7 +84,7 @@ print("absent")
     esac
 }
 
-# Takes a dotted path so nested nodes -- hybrid.features.floatingLyrics -- are reachable.
+# Takes a dotted path so nested nodes -- background.desktopLyrics.overlay -- are reachable.
 set_key() {
     python3 - "$CFG" "$1" "$2" <<'PY'
 import json, sys
@@ -116,7 +116,8 @@ baseline() {
     set_key appearance.islands false
     set_key bar.excludedScreens '[]'
     set_key background.wallpaperEnabled true
-    set_key hybrid.features.floatingLyrics true
+    set_key background.desktopLyrics.overlay true
+    set_key background.desktopLyrics.enabled true
     sleep "$SETTLE"
 }
 

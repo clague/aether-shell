@@ -19,12 +19,9 @@ Scope {
         if (GlobalConfig.hybrid.variants.dock === HybridVariant.Op)
             DockPins;
 
-        if (GlobalConfig.hybrid.features.pomodoro)
-            Pomodoro;
+        Pomodoro;
         Displays;
-
-        if (GlobalConfig.hybrid.features.doctorWatchdog)
-            DoctorWatchdog;
+        DoctorWatchdog;
         Density;
         Glass;
         Motion;

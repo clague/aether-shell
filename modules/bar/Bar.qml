@@ -302,7 +302,7 @@ Item {
                 // The dock entry is MiDnight's side of hybrid.variants.dock: a section inside
                 // the bar. OP's is a separate auto-hiding panel, so with that variant selected
                 // this entry must not appear or the machine shows two docks.
-                values: section.values.filter(e => e.enabled && (e.id !== "dock" || (GlobalConfig.hybrid.features.dock && GlobalConfig.hybrid.variants.dock === HybridVariant.Midnight)))
+                values: section.values.filter(e => e.enabled && (e.id !== "dock" || GlobalConfig.hybrid.variants.dock === HybridVariant.Midnight))
             }
 
             delegate: EntryChooser {}

@@ -105,21 +105,23 @@ periodically — we would be permanently duplicating their work.
   "hybrid": {
     "preset": "recommended",
     "features": {
-      "dock": true, "overview": true, "hotspot": true,
-      "clipboard": true, "emojiPicker": true, "shimeji": false,
-      "videoWallpaper": true, "wallhaven": true, "badApple": false
+      "overview": true, "videoWallpaper": true,
+      "badApple": false, "hotspot": true, "btAgent": true
     },
     "variants": {
       "lockCentre": "midnight",
       "audioPopout": "op",
-      "desktopClock": "midnight"
+      "overview": "midnight",
+      "dock": "midnight"
     }
   }
 }
 ```
 
-`features` is the workhorse — one boolean per imported feature. `variants` covers only the four
-genuine overlaps and is capped at ~6 entries (D4). Growth past that means the design is drifting back
+`features` carries only the imported features that cost something when they are on: an extra
+window, a video decoder, a poll loop. A launcher mode or a settings page costs nothing unused, so
+it is simply always available and has no flag (the Hybrid page and its toggles are gone as a
+result). `variants` covers only the four genuine overlaps and is capped at ~6 entries (D4). Growth past that means the design is drifting back
 toward the rejected registry.
 
 Implement `variants` with Loader hosts **only** where the component is weakly referenced —
@@ -226,7 +228,7 @@ Phase 1   Offscreen smoke-test harness + preset matrix runner in CI.            
 Phase 2   Merge upstream/main: config rewrite, plugin rearrange, style sweep.     2-4 wks
           Drop MiDnight per-monitor config in favour of LayerRegistry.
 Phase 3   hybrid.features flag system + 4 presets + Nexus preset page.             ~1 wk
-Phase 4   Import OP's dock behind hybrid.features.dock.    <- PROOF OF CONCEPT
+Phase 4   Import OP's dock behind its own flag.            <- PROOF OF CONCEPT
 Phase 5   Import OP overview, hotspot/BtAgent/Nmcli, GPU detection, themes.       3-4 wks
 Phase 6   Single merged CLI.                                                       ~1 wk
 Phase 7   The four real variants. Merge where possible; Loader-host only
