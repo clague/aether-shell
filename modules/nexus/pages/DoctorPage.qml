@@ -77,7 +77,7 @@ PageBase {
             stdout: StdioCollector {
                 onStreamFinished: {
                     try {
-                        root.note = JSON.parse(text).message;
+                        root.note = DoctorText.message(JSON.parse(text));
                     } catch (e) {
                         root.note = Tr.tr("The fix did not report back");
                     }
@@ -227,14 +227,14 @@ PageBase {
 
                         StyledText {
                             Layout.fillWidth: true
-                            text: row.modelData.title
+                            text: DoctorText.title(row.modelData)
                             font: Tokens.font.body.small
                             elide: Text.ElideRight
                         }
 
                         StyledText {
                             Layout.fillWidth: true
-                            text: row.modelData.detail
+                            text: DoctorText.detail(row.modelData)
                             color: Colours.palette.m3outline
                             font: Tokens.font.label.small
                             wrapMode: Text.WordWrap
@@ -243,7 +243,7 @@ PageBase {
                         StyledText {
                             Layout.fillWidth: true
                             visible: !!row.modelData.hint
-                            text: row.modelData.hint ?? ""
+                            text: DoctorText.hint(row.modelData)
                             color: Colours.palette.m3onSurfaceVariant
                             font: Tokens.font.label.small
                             wrapMode: Text.WordWrap
@@ -282,7 +282,7 @@ PageBase {
 
                                     StyledText {
                                         Layout.fillWidth: true
-                                        text: item.modelData.sub
+                                        text: DoctorText.itemSub(item.modelData)
                                         color: Colours.palette.m3outline
                                         font: Tokens.font.label.small
                                         elide: Text.ElideRight
@@ -299,7 +299,7 @@ PageBase {
 
                                 TextButton {
                                     type: TextButton.Tonal
-                                    text: root.fixing === item.modelData.fix + item.modelData.arg ? Tr.tr("Working…") : item.armed ? Tr.tr("Sure?") : item.modelData.fixLabel
+                                    text: root.fixing === item.modelData.fix + item.modelData.arg ? Tr.tr("Working…") : item.armed ? Tr.tr("Sure?") : DoctorText.fixLabel(item.modelData)
                                     disabled: root.fixing !== "" || root.checking
                                     onClicked: {
                                         if (item.modelData.confirm && !item.armed) {
@@ -317,7 +317,7 @@ PageBase {
                     TextButton {
                         Layout.alignment: Qt.AlignVCenter
                         visible: !!row.modelData.fix
-                        text: root.fixing === row.modelData.fix ? Tr.tr("Working…") : row.modelData.fixLabel ?? Tr.tr("Fix")
+                        text: root.fixing === row.modelData.fix ? Tr.tr("Working…") : DoctorText.fixLabel(row.modelData) || Tr.tr("Fix")
                         disabled: root.fixing !== "" || root.checking
                         onClicked: root.fix(row.modelData.fix, "")
                     }

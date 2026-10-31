@@ -7,6 +7,7 @@ import Aether
 import Aether.I18n
 import qs.services
 import qs.utils
+import qs.modules.nexus.common
 import qs.daemons
 
 // Background half of Nexus > Doctor. Every few minutes it runs the quick checks in scripts/doctor.py
@@ -68,7 +69,7 @@ Singleton {
             changed = true;
             // On the very first run only real breakage is announced; the rest is what you already live with
             if (baselined || c.status === "bad")
-                Toaster.toast(Tr.tr("Doctor: %1").arg(c.title), c.detail, "health_and_safety", c.status === "bad" ? Toast.Error : Toast.Warning);
+                Toaster.toast(Tr.tr("Doctor: %1").arg(DoctorText.title(c)), DoctorText.detail(c), "health_and_safety", c.status === "bad" ? Toast.Error : Toast.Warning);
         }
         seen = next;
         baselined = true;

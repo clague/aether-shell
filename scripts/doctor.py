@@ -33,9 +33,12 @@ def active(unit, user=False):
     return run(*args)[1] == "active"
 
 
-def check(id, title, status, detail, fix=None, fix_label=None, hint=None, items=None):
+def check(id, title, status, detail, fix=None, fix_label=None, hint=None, items=None,
+          detail_key=None, detail_args=None, hint_key=None, hint_args=None):
     return {"id": id, "title": title, "status": status, "detail": detail,
-            "fix": fix, "fixLabel": fix_label, "hint": hint, "items": items or []}
+            "detailKey": detail_key, "detailArgs": detail_args or [],
+            "fix": fix, "fixLabel": fix_label, "hint": hint,
+            "hintKey": hint_key, "hintArgs": hint_args or [], "items": items or []}
 
 
 def procs(match):
@@ -88,9 +91,11 @@ def c_rfkill():
                 soft.append(t[0])
     if hard:
         return check("rfkill", "Radios", "bad", f"Hardware switch blocks: {', '.join(hard)}",
+                     detail_key="Hardware switch blocks: %1", detail_args=[", ".join(hard)],
                      hint="Check the laptop's airplane-mode key or switch")
     if soft:
         return check("rfkill", "Radios", "warn", f"Switched off in software: {', '.join(soft)}",
+                     detail_key="Switched off in software: %1", detail_args=[", ".join(soft)],
                      fix="rfkill", fix_label="Switch on")
     return check("rfkill", "Radios", "ok", "Wi-Fi and Bluetooth are not blocked")
 
@@ -103,6 +108,7 @@ def c_btagent():
         return check("btagent", "Bluetooth pairing helper", "warn", "Not running, so pairing requests may not show a prompt",
                      hint="It starts with the shell; restart the shell to bring it back")
     return check("btagent", "Bluetooth pairing helper", "warn", f"{n} copies running; they fight over pairing requests",
+                 detail_key="%1 copies running; they fight over pairing requests", detail_args=[n],
                  fix="btagent", fix_label="Keep one")
 
 
@@ -111,6 +117,7 @@ def c_shell_copies():
     if len(shells) <= 1:
         return check("shells", "Shell instances", "ok", "One shell running")
     return check("shells", "Shell instances", "warn", f"{len(shells)} shells running at once (doubled panels, double notifications)",
+                 detail_key="%1 shells running at once (doubled panels, double notifications)", detail_args=[len(shells)],
                  hint="Log out and back in, or kill the extra quickshell processes")
 
 
@@ -152,29 +159,41 @@ def c_wifi_dupes():
     if found is None:
         return check("wifidupes", "Saved Wi-Fi profiles", "info", "Could not read profiles")
     if not found:
-        return check("wifidupes", "Saved Wi-Fi profiles", "ok", f"{total} saved, no duplicates")
+        return check("wifidupes", "Saved Wi-Fi profiles", "ok", f"{total} saved, no duplicates",
+                     detail_key="%1 saved, no duplicates", detail_args=[total])
     items = []
     for uuid, name, ts in found:
         used = time.strftime("last used %d %b %Y", time.localtime(ts)) if ts else "never used"
-        items.append({"label": name, "sub": used, "fix": "forget", "arg": uuid, "fixLabel": "Forget", "confirm": True,
+        sub_key = "last used %1" if ts else None
+        items.append({"label": name, "sub": used, "subKey": sub_key,
+                      "subArgs": [time.strftime("%d %b %Y", time.localtime(ts))] if ts else [],
+                      "fix": "forget", "arg": uuid, "fixLabel": "Forget", "confirm": True,
                       "keepArg": uuid})
     return check("wifidupes", "Saved Wi-Fi profiles", "warn", f"{len(found)} look like leftovers; you choose which to forget",
+                 detail_key="%1 look like leftovers; you choose which to forget", detail_args=[len(found)],
                  hint="Forget the ones you don't want. Press Keep on the ones you do, and they stop being listed.", items=items)
 
 
 POLKIT_AGENT = "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
 
 
+def shell_running():
+    """Aether's PolkitAgent lives in the Quickshell process, so a running shell is the agent."""
+    return bool(procs(lambda a: os.path.basename(a[0]) in ("quickshell", "qs")))
+
+
 def c_polkit():
     agents = procs(lambda a: re.search(r"polkit.*(agent|gnome|kde|lxqt|mate)|hyprpolkitagent|lxpolkit", os.path.basename(a[0]), re.I) is not None)
     if agents:
         return check("polkit", "Authentication prompts", "ok", "A polkit agent is running")
+    if shell_running():
+        return check("polkit", "Authentication prompts", "ok", "Built into the running shell")
     msg = "No polkit agent is running, so apps cannot ask for your password (mounting, system settings, some updates)"
     if os.access(POLKIT_AGENT, os.X_OK):
         return check("polkit", "Authentication prompts", "warn", msg, fix="polkit", fix_label="Start it",
                      hint="It is in your startup list but is not running now; it may have died or failed to start at login")
     return check("polkit", "Authentication prompts", "warn", msg,
-                 hint="Install one: sudo pacman -S polkit-gnome, then start it at login")
+                 hint="Aether provides one; start the shell. Or install a standalone agent with sudo pacman -S polkit-gnome")
 
 
 def c_portal():
@@ -182,6 +201,7 @@ def c_portal():
     if not down:
         return check("portal", "Screen share portals", "ok", "Running")
     return check("portal", "Screen share portals", "bad", f"Not running: {', '.join(down)}. Screen sharing and file pickers will fail",
+                 detail_key="Not running: %1. Screen sharing and file pickers will fail", detail_args=[", ".join(down)],
                  fix="portal", fix_label="Restart")
 
 
@@ -189,7 +209,9 @@ def c_audio():
     down = [u for u in ("pipewire", "wireplumber") if not active(u, user=True)]
     if not down:
         return check("audio", "Audio", "ok", "PipeWire and WirePlumber running")
-    return check("audio", "Audio", "bad", f"Not running: {', '.join(down)}", fix="audio", fix_label="Restart")
+    return check("audio", "Audio", "bad", f"Not running: {', '.join(down)}",
+                 detail_key="Not running: %1", detail_args=[", ".join(down)],
+                 fix="audio", fix_label="Restart")
 
 
 def c_monitors():
@@ -247,6 +269,7 @@ def c_crashes():
         return check("crashes", "Recent crashes", "ok", "Nothing important crashed in the last 3 days")
     summary = ", ".join(f"{k} x{v}" for k, v in sorted(hits.items()))
     return check("crashes", "Recent crashes", "warn", f"In the last 3 days: {summary}",
+                 detail_key="In the last 3 days: %1", detail_args=[summary],
                  fix="crashes", fix_label="Dismiss",
                  hint="Dismiss once you have seen them; only newer crashes will show. `coredumpctl list` shows when each happened.")
 
@@ -261,7 +284,8 @@ def c_plugin():
     newest_src = max((p.stat().st_mtime for p in src), default=0)
     if newest_src > newest_lib + 1:
         return check("plugin", "Shell plugin build", "warn", "The C++ source is newer than the built plugin",
-                     hint=f"cmake --build {ROOT}/build -j$(nproc), then restart the shell")
+                     hint=f"cmake --build {ROOT}/build -j$(nproc), then restart the shell",
+                     hint_key="cmake --build %1 -j%2, then restart the shell", hint_args=[f"{ROOT}/build", os.cpu_count() or 1])
     return check("plugin", "Shell plugin build", "ok", "Up to date with the source")
 
 
@@ -270,11 +294,14 @@ def c_disk():
     free = st.f_bavail / st.f_blocks
     gb = st.f_bavail * st.f_frsize / 2**30
     detail = f"{gb:.0f} GB free ({free * 100:.0f}%)"
+    detail_key = "%1 GB free (%2%)"
+    detail_args = [f"{gb:.0f}", f"{free * 100:.0f}"]
     if free < 0.05:
-        return check("disk", "Disk space", "bad", detail, hint="Low space breaks updates and caches")
+        return check("disk", "Disk space", "bad", detail, detail_key=detail_key, detail_args=detail_args,
+                     hint="Low space breaks updates and caches")
     if free < 0.10:
-        return check("disk", "Disk space", "warn", detail)
-    return check("disk", "Disk space", "ok", detail)
+        return check("disk", "Disk space", "warn", detail, detail_key=detail_key, detail_args=detail_args)
+    return check("disk", "Disk space", "ok", detail, detail_key=detail_key, detail_args=detail_args)
 
 
 CHECKS = [c_network, c_bluetooth, c_rfkill, c_btagent, c_shell_copies, c_wifi_dupes, c_polkit,
@@ -358,11 +385,16 @@ def main():
             try:
                 res.append(fn())
             except Exception as e:  # one broken check must not hide the rest
-                res.append(check(fn.__name__[2:], fn.__name__[2:], "info", f"Check failed: {e}"))
+                res.append(check(fn.__name__[2:], fn.__name__[2:], "info", f"Check failed: {e}",
+                                 detail_key="Check failed: %1", detail_args=[str(e)]))
         print(json.dumps(res))
     elif cmd == "fix" and len(sys.argv) > 2 and sys.argv[2] in FIXES:
         ok, msg = FIXES[sys.argv[2]](sys.argv[3] if len(sys.argv) > 3 else None)
-        print(json.dumps({"ok": ok, "message": msg}))
+        payload = {"ok": ok, "message": msg, "messageKey": msg, "messageArgs": []}
+        m = re.match(r"Stopped (\d+) extra copies$", msg)
+        if m:
+            payload.update(messageKey="Stopped %1 extra copies", messageArgs=[m.group(1)])
+        print(json.dumps(payload))
     else:
         sys.exit("usage: doctor.py check | fix <id> [arg]")
 

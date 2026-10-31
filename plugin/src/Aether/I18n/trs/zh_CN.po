@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aether-shell\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 08:52+0800\n"
+"POT-Creation-Date: 2026-10-31 12:25+0800\n"
 "PO-Revision-Date: 2026-10-30 00:00+0800\n"
 "Last-Translator: caelestia-hybrid\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -129,8 +129,9 @@ msgctxt "shown when no window is focused"
 msgid "Desktop"
 msgstr "桌面"
 
-#: modules/bar/popouts/AudioPopout.qml modules/nexus/PageRegistry.qml
-#: modules/nexus/pages/AudioPage.qml modules/nexus/SearchIndex.qml
+#: modules/bar/popouts/AudioPopout.qml modules/nexus/common/DoctorText.qml
+#: modules/nexus/PageRegistry.qml modules/nexus/pages/AudioPage.qml
+#: modules/nexus/SearchIndex.qml
 msgid "Audio"
 msgstr "音频"
 
@@ -1160,6 +1161,343 @@ msgstr "未知"
 #, qt-format
 msgid "Mirrored: %1"
 msgstr "已镜像：%1"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "NetworkManager"
+msgstr "NetworkManager"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Bluetooth service"
+msgstr "Bluetooth 服务"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Radios"
+msgstr "无线开关"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Bluetooth pairing helper"
+msgstr "Bluetooth 配对助手"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Shell instances"
+msgstr "Shell 实例"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Saved Wi-Fi profiles"
+msgstr "已保存的 Wi-Fi 配置"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Authentication prompts"
+msgstr "认证提示"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Screen share portals"
+msgstr "屏幕共享门户"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Monitor profiles"
+msgstr "显示器配置"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Recent crashes"
+msgstr "最近的崩溃"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Shell plugin build"
+msgstr "Shell 插件构建"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Disk space"
+msgstr "磁盘空间"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Running"
+msgstr "运行中"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Not running, so Wi-Fi and Ethernet are unavailable"
+msgstr "未运行，Wi-Fi 与以太网不可用"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Not running"
+msgstr "未运行"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "rfkill is not available"
+msgstr "rfkill 不可用"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Wi-Fi and Bluetooth are not blocked"
+msgstr "Wi-Fi 与 Bluetooth 未被禁用"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "One copy running"
+msgstr "正在运行一个实例"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Not running, so pairing requests may not show a prompt"
+msgstr "未运行，配对请求可能不会弹出提示"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "One shell running"
+msgstr "正在运行一个 shell 实例"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Could not read profiles"
+msgstr "无法读取配置"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "A polkit agent is running"
+msgstr "polkit 代理正在运行"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Built into the running shell"
+msgstr "由运行中的 Shell 内置提供"
+
+#: modules/nexus/common/DoctorText.qml
+msgid ""
+"No polkit agent is running, so apps cannot ask for your password (mounting, "
+"system settings, some updates)"
+msgstr "没有 polkit 代理在运行，应用无法请求密码（挂载、系统设置、部分更新）"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "PipeWire and WirePlumber running"
+msgstr "PipeWire 与 WirePlumber 正在运行"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "hyprmoncfg is not installed"
+msgstr "未安装 hyprmoncfg"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "No real display is active (only Hyprland's placeholder)"
+msgstr "没有真实显示器处于活动状态（只有 Hyprland 的占位输出）"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Layouts load at startup"
+msgstr "布局会在启动时加载"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "hyprmoncfg doctor reported a problem"
+msgstr "hyprmoncfg doctor 报告了问题"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Nothing important crashed in the last 3 days"
+msgstr "最近 3 天内没有重要组件崩溃"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "No local build; using the system plugin"
+msgstr "没有本地构建，使用系统插件"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "The C++ source is newer than the built plugin"
+msgstr "C++ 源码比已构建的插件新"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Up to date with the source"
+msgstr "与源码一致"
+
+#: modules/nexus/common/DoctorText.qml
+#, qt-format
+msgid "Hardware switch blocks: %1"
+msgstr "硬件开关阻止了：%1"
+
+#: modules/nexus/common/DoctorText.qml
+#, qt-format
+msgid "Switched off in software: %1"
+msgstr "已在软件中关闭：%1"
+
+#: modules/nexus/common/DoctorText.qml
+#, qt-format
+msgid "%1 copies running; they fight over pairing requests"
+msgstr "有 %1 个实例在运行，会争抢配对请求"
+
+#: modules/nexus/common/DoctorText.qml
+#, qt-format
+msgid "%1 shells running at once (doubled panels, double notifications)"
+msgstr "同时运行了 %1 个 shell（面板和通知会重复）"
+
+#: modules/nexus/common/DoctorText.qml
+#, qt-format
+msgid "%1 saved, no duplicates"
+msgstr "已保存 %1 个，没有重复"
+
+#: modules/nexus/common/DoctorText.qml
+#, qt-format
+msgid "%1 look like leftovers; you choose which to forget"
+msgstr "有 %1 个看起来是残留配置，由你选择要忘记哪些"
+
+#: modules/nexus/common/DoctorText.qml
+#, qt-format
+msgid "Not running: %1. Screen sharing and file pickers will fail"
+msgstr "未运行：%1。屏幕共享和文件选择器将无法使用"
+
+#: modules/nexus/common/DoctorText.qml
+#, qt-format
+msgid "Not running: %1"
+msgstr "未运行：%1"
+
+#: modules/nexus/common/DoctorText.qml
+#, qt-format
+msgid "In the last 3 days: %1"
+msgstr "最近 3 天内：%1"
+
+#: modules/nexus/common/DoctorText.qml
+#, qt-format
+msgid "%1 GB free (%2%)"
+msgstr "剩余 %1 GB（%2%）"
+
+#: modules/nexus/common/DoctorText.qml
+#, qt-format
+msgid "Check failed: %1"
+msgstr "检查失败：%1"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "sudo systemctl restart NetworkManager"
+msgstr "sudo systemctl restart NetworkManager"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "sudo systemctl restart bluetooth"
+msgstr "sudo systemctl restart bluetooth"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Check the laptop's airplane-mode key or switch"
+msgstr "检查笔记本的飞行模式按键或开关"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "It starts with the shell; restart the shell to bring it back"
+msgstr "它随 Shell 启动；重启 Shell 即可恢复"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Log out and back in, or kill the extra quickshell processes"
+msgstr "注销后重新登录，或结束多余的 quickshell 进程"
+
+#: modules/nexus/common/DoctorText.qml
+msgid ""
+"Forget the ones you don't want. Press Keep on the ones you do, and they stop "
+"being listed."
+msgstr "忘记不需要的配置。保留想留下的，它们将不再被列出。"
+
+#: modules/nexus/common/DoctorText.qml
+msgid ""
+"It is in your startup list but is not running now; it may have died or "
+"failed to start at login"
+msgstr "它在你的启动项里，但当前没有运行；可能已退出或登录时启动失败"
+
+#: modules/nexus/common/DoctorText.qml
+msgid ""
+"Aether provides one; start the shell. Or install a standalone agent with "
+"sudo pacman -S polkit-gnome"
+msgstr "Aether 已内置代理；启动 Shell 即可。也可安装独立代理：sudo pacman -S polkit-gnome"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Replug the display or use the Display page to re-enable one"
+msgstr "重新连接显示器，或在显示页重新启用"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Run `hyprmoncfg doctor` in a terminal for details"
+msgstr "在终端运行 `hyprmoncfg doctor` 查看详情"
+
+#: modules/nexus/common/DoctorText.qml
+msgid ""
+"Dismiss once you have seen them; only newer crashes will show. `coredumpctl "
+"list` shows when each happened."
+msgstr "查看后即可忽略；之后只显示更新的崩溃。`coredumpctl list` 会显示每次崩溃的时间。"
+
+#: modules/nexus/common/DoctorText.qml
+#, qt-format
+msgid "cmake --build %1 -j%2, then restart the shell"
+msgstr "运行 cmake --build %1 -j%2，然后重启 Shell"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Low space breaks updates and caches"
+msgstr "空间不足会破坏更新和缓存"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Switch on"
+msgstr "开启"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Keep one"
+msgstr "保留一个"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Start it"
+msgstr "启动"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Restart"
+msgstr "重启"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Dismiss"
+msgstr "忽略"
+
+#: modules/nexus/common/DoctorText.qml
+#: modules/nexus/pages/network/NetworkDetailPage.qml
+msgid "Forget"
+msgstr "忘记"
+
+#: modules/nexus/common/DoctorText.qml
+#, qt-format
+msgid "last used %1"
+msgstr "上次使用：%1"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "never used"
+msgstr "从未使用"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Radios switched on"
+msgstr "无线开关已开启"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "rfkill refused; try the airplane-mode key"
+msgstr "rfkill 拒绝执行；试试飞行模式按键"
+
+#: modules/nexus/common/DoctorText.qml
+#, qt-format
+msgid "Stopped %1 extra copies"
+msgstr "已停止 %1 个多余实例"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "That profile is no longer listed as a duplicate, so it was left alone"
+msgstr "该配置已不在重复列表中，因此未做修改"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Forgot the profile"
+msgstr "已忘记该配置"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "NetworkManager refused to delete it"
+msgstr "NetworkManager 拒绝删除"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Kept; it will not be listed again"
+msgstr "已保留；不会再被列出"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "The agent is not installed"
+msgstr "未安装该代理"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Agent started"
+msgstr "代理已启动"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "It exited right away; run it in a terminal to see why"
+msgstr "它立即退出了；请在终端运行以查看原因"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Crashes dismissed"
+msgstr "已忽略崩溃"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Restarted"
+msgstr "已重启"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Restart failed"
+msgstr "重启失败"
 
 #: modules/nexus/common/EthernetSection.qml
 #: modules/nexus/pages/network/EthernetDetailPage.qml
@@ -3559,10 +3897,6 @@ msgstr "尚未连接任何设备"
 #: modules/nexus/pages/network/HotspotPage.qml
 msgid "Hotspot is currently turned off"
 msgstr "热点当前已关闭"
-
-#: modules/nexus/pages/network/NetworkDetailPage.qml
-msgid "Forget"
-msgstr "忘记"
 
 #: modules/nexus/pages/network/NetworkDetailPage.qml
 msgid "Signal"
@@ -7355,9 +7689,6 @@ msgstr "配置 Shell"
 
 #~ msgid "Search emoji from the launcher"
 #~ msgstr "从启动器搜索 Emoji"
-
-#~ msgid "Window switcher"
-#~ msgstr "窗口切换器"
 
 #~ msgid "Switch windows from the launcher"
 #~ msgstr "从启动器切换窗口"
