@@ -18,6 +18,7 @@ Singleton {
     property string mono: "JetBrains Mono"
     property var sansChoices: []
     property var monoChoices: []
+    property bool fontsLoaded: false
     property string nowSans
     property string nowMono
     property bool busy
@@ -191,7 +192,10 @@ Singleton {
         setProc.running = true;
     }
 
-    Component.onCompleted: refresh()
+    Component.onCompleted: {
+        refresh();
+        fontsProc.running = true;
+    }
 
     // Writes the sizes to the apps and the shell once the numbers settle
     onSansScaleChanged: rescale.restart()
@@ -258,6 +262,31 @@ Singleton {
     }
 
     Process {
+        id: fontsProc
+
+        command: ["python3", root.script, "fonts"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const raw = text.trim();
+                if (raw.length === 0)
+                    return;
+                try {
+                    const d = JSON.parse(raw);
+                    root.sansChoices = d.sans ?? [];
+                    root.monoChoices = d.mono ?? [];
+                    root.fontsLoaded = true;
+                    if (!root.sansChoices.includes(root.sans))
+                        root.sans = root.sansChoices[0] ?? root.sans;
+                    if (!root.monoChoices.includes(root.mono))
+                        root.mono = root.monoChoices[0] ?? root.mono;
+                } catch (e) {
+                    console.warn("[app-fonts] font list failed:", e);
+                }
+            }
+        }
+    }
+
+    Process {
         id: statusProc
 
         command: ["python3", root.script, "status"]
@@ -269,8 +298,10 @@ Singleton {
                 try {
                     const d = JSON.parse(raw);
                     root.enabled = d.enabled;
-                    root.sansChoices = d.sansChoices ?? [];
-                    root.monoChoices = d.monoChoices ?? [];
+                    if (!root.fontsLoaded) {
+                        root.sansChoices = d.sansChoices ?? [];
+                        root.monoChoices = d.monoChoices ?? [];
+                    }
                     root.nowSans = d.nowSans;
                     root.nowMono = d.nowMono;
                     root.added = d.added ?? [];
@@ -332,6 +363,14 @@ Singleton {
                 mono: root.mono,
                 nowSans: root.nowSans,
                 nowMono: root.nowMono
+            });
+        }
+
+        function fonts(): string {
+            return JSON.stringify({
+                loaded: root.fontsLoaded,
+                sans: root.sansChoices.length,
+                mono: root.monoChoices.length
             });
         }
 

@@ -22,6 +22,10 @@ Item {
     property bool acceptAllowed: true
     property bool separateContent
     property int horizontalContentMargin
+    property bool first: false
+    property bool last: true
+    property bool disabled: false
+    property string subtext
 
     property real openWidth: Math.min(rootParent.width * 0.8, Tokens.sizes.nexus.maxDialogWidth)
     property real openHeight: Math.min(rootParent.height * 0.8, Tokens.sizes.nexus.maxDialogHeight)
@@ -152,9 +156,12 @@ Item {
             height: Math.min(implicitHeight, parent.height) // Clamp to parent height due to overshoot anim
             color: "transparent"
 
-            last: true
+            first: root.first
+            last: root.last
+            disabled: root.disabled
             icon: root.icon
             text: root.label
+            subtext: root.subtext
             onClicked: root.open = true
         }
 

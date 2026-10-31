@@ -50,6 +50,26 @@ def installed():
     return fams
 
 
+def font_families():
+    """Every installed family, split into proportional and monospace by fontconfig spacing."""
+    out = subprocess.run(["fc-list", "--format", "%{family[0]}\t%{spacing}\n", ":"],
+                         capture_output=True, text=True).stdout
+    spacing = {}
+    for line in out.splitlines():
+        family, _, value = line.partition("\t")
+        family = family.strip()
+        if family:
+            # 90 is dual-width and 100 monospace; a family with any such face goes in mono
+            spacing[family] = spacing.get(family, False) or value.strip() in ("90", "100")
+    extra = [a["family"] for a in added()]
+    sans = sorted(set(f for f, mono in spacing.items() if not mono) | set(extra))
+    mono = sorted(set(f for f, mono in spacing.items() if mono) | set(extra))
+    for current, family in ((sans, match("sans-serif")), (mono, match("monospace"))):
+        if family and family not in current:
+            current.append(family)
+    return sans, mono
+
+
 def gsettings(*args):
     r = subprocess.run(["gsettings", *args], capture_output=True, text=True)
     return r.stdout.strip() if r.returncode == 0 else None
@@ -113,6 +133,9 @@ def main():
         print(json.dumps({"enabled": cur is not None, "sans": cur and cur["sans"], "mono": cur and cur["mono"],
                           "added": mine, "sansChoices": sans_choices, "monoChoices": mono_choices,
                           "nowSans": now_sans, "nowMono": now_mono}))
+    elif cmd == "fonts":
+        sans, mono = font_families()
+        print(json.dumps({"sans": sans, "mono": mono}))
     elif cmd == "set" and len(sys.argv) in (4, 6):
         sans, mono = sys.argv[2], sys.argv[3]
         try:

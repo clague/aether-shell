@@ -2,11 +2,9 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
 import Aether.Config
 import Aether.I18n
 import qs.components
-import qs.components.controls
 import qs.components.filedialog
 import qs.services
 import qs.modules.nexus.common
@@ -103,64 +101,28 @@ PageBase {
             }
         }
 
-        SelectRow {
-            id: sansRow
-
-            label: Tr.tr("Sans-serif font")
-            subtext: Tr.tr("Text in browsers, Qt and most other apps")
+        FontSelectRow {
+            rootParent: root.flickable
+            first: true
+            last: false
+            labelPrefix: Tr.tr("Sans-serif font")
+            dialogTitle: Tr.tr("Choose a sans-serif font")
+            current: AppFonts.sans
+            families: AppFonts.sansChoices
             disabled: !AppFonts.enabled || AppFonts.busy
-            fallbackText: AppFonts.sans
-            menuItems: sansItems.instances
-            onSelected: item => AppFonts.choose(item.value, AppFonts.mono)
-
-            Binding {
-                target: sansRow
-                property: "active"
-                value: sansItems.instances.find(i => i.value === AppFonts.sans) ?? null
-            }
-
-            Variants {
-                id: sansItems
-
-                model: AppFonts.sansChoices
-
-                MenuItem {
-                    required property string modelData
-
-                    text: modelData
-                    value: modelData
-                }
-            }
+            onFontChosen: family => AppFonts.choose(family, AppFonts.mono)
         }
 
-        SelectRow {
-            id: monoRow
-
-            label: Tr.tr("Monospace font")
-            subtext: Tr.tr("Code and terminal-style text")
+        FontSelectRow {
+            rootParent: root.flickable
+            first: false
+            last: false
+            labelPrefix: Tr.tr("Monospace font")
+            dialogTitle: Tr.tr("Choose a monospace font")
+            current: AppFonts.mono
+            families: AppFonts.monoChoices
             disabled: !AppFonts.enabled || AppFonts.busy
-            fallbackText: AppFonts.mono
-            menuItems: monoItems.instances
-            onSelected: item => AppFonts.choose(AppFonts.sans, item.value)
-
-            Binding {
-                target: monoRow
-                property: "active"
-                value: monoItems.instances.find(i => i.value === AppFonts.mono) ?? null
-            }
-
-            Variants {
-                id: monoItems
-
-                model: AppFonts.monoChoices
-
-                MenuItem {
-                    required property string modelData
-
-                    text: modelData
-                    value: modelData
-                }
-            }
+            onFontChosen: family => AppFonts.choose(AppFonts.sans, family)
         }
 
         StepperRow {

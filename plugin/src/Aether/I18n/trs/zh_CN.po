@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aether-shell\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 12:41+0800\n"
+"POT-Creation-Date: 2026-10-31 13:00+0800\n"
 "PO-Revision-Date: 2026-10-30 00:00+0800\n"
 "Last-Translator: caelestia-hybrid\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -1544,6 +1544,18 @@ msgstr "本地 IP 地址"
 #: modules/nexus/common/EthernetSection.qml
 msgid "Primary DNS"
 msgstr "首选 DNS"
+
+#: modules/nexus/common/FontSelectRow.qml
+msgid "Choose a font"
+msgstr "选择字体"
+
+#: modules/nexus/common/FontSelectRow.qml
+msgid "Use"
+msgstr "使用"
+
+#: modules/nexus/common/FontSelectRow.qml
+msgid "Search fonts"
+msgstr "搜索字体"
 
 #: modules/nexus/common/InterfaceSizeRow.qml
 #, qt-format
@@ -3395,17 +3407,17 @@ msgstr "应用当前默认使用 %1 和 %2"
 msgid "Sans-serif font"
 msgstr "无衬线字体"
 
-#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
-msgid "Text in browsers, Qt and most other apps"
-msgstr "浏览器、Qt 及大多数其他应用中的文字"
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Choose a sans-serif font"
+msgstr "选择无衬线字体"
 
 #: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
 msgid "Monospace font"
 msgstr "等宽字体"
 
-#: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
-msgid "Code and terminal-style text"
-msgstr "代码和终端风格文字"
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Choose a monospace font"
+msgstr "选择等宽字体"
 
 #: modules/nexus/pages/LookAndFeelPage.qml modules/nexus/SearchIndex.qml
 msgid "Text size"
@@ -6336,6 +6348,14 @@ msgstr "为壁纸切换添加动画"
 #: modules/nexus/pages/WallpaperAndStyle.qml
 msgid "Desktop elements"
 msgstr "桌面元素"
+
+#: modules/nexus/SearchIndex.qml
+msgid "Text in browsers, Qt and most other apps"
+msgstr "浏览器、Qt 及大多数其他应用中的文字"
+
+#: modules/nexus/SearchIndex.qml
+msgid "Code and terminal-style text"
+msgstr "代码和终端风格文字"
 
 #: modules/nexus/SearchResults.qml
 msgid "Search results"
