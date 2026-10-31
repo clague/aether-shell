@@ -101,10 +101,18 @@ def main():
         cur = current()
         mine = added()
         extra = [a["family"] for a in mine]
+        now_sans, now_mono = match("sans-serif"), match("monospace")
+        sans_choices = [f for f in SANS if f in have] + extra
+        mono_choices = [f for f in MONO if f in have] + extra
+        # The fonts already in use are always valid choices; without this the picker could
+        # offer only the built-in shortlist and not the family the user actually runs.
+        if now_sans and now_sans not in sans_choices:
+            sans_choices.append(now_sans)
+        if now_mono and now_mono not in mono_choices:
+            mono_choices.append(now_mono)
         print(json.dumps({"enabled": cur is not None, "sans": cur and cur["sans"], "mono": cur and cur["mono"],
-                          "added": mine,
-                          "sansChoices": [f for f in SANS if f in have] + extra, "monoChoices": [f for f in MONO if f in have] + extra,
-                          "nowSans": match("sans-serif"), "nowMono": match("monospace")}))
+                          "added": mine, "sansChoices": sans_choices, "monoChoices": mono_choices,
+                          "nowSans": now_sans, "nowMono": now_mono}))
     elif cmd == "set" and len(sys.argv) in (4, 6):
         sans, mono = sys.argv[2], sys.argv[3]
         try:
@@ -112,8 +120,7 @@ def main():
             sans_scale, mono_scale = [min(2.0, max(0.5, float(v))) for v in sys.argv[4:6]] or [1.0, 1.0]
         except ValueError:
             sans_scale = mono_scale = 1.0
-        extra = [a["family"] for a in added()]
-        if sans not in SANS + extra or mono not in MONO + extra or sans not in have or mono not in have:
+        if sans not in have or mono not in have:
             sys.exit("font not available")
         CONF.parent.mkdir(parents=True, exist_ok=True)
         CONF.write_text(f"""<?xml version="1.0"?>

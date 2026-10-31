@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Aether.Config
+import Aether.I18n
 import qs.services
 import qs.utils
 
@@ -74,6 +75,19 @@ Singleton {
     }
 
     function turn(on: bool): void {
+        if (on) {
+            if (sansChoices.length === 0 || monoChoices.length === 0) {
+                message = Tr.tr("No selectable fonts were found");
+                return;
+            }
+            // The built-in defaults are not guaranteed to be installed; fall back to the first
+            // choice the system actually has instead of failing inside the script.
+            if (!sansChoices.includes(sans))
+                sans = sansChoices[0];
+            if (!monoChoices.includes(mono))
+                mono = monoChoices[0];
+        }
+        message = "";
         run(on ? ["set", sans, mono, sansScale.toFixed(3), monoScale.toFixed(3)] : ["off"]);
     }
 
@@ -90,10 +104,10 @@ Singleton {
     }
 
     function removeFont(file: string): void {
-        // A font that is in use falls back to the built-in choice before it disappears
+        // A font that is in use falls back to another available choice before it disappears.
         const family = added.find(a => a.file === file)?.family;
-        const newSans = family === sans ? "Adwaita Sans" : sans;
-        const newMono = family === mono ? "JetBrains Mono" : mono;
+        const newSans = family === sans ? (sansChoices.find(f => f !== family) ?? sans) : sans;
+        const newMono = family === mono ? (monoChoices.find(f => f !== family) ?? mono) : mono;
         if (enabled && (newSans !== sans || newMono !== mono))
             choose(newSans, newMono);
         run(["remove", file]);
@@ -230,9 +244,13 @@ Singleton {
         onLoaded: {
             try {
                 const d = JSON.parse(text());
-                root.shellToo = d.shellToo === true;
-                root.sizeAdjust = d.sizeAdjust ?? 100;
                 root.shellOriginal = d.shellOriginal ?? null;
+                // A half-written state (shellToo with no original to restore) must not apply
+                // fonts to the shell: the current config may already be the modified one.
+                root.shellToo = d.shellToo === true && root.shellOriginal !== null;
+                root.sizeAdjust = d.sizeAdjust ?? 100;
+                if (d.shellToo === true && root.shellOriginal === null)
+                    root.saveState();
             } catch (e) {
                 console.warn("[app-fonts] could not read app-fonts.json:", e);
             }
@@ -251,15 +269,23 @@ Singleton {
                 try {
                     const d = JSON.parse(raw);
                     root.enabled = d.enabled;
-                    root.sansChoices = d.sansChoices;
-                    root.monoChoices = d.monoChoices;
+                    root.sansChoices = d.sansChoices ?? [];
+                    root.monoChoices = d.monoChoices ?? [];
                     root.nowSans = d.nowSans;
                     root.nowMono = d.nowMono;
-                    root.added = d.added;
-                    if (d.sans)
+                    root.added = d.added ?? [];
+                    if (d.sans && root.sansChoices.includes(d.sans))
                         root.sans = d.sans;
-                    if (d.mono)
+                    else if (root.sansChoices.includes(root.nowSans))
+                        root.sans = root.nowSans;
+                    else if (root.sansChoices.length > 0 && !root.sansChoices.includes(root.sans))
+                        root.sans = root.sansChoices[0];
+                    if (d.mono && root.monoChoices.includes(d.mono))
                         root.mono = d.mono;
+                    else if (root.monoChoices.includes(root.nowMono))
+                        root.mono = root.nowMono;
+                    else if (root.monoChoices.length > 0 && !root.monoChoices.includes(root.mono))
+                        root.mono = root.monoChoices[0];
                     root.applyShell();
                 } catch (e) {
                     console.warn("[app-fonts] status failed:", e);
@@ -275,14 +301,25 @@ Singleton {
             onStreamFinished: {
                 root.busy = false;
                 try {
-                    root.message = JSON.parse(text).message ?? "";
+                    const d = JSON.parse(text);
+                    if (d.message !== undefined)
+                        root.message = d.message;
                 } catch (e) {
-                    root.message = "";
+                    // The script exits without JSON when it rejects the request; stderr below
+                    // carries the reason.
                 }
                 if (root.queue.length > 0)
                     root.next();
                 else
                     root.refresh();
+            }
+        }
+
+        stderr: StdioCollector {
+            onStreamFinished: {
+                const msg = text.trim();
+                if (msg.length > 0)
+                    root.message = msg;
             }
         }
     }

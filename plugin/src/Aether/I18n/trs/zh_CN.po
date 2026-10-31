@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aether-shell\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 12:25+0800\n"
+"POT-Creation-Date: 2026-10-31 12:41+0800\n"
 "PO-Revision-Date: 2026-10-30 00:00+0800\n"
 "Last-Translator: caelestia-hybrid\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -1387,7 +1387,9 @@ msgstr "它在你的启动项里，但当前没有运行；可能已退出或登
 msgid ""
 "Aether provides one; start the shell. Or install a standalone agent with "
 "sudo pacman -S polkit-gnome"
-msgstr "Aether 已内置代理；启动 Shell 即可。也可安装独立代理：sudo pacman -S polkit-gnome"
+msgstr ""
+"Aether 已内置代理；启动 Shell 即可。也可安装独立代理：sudo pacman -S polkit-"
+"gnome"
 
 #: modules/nexus/common/DoctorText.qml
 msgid "Replug the display or use the Display page to re-enable one"
@@ -1401,7 +1403,9 @@ msgstr "在终端运行 `hyprmoncfg doctor` 查看详情"
 msgid ""
 "Dismiss once you have seen them; only newer crashes will show. `coredumpctl "
 "list` shows when each happened."
-msgstr "查看后即可忽略；之后只显示更新的崩溃。`coredumpctl list` 会显示每次崩溃的时间。"
+msgstr ""
+"查看后即可忽略；之后只显示更新的崩溃。`coredumpctl list` 会显示每次崩溃的时"
+"间。"
 
 #: modules/nexus/common/DoctorText.qml
 #, qt-format
@@ -6747,6 +6751,10 @@ msgstr "%1 TiB/s"
 msgctxt "used / total amount"
 msgid "%1 / %2"
 msgstr "%1 / %2"
+
+#: services/AppFonts.qml
+msgid "No selectable fonts were found"
+msgstr "未找到可选择的字体"
 
 #: services/Audio.qml
 msgctxt "unknown audio stream"

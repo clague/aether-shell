@@ -92,7 +92,8 @@ PageBase {
 
             first: true
             text: Tr.tr("Use these fonts in apps")
-            subtext: AppFonts.enabled ? Tr.tr("Apps pick this up the next time they start") : Tr.tr("Apps currently use %1 and %2 by default").arg(AppFonts.nowSans).arg(AppFonts.nowMono)
+            subtext: AppFonts.message || (AppFonts.enabled ? Tr.tr("Apps pick this up the next time they start") : Tr.tr("Apps currently use %1 and %2 by default").arg(AppFonts.nowSans).arg(AppFonts.nowMono))
+            enabled: AppFonts.sansChoices.length > 0 && AppFonts.monoChoices.length > 0
             onToggled: AppFonts.turn(fontsRow.checked)
 
             Binding {
