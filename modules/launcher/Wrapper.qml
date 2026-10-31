@@ -24,9 +24,9 @@ Item {
 
     property real offsetScale: shouldBeActive ? 0 : 1
 
-    // The drawer is drawn through a deform matrix that changes while it opens; rasterise
-    // once for that transition so the search field and result text do not shimmer.
-    layer.enabled: offsetScale > 0 && offsetScale < 1
+    // The whole drawer is drawn through a deform matrix in ContentWindow; one layer here
+    // covers the search field, results and every icon, so children do not need their own.
+    layer.enabled: true
 
     onShouldBeActiveChanged: {
         if (shouldBeActive)

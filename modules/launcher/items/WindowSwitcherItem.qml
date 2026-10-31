@@ -21,7 +21,6 @@ Item {
     }
 
     scale: 0.5
-    layer.enabled: scale !== 1
     opacity: 0
     z: PathView.z ?? 0 // qmllint disable missing-property
 

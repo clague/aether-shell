@@ -79,8 +79,6 @@ StyledListView {
         }
     }
 
-    layer.enabled: scale !== 1
-
     model: ScriptModel {
         values: root.resultsForText(root.displayText)
         onValuesChanged: root.currentIndex = 0
