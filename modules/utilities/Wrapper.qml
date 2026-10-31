@@ -31,11 +31,15 @@ Item {
 
         reloadableId: "utilities"
     }
+
     readonly property bool shouldBeActive: (screenState.utilities || props.quickShareDeviceSelectorOpen || props.quickShareFileDialogOpen) && Config.utilities.enabled && !(screenState.session && Config.session.enabled) // qmllint disable missing-property
     readonly property real totalPadding: content.anchors.margins + CUtils.clamp(content.anchors.margins - Config.border.thickness, 0, content.anchors.margins)
     readonly property real nonAnimHeight: ((content.item as Content)?.nonAnimHeight ?? 0) + totalPadding
     property real offsetScale: shouldBeActive ? 0 : 1
     property real sidebarLerp
+
+    // Rasterise the drawer while its deform matrix animates.
+    layer.enabled: offsetScale > 0 && offsetScale < 1
 
     visible: offsetScale < 1
     anchors.bottomMargin: Config.bar.position === "bottom" ? 0 : (-implicitHeight - 5) * offsetScale

@@ -20,6 +20,9 @@ Item {
 
     property bool isStreaming: false
 
+    // Rasterise the drawer while its deform matrix animates.
+    layer.enabled: offsetScale > 0 && offsetScale < 1
+
     visible: offsetScale < 0.999
     anchors.leftMargin: slideAmount
     anchors.rightMargin: slideAmount

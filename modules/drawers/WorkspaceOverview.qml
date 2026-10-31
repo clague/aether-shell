@@ -22,6 +22,9 @@ Item {
 
     property real slideAmount: (-implicitWidth - Config.border.thickness - Tokens.spacing.medium) * offsetScale
 
+    // Rasterise the drawer while its deform matrix animates.
+    layer.enabled: offsetScale > 0 && offsetScale < 1
+
     anchors.top: parent.top
     anchors.bottom: parent.bottom
     anchors.leftMargin: slideAmount

@@ -24,6 +24,10 @@ Item {
 
     property real offsetScale: shouldBeActive ? 0 : 1
 
+    // The drawer is drawn through a deform matrix that changes while it opens; rasterise
+    // once for that transition so the search field and result text do not shimmer.
+    layer.enabled: offsetScale > 0 && offsetScale < 1
+
     onShouldBeActiveChanged: {
         if (shouldBeActive)
             implicitHeight = Qt.binding(() => content.implicitHeight);
