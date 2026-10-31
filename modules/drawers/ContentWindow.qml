@@ -485,9 +485,9 @@ StyledWindow {
             dashboard.transform: Matrix4x4 {
                 matrix: dashBg.deformMatrix
             }
-            launcher.transform: Matrix4x4 {
-                matrix: launcherBg.deformMatrix
-            }
+            // Do not transform the launcher content with launcherBg.deformMatrix: it
+            // changes every frame while the panel opens, scaling the text and icons inside.
+            // The background still morphs; the content slides with the Wrapper.
             session.transform: Matrix4x4 {
                 matrix: sessionBg.deformMatrix
             }
