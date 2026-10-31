@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import QtQuick.Window
 import Aether.Config
 import qs.components
 import qs.components.containers
@@ -15,15 +16,45 @@ ColumnLayout {
 
     required property string title
     required property NexusState nState
+
     // Not `GlobalConfig`: forScreen() hands back a ConfigRoot, which is QML_ANONYMOUS and
     // therefore cannot be named here. Typing it wrong left this null on every page.
     readonly property var targetConfig: GlobalConfig.forScreen(nState.targetScreen)
+
     property bool isSubPage
     property bool scrollable: true
     readonly property int cappedWidth: Math.min(Tokens.sizes.nexus.maxContentWidth, width)
     readonly property alias flickable: flickable
 
     default property Item contentChild
+
+    // Keeps a row reached with Tab or the arrow keys inside the viewport, the way a ListView
+    // scrolls its current item into view.
+    readonly property Item focusedItem: root.Window.window ? root.Window.window.activeFocusItem : null
+
+    function revealFocus(): void {
+        const item = root.focusedItem;
+        if (!item)
+            return;
+
+        let node = item;
+        while (node && node !== flickable)
+            node = node.parent;
+        if (node !== flickable)
+            return;
+
+        const pos = item.mapToItem(flickable.contentItem, 0, 0);
+        const pad = Tokens.padding.medium;
+        const minY = -flickable.topMargin;
+        const maxY = Math.max(minY, flickable.contentHeight - flickable.height + flickable.bottomMargin);
+
+        let y = flickable.contentY;
+        if (pos.y < y + pad)
+            y = pos.y - pad;
+        else if (pos.y + item.height > y + flickable.height - pad)
+            y = pos.y - flickable.height / 3;
+        flickable.contentY = Math.max(minY, Math.min(maxY, y));
+    }
 
     // Scrolls to the row labelled `label` and flashes it; false if it isn't there (yet)
     function highlightRow(label: string): bool {
@@ -62,6 +93,8 @@ ColumnLayout {
         }
         return null;
     }
+
+    onFocusedItemChanged: Qt.callLater(root.revealFocus)
 
     spacing: Tokens.spacing.extraLargeIncreased
 
@@ -139,6 +172,7 @@ ColumnLayout {
             onTapped: flickable.focus = true
         }
     }
+
     // Brief highlight drawn over the viewport after scrolling to a search result
     StyledRect {
         id: flash

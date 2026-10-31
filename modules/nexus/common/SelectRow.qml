@@ -23,11 +23,34 @@ ConnectedRect {
 
     signal selected(item: MenuItem)
 
+    function activate(): void {
+        if (root.enabled)
+            splitButton.expanded = !splitButton.expanded;
+    }
+
     Layout.fillWidth: true
     enabled: !disabled
     implicitHeight: rowLayout.implicitHeight + rowLayout.anchors.margins * 2
     clip: false
     z: splitButton.expanded ? 1 : 0
+
+    // Focusable like the rest of the rows; Space/Enter open the same menu the button opens.
+    activeFocusOnTab: true
+
+    Keys.onSpacePressed: event => {
+        root.activate();
+        event.accepted = true;
+    }
+
+    Keys.onReturnPressed: event => {
+        root.activate();
+        event.accepted = true;
+    }
+
+    Keys.onEnterPressed: event => {
+        root.activate();
+        event.accepted = true;
+    }
 
     RowLayout {
         id: rowLayout
@@ -75,6 +98,13 @@ ConnectedRect {
 
         SplitButton {
             id: splitButton
+
+            // Opening the menu (by click or by Space) puts focus on the row, so the arrow keys
+            // carry on from here.
+            onExpandedChanged: {
+                if (expanded)
+                    root.forceActiveFocus(Qt.MouseFocusReason);
+            }
 
             type: SplitButton.Tonal
             stateLayer.onClicked: splitButton.expanded = !splitButton.expanded

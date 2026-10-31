@@ -2,10 +2,12 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Window
 import Aether.Config
 import qs.components
 import qs.components.controls
 import qs.services
+import qs.modules.nexus
 import qs.modules.nexus.common
 
 ConnectedRect {
@@ -113,6 +115,20 @@ ConnectedRect {
             to: root.to
             stepSize: root.stepSize
             value: root.value
+
+            activeFocusOnTab: true
+
+            // Up/down move between rows; left/right are Qt's own value adjustment.
+            Keys.onUpPressed: event => {
+                FocusNav.move(Window.window, false);
+                event.accepted = true;
+            }
+
+            Keys.onDownPressed: event => {
+                FocusNav.move(Window.window, true);
+                event.accepted = true;
+            }
+
             cLayer: 2
             onValueModified: root.moved(value)
 

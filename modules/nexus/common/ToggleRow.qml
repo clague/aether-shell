@@ -26,6 +26,8 @@ StyledSwitch {
 
     Layout.fillWidth: true
 
+    activeFocusOnTab: true
+
     horizontalPadding: Tokens.padding.largeIncreased
     verticalPadding: Tokens.padding.medium
     font: Tokens.font.body.small
@@ -38,10 +40,15 @@ StyledSwitch {
     indicator.anchors.right: right
     indicator.anchors.rightMargin: root.horizontalPadding
 
-    onPressed: stateLayer.press(stateLayer.mouseX, stateLayer.mouseY)
+    onPressed: {
+        stateLayer.press(stateLayer.mouseX, stateLayer.mouseY);
+        forceActiveFocus(Qt.MouseFocusReason);
+    }
 
     background: ConnectedRect {
         id: bg
+
+        showFocusRing: root.activeFocus
 
         StateLayer {
             id: stateLayer

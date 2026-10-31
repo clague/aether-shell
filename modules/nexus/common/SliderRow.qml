@@ -2,10 +2,12 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Window
 import Aether.Config
 import qs.components
 import qs.components.controls
 import qs.services
+import qs.modules.nexus
 import qs.modules.nexus.common
 
 ConnectedRect {
@@ -115,10 +117,33 @@ ConnectedRect {
                 implicitHeight: Tokens.padding.medium * 2
 
                 StyledSlider {
+                    id: slider
+
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.verticalCenter: parent.verticalCenter
                     implicitHeight: parent.implicitHeight
+
+                    activeFocusOnTab: true
+
+                    // Keep the keyboard where the user just clicked, so the arrow keys carry on
+                    // from this row.
+                    onPressedChanged: {
+                        if (pressed)
+                            forceActiveFocus(Qt.MouseFocusReason);
+                    }
+
+                    // Up/down move between rows like everywhere else; left/right keep Qt's own
+                    // value adjustment, which a Slider already implements.
+                    Keys.onUpPressed: event => {
+                        FocusNav.move(Window.window, false);
+                        event.accepted = true;
+                    }
+
+                    Keys.onDownPressed: event => {
+                        FocusNav.move(Window.window, true);
+                        event.accepted = true;
+                    }
 
                     radius: Tokens.rounding.small
                     value: root.value

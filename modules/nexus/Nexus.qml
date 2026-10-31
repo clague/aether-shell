@@ -21,6 +21,13 @@ Item {
 
     property color blobColour: Colours.tPalette.m3surfaceContainerLow
 
+    // True while a text input owns the keyboard, so shortcuts for printable characters can stay
+    // out of the way. Qt reports the inner input item for text-field controls.
+    readonly property bool textInputFocused: {
+        const item = root.Window.window ? root.Window.window.activeFocusItem : null;
+        return item instanceof TextInput || item instanceof TextEdit;
+    }
+
     signal close
 
     // Tokens are per-screen. `targetScreen` is the *config target* and is deliberately empty
@@ -35,12 +42,47 @@ Item {
     implicitWidth: Math.round(implicitHeight * Tokens.sizes.nexus.ratio)
     implicitHeight: Math.round(Math.min(nState.screen.height * Tokens.sizes.nexus.heightMult, nState.screen.width * 0.92 / Tokens.sizes.nexus.ratio))
 
+    // Arrow keys walk the same focus chain Tab uses; see FocusNav. Keys that a focused control
+    // consumes for itself (a slider's value, a text field's caret) never reach these handlers.
+    Keys.onUpPressed: event => {
+        FocusNav.move(Window.window, false);
+        event.accepted = true;
+    }
+
+    Keys.onDownPressed: event => {
+        FocusNav.move(Window.window, true);
+        event.accepted = true;
+    }
+
+    Keys.onLeftPressed: event => {
+        FocusNav.move(Window.window, false);
+        event.accepted = true;
+    }
+
+    Keys.onRightPressed: event => {
+        FocusNav.move(Window.window, true);
+        event.accepted = true;
+    }
+
     Behavior on blobColour {
         CAnim {}
     }
 
     TapHandler {
         onTapped: root.focus = true
+    }
+
+    // Browser-style back/forward on the mouse's side buttons. TapHandler reports which button
+    // was tapped, so this does not steal the ordinary left click above.
+    TapHandler {
+        acceptedButtons: Qt.BackButton | Qt.ForwardButton
+
+        onTapped: (eventPoint, button) => {
+            if (button === Qt.BackButton)
+                nState.goBack();
+            else
+                nState.goForward();
+        }
     }
 
     BlobGroup {
@@ -139,6 +181,27 @@ Item {
     Shortcut {
         sequence: "Ctrl+F"
         onActivated: nState.focusSearch()
+    }
+
+    // Vim/Firefox-style search key. Suppressed while a text field has focus, or it would eat the
+    // slash instead of letting the user type it.
+    Shortcut {
+        sequence: "/"
+        enabled: !root.textInputFocused
+        onActivated: nState.focusSearch()
+    }
+
+    // Keyboard equivalents of the mouse's back/forward buttons.
+    Shortcut {
+        sequence: "Alt+Left"
+        enabled: !root.textInputFocused
+        onActivated: nState.goBack()
+    }
+
+    Shortcut {
+        sequence: "Alt+Right"
+        enabled: !root.textInputFocused
+        onActivated: nState.goForward()
     }
 
     // Bluetooth pairing dialog, overlaying the whole Nexus window rather than the pairing

@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Window
 import Aether.Config
 import qs.components
 import qs.components.containers
@@ -13,9 +14,39 @@ VerticalFadeFlickable {
 
     required property NexusState nState
 
+    // Keeps the keyboard-focused row visible while the arrows walk the list, the same way a
+    // ListView scrolls its current item into view.
+    readonly property Item focusedItem: root.Window.window ? root.Window.window.activeFocusItem : null
+
+    function revealFocus(): void {
+        const item = root.focusedItem;
+        if (!item)
+            return;
+
+        let node = item;
+        while (node && node !== root)
+            node = node.parent;
+        if (node !== root)
+            return;
+
+        const pos = item.mapToItem(root.contentItem, 0, 0);
+        const pad = Tokens.padding.large;
+        const minY = -root.topMargin;
+        const maxY = Math.max(minY, root.contentHeight - root.height + root.bottomMargin);
+
+        let y = root.contentY;
+        if (pos.y < y + pad)
+            y = pos.y - pad;
+        else if (pos.y + item.height > y + root.height - pad)
+            y = pos.y + item.height - root.height + pad;
+        root.contentY = Math.max(minY, Math.min(maxY, y));
+    }
+
     topMargin: Tokens.padding.large
     bottomMargin: Tokens.padding.large
     contentHeight: content.implicitHeight
+
+    onFocusedItemChanged: Qt.callLater(root.revealFocus)
 
     TapHandler {
         onTapped: root.focus = true
@@ -74,6 +105,14 @@ VerticalFadeFlickable {
 
                 property bool isUnlocking: false
 
+                function activate(): void {
+                    root.nState.currentPageIdx = item.modelData.originalIndex;
+                }
+
+                // Rows take part in the window's focus chain, so Tab and the arrow keys can reach
+                // the page list without any special key handling here.
+                activeFocusOnTab: true
+
                 clip: true
 
                 Component.onCompleted: {
@@ -114,6 +153,21 @@ VerticalFadeFlickable {
                 bottomLeftRadius: stateLayer.pressed ? Tokens.rounding.medium : isCurrentPage ? Tokens.rounding.extraLargeIncreased : (isUnlocking && isBeforeDeveloperPage) ? Tokens.rounding.extraLarge : isCategoryEnd ? Tokens.rounding.extraLarge : Tokens.rounding.extraSmall
 
                 bottomRightRadius: stateLayer.pressed ? Tokens.rounding.medium : isCurrentPage ? Tokens.rounding.extraLargeIncreased : (isUnlocking && isBeforeDeveloperPage) ? Tokens.rounding.extraLarge : isCategoryEnd ? Tokens.rounding.extraLarge : Tokens.rounding.extraSmall
+
+                Keys.onSpacePressed: event => {
+                    item.activate();
+                    event.accepted = true;
+                }
+
+                Keys.onReturnPressed: event => {
+                    item.activate();
+                    event.accepted = true;
+                }
+
+                Keys.onEnterPressed: event => {
+                    item.activate();
+                    event.accepted = true;
+                }
 
                 Timer {
                     id: unlockTimer
@@ -159,7 +213,25 @@ VerticalFadeFlickable {
                     bottomLeftRadius: parent.bottomLeftRadius
                     bottomRightRadius: parent.bottomRightRadius
 
-                    onClicked: root.nState.currentPageIdx = item.modelData.originalIndex
+                    onClicked: {
+                        item.forceActiveFocus(Qt.MouseFocusReason);
+                        root.nState.currentPageIdx = item.modelData.originalIndex;
+                    }
+                }
+
+                StyledRect {
+                    anchors.fill: parent
+                    z: 1
+
+                    visible: item.activeFocus
+                    color: "transparent"
+                    border.width: 2
+                    border.color: Colours.palette.m3primary
+
+                    topLeftRadius: item.topLeftRadius
+                    topRightRadius: item.topRightRadius
+                    bottomLeftRadius: item.bottomLeftRadius
+                    bottomRightRadius: item.bottomRightRadius
                 }
 
                 RowLayout {

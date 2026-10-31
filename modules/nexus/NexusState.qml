@@ -8,6 +8,12 @@ QtObject {
     property bool animatingContainer
     property int currentPageIdx
     property list<int> subPageIdxStack
+    // Top-level page history, browser style: `historyIndex` is the entry being shown, so
+    // back/forward move through it instead of appending again.
+    property list<int> pageHistory
+    property int historyIndex: -1
+    readonly property bool canGoBack: historyIndex > 0
+    readonly property bool canGoForward: historyIndex >= 0 && historyIndex < pageHistory.length - 1
     property bool searchOpen
     property string searchText
     // Label of the row to scroll to and flash once its page has loaded
@@ -71,5 +77,46 @@ QtObject {
         }
     }
 
-    onCurrentPageIdxChanged: subPageIdxStack.length = 0
+    function goBack(): void {
+        // A sub-page is the innermost history: leave it before changing the top-level page.
+        if (subPageIdxStack.length > 0) {
+            closeSubPage();
+            return;
+        }
+        if (!canGoBack)
+            return;
+
+        historyIndex--;
+        currentPageIdx = pageHistory[historyIndex];
+    }
+
+    function goForward(): void {
+        if (!canGoForward)
+            return;
+
+        historyIndex++;
+        currentPageIdx = pageHistory[historyIndex];
+    }
+
+    onCurrentPageIdxChanged: {
+        subPageIdxStack.length = 0;
+
+        // Already pointing at this entry because back/forward moved here.
+        if (historyIndex >= 0 && pageHistory[historyIndex] === currentPageIdx)
+            return;
+
+        // A new destination drops the entries that were ahead of it.
+        pageHistory = pageHistory.slice(0, historyIndex + 1);
+        pageHistory.push(currentPageIdx);
+        historyIndex = pageHistory.length - 1;
+    }
+
+    Component.onCompleted: {
+        // `currentPageIdx` may still be at its default when the window binds a starting page, in
+        // which case no change signal ever arrived to seed the history.
+        if (pageHistory.length === 0) {
+            pageHistory = [currentPageIdx];
+            historyIndex = 0;
+        }
+    }
 }

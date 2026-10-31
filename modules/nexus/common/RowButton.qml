@@ -19,15 +19,44 @@ ConnectedRect {
     readonly property alias label: label
     readonly property alias subLabel: subLabel
 
-    signal clicked(event: MouseEvent)
+    // `var` instead of MouseEvent so keyboard activation can emit this without a pointer event;
+    // every caller ignores the argument.
+    signal clicked(var event)
+
+    function activate(): void {
+        if (!root.disabled)
+            root.clicked(null);
+    }
 
     Layout.fillWidth: true
     implicitHeight: row.implicitHeight + Tokens.padding.medium * 2
 
+    // Rows join the window's focus chain like real controls, so Tab and the arrow keys reach them
+    // without any page-level key handling.
+    activeFocusOnTab: true
+
+    Keys.onSpacePressed: event => {
+        root.activate();
+        event.accepted = true;
+    }
+
+    Keys.onReturnPressed: event => {
+        root.activate();
+        event.accepted = true;
+    }
+
+    Keys.onEnterPressed: event => {
+        root.activate();
+        event.accepted = true;
+    }
+
     StateLayer {
         id: stateLayer
 
-        onClicked: e => root.clicked(e)
+        onClicked: e => {
+            root.forceActiveFocus(Qt.MouseFocusReason);
+            root.clicked(e);
+        }
     }
 
     RowLayout {

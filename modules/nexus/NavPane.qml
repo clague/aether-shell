@@ -20,6 +20,8 @@ ColumnLayout {
 
         z: 3
 
+        activeFocusOnTab: true
+
         Layout.fillWidth: true
 
         placeholderText: Tr.tr("Search settings")
@@ -38,9 +40,23 @@ ColumnLayout {
 
         clearIcon.padding: Tokens.padding.extraSmall
 
-        Keys.onDownPressed: root.nState.searchMove(1)
+        // While results are showing the arrows walk the result list; otherwise leave the key
+        // unhandled so the window's focus traversal can move to the next control.
+        Keys.onDownPressed: event => {
+            if (!root.nState.searchOpen) {
+                event.accepted = false;
+                return;
+            }
+            root.nState.searchMove(1);
+        }
 
-        Keys.onUpPressed: root.nState.searchMove(-1)
+        Keys.onUpPressed: event => {
+            if (!root.nState.searchOpen) {
+                event.accepted = false;
+                return;
+            }
+            root.nState.searchMove(-1);
+        }
 
         Keys.onReturnPressed: root.nState.searchActivate()
 

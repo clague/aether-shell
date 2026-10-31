@@ -88,6 +88,8 @@ ConnectedRect {
         StyledTextField {
             id: input
 
+            activeFocusOnTab: true
+
             Layout.preferredWidth: root.smallField ? Tokens.sizes.nexus.smallTextFieldWidth : Tokens.sizes.nexus.textFieldWidth
             Layout.maximumWidth: root.width / 2
             Layout.alignment: Qt.AlignVCenter

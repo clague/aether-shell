@@ -28,14 +28,40 @@ ConnectedRect {
 
     signal deleted
 
+    function activate(): void {
+        popup.open = true;
+    }
+
     Layout.fillWidth: true
     implicitHeight: navLayout.implicitHeight + navLayout.anchors.margins * 2
+
+    // Reachable with Tab and the arrow keys like any other control; Space/Enter open the popup
+    // the whole row opens on click.
+    activeFocusOnTab: true
+
+    Keys.onSpacePressed: event => {
+        root.activate();
+        event.accepted = true;
+    }
+
+    Keys.onReturnPressed: event => {
+        root.activate();
+        event.accepted = true;
+    }
+
+    Keys.onEnterPressed: event => {
+        root.activate();
+        event.accepted = true;
+    }
 
     StateLayer {
         id: stateLayer
 
         manualHoverOverride: popup.hovered && !popup.open
-        onClicked: popup.open = true
+        onClicked: {
+            root.forceActiveFocus(Qt.MouseFocusReason);
+            popup.open = true;
+        }
     }
 
     RowLayout {
