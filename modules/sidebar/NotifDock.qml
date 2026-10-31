@@ -105,6 +105,7 @@ Item {
                     sourceSize.width: clipRect.width * 0.8 * ((QsWindow.window as QsWindow)?.devicePixelRatio ?? 1)
 
                     layer.enabled: true
+                    layer.smooth: true
                     layer.effect: Colouriser {
                         colorizationColor: Colours.palette.m3outlineVariant
                         brightness: 1
@@ -201,6 +202,7 @@ Item {
 
         scale: root.notifCount > 0 ? 1 : 0.5
         layer.enabled: scale !== 1
+        layer.smooth: true
         opacity: root.notifCount > 0 ? 1 : 0
         active: opacity > 0
 

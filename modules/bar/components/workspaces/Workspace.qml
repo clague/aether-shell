@@ -179,6 +179,7 @@ GridLayout {
                 implicitSize: iconRoot.width
                 scale: iconRoot.active ? 2 / 3 : 1 / 3
                 layer.enabled: scale !== 1
+                layer.smooth: true
                 color: Config.bar.workspaces.occupiedBg || root.isOccupied || root.activeWsId === root.ws ? Colours.palette.m3onSurface : Colours.layer(Colours.palette.m3outlineVariant, 2)
 
                 Behavior on color {

@@ -23,6 +23,7 @@ StyledRect {
     property bool expanded: modelData.forceExpand || Config.notifs.openExpanded
 
     layer.enabled: scale !== 1
+    layer.smooth: true
 
     color: root.modelData.urgency === NotificationUrgency.Critical ? Colours.palette.m3secondaryContainer : Colours.tPalette.m3surfaceContainer
     radius: Tokens.rounding.large
@@ -172,6 +173,7 @@ StyledRect {
                             source: Quickshell.iconPath(root.modelData.appIcon)
                             colour: root.modelData.urgency === NotificationUrgency.Critical ? Colours.palette.m3onError : root.modelData.urgency === NotificationUrgency.Low ? Colours.palette.m3onSurface : Colours.palette.m3onSecondaryContainer
                             layer.enabled: root.modelData.appIcon.endsWith("symbolic")
+                            layer.smooth: true
                         }
                     }
 

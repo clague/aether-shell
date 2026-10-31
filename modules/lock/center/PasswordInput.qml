@@ -146,6 +146,7 @@ StyledRect {
                 shape: root.lock.pam.buffer ? MaterialShape.Arrow : MaterialShape.Circle
                 scale: !root.lock.pam.buffer ? 1 : mouse.pressed ? 0.6 : mouse.containsMouse ? 0.8 : 0.7
                 layer.enabled: scale !== 1
+                layer.smooth: true
                 rotation: 90
 
                 Behavior on scale {

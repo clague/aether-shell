@@ -446,6 +446,7 @@ Item {
                     }
 
                     layer.enabled: scale !== 1
+                    layer.smooth: true
 
                     width: delegateContainer.width
                     height: delegateContainer.height
@@ -582,6 +583,7 @@ Item {
                         source: icon.source
                         colour: Colours.palette.m3secondary
                         layer.enabled: true
+                        layer.smooth: true
                         visible: Config.bar.dock.recolourIcons ?? false
                     }
 

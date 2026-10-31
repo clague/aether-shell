@@ -60,6 +60,7 @@ Item {
 
         scale: root.showPomodoro ? 1 : 0.95
         layer.enabled: scale !== 1
+        layer.smooth: true
 
         Behavior on opacity {
             Anim {
@@ -263,6 +264,7 @@ Item {
 
         scale: root.showPomodoro ? 0.95 : 1
         layer.enabled: scale !== 1
+        layer.smooth: true
 
         Behavior on opacity {
             Anim {

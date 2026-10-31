@@ -332,6 +332,7 @@ CustomMouseArea {
 
         scale: isActive ? 1 : 0.8
         layer.enabled: scale !== 1
+        layer.smooth: true
         transformOrigin: Item.Bottom
 
         Behavior on opacity {
@@ -364,6 +365,7 @@ CustomMouseArea {
 
             anchors.fill: parent
             layer.enabled: true
+            layer.smooth: true
             layer.samples: 4
 
             layer.effect: MultiEffect {

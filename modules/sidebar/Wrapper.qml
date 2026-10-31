@@ -22,6 +22,7 @@ Item {
 
     // Rasterise the drawer while its deform matrix animates.
     layer.enabled: offsetScale > 0 && offsetScale < 1
+    layer.smooth: true
 
     visible: offsetScale < 0.999
     anchors.leftMargin: slideAmount

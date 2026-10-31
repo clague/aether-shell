@@ -44,6 +44,7 @@ Item {
             color: Qt.alpha(root.pfpFallbackColour, 1)
             opacity: root.pfpFallbackColour.a
             layer.enabled: true
+            layer.smooth: true
 
             MouseArea {
                 id: mouse
@@ -67,6 +68,7 @@ Item {
         Item {
             anchors.fill: parent
             layer.enabled: true
+            layer.smooth: true
             layer.effect: Mask {
                 maskSource: shape
             }
@@ -97,6 +99,7 @@ Item {
                 color: Qt.alpha(Colours.palette.m3scrim, pfp.ready ? 0.4 : 0)
                 opacity: mouse.containsMouse ? 1 : 0
                 layer.enabled: opacity < 1
+                layer.smooth: true
 
                 Behavior on opacity {
                     Anim {
@@ -111,6 +114,7 @@ Item {
                     color: Colours.palette.m3primary
                     scale: mouse.pressed ? 0.9 : mouse.containsMouse ? 1 : 0.7
                     layer.enabled: scale !== 1
+                    layer.smooth: true
 
                     Behavior on color {
                         CAnim {}

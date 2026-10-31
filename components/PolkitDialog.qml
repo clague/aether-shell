@@ -244,6 +244,7 @@ StyledWindow {
         property int targetHeight: dialogContent.implicitHeight + (Tokens.padding.large * 2)
 
         layer.enabled: scale !== 1
+        layer.smooth: true
 
         anchors.centerIn: parent
         implicitWidth: isExpanded ? targetWidth : iconSize
@@ -275,6 +276,7 @@ StyledWindow {
             color: Colours.layer(Colours.palette.m3surface, 0)
 
             layer.enabled: true
+            layer.smooth: true
             layer.effect: MultiEffect {
                 shadowEnabled: true
                 blurMax: 15

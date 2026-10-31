@@ -27,6 +27,7 @@ Item {
     // The whole drawer is drawn through a deform matrix in ContentWindow; one layer here
     // covers the search field, results and every icon, so children do not need their own.
     layer.enabled: true
+    layer.smooth: true
 
     onShouldBeActiveChanged: {
         if (shouldBeActive)

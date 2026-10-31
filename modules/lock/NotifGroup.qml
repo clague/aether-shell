@@ -47,6 +47,7 @@ StyledRect {
     property bool expanded
 
     layer.enabled: scale !== 1
+    layer.smooth: true
 
     anchors.left: parent?.left
     anchors.right: parent?.right
@@ -96,6 +97,7 @@ StyledRect {
                     source: Quickshell.iconPath(root.appIcon)
                     colour: root.urgency === "critical" ? Colours.palette.m3onError : root.urgency === "low" ? Colours.palette.m3onSurface : Colours.palette.m3onSecondaryContainer
                     layer.enabled: root.appIcon.endsWith("symbolic")
+                    layer.smooth: true
                 }
             }
 
@@ -140,6 +142,7 @@ StyledRect {
                         source: Quickshell.iconPath(root.appIcon)
                         colour: root.urgency === "critical" ? Colours.palette.m3onError : root.urgency === "low" ? Colours.palette.m3onSurface : Colours.palette.m3onSecondaryContainer
                         layer.enabled: root.appIcon.endsWith("symbolic")
+                        layer.smooth: true
                     }
                 }
             }

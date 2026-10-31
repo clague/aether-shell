@@ -12,6 +12,7 @@ Text {
     // Native-rendered glyphs snap to the pixel grid while they are scaled or rotated, which
     // reads as pixel jitter. Rasterise once into a layer for the duration of the transform.
     layer.enabled: root.scale !== 1 || root.rotation !== 0
+    layer.smooth: true
 
     renderType: Text.NativeRendering
     textFormat: Text.PlainText

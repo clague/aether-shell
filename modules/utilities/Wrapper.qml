@@ -40,6 +40,7 @@ Item {
 
     // Rasterise the drawer while its deform matrix animates.
     layer.enabled: offsetScale > 0 && offsetScale < 1
+    layer.smooth: true
 
     visible: offsetScale < 1
     anchors.bottomMargin: Config.bar.position === "bottom" ? 0 : (-implicitHeight - 5) * offsetScale

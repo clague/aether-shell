@@ -178,6 +178,7 @@ WlSessionLockSurface {
         opacity: 0
 
         layer.enabled: true
+        layer.smooth: true
         layer.effect: MultiEffect {
             autoPaddingEnabled: false
             blurEnabled: true
@@ -222,6 +223,7 @@ WlSessionLockSurface {
         readonly property real lockShort: root.lockHeight * Tokens.sizes.lock.heightMult
 
         layer.enabled: scale !== 1 || rotation !== 0
+        layer.smooth: true
 
         anchors.centerIn: parent
         implicitWidth: size
@@ -240,6 +242,7 @@ WlSessionLockSurface {
             opacity: Colours.transparency.enabled ? Colours.transparency.base : 1
 
             layer.enabled: true
+            layer.smooth: true
             layer.effect: MultiEffect {
                 shadowEnabled: true
                 blurMax: 15
