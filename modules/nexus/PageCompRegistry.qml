@@ -157,6 +157,12 @@ QtObject {
                     HyprlandPage {}
                 }
                 Component {
+                    HyprWindowEffectsPage {}
+                }
+                Component {
+                    HyprSpacingPage {}
+                }
+                Component {
                     HyprVariablesPage {}
                 }
                 Component {

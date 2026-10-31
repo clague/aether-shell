@@ -44,6 +44,17 @@ QtObject {
 
     // Opens a page (and sub-page) found through search; for a row, its label is
     // highlighted once the page has loaded.
+    // Open a top-level page by its stable key (see PageRegistry), optionally pushing one of
+    // its sub-pages. Used by cross-links such as Apps -> Hyprland keybind apps.
+    function openPageByKey(key: string, sub = 0): void {
+        for (let i = 0; i < PageRegistry.pages.length; i++) {
+            if (PageRegistry.pages[i].key === key) {
+                openSearchResult(i, sub, "", false);
+                return;
+            }
+        }
+    }
+
     function openSearchResult(page: int, sub: int, label: string, isRow: bool): void {
         clearSearch();
         pendingHighlight = isRow ? label : "";

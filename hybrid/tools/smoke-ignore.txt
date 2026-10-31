@@ -99,3 +99,7 @@ Dispatch request "hl\.dsp\.window\.center\(.*\)" failed with error "info: =\[C\]
 # The weather service's own location lookup (ip-api), same rule as aether.requests: a boot
 # gate must not depend on someone else's uptime, and this API answers 503 often.
 aether\.qml\.services\.weather: ip-api request failed
+
+# Qt's HTTP/2 layer logs a GOAWAY when a boot-time fetch is cut off (weather/GitHub). Same
+# environmental noise as aether.requests above, one layer lower.
+qt\.network\.http2: stream [0-9]+ (error|finished with error):

@@ -27,7 +27,7 @@ PageBase {
         // Default applications
         SectionHeader {
             first: true
-            text: Tr.tr("Default applications")
+            text: Tr.tr("Shell default applications")
         }
 
         DefaultRow {
@@ -58,6 +58,19 @@ PageBase {
             label: Tr.trCtx("File manager", "default app category")
             status: GlobalConfig.general.apps.explorer.join(" ")
             onSelected: app => GlobalConfig.general.apps.explorer = app.command
+        }
+
+        SectionHeader {
+            text: Tr.tr("Hyprland")
+        }
+
+        NavRow {
+            first: true
+            last: true
+            icon: "keyboard"
+            text: Tr.tr("Hyprland keybind apps")
+            subtext: Tr.tr("Terminal, browser, editor and file manager used by Hyprland keybinds")
+            onClicked: root.nState.openPageByKey("hyprland", 3)
         }
 
         // Library

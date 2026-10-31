@@ -19,7 +19,7 @@ QtObject {
         {
             label: Tr.tr("Look & feel"),
             icon: "tune",
-            description: Tr.tr("Density, glass, motion, fonts and Hyprland variables"),
+            description: Tr.tr("Shell appearance and app fonts"),
             category: "appearance"
         },
 
@@ -40,7 +40,8 @@ QtObject {
             label: Tr.tr("Hyprland"),
             icon: "layers",
             description: Tr.tr("Window manager configuration"),
-            category: "desktop"
+            category: "desktop",
+            key: "hyprland"
         },
 
         // Connectivity
