@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aether-shell\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 08:12+0800\n"
+"POT-Creation-Date: 2026-10-31 08:31+0800\n"
 "PO-Revision-Date: 2026-10-30 00:00+0800\n"
 "Last-Translator: caelestia-hybrid\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -115,6 +115,14 @@ msgstr "游戏模式已禁用"
 #: daemons/GameMode.qml
 msgid "Hyprland settings restored"
 msgstr "已恢复 Hyprland 设置"
+
+#: modules/areapicker/Picker.qml
+msgid "Screenshot taken"
+msgstr "截图完成"
+
+#: modules/areapicker/Picker.qml
+msgid "Screenshot copied to clipboard"
+msgstr "截图已复制到剪贴板"
 
 #: modules/bar/components/ActiveWindow.qml
 msgctxt "shown when no window is focused"

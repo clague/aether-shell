@@ -60,6 +60,8 @@ to change it.
 -   [`hyprmoncfg`](https://github.com/crmne/hyprmoncfg) — optional; the Display page uses it to
     save and apply monitor layouts. Without it, live layout changes still work, but nothing is
     persisted and saved profiles are unavailable.
+-   [`swappy`](https://github.com/jtheoof/swappy) — the editor opened after selecting a screenshot region
+-   [`wl-clipboard`](https://github.com/bugaevc/wl-clipboard) — `wl-copy`, used for clipboard-only screenshots
 -   [`ddcutil`](https://github.com/rockowitz/ddcutil)
 -   [`brightnessctl`](https://github.com/Hummer12007/brightnessctl)
 -   [`app2unit`](https://github.com/Vladimir-csp/app2unit)

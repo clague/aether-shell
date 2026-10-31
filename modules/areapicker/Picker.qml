@@ -5,6 +5,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import Aether
+import Aether.I18n
 import qs.components
 import qs.components.effects
 import qs.services
@@ -89,9 +90,12 @@ MouseArea {
             if (isSearch) {
                 Quickshell.execDetached(["touch", "/tmp/aether-search.done"]);
             } else if (root.loader.clipboardOnly) {
-                Quickshell.execDetached(["caelestia", "screenshot", "--copy", "--file", path]);
+                // The caelestia CLI has no --file/--copy flags in the version this shell
+                // supports; copy the captured region directly instead.
+                Quickshell.execDetached(["sh", "-c", 'wl-copy --type image/png < "$1"', "sh", path]);
+                Toaster.toast(Tr.tr("Screenshot taken"), Tr.tr("Screenshot copied to clipboard"), "screenshot_monitor");
             } else {
-                Quickshell.execDetached(["caelestia", "screenshot", "--file", path]);
+                Quickshell.execDetached(["swappy", "-f", path]);
             }
             Audio.playCameraClick();
             closeAnim.start();
@@ -230,6 +234,7 @@ MouseArea {
             onHasContentChanged: {
                 if (hasContent && !root.loader.freeze) {
                     overlay.visible = border.visible = true;
+                    root.save();
                 }
             }
         }
