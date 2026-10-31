@@ -517,8 +517,6 @@ Item {
                                                     width: 64
                                                     height: 64
                                                     scale: 20 / 64
-                                                    layer.enabled: true
-                                                    layer.smooth: true
                                                     asynchronous: true
                                                 }
                                             }
