@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: aether-shell\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-31 08:31+0800\n"
+"POT-Creation-Date: 2026-10-31 08:52+0800\n"
 "PO-Revision-Date: 2026-10-30 00:00+0800\n"
 "Last-Translator: caelestia-hybrid\n"
 "Language-Team: Chinese (Simplified)\n"
@@ -2412,6 +2412,143 @@ msgid "Fix"
 msgstr "修复"
 
 #: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Move window to workspace"
+msgstr "将窗口移到工作区"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Move window to workspace group"
+msgstr "将窗口移到工作组"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Go to workspace"
+msgstr "前往工作区"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Go to workspace group"
+msgstr "前往工作组"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Next workspace"
+msgstr "下一个工作区"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Previous workspace"
+msgstr "上一个工作区"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Cycle next in group"
+msgstr "切换到组内下一个"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Cycle previous in group"
+msgstr "切换到组内上一个"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Ungroup"
+msgstr "取消分组"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Toggle group"
+msgstr "切换分组"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Move window"
+msgstr "移动窗口"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Resize window"
+msgstr "调整窗口大小"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Picture-in-picture"
+msgstr "画中画"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Pin window"
+msgstr "固定窗口"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Fullscreen"
+msgstr "全屏"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Bordered fullscreen"
+msgstr "带边框全屏"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Toggle floating"
+msgstr "切换浮动"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Close window"
+msgstr "关闭窗口"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Special workspace toggle"
+msgstr "切换特殊工作区"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "System monitor"
+msgstr "系统监视器"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Music"
+msgstr "音乐"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Communication"
+msgstr "通讯"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "To-do"
+msgstr "待办"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+#: modules/nexus/pages/panels/DashboardPanel.qml modules/nexus/SearchIndex.qml
+msgid "Terminal"
+msgstr "终端"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+msgid "Browser"
+msgstr "浏览器"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+msgid "Editor"
+msgstr "编辑器"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
+msgid "File Explorer"
+msgstr "文件管理器"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Session menu"
+msgstr "会话菜单"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Show sidebar"
+msgstr "显示侧栏"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Clear notifications"
+msgstr "清除通知"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Show panels"
+msgstr "显示面板"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Lock screen"
+msgstr "锁定屏幕"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Restore lock screen"
+msgstr "恢复锁屏"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
 #: modules/nexus/pages/hyprland/HyprlandPage.qml modules/nexus/SearchIndex.qml
 msgid "Keybinds"
 msgstr "快捷键"
@@ -2439,6 +2576,14 @@ msgstr "特殊工作区"
 #: modules/nexus/pages/hyprland/HyprVariablesPage.qml
 msgid "Misc"
 msgstr "杂项"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Unbound"
+msgstr "未绑定"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Recording…"
+msgstr "录制中…"
 
 #: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
 #, qt-format
@@ -2608,23 +2753,6 @@ msgstr "恢复为配置中的时长"
 #: modules/nexus/pages/hyprland/HyprVariablesPage.qml
 msgid "Keybind apps"
 msgstr "快捷键应用"
-
-#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
-#: modules/nexus/pages/panels/DashboardPanel.qml modules/nexus/SearchIndex.qml
-msgid "Terminal"
-msgstr "终端"
-
-#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
-msgid "Browser"
-msgstr "浏览器"
-
-#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
-msgid "Editor"
-msgstr "编辑器"
-
-#: modules/nexus/pages/hyprland/HyprVariablesPage.qml
-msgid "File Explorer"
-msgstr "文件管理器"
 
 #: modules/nexus/pages/hyprland/HyprVariablesPage.qml
 msgid "Audio Settings"

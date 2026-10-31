@@ -52,15 +52,56 @@ PageBase {
             if (sharing.length < 2)
                 continue;
             for (const key of sharing)
-                out[key] = sharing.filter(other => other !== key).map(other => root.prettyVarName(other));
+                out[key] = sharing.filter(other => other !== key).map(other => root.keyLabel(other));
         }
         return out;
     }
 
-    // "kbToggleGroup" -> "toggle group", so the warning names the action a person
-    // recognises rather than the variable behind it.
+    // Labels used both by the rows and by the duplicate-binding warning, so the two
+    // cannot drift apart.
+    readonly property var keyLabels: ({
+            kbMoveWinToWs: Tr.tr("Move window to workspace"),
+            kbMoveWinToWsGroup: Tr.tr("Move window to workspace group"),
+            kbGoToWs: Tr.tr("Go to workspace"),
+            kbGoToWsGroup: Tr.tr("Go to workspace group"),
+            kbNextWs: Tr.tr("Next workspace"),
+            kbPrevWs: Tr.tr("Previous workspace"),
+            kbWindowGroupCycleNext: Tr.tr("Cycle next in group"),
+            kbWindowGroupCyclePrev: Tr.tr("Cycle previous in group"),
+            kbUngroup: Tr.tr("Ungroup"),
+            kbToggleGroup: Tr.tr("Toggle group"),
+            kbMoveWindow: Tr.tr("Move window"),
+            kbResizeWindow: Tr.tr("Resize window"),
+            kbWindowPip: Tr.tr("Picture-in-picture"),
+            kbPinWindow: Tr.tr("Pin window"),
+            kbWindowFullscreen: Tr.tr("Fullscreen"),
+            kbWindowBorderedFullscreen: Tr.tr("Bordered fullscreen"),
+            kbToggleWindowFloating: Tr.tr("Toggle floating"),
+            kbCloseWindow: Tr.tr("Close window"),
+            kbSpecialWs: Tr.tr("Special workspace toggle"),
+            kbSystemMonitorWs: Tr.tr("System monitor"),
+            kbMusicWs: Tr.tr("Music"),
+            kbCommunicationWs: Tr.tr("Communication"),
+            kbTodoWs: Tr.tr("To-do"),
+            kbTerminal: Tr.tr("Terminal"),
+            kbBrowser: Tr.tr("Browser"),
+            kbEditor: Tr.tr("Editor"),
+            kbFileExplorer: Tr.tr("File Explorer"),
+            kbSession: Tr.tr("Session menu"),
+            kbShowSidebar: Tr.tr("Show sidebar"),
+            kbClearNotifs: Tr.tr("Clear notifications"),
+            kbShowPanels: Tr.tr("Show panels"),
+            kbLock: Tr.tr("Lock screen"),
+            kbRestoreLock: Tr.tr("Restore lock screen")
+        })
+
+    // "kbToggleGroup" -> "toggle group" fallback for keys a user added by hand
     function prettyVarName(key: string): string {
         return key.replace(/^kb/, "").replace(/([a-z0-9])([A-Z])/g, "$1 $2").toLowerCase();
+    }
+
+    function keyLabel(key: string): string {
+        return root.keyLabels[key] ?? root.prettyVarName(key);
     }
 
     function saveVar(key, val) {
@@ -394,28 +435,28 @@ PageBase {
 
         KeybindRow {
             first: true
-            label: "Move window to workspace"
+            label: root.keyLabel("kbMoveWinToWs")
             varKey: "kbMoveWinToWs"
         }
         KeybindRow {
-            label: "Move window to workspace group"
+            label: root.keyLabel("kbMoveWinToWsGroup")
             varKey: "kbMoveWinToWsGroup"
         }
         KeybindRow {
-            label: "Go to workspace"
+            label: root.keyLabel("kbGoToWs")
             varKey: "kbGoToWs"
         }
         KeybindRow {
-            label: "Go to workspace group"
+            label: root.keyLabel("kbGoToWsGroup")
             varKey: "kbGoToWsGroup"
         }
         KeybindRow {
-            label: "Next workspace"
+            label: root.keyLabel("kbNextWs")
             varKey: "kbNextWs"
         }
         KeybindRow {
             last: true
-            label: "Previous workspace"
+            label: root.keyLabel("kbPrevWs")
             varKey: "kbPrevWs"
         }
 
@@ -425,20 +466,20 @@ PageBase {
 
         KeybindRow {
             first: true
-            label: "Cycle next in group"
+            label: root.keyLabel("kbWindowGroupCycleNext")
             varKey: "kbWindowGroupCycleNext"
         }
         KeybindRow {
-            label: "Cycle previous in group"
+            label: root.keyLabel("kbWindowGroupCyclePrev")
             varKey: "kbWindowGroupCyclePrev"
         }
         KeybindRow {
-            label: "Ungroup"
+            label: root.keyLabel("kbUngroup")
             varKey: "kbUngroup"
         }
         KeybindRow {
             last: true
-            label: "Toggle group"
+            label: root.keyLabel("kbToggleGroup")
             varKey: "kbToggleGroup"
         }
 
@@ -448,36 +489,36 @@ PageBase {
 
         KeybindRow {
             first: true
-            label: "Move window"
+            label: root.keyLabel("kbMoveWindow")
             varKey: "kbMoveWindow"
         }
         KeybindRow {
-            label: "Resize window"
+            label: root.keyLabel("kbResizeWindow")
             varKey: "kbResizeWindow"
         }
         KeybindRow {
-            label: "Picture-in-picture"
+            label: root.keyLabel("kbWindowPip")
             varKey: "kbWindowPip"
         }
         KeybindRow {
-            label: "Pin window"
+            label: root.keyLabel("kbPinWindow")
             varKey: "kbPinWindow"
         }
         KeybindRow {
-            label: "Fullscreen"
+            label: root.keyLabel("kbWindowFullscreen")
             varKey: "kbWindowFullscreen"
         }
         KeybindRow {
-            label: "Bordered fullscreen"
+            label: root.keyLabel("kbWindowBorderedFullscreen")
             varKey: "kbWindowBorderedFullscreen"
         }
         KeybindRow {
-            label: "Toggle floating"
+            label: root.keyLabel("kbToggleWindowFloating")
             varKey: "kbToggleWindowFloating"
         }
         KeybindRow {
             last: true
-            label: "Close window"
+            label: root.keyLabel("kbCloseWindow")
             varKey: "kbCloseWindow"
         }
 
@@ -487,24 +528,24 @@ PageBase {
 
         KeybindRow {
             first: true
-            label: "Special workspace toggle"
+            label: root.keyLabel("kbSpecialWs")
             varKey: "kbSpecialWs"
         }
         KeybindRow {
-            label: "System monitor"
+            label: root.keyLabel("kbSystemMonitorWs")
             varKey: "kbSystemMonitorWs"
         }
         KeybindRow {
-            label: "Music"
+            label: root.keyLabel("kbMusicWs")
             varKey: "kbMusicWs"
         }
         KeybindRow {
-            label: "Communication"
+            label: root.keyLabel("kbCommunicationWs")
             varKey: "kbCommunicationWs"
         }
         KeybindRow {
             last: true
-            label: "To-do"
+            label: root.keyLabel("kbTodoWs")
             varKey: "kbTodoWs"
         }
 
@@ -514,20 +555,20 @@ PageBase {
 
         KeybindRow {
             first: true
-            label: "Terminal"
+            label: root.keyLabel("kbTerminal")
             varKey: "kbTerminal"
         }
         KeybindRow {
-            label: "Browser"
+            label: root.keyLabel("kbBrowser")
             varKey: "kbBrowser"
         }
         KeybindRow {
-            label: "Editor"
+            label: root.keyLabel("kbEditor")
             varKey: "kbEditor"
         }
         KeybindRow {
             last: true
-            label: "File Explorer"
+            label: root.keyLabel("kbFileExplorer")
             varKey: "kbFileExplorer"
         }
 
@@ -537,28 +578,28 @@ PageBase {
 
         KeybindRow {
             first: true
-            label: "Session menu"
+            label: root.keyLabel("kbSession")
             varKey: "kbSession"
         }
         KeybindRow {
-            label: "Show sidebar"
+            label: root.keyLabel("kbShowSidebar")
             varKey: "kbShowSidebar"
         }
         KeybindRow {
-            label: "Clear notifications"
+            label: root.keyLabel("kbClearNotifs")
             varKey: "kbClearNotifs"
         }
         KeybindRow {
-            label: "Show panels"
+            label: root.keyLabel("kbShowPanels")
             varKey: "kbShowPanels"
         }
         KeybindRow {
-            label: "Lock screen"
+            label: root.keyLabel("kbLock")
             varKey: "kbLock"
         }
         KeybindRow {
             last: true
-            label: "Restore lock screen"
+            label: root.keyLabel("kbRestoreLock")
             varKey: "kbRestoreLock"
         }
 
@@ -634,9 +675,9 @@ PageBase {
 
                 StyledText {
                     readonly property var clash: root.conflicts[kroot.varKey] ?? []
-                    readonly property string binding: root.vars[kroot.varKey] !== undefined ? String(root.vars[kroot.varKey]) : (root.defaults[kroot.varKey] !== undefined ? String(root.defaults[kroot.varKey]) : "Unbound")
+                    readonly property string binding: root.vars[kroot.varKey] !== undefined ? String(root.vars[kroot.varKey]) : (root.defaults[kroot.varKey] !== undefined ? String(root.defaults[kroot.varKey]) : Tr.tr("Unbound"))
 
-                    text: kroot.recording ? "Recording..." : (clash.length > 0 ? Tr.tr("%1 — also bound to %2").arg(binding).arg(clash.join(", ")) : binding)
+                    text: kroot.recording ? Tr.tr("Recording…") : (clash.length > 0 ? Tr.tr("%1 — also bound to %2").arg(binding).arg(clash.join(", ")) : binding)
                     color: !kroot.recording && clash.length > 0 ? Colours.palette.m3error : Colours.palette.m3outline
                     font: Tokens.font.label.small
                     Layout.fillWidth: true
