@@ -386,6 +386,7 @@ Item {
 
         opacity: root.currentList?.count === 0 ? 1 : 0
         scale: root.currentList?.count === 0 ? 1 : 0.5
+        layer.enabled: scale !== 1
 
         spacing: Tokens.spacing.medium
         padding: Tokens.padding.large

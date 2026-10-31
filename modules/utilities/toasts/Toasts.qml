@@ -80,6 +80,7 @@ Item {
 
         opacity: modelData.closed || previewHidden ? 0 : 1
         scale: modelData.closed || previewHidden ? 0.7 : 1
+        layer.enabled: scale !== 1
 
         anchors.bottomMargin: {
             root.flag; // Force update

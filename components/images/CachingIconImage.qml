@@ -16,6 +16,8 @@ Item {
     implicitWidth: implicitSize
     implicitHeight: implicitSize
 
+    layer.enabled: root.scale !== 1 || root.rotation !== 0
+
     Loader {
         id: loader
 

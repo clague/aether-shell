@@ -162,6 +162,8 @@ Item {
 
         readonly property real nonAnimHeight: icon.implicitHeight + name.anchors.topMargin + name.implicitHeight + Tokens.padding.medium * 2
 
+        layer.enabled: scale !== 1
+
         implicitWidth: Sizes.itemWidth
         implicitHeight: nonAnimHeight
 

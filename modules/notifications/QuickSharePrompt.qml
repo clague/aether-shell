@@ -23,6 +23,7 @@ StyledRect {
 
     opacity: active ? 1 : 0
     scale: active ? 1 : 0
+    layer.enabled: scale !== 1
     visible: opacity > 0
 
     ColumnLayout {

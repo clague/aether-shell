@@ -331,6 +331,7 @@ CustomMouseArea {
         height: (holidayText.implicitHeight + Tokens.padding.medium * 2) + Tokens.rounding.medium + br
 
         scale: isActive ? 1 : 0.8
+        layer.enabled: scale !== 1
         transformOrigin: Item.Bottom
 
         Behavior on opacity {

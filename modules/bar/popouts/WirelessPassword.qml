@@ -133,6 +133,7 @@ ColumnLayout {
         visible: root.shouldBeVisible || root.isClosing
         opacity: root.shouldBeVisible && !root.isClosing ? 1 : 0
         scale: root.shouldBeVisible && !root.isClosing ? 1 : 0.7
+        layer.enabled: scale !== 1
         Keys.onEscapePressed: root.closeDialog()
 
         Behavior on opacity {

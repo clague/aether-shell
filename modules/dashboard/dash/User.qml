@@ -110,6 +110,7 @@ Item {
                     shape: MaterialShape.Diamond
                     color: Colours.palette.m3primary
                     scale: mouse.pressed ? 0.9 : mouse.containsMouse ? 1 : 0.7
+                    layer.enabled: scale !== 1
 
                     Behavior on color {
                         CAnim {}

@@ -18,6 +18,7 @@ StyledRect {
 
     opacity: extra > 0 ? 1 : 0
     scale: extra > 0 ? 1 : 0.5
+    layer.enabled: scale !== 1
 
     Elevation {
         anchors.fill: parent

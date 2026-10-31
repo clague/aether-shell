@@ -218,7 +218,10 @@ WlSessionLockSurface {
         // Long/short axis of the lock surface relative to the monitor's short edge.
         // Portrait swaps which axis maps to width/height.
         readonly property real lockLong: root.lockHeight * Tokens.sizes.lock.heightMult * Tokens.sizes.lock.ratio
+
         readonly property real lockShort: root.lockHeight * Tokens.sizes.lock.heightMult
+
+        layer.enabled: scale !== 1 || rotation !== 0
 
         anchors.centerIn: parent
         implicitWidth: size

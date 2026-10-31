@@ -151,6 +151,7 @@ ColumnLayout {
 
         opacity: 1
         scale: 1
+        layer.enabled: scale !== 1
 
         MaterialIcon {
             text: "keyboard"

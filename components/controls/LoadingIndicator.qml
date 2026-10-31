@@ -54,6 +54,8 @@ MaterialShape {
 
     implicitSize: 38
     color: Colours.palette.m3primary
+
+    layer.enabled: root.animated
     toShape: shapes[0]
 
     ElapsedTimer {

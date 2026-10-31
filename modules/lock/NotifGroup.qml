@@ -17,6 +17,7 @@ StyledRect {
     required property string modelData
 
     readonly property list<var> notifs: Notifs.list.filter(notif => notif.appName === modelData)
+
     readonly property var props: {
         let img = "";
         let icon = "";
@@ -38,11 +39,14 @@ StyledRect {
             urgency: hasCritical ? "critical" : hasNormal ? "normal" : "low"
         };
     }
+
     readonly property string image: props.img
     readonly property string appIcon: props.icon
     readonly property string urgency: props.urgency
 
     property bool expanded
+
+    layer.enabled: scale !== 1
 
     anchors.left: parent?.left
     anchors.right: parent?.right

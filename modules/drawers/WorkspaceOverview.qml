@@ -420,6 +420,7 @@ Item {
 
                                             opacity: dragArea.drag.active ? 0.8 : 1
                                             scale: dragArea.drag.active ? 1.05 : 1
+                                            layer.enabled: scale !== 1
 
                                             Drag.active: dragArea.drag.active
                                             Drag.keys: ["window"]
@@ -507,6 +508,7 @@ Item {
                                                     width: 64
                                                     height: 64
                                                     scale: 20 / 64
+                                                    layer.enabled: true
                                                     asynchronous: true
                                                 }
                                             }

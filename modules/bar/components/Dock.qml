@@ -445,6 +445,8 @@ Item {
                         return modelData?.toplevels.length > 0;
                     }
 
+                    layer.enabled: scale !== 1
+
                     width: delegateContainer.width
                     height: delegateContainer.height
 

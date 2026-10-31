@@ -100,6 +100,8 @@ StyledListView {
             Animations.applyAnimation(modelData.path, root);
         }
 
+        layer.enabled: scale !== 1
+
         implicitHeight: Tokens.sizes.launcher.itemHeight
         width: root.width
 

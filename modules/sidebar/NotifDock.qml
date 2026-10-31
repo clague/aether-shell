@@ -200,6 +200,7 @@ Item {
         anchors.margins: Tokens.padding.medium
 
         scale: root.notifCount > 0 ? 1 : 0.5
+        layer.enabled: scale !== 1
         opacity: root.notifCount > 0 ? 1 : 0
         active: opacity > 0
 
