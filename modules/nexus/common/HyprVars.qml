@@ -5,8 +5,8 @@ import Quickshell
 import Aether
 
 // Read/write access to ~/.config/caelestia/hypr-vars.lua, the override table that the Hyprland
-// config requires next to its own variables. Nexus uses it from Hyprland > Variables (input and
-// misc settings) and from Look & feel > Hyprland appearance (blur, shadows, borders).
+// config requires next to its own variables. Nexus uses it from Hyprland > Variables (apps and
+// misc) and from Hyprland > Window effects / Spacing & animations.
 //
 // Only the values the user overrides are written; deleting a row removes its key so the default
 // from ~/.config/hypr/variables.lua applies again.
@@ -67,12 +67,27 @@ QtObject {
             else if (val === "false")
                 val = false;
             else if (val.startsWith("\"") && val.endsWith("\""))
-                val = val.substring(1, val.length - 1);
-            else if (!isNaN(parseFloat(val)))
+                val = val.substring(1, val.length - 1).replace(/\\n/g, "\n").replace(/\\"/g, "\"").replace(/\\\\/g, "\\");
+            else if (/^-?[0-9]+(\.[0-9]+)?$/.test(val))
                 val = parseFloat(val);
             out[match[1]] = val;
         }
         return out;
+    }
+
+    // Lua literal for one value. Parsed strings lose their quotes, so they have to be
+    // added back here -- including every unchanged key, or one bad write silently leaves
+    // bare identifiers such as `editor = zeditor` in the file and Hyprland fails to load it.
+    function luaValue(value: var): string {
+        if (value && typeof value === "object" && typeof value.join === "function")
+            value = value.join(" ");
+        if (typeof value === "boolean")
+            return value ? "true" : "false";
+        if (typeof value === "number")
+            return String(value);
+        if (value === null || value === undefined)
+            return "nil";
+        return "\"" + String(value).replace(/\\/g, "\\\\").replace(/"/g, "\\\"").replace(/\n/g, "\\n") + "\"";
     }
 
     function serializeVars(currentVars: var): string {
@@ -94,7 +109,7 @@ QtObject {
                     content += "    -- " + cat.cat + "\n";
                     catHasVars = true;
                 }
-                content += "    " + key.padEnd(26) + " = " + currentVars[key] + ",\n";
+                content += "    " + key.padEnd(26) + " = " + root.luaValue(currentVars[key]) + ",\n";
                 written[key] = true;
             }
             if (catHasVars)
@@ -109,7 +124,7 @@ QtObject {
                 content += "    -- Custom\n";
                 customHasVars = true;
             }
-            content += "    " + key.padEnd(26) + " = " + currentVars[key] + ",\n";
+            content += "    " + key.padEnd(26) + " = " + root.luaValue(currentVars[key]) + ",\n";
         }
 
         return content.replace(/\s+$/, "") + "\n}\n";
@@ -122,11 +137,8 @@ QtObject {
     }
 
     function saveVar(key: string, value: var): void {
-        let val = value;
-        if (typeof val === "boolean")
-            val = val ? "true" : "false";
-        else if (typeof val === "string" && !val.startsWith("rgba"))
-            val = "\"" + val + "\"";
+        // AppRow passes a desktop entry's command list; store it as one command string.
+        const val = value && typeof value === "object" && typeof value.join === "function" ? value.join(" ") : value;
 
         const currentVars = CUtils.fileExists(root.configPath) ? parseVars(CUtils.readFile(root.configPath)) : {};
         currentVars[key] = val;
