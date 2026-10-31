@@ -30,10 +30,6 @@ Item {
         timer.restart();
     }
 
-    // Rasterise the drawer while its deform matrix animates.
-    layer.enabled: offsetScale > 0 && offsetScale < 1
-    layer.smooth: true
-
     Component.onCompleted: {
         volume = Audio.volume;
         muted = Audio.muted;

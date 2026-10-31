@@ -178,7 +178,6 @@ WlSessionLockSurface {
         opacity: 0
 
         layer.enabled: true
-        layer.smooth: true
         layer.effect: MultiEffect {
             autoPaddingEnabled: false
             blurEnabled: true
@@ -219,11 +218,7 @@ WlSessionLockSurface {
         // Long/short axis of the lock surface relative to the monitor's short edge.
         // Portrait swaps which axis maps to width/height.
         readonly property real lockLong: root.lockHeight * Tokens.sizes.lock.heightMult * Tokens.sizes.lock.ratio
-
         readonly property real lockShort: root.lockHeight * Tokens.sizes.lock.heightMult
-
-        layer.enabled: scale !== 1 || rotation !== 0
-        layer.smooth: true
 
         anchors.centerIn: parent
         implicitWidth: size
@@ -242,7 +237,6 @@ WlSessionLockSurface {
             opacity: Colours.transparency.enabled ? Colours.transparency.base : 1
 
             layer.enabled: true
-            layer.smooth: true
             layer.effect: MultiEffect {
                 shadowEnabled: true
                 blurMax: 15

@@ -74,8 +74,6 @@ StackView {
 
         opacity: shown ? 1 : 0
         scale: shown ? 1 : 0.8
-        layer.enabled: scale !== 1
-        layer.smooth: true
 
         Component.onCompleted: shown = true
         StackView.onActivating: shown = true

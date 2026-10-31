@@ -31,10 +31,6 @@ Item {
     readonly property bool shouldBeActive: screenState.dashboard && Config.dashboard.enabled
     property real offsetScale: shouldBeActive ? 0 : 1
 
-    // Rasterise the drawer while its deform matrix animates.
-    layer.enabled: offsetScale > 0 && offsetScale < 1
-    layer.smooth: true
-
     visible: offsetScale < 1
     anchors.topMargin: (-implicitHeight - 5) * offsetScale
     implicitHeight: content.implicitHeight

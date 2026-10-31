@@ -238,8 +238,6 @@ Item {
         anchors.margins: Tokens.padding.large
         opacity: root.detailPanelOpen ? 1 : 0
         scale: root.detailPanelOpen ? 1 : 0.95
-        layer.enabled: scale !== 1
-        layer.smooth: true
         clip: true
         enabled: root.detailPanelOpen
 

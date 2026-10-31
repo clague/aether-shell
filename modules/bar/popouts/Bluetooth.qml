@@ -95,8 +95,6 @@ ColumnLayout {
                     spacing: Tokens.spacing.small
                     opacity: 0
                     scale: 0.7
-                    layer.enabled: scale !== 1
-                    layer.smooth: true
 
                     Component.onCompleted: {
                         opacity = 1;

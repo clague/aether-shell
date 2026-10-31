@@ -41,8 +41,7 @@ StyledClippingRect {
         opacity: root.onSpecial ? 0.5 : 1
         visible: !root.fullscreen
 
-        layer.enabled: root.blur > 0 || scale !== 1
-        layer.smooth: true
+        layer.enabled: root.blur > 0
         layer.effect: MultiEffect {
             blurEnabled: true
             blur: root.blur
@@ -135,8 +134,6 @@ StyledClippingRect {
         active: opacity > 0
 
         scale: root.onSpecial ? 1 : 0.5
-        layer.enabled: scale !== 1
-        layer.smooth: true
         opacity: root.onSpecial ? 1 : 0
 
         sourceComponent: SpecialWorkspaces {

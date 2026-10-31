@@ -22,10 +22,6 @@ Item {
 
     property real slideAmount: (-implicitWidth - Config.border.thickness - Tokens.spacing.medium) * offsetScale
 
-    // Rasterise the drawer while its deform matrix animates.
-    layer.enabled: offsetScale > 0 && offsetScale < 1
-    layer.smooth: true
-
     anchors.top: parent.top
     anchors.bottom: parent.bottom
     anchors.leftMargin: slideAmount
@@ -273,7 +269,6 @@ Item {
                                 clip: true
 
                                 layer.enabled: true
-                                layer.smooth: true
                                 layer.effect: Mask {
                                     maskSource: maskItem
                                 }
@@ -306,7 +301,6 @@ Item {
                                 anchors.fill: parent
                                 visible: false
                                 layer.enabled: true
-                                layer.smooth: true
 
                                 Rectangle {
                                     anchors.fill: parent
@@ -426,8 +420,6 @@ Item {
 
                                             opacity: dragArea.drag.active ? 0.8 : 1
                                             scale: dragArea.drag.active ? 1.05 : 1
-                                            layer.enabled: scale !== 1
-                                            layer.smooth: true
 
                                             Drag.active: dragArea.drag.active
                                             Drag.keys: ["window"]
@@ -462,14 +454,12 @@ Item {
                                                 anchors.fill: parent
                                                 radius: Tokens.rounding.medium
                                                 layer.enabled: true
-                                                layer.smooth: true
                                                 visible: false
                                             }
 
                                             Item {
                                                 anchors.fill: parent
                                                 layer.enabled: true
-                                                layer.smooth: true
                                                 layer.effect: Mask {
                                                     maskSource: windowMask
                                                 }

@@ -24,12 +24,6 @@ Item {
 
     property real offsetScale: shouldBeActive ? 0 : 1
 
-    // The whole drawer is drawn through a deform matrix in ContentWindow. One layer here
-    // covers the search field, results and every icon, so children need none of their own;
-    // it is only on while the drawer animates so text stays native-crisp at rest.
-    layer.enabled: offsetScale > 0 && offsetScale < 1
-    layer.smooth: true
-
     onShouldBeActiveChanged: {
         if (shouldBeActive)
             implicitHeight = Qt.binding(() => content.implicitHeight);

@@ -192,7 +192,6 @@ StyledWindow {
         anchors.fill: parent
         opacity: GlobalConfig.appearance.pitchBlack ? 1 : (Colours.transparency.enabled ? Colours.transparency.base : root.surfaceColour.a)
         layer.enabled: true
-        layer.smooth: true
 
         layer.effect: MultiEffect {
             shadowEnabled: true

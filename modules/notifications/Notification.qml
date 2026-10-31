@@ -22,21 +22,16 @@ StyledRect {
     readonly property int nonAnimHeight: summary.implicitHeight + (root.expanded ? Tokens.spacing.extraSmall * 2 + appName.height + body.height + actions.height + actions.anchors.topMargin : bodyPreview.height) + inner.anchors.margins * 2
     property bool expanded: modelData.forceExpand || Config.notifs.openExpanded
 
-    layer.enabled: scale !== 1
-    layer.smooth: true
-
     color: root.modelData.urgency === NotificationUrgency.Critical ? Colours.palette.m3secondaryContainer : Colours.tPalette.m3surfaceContainer
     radius: Tokens.rounding.large
 
     implicitHeight: inner.implicitHeight
 
     x: implicitWidth
-
     Component.onCompleted: {
         x = 0;
         modelData.lock(this);
     }
-
     Component.onDestruction: modelData.unlock(this)
 
     Behavior on x {
@@ -173,7 +168,6 @@ StyledRect {
                             source: Quickshell.iconPath(root.modelData.appIcon)
                             colour: root.modelData.urgency === NotificationUrgency.Critical ? Colours.palette.m3onError : root.modelData.urgency === NotificationUrgency.Low ? Colours.palette.m3onSurface : Colours.palette.m3onSecondaryContainer
                             layer.enabled: root.modelData.appIcon.endsWith("symbolic")
-                            layer.smooth: true
                         }
                     }
 

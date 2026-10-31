@@ -2209,9 +2209,6 @@ Item {
 
                         required property string thoughtText
 
-                        layer.enabled: scale !== 1
-                        layer.smooth: true
-
                         width: listView.width
 
                         visible: (!delegateItem.isFinished && root.isThinking) ? false : (delegateItem.text !== "" || delegateItem.thoughtText !== "")

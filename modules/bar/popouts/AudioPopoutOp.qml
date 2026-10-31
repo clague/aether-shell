@@ -350,8 +350,6 @@ Item {
                             radius: Tokens.rounding.full
 
                             scale: stateLayer.pressed ? 0.94 : isSelected ? 1.04 : (stateLayer.containsMouse ? 1.02 : 1.0)
-                            layer.enabled: scale !== 1
-                            layer.smooth: true
                             opacity: isSelected ? 1.0 : (stateLayer.containsMouse ? 0.9 : 0.75)
 
                             color: isSelected ? Colours.palette.m3primary : Colours.tPalette.m3surfaceContainerHigh

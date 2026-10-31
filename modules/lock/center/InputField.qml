@@ -18,7 +18,6 @@ Item {
     readonly property alias placeholderWidth: nonAnimPlaceholder.width
     property string buffer
     property bool showPassword
-
     readonly property list<int> shapeQueue: {
         const shapes = [MaterialShape.Slanted, MaterialShape.Arch, MaterialShape.Fan, MaterialShape.Arrow, MaterialShape.SemiCircle, MaterialShape.Triangle, MaterialShape.Diamond, MaterialShape.ClamShell, MaterialShape.Pentagon, MaterialShape.Gem, MaterialShape.Sunny, MaterialShape.VerySunny, MaterialShape.Cookie4Sided, MaterialShape.Ghostish, MaterialShape.SoftBurst];
         for (let i = shapes.length - 1; i > 0; i--) {
@@ -126,9 +125,6 @@ Item {
 
         required property int index
         property real nonAnimWidthScale: 1
-
-        layer.enabled: scale !== 1
-        layer.smooth: true
 
         implicitHeight: charList.implicitHeight
 

@@ -25,7 +25,6 @@ Item {
         color: Colours.tPalette.m3surfaceContainer
 
         layer.enabled: true
-        layer.smooth: true
         layer.effect: Mask {
             maskSource: mask
             maskInverted: true
@@ -37,7 +36,6 @@ Item {
 
         anchors.fill: parent
         layer.enabled: true
-        layer.smooth: true
         visible: false
 
         Rectangle {
@@ -163,9 +161,6 @@ Item {
         required property FileSystemEntry modelData
 
         readonly property real nonAnimHeight: icon.implicitHeight + name.anchors.topMargin + name.implicitHeight + Tokens.padding.medium * 2
-
-        layer.enabled: scale !== 1
-        layer.smooth: true
 
         implicitWidth: Sizes.itemWidth
         implicitHeight: nonAnimHeight

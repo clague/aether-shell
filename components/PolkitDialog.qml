@@ -19,12 +19,10 @@ StyledWindow {
 
     property int activeScreenScale: 1
     readonly property real centerScale: Math.max(0.8, Math.min(1, root.height / 1440))
-
     // StyledWindow gives contentItem the screen, not the window itself, so reading the
     // attached Tokens here directly resolves against the global layer and warns. Go through
     // contentItem, which is where the per-screen tokens actually live.
     readonly property int centerWidth: root.screen ? root.contentItem.Tokens.sizes.lock.centerWidth * centerScale : 0
-
     readonly property int passwordMaxWidth: centerWidth * 0.8
 
     readonly property string rawMessage: agent.flow ? agent.flow.message : "" // qmllint disable unresolved-type
@@ -243,9 +241,6 @@ StyledWindow {
         property int targetWidth: Math.max(420, root.passwordMaxWidth + Tokens.padding.extraLarge * 2)
         property int targetHeight: dialogContent.implicitHeight + (Tokens.padding.large * 2)
 
-        layer.enabled: scale !== 1
-        layer.smooth: true
-
         anchors.centerIn: parent
         implicitWidth: isExpanded ? targetWidth : iconSize
         implicitHeight: isExpanded ? targetHeight : iconSize
@@ -276,7 +271,6 @@ StyledWindow {
             color: Colours.layer(Colours.palette.m3surface, 0)
 
             layer.enabled: true
-            layer.smooth: true
             layer.effect: MultiEffect {
                 shadowEnabled: true
                 blurMax: 15
