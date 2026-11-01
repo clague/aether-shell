@@ -6189,6 +6189,10 @@ msgid "Available themes"
 msgstr "可用主题"
 
 #: modules/nexus/pages/wallandstyle/ThemeSelect.qml
+msgid "Default theme"
+msgstr "默认主题"
+
+#: modules/nexus/pages/wallandstyle/ThemeSelect.qml
 #: modules/nexus/SearchIndex.qml
 msgid "Wallpaper directory"
 msgstr "壁纸目录"

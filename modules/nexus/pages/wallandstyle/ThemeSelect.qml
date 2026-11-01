@@ -34,6 +34,73 @@ PageBase {
             columnSpacing: Tokens.spacing.medium
             rowSpacing: Tokens.spacing.medium
 
+            // Themes only supply defaults for the wallpaper and the themed asset paths, so there
+            // has to be a way back to the shell's own artwork once one has been picked.
+            StyledRect {
+                id: defaultThemeCard
+
+                readonly property bool isActive: GlobalConfig.paths.themeName.length === 0
+
+                Layout.fillWidth: true
+                implicitHeight: 180
+                radius: Tokens.rounding.large
+                color: isActive ? Colours.palette.m3primaryContainer : Colours.tPalette.m3surfaceContainer
+                border.width: isActive ? 2 : 1
+                border.color: isActive ? Colours.palette.m3primary : Colours.palette.m3outlineVariant
+
+                ColumnLayout {
+                    anchors.fill: parent
+                    anchors.margins: Tokens.padding.small
+                    spacing: Tokens.spacing.small
+
+                    StyledClippingRect {
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        radius: Tokens.rounding.medium
+                        color: Colours.palette.m3surfaceContainerLowest
+
+                        // The shell's own artwork, as opposed to a theme pack's.
+                        Logo {
+                            anchors.centerIn: parent
+                            width: 64
+                            height: 64
+                        }
+
+                        ActiveBadge {
+                            anchors.top: parent.top
+                            anchors.right: parent.right
+                            anchors.margins: Tokens.padding.extraSmall
+                            visible: defaultThemeCard.isActive
+                        }
+                    }
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: Tokens.spacing.small
+
+                        MaterialIcon {
+                            text: "palette"
+                            color: defaultThemeCard.isActive ? Colours.palette.m3primary : Colours.palette.m3onSurfaceVariant
+                        }
+
+                        StyledText {
+                            Layout.fillWidth: true
+                            text: Tr.tr("Default theme")
+                            font: Tokens.font.title.small
+                            elide: Text.ElideRight
+                            color: defaultThemeCard.isActive ? Colours.palette.m3onPrimaryContainer : Colours.palette.m3onSurface
+                        }
+                    }
+                }
+
+                CustomMouseArea {
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: GlobalConfig.paths.themeName = ""
+                }
+            }
+
             Repeater {
                 model: ThemeManager.list
 
@@ -70,22 +137,11 @@ PageBase {
                             }
 
                             // Active check badge
-                            StyledRect {
+                            ActiveBadge {
                                 anchors.top: parent.top
                                 anchors.right: parent.right
                                 anchors.margins: Tokens.padding.extraSmall
-                                implicitWidth: 26
-                                implicitHeight: 26
-                                radius: Tokens.rounding.full
                                 visible: themeCard.isActive
-                                color: Colours.palette.m3primary
-
-                                MaterialIcon {
-                                    anchors.centerIn: parent
-                                    text: "check"
-                                    color: Colours.palette.m3onPrimary
-                                    fontStyle: Tokens.font.icon.small
-                                }
                             }
                         }
 
@@ -185,6 +241,20 @@ PageBase {
                     color: Colours.palette.m3onSurfaceVariant
                 }
             }
+        }
+    }
+
+    component ActiveBadge: StyledRect {
+        implicitWidth: 26
+        implicitHeight: 26
+        radius: Tokens.rounding.full
+        color: Colours.palette.m3primary
+
+        MaterialIcon {
+            anchors.centerIn: parent
+            text: "check"
+            color: Colours.palette.m3onPrimary
+            fontStyle: Tokens.font.icon.small
         }
     }
 }
