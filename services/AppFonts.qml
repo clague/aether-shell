@@ -29,6 +29,12 @@ Singleton {
     property bool shellToo
     property var shellOriginal: null
 
+    // Apply the shell font only once both pieces of async startup state are in. Before that
+    // `enabled`/`shellToo` still hold their defaults, and an early "restore" would overwrite the
+    // config with the original families and lose the saved custom shell font.
+    property bool stateLoaded: false
+    property bool statusLoaded: false
+
     // Text size. Fonts differ a lot in how big their letters are at the same nominal size, so each
     // font is scaled to look as big as the reference (Adwaita Sans, JetBrains Mono) by comparing
     // the height of its lowercase letters. `sizeAdjust` (percent) is the user's own change on top.
@@ -122,6 +128,9 @@ Singleton {
 
     // The shell's text styles share one family each; put them back exactly as they were when off
     function applyShell(): void {
+        if (!stateLoaded || !statusLoaded)
+            return;
+
         const f = GlobalConfig.appearance.font;
         const styles = ["headline", "title", "body", "label"];
         const sizes = ["large", "medium", "small"];
@@ -167,6 +176,26 @@ Singleton {
         }
         if (typeof GlobalConfig.save === "function")
             GlobalConfig.save();
+    }
+
+    // Surfaces that must keep the shell's own font -- the lock screen and the authentication
+    // dialogs -- use these instead of Tokens.font, because a custom shell font can be missing
+    // glyphs or have metrics those fixed layouts were not built for. They return the family and
+    // size the shell used before App fonts replaced them; with no custom shell font they resolve
+    // to the current values, so nothing changes.
+    function pinnedFamily(style: string): string {
+        return shellOriginal?.[style] ?? GlobalConfig.appearance.font[style].family;
+    }
+
+    function pinnedSize(style: string, size: string): int {
+        const original = shellOriginal?.sizes?.[style]?.[size];
+        const base = original ?? GlobalConfig.appearance.font[style][size].size;
+        return Math.max(1, Math.round(base * (GlobalConfig.appearance.font.scale ?? 1)));
+    }
+
+    // Re-pins a Tokens font builder to that family and size.
+    function pinned(builder: var, style: string, size: string): var {
+        return builder.family(pinnedFamily(style)).size(pinnedSize(style, size));
     }
 
     function saveState(): void {
@@ -258,6 +287,9 @@ Singleton {
             } catch (e) {
                 console.warn("[app-fonts] could not read app-fonts.json:", e);
             }
+            root.stateLoaded = true;
+            // The status may already have been read while the state was still loading.
+            root.applyShell();
         }
     }
 
@@ -317,6 +349,7 @@ Singleton {
                         root.mono = root.nowMono;
                     else if (root.monoChoices.length > 0 && !root.monoChoices.includes(root.mono))
                         root.mono = root.monoChoices[0];
+                    root.statusLoaded = true;
                     root.applyShell();
                 } catch (e) {
                     console.warn("[app-fonts] status failed:", e);

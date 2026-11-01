@@ -14,7 +14,7 @@ ColumnLayout {
         Layout.leftMargin: Tokens.padding.medium
         visible: forecastRepeater.count > 0
         text: qsTr("7-Day Forecast")
-        font: Tokens.font.body.builders.medium.weight(Font.DemiBold).build()
+        font: AppFonts.pinned(Tokens.font.body.builders.medium, "body", "medium").weight(Font.DemiBold).build()
         color: Colours.palette.m3onSurface
     }
 
@@ -48,7 +48,7 @@ ColumnLayout {
                     StyledText {
                         Layout.alignment: Qt.AlignHCenter
                         text: forecastItem.index === 0 ? qsTr("Today") : new Date(forecastItem.modelData.date).toLocaleDateString(Qt.locale(), "ddd")
-                        font: Tokens.font.body.builders.medium.weight(Font.DemiBold).build()
+                        font: AppFonts.pinned(Tokens.font.body.builders.medium, "body", "medium").weight(Font.DemiBold).build()
                         color: Colours.palette.m3primary
                     }
 
@@ -56,7 +56,7 @@ ColumnLayout {
                         Layout.topMargin: -Tokens.spacing.extraSmall
                         Layout.alignment: Qt.AlignHCenter
                         text: new Date(forecastItem.modelData.date).toLocaleDateString(Qt.locale(), "MMM d")
-                        font: Tokens.font.body.small
+                        font: AppFonts.pinned(Tokens.font.body.builders.small, "body", "small").build()
                         opacity: 0.7
                         color: Colours.palette.m3onSurfaceVariant
                     }
@@ -75,7 +75,7 @@ ColumnLayout {
                             const max = Weather.formatTemp(forecastItem.modelData.maxTempC).slice(0, -1);
                             return `${min} / ${max}`;
                         }
-                        font: Tokens.font.body.builders.small.weight(Font.DemiBold).build()
+                        font: AppFonts.pinned(Tokens.font.body.builders.small, "body", "small").weight(Font.DemiBold).build()
                         color: Colours.palette.m3onSurface
                     }
                 }

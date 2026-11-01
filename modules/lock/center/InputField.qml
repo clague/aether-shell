@@ -70,7 +70,7 @@ Item {
 
         animate: true
         color: root.pam.passwd.active ? Colours.palette.m3secondary : Colours.palette.m3outline
-        font: Tokens.font.body.builders.medium.scale(root.centerScale).width(110).build()
+        font: AppFonts.pinned(Tokens.font.body.builders.medium, "body", "medium").scale(root.centerScale).width(110).build()
 
         opacity: root.buffer ? 0 : 1
 
@@ -101,7 +101,7 @@ Item {
         anchors.horizontalCenterOffset: implicitWidth > root.width ? -(implicitWidth - root.width) / 2 : 0
 
         implicitWidth: fullWidth
-        implicitHeight: Tokens.font.body.medium.pointSize
+        implicitHeight: AppFonts.pinnedSize("body", "medium")
 
         orientation: Qt.Horizontal
         spacing: Tokens.spacing.extraSmall

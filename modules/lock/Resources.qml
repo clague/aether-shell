@@ -124,7 +124,7 @@ StyledRect {
                             return `${Math.ceil(fahrenheit ? temp * 1.8 + 32 : temp)}°${fahrenheit ? "F" : "C"}`;
                         }
                         color: Cpu.temperature > 90 ? Colours.palette.m3onErrorContainer : Colours.palette.m3secondary
-                        font: Tokens.font.title.builders.medium.scale(cpu.width / 112).width(50).build()
+                        font: AppFonts.pinned(Tokens.font.title.builders.medium, "title", "medium").scale(cpu.width / 112).width(50).build()
                     }
                 }
             }
@@ -283,7 +283,7 @@ StyledRect {
                 Layout.alignment: Qt.AlignHCenter
                 text: res.value
                 color: res.colour
-                font: Tokens.font.headline.builders.large.scale(root.fontScale).width(50).build()
+                font: AppFonts.pinned(Tokens.font.headline.builders.large, "headline", "large").scale(root.fontScale).width(50).build()
             }
         }
 

@@ -34,7 +34,7 @@ StyledRect {
             id: title
 
             text: Tr.tr("Hourly forecast")
-            font: Tokens.font.title.medium
+            font: AppFonts.pinned(Tokens.font.title.builders.medium, "title", "medium").build()
         }
     }
 
@@ -77,7 +77,7 @@ StyledRect {
                         anchors.centerIn: parent
                         text: Weather.formatTemp(hour.cond.tempC, true)
                         color: hour.index === 0 ? Colours.palette.m3onPrimary : Colours.palette.m3onSurface
-                        font: Tokens.font.title.medium
+                        font: AppFonts.pinned(Tokens.font.title.builders.medium, "title", "medium").build()
                     }
                 }
 
@@ -99,7 +99,7 @@ StyledRect {
                     Layout.alignment: Qt.AlignHCenter
                     text: hour.index === 0 ? Tr.trCtx("Now", "forecast column") : Tr.formatDateTime(new Date(hour.cond.timestamp.replace("T", " ")), Units.twelveHourClock ? "ha" : "hh:00")
                     color: Colours.palette.m3onSurfaceVariant
-                    font: Tokens.font.body.medium
+                    font: AppFonts.pinned(Tokens.font.body.builders.medium, "body", "medium").build()
                 }
             }
         }

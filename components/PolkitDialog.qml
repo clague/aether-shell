@@ -165,7 +165,7 @@ StyledWindow {
         id: nonAnimPlaceholder
 
         text: "Enter your password"
-        font: Tokens.font.body.builders.medium.scale(root.centerScale).width(110).build()
+        font: AppFonts.pinned(Tokens.font.body.builders.medium, "body", "medium").scale(root.centerScale).width(110).build()
     }
 
     SequentialAnimation {
@@ -315,7 +315,7 @@ StyledWindow {
                     StyledText {
                         Layout.fillWidth: true
                         text: "Authentication Required"
-                        font: Tokens.font.title.builders.large.weight(Font.Medium).build()
+                        font: AppFonts.pinned(Tokens.font.title.builders.large, "title", "large").weight(Font.Medium).build()
                         color: Colours.palette.m3onSurface
                         horizontalAlignment: Text.AlignHCenter
                     }
@@ -330,7 +330,7 @@ StyledWindow {
                 StyledText {
                     width: parent.width
                     text: root.mainMessage
-                    font: Tokens.font.body.medium
+                    font: AppFonts.pinned(Tokens.font.body.builders.medium, "body", "medium").build()
                     color: Colours.palette.m3onSurfaceVariant
                     wrapMode: Text.WordWrap
                     horizontalAlignment: Text.AlignHCenter
@@ -352,7 +352,7 @@ StyledWindow {
                         anchors.leftMargin: Tokens.padding.large
                         anchors.rightMargin: Tokens.padding.large
                         text: root.commandText
-                        font: Tokens.font.mono.medium
+                        font: AppFonts.pinned(Tokens.font.mono.builders.medium, "mono", "medium").build()
                         color: Colours.palette.m3onSurface
                         horizontalAlignment: Text.AlignHCenter
                         wrapMode: Text.WrapAnywhere
@@ -362,7 +362,7 @@ StyledWindow {
                 StyledText {
                     width: parent.width
                     text: root.agent.flow && root.agent.flow.supplementaryMessage ? root.agent.flow.supplementaryMessage : "" // qmllint disable unresolved-type
-                    font: Tokens.font.body.small
+                    font: AppFonts.pinned(Tokens.font.body.builders.small, "body", "small").build()
                     color: root.agent.flow && root.agent.flow.supplementaryIsError ? Colours.palette.m3error : Colours.palette.m3onSurfaceVariant // qmllint disable unresolved-type
                     visible: text.length > 0
                     wrapMode: Text.WordWrap
@@ -500,7 +500,7 @@ StyledWindow {
                             anchors.horizontalCenterOffset: implicitWidth > parent.width ? -(implicitWidth - parent.width) / 2 : 0
 
                             implicitWidth: fullWidth
-                            implicitHeight: Tokens.font.body.medium.pointSize
+                            implicitHeight: AppFonts.pinnedSize("body", "medium")
 
                             orientation: Qt.Horizontal
                             spacing: Tokens.spacing.extraSmall

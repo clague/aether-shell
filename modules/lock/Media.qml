@@ -60,7 +60,7 @@ ClipRect {
             text: (Players.active?.trackTitle ?? Tr.tr("Nothing playing")) || Tr.tr("Unknown track")
             color: Colours.palette.m3primary
             horizontalAlignment: Text.AlignHCenter
-            font: Tokens.font.title.medium
+            font: AppFonts.pinned(Tokens.font.title.builders.medium, "title", "medium").build()
             elide: Text.ElideRight
         }
 
@@ -70,7 +70,7 @@ ClipRect {
             text: (Players.active?.trackArtist ?? Tr.tr("Try playing some music!")) || Tr.tr("Unknown artist")
             color: Colours.palette.m3onSurfaceVariant
             horizontalAlignment: Text.AlignHCenter
-            font: Tokens.font.body.small
+            font: AppFonts.pinned(Tokens.font.body.builders.small, "body", "small").build()
             elide: Text.ElideRight
         }
 

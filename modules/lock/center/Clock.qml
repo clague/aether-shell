@@ -24,7 +24,7 @@ Item {
         y: -root.calcTopOff(hourMetrics)
         text: Time.hourStr
         color: Colours.palette.m3primary
-        font: Tokens.font.headline.builders.large.scale(7 * root.centerScale).width(30).build()
+        font: AppFonts.pinned(Tokens.font.headline.builders.large, "headline", "large").scale(7 * root.centerScale).width(30).build()
 
         TextMetrics {
             id: hourMetrics
@@ -42,7 +42,7 @@ Item {
 
         text: Time.minuteStr
         color: Colours.palette.m3secondary
-        font: Tokens.font.headline.builders.large.scale((Units.twelveHourClock ? 3.8 : 7) * root.centerScale).width(30).build()
+        font: AppFonts.pinned(Tokens.font.headline.builders.large, "headline", "large").scale((Units.twelveHourClock ? 3.8 : 7) * root.centerScale).width(30).build()
 
         TextMetrics {
             id: minuteMetrics
@@ -80,7 +80,7 @@ Item {
 
                 text: Time.amPmStr
                 color: Colours.palette.m3onSurface
-                font: Tokens.font.headline.builders.small.scale(2 * root.centerScale).width(30).build()
+                font: AppFonts.pinned(Tokens.font.headline.builders.small, "headline", "small").scale(2 * root.centerScale).width(30).build()
 
                 TextMetrics {
                     id: amPmMetrics

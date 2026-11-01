@@ -140,7 +140,7 @@ Item {
                 Layout.alignment: Qt.AlignHCenter
                 text: qsTr("Shut down the system?")
                 color: Colours.palette.m3onSurface
-                font: Tokens.font.title.medium
+                font: AppFonts.pinned(Tokens.font.title.builders.medium, "title", "medium").build()
             }
 
             RowLayout {
@@ -190,7 +190,7 @@ Item {
             anchors.centerIn: parent
             text: button.text
             color: button.onColour
-            font: Tokens.font.label.large
+            font: AppFonts.pinned(Tokens.font.label.builders.large, "label", "large").build()
         }
     }
 }

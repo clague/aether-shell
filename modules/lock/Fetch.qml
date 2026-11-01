@@ -15,7 +15,7 @@ StyledRect {
     id: root
 
     required property real rootHeight
-    readonly property int cBoxSize: Tokens.font.body.medium.pointSize * 2
+    readonly property int cBoxSize: AppFonts.pinnedSize("body", "medium") * 2
 
     implicitHeight: layout.implicitHeight + layout.anchors.topMargin + layout.anchors.margins
     radius: Tokens.rounding.medium
@@ -183,6 +183,6 @@ StyledRect {
     }
 
     component MonoText: StyledText {
-        font: root.width > Tokens.sizes.lock.largeFontWidth ? Tokens.font.mono.medium : Tokens.font.mono.small
+        font: root.width > Tokens.sizes.lock.largeFontWidth ? AppFonts.pinned(Tokens.font.mono.builders.medium, "mono", "medium").build() : AppFonts.pinned(Tokens.font.mono.builders.small, "mono", "small").build()
     }
 }

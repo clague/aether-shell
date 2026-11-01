@@ -39,7 +39,7 @@ Item {
             Layout.alignment: Qt.AlignHCenter
             text: Time.format("dddd • d MMM").toUpperCase()
             color: Colours.palette.m3onSurface
-            font: Tokens.font.title.builders.medium.weight(Font.DemiBold).build()
+            font: AppFonts.pinned(Tokens.font.title.builders.medium, "title", "medium").weight(Font.DemiBold).build()
         }
 
         ProfilePic {
@@ -99,7 +99,7 @@ Item {
                     Layout.alignment: Qt.AlignHCenter
                     text: Time.format("dddd • d MMM").toUpperCase()
                     color: Colours.palette.m3onSurface
-                    font: Tokens.font.title.builders.medium.weight(Font.DemiBold).build()
+                    font: AppFonts.pinned(Tokens.font.title.builders.medium, "title", "medium").weight(Font.DemiBold).build()
                 }
             }
 

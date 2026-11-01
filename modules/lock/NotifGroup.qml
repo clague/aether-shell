@@ -156,7 +156,7 @@ StyledRect {
                     Layout.fillWidth: true
                     text: root.modelData
                     color: Colours.palette.m3onSurfaceVariant
-                    font: Tokens.font.body.small
+                    font: AppFonts.pinned(Tokens.font.body.builders.small, "body", "small").build()
                     elide: Text.ElideRight
                 }
 
@@ -164,7 +164,7 @@ StyledRect {
                     animate: true
                     text: root.notifs[0]?.timeStr ?? ""
                     color: Colours.palette.m3outline
-                    font: Tokens.font.body.small
+                    font: AppFonts.pinned(Tokens.font.body.builders.small, "body", "small").build()
                 }
 
                 StyledRect {
@@ -195,7 +195,7 @@ StyledRect {
                             animate: true
                             text: root.notifs.length
                             color: root.urgency === "critical" ? Colours.palette.m3onError : Colours.palette.m3onSurface
-                            font: Tokens.font.body.small
+                            font: AppFonts.pinned(Tokens.font.body.builders.small, "body", "small").build()
                         }
 
                         MaterialIcon {

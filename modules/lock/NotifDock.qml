@@ -29,7 +29,7 @@ ColumnLayout {
         Layout.fillWidth: true
         text: Notifs.list.length > 0 ? Tr.trN("%n notification", "%n notifications", Notifs.list.length) : Tr.tr("Notifications")
         color: Colours.palette.m3outline
-        font: Tokens.font.mono.builders.small.weight(Font.Medium).build()
+        font: AppFonts.pinned(Tokens.font.mono.builders.small, "mono", "small").weight(Font.Medium).build()
         elide: Text.ElideRight
     }
 
@@ -76,7 +76,7 @@ ColumnLayout {
                     Layout.alignment: Qt.AlignHCenter
                     text: Config.lock.hideNotifs ? Tr.tr("Unlock for notifications") : Tr.tr("No notifications")
                     color: Colours.palette.m3outlineVariant
-                    font: Tokens.font.mono.builders.large.weight(Font.Medium).build()
+                    font: AppFonts.pinned(Tokens.font.mono.builders.large, "mono", "large").weight(Font.Medium).build()
                 }
             }
 

@@ -17,7 +17,7 @@ ColumnLayout {
         animate: true
         text: Weather.description
         color: Colours.palette.m3onSurfaceVariant
-        font: Tokens.font.body.large
+        font: AppFonts.pinned(Tokens.font.body.builders.large, "body", "large").build()
     }
 
     RowLayout {
@@ -30,14 +30,14 @@ ColumnLayout {
             animate: true
             text: Weather.temp
             color: Colours.palette.m3primary
-            font: Tokens.font.headline.builders.large.scale(1.5).weight(Font.DemiBold).width(80).build()
+            font: AppFonts.pinned(Tokens.font.headline.builders.large, "headline", "large").scale(1.5).weight(Font.DemiBold).width(80).build()
         }
 
         MaterialIcon {
             animate: true
             text: Weather.icon
             color: Colours.palette.m3secondary
-            fontStyle: Tokens.font.headline.builders.large.scale(1.5).build()
+            fontStyle: AppFonts.pinned(Tokens.font.headline.builders.large, "headline", "large").scale(1.5).build()
         }
     }
 
@@ -48,7 +48,7 @@ ColumnLayout {
         // TRANSLATORS: %1 = apparent temperature, unit already included
         text: Tr.tr("Feels like %1").arg(Weather.temp)
         color: Colours.palette.m3onSurfaceVariant
-        font: Tokens.font.body.large
+        font: AppFonts.pinned(Tokens.font.body.builders.large, "body", "large").build()
     }
 
     StyledText {
@@ -61,6 +61,6 @@ ColumnLayout {
             return Tr.tr("High %1 • Low %2").arg(Weather.formatTemp(today?.maxTempC)).arg(Weather.formatTemp(today?.minTempC));
         }
         color: Colours.palette.m3onSurfaceVariant
-        font: Tokens.font.body.medium
+        font: AppFonts.pinned(Tokens.font.body.builders.medium, "body", "medium").build()
     }
 }

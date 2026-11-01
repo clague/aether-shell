@@ -150,7 +150,7 @@ Item {
         opacity: root.stateMsgShouldBeVisible && !root.msg ? 1 : 0
         color: Colours.palette.m3onSurfaceVariant
 
-        font: Tokens.font.body.small
+        font: AppFonts.pinned(Tokens.font.body.builders.small, "body", "small").build()
         horizontalAlignment: Qt.AlignHCenter
         wrapMode: Text.WrapAtWordBoundaryOrAnywhere
         lineHeight: 1.2
@@ -176,7 +176,7 @@ Item {
         opacity: 0
         color: Colours.palette.m3error
 
-        font: Tokens.font.body.small
+        font: AppFonts.pinned(Tokens.font.body.builders.small, "body", "small").build()
         horizontalAlignment: Qt.AlignHCenter
         wrapMode: Text.WrapAtWordBoundaryOrAnywhere
 
