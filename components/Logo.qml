@@ -11,75 +11,104 @@ Item {
     readonly property real designWidth: 128
     readonly property real designHeight: 128
 
+    // Ink bounds of the drawing inside the design box, from the paths below. The mark is not
+    // symmetric -- the star reaches above the A and the orbit bulges to the right -- so the
+    // artwork is nudged by half the difference to sit optically centred in whatever size the
+    // caller asks for.
+    readonly property real inkCenterX: 65.9
+    readonly property real inkCenterY: 58.1
+
     property color topColour: Colours.palette.m3primary
     property color bottomColour: Colours.palette.m3onSurface
 
     implicitWidth: designWidth
     implicitHeight: designHeight
 
-    Shape {
-        anchors.fill: parent
-        preferredRendererType: Shape.CurveRenderer
-        rotation: -14
+    Item {
+        id: art
 
-        ShapePath {
-            fillColor: "transparent"
-            strokeColor: root.topColour
-            strokeWidth: 2
+        anchors.centerIn: parent
+        width: root.designWidth
+        height: root.designHeight
 
-            PathAngleArc {
-                centerX: 64
-                centerY: 72
-                radiusX: 53
-                radiusY: 19
-                startAngle: 0
-                sweepAngle: 360
+        // Shape paths are in design units and do not follow the item's size, so a caller asking
+        // for a smaller logo used to get a 128-unit drawing spilling out of its box (and getting
+        // clipped by whatever contained it). Scale the drawing instead.
+        scale: Math.min(root.width / root.designWidth, root.height / root.designHeight)
+
+        Item {
+            id: ink
+
+            x: root.designWidth / 2 - root.inkCenterX
+            y: root.designHeight / 2 - root.inkCenterY
+            width: root.designWidth
+            height: root.designHeight
+
+            Shape {
+                anchors.fill: parent
+                preferredRendererType: Shape.CurveRenderer
+                rotation: -14
+
+                ShapePath {
+                    fillColor: "transparent"
+                    strokeColor: root.topColour
+                    strokeWidth: 2
+
+                    PathAngleArc {
+                        centerX: 64
+                        centerY: 72
+                        radiusX: 53
+                        radiusY: 19
+                        startAngle: 0
+                        sweepAngle: 360
+                    }
+                }
             }
-        }
-    }
 
-    Shape {
-        anchors.fill: parent
-        preferredRendererType: Shape.CurveRenderer
+            Shape {
+                anchors.fill: parent
+                preferredRendererType: Shape.CurveRenderer
 
-        ShapePath {
-            fillColor: "transparent"
-            strokeColor: root.topColour
-            strokeWidth: 10.5
-            capStyle: ShapePath.RoundCap
+                ShapePath {
+                    fillColor: "transparent"
+                    strokeColor: root.topColour
+                    strokeWidth: 10.5
+                    capStyle: ShapePath.RoundCap
 
-            PathSvg {
-                path: "M27 106 L62 26"
-            }
-        }
+                    PathSvg {
+                        path: "M27 106 L62 26"
+                    }
+                }
 
-        ShapePath {
-            fillColor: "transparent"
-            strokeColor: root.bottomColour
-            strokeWidth: 10.5
-            capStyle: ShapePath.RoundCap
+                ShapePath {
+                    fillColor: "transparent"
+                    strokeColor: root.bottomColour
+                    strokeWidth: 10.5
+                    capStyle: ShapePath.RoundCap
 
-            PathSvg {
-                path: "M101 106 L66 26"
-            }
-        }
+                    PathSvg {
+                        path: "M101 106 L66 26"
+                    }
+                }
 
-        ShapePath {
-            fillColor: "transparent"
-            strokeColor: root.bottomColour
-            strokeWidth: 9
-            capStyle: ShapePath.RoundCap
+                ShapePath {
+                    fillColor: "transparent"
+                    strokeColor: root.bottomColour
+                    strokeWidth: 9
+                    capStyle: ShapePath.RoundCap
 
-            PathSvg {
-                path: "M42 82 L86 82"
-            }
-        }
+                    PathSvg {
+                        path: "M42 82 L86 82"
+                    }
+                }
 
-        ShapePath {
-            fillColor: root.topColour
+                ShapePath {
+                    fillColor: root.topColour
 
-            PathSvg {
-                path: "M64 5 L67 16 L78 19 L67 22 L64 33 L61 22 L50 19 L61 16 Z"
+                    PathSvg {
+                        path: "M64 5 L67 16 L78 19 L67 22 L64 33 L61 22 L50 19 L61 16 Z"
+                    }
+                }
             }
         }
     }
