@@ -22,11 +22,13 @@ Singleton {
     readonly property AccessPoint active: networks.find(n => n.active) ?? null
     property list<string> savedConnections: []
     property list<string> savedConnectionSsids: []
+
     // Map of saved Wi-Fi SSID (lowercased) -> security type
     property var savedConnectionSecurity: ({})
 
     // Time an access point may go unseen in scans before it is dropped from the list
     readonly property int apGraceMs: 45000
+
     readonly property var apLastSeen: new Map()
 
     property var wifiConnectionQueue: []
@@ -35,14 +37,18 @@ Singleton {
     property var wirelessDeviceDetails: null
     property var ethernetDeviceDetails: null
     property string ethernetDataUsage: ""
+
     // Link speed of the active ethernet interface (from sysfs), e.g. "1 Gbps".
     property string ethernetSpeed: ""
+
     readonly property list<EthernetDevice> ethernetDevices: []
     readonly property EthernetDevice activeEthernet: ethernetDevices.find(d => d.connected) ?? null
+
     // True when at least one wired device has a carrier (cable plugged in).
     // nmcli reports "unavailable" for ethernet NICs with no link, so we treat
     // anything other than that as a usable connection.
     readonly property bool hasAvailableEthernet: ethernetDevices.some(d => d.state !== "unavailable")
+
     readonly property bool hasEthernetDevice: ethernetDevices.length > 0
     property list<var> activeProcesses: []
 
@@ -51,6 +57,7 @@ Singleton {
 
     // Constants
     readonly property string deviceTypeWifi: "wifi"
+
     readonly property string deviceTypeEthernet: "ethernet"
     readonly property string connectionTypeWireless: "802-11-wireless"
     readonly property string nmcliCommandDevice: "device"
@@ -1663,6 +1670,7 @@ Singleton {
     }
 
     Component.onCompleted: {
+        reapMonitorProc.running = true;
         getWifiStatus(() => {});
         getNetworks(() => {});
         loadSavedConnections(() => {});
@@ -1932,6 +1940,18 @@ Singleton {
 
         command: ["nmcli", "dev", root.nmcliCommandWifi, "list", "--rescan", "yes"]
         onExited: root.getNetworks()
+    }
+
+    // `nmcli monitor` is a long-lived child that Quickshell does not reap when the process is
+    // terminated (every restart used to leave one behind, and they accumulated). Kill the
+    // leftovers -- only those reparented to init, so a second live shell keeps its own.
+    Process {
+        id: reapMonitorProc
+
+        // Kill only monitors whose parent is not a running shell: the current one is a child of
+        // qs, and so is a second live instance's, while leftovers from a killed shell were
+        // reparented to the user manager (PID 1 or systemd --user), not to init.
+        command: ["sh", "-c", "live=$(pgrep -x qs | tr '\n' ' '); for pid in $(pgrep -f '^/usr/bin/nmcli monitor$'); do ppid=$(ps -o ppid= -p \"$pid\" 2>/dev/null | tr -d ' '); if [ -n \"$ppid\" ] && ! printf ' %s ' $live | grep -q \" $ppid \"; then kill \"$pid\" 2>/dev/null; fi; done"]
     }
 
     Process {
