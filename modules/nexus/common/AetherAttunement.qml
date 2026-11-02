@@ -142,6 +142,13 @@ Item {
         waveCanvas.requestPaint();
     }
 
+    // Keeps the visible window over the wave's [0, 1] domain: at zoom < 1 the window is
+    // wider than the wave and centres it, at zoom > 1 it stays inside.
+    function clampViewX(value: real, span: real): real {
+        const edge = 1 - span;
+        return Math.max(Math.min(0, edge), Math.min(Math.max(0, edge), value));
+    }
+
     function resetView(): void {
         zoom = 1;
         viewX = 0;
@@ -336,7 +343,7 @@ Item {
                             return;
 
                         const span = 1 / root.zoom;
-                        root.viewX = Math.max(0, Math.min(1 - span, fromX - (e.x - pressX) / width * span));
+                        root.viewX = root.clampViewX(fromX - (e.x - pressX) / width * span, span);
 
                         const half = (height / 2 - 6) * root.zoom;
                         root.centerY = Math.max(-1, Math.min(1, fromY - (e.y - pressY) / half));
@@ -351,20 +358,20 @@ Item {
                         const anchor = root.viewX + fraction * span;
 
                         const step = wheel.angleDelta.y > 0 ? 1.15 : 1 / 1.15;
-                        const next = Math.max(1, Math.min(12, root.zoom * step));
+                        const next = Math.max(0.35, Math.min(12, root.zoom * step));
                         if (Math.abs(next - root.zoom) < 0.0001)
                             return;
 
                         const nextSpan = 1 / next;
                         root.zoom = next;
                         // Keep the wave under the pointer where it is while the zoom changes.
-                        root.viewX = Math.max(0, Math.min(1 - nextSpan, anchor - fraction * nextSpan));
+                        root.viewX = root.clampViewX(anchor - fraction * nextSpan, nextSpan);
                         waveCanvas.requestPaint();
                     }
                 }
 
                 StyledText {
-                    visible: root.zoom > 1.001
+                    visible: Math.abs(root.zoom - 1) > 0.001
                     anchors.top: parent.top
                     anchors.right: parent.right
                     anchors.margins: 8
