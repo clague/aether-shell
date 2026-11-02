@@ -101,7 +101,9 @@
     # scripts/trs.fish is a fish script and runs msgfmt, so both have to be present when the
     # .po file is compiled; without them the plugin build fails before it reaches CMake's output.
     nativeBuildInputs = [cmake ninja pkg-config fish gettext];
-    buildInputs = [qt6.qtbase qt6.qtdeclarative qt6.qtshadertools libqalculate pipewire aubio libcava fftw lm_sensors protobuf];    dontWrapQtApps = true;
+    # qtmultimedia and openssl are find_package requirements in plugin/CMakeLists.txt; without
+    # them the plugin configure fails.
+    buildInputs = [qt6.qtbase qt6.qtdeclarative qt6.qtshadertools qt6.qtmultimedia openssl libqalculate pipewire aubio libcava fftw lm_sensors protobuf];    dontWrapQtApps = true;
     cmakeFlags =
       [
         (lib.cmakeFeature "ENABLE_MODULES" "plugin")

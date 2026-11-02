@@ -91,3 +91,7 @@ jobs:
           file: .github/Dockerfile.ci
           push: true
           tags: ghcr.io/${{ env.IMAGE_OWNER }}/shell-arch-env:latest
+          # Links the package to this repository on GHCR; without the link the repo's
+          # GITHUB_TOKEN cannot pull the (private by default) image from other jobs.
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
