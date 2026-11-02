@@ -102,6 +102,7 @@ Item {
                         return;
                     currentIndex = index;
                     root.pendingMediaPage = "";
+                    mediaFlickable.snapToCurrent();
                 }
 
                 spacing: Tokens.spacing.small
@@ -111,6 +112,7 @@ Item {
                 onCurrentIndexChanged: {
                     animEnabled = true;
                     animDisableTimer.restart();
+                    mediaFlickable.snapToCurrent();
                 }
 
                 onNonAnimHeightChanged: {
@@ -132,6 +134,7 @@ Item {
                     function onCountChanged(): void {
                         mediaLayout.currentIndex = Math.min(mediaLayout.currentIndex, mediaRepeater.count - 1);
                         mediaLayout.showPendingPage();
+                        mediaFlickable.snapToCurrent();
                     }
 
                     target: mediaRepeater
@@ -159,9 +162,21 @@ Item {
                         return mediaRepeater.itemAt(mediaLayout.currentIndex);
                     }
 
+                    // Every page is exactly one viewport wide, so page i starts at
+                    // i * (width + spacing). Deriving the offset from the index matters: on
+                    // the frame a page is added the Row has not laid it out yet, so item.x is
+                    // still 0 and snapping to it does nothing.
+                    readonly property real pageStride: width + mediaRow.spacing
+
                     property real lastValidImplicitHeight: 0
 
-                    property real lastValidContentX: 0
+                    // A drag replaces the contentX binding with a plain value, so every path
+                    // that changes the current page has to put the binding back, or the view
+                    // stays where the drag left it and the new page is only reachable by
+                    // dragging again.
+                    function snapToCurrent(): void {
+                        contentX = Qt.binding(() => mediaLayout.currentIndex * pageStride);
+                    }
 
                     Layout.fillWidth: true
 
@@ -176,36 +191,27 @@ Item {
                             lastValidImplicitHeight = currentItem.implicitHeight;
                     }
 
-                    contentX: currentItem ? currentItem.x : lastValidContentX
+                    contentX: mediaLayout.currentIndex * pageStride
                     contentWidth: mediaRow.implicitWidth
                     contentHeight: mediaRow.implicitHeight
 
-                    onContentXChanged: {
-                        if (currentItem && !moving)
-                            lastValidContentX = contentX;
-
-                        if (!moving || !currentItem)
-                            return;
-
-                        const x = contentX - currentItem.x;
-                        if (x > currentItem.width / 2)
-                            mediaLayout.currentIndex = Math.min(mediaLayout.currentIndex + 1, mediaRepeater.count - 1);
-                        else if (x < -currentItem.width / 2)
-                            mediaLayout.currentIndex = Math.max(mediaLayout.currentIndex - 1, 0);
-                    }
-
+                    // Let the drag decide the page on release, then always snap: the flick used
+                    // to keep whatever offset the gesture ended on, which left the panel between
+                    // two pages.
                     onDragEnded: {
-                        if (!currentItem)
-                            return;
-
-                        const x = contentX - currentItem.x;
-                        if (x > currentItem.width / 10)
+                        const offset = contentX - mediaLayout.currentIndex * pageStride;
+                        if (offset > width / 10)
                             mediaLayout.currentIndex = Math.min(mediaLayout.currentIndex + 1, mediaRepeater.count - 1);
-                        else if (x < -currentItem.width / 10)
+                        else if (offset < -width / 10)
                             mediaLayout.currentIndex = Math.max(mediaLayout.currentIndex - 1, 0);
-                        else
-                            contentX = Qt.binding(() => currentItem ? currentItem.x : lastValidContentX);
                     }
+
+                    // A release can still be followed by the flick animation, which keeps moving
+                    // contentX; snapping has to wait for the movement to stop, otherwise the
+                    // page ends up half-scrolled.
+                    onMovementEnded: snapToCurrent()
+
+                    onWidthChanged: snapToCurrent()
 
                     Row {
                         id: mediaRow
