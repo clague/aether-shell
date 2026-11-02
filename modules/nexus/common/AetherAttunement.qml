@@ -35,6 +35,18 @@ Item {
 
     readonly property int partCount: targetParts.length
     readonly property real maxAmp: Math.max(0.2, 0.8 / Math.max(1, partCount))
+    // Peak of the target over its domain plus the continuation zooming out shows, with a
+    // little headroom. The axis is fixed to the target rather than to both waves: a scale
+    // that followed the player's amplitude would rescale the whole graph while a slider is
+    // being dragged, which makes it impossible to judge a change against the previous one.
+    // Overshooting the target simply clips, which reads as "too big".
+    readonly property real scaleMax: {
+        let max = 0.001;
+        for (let i = -48; i <= 80; i++)
+            max = Math.max(max, Math.abs(sumAt(targetParts, i / 32)));
+        return max * 1.15;
+    }
+
     readonly property real error: waveError()
     readonly property real tolerance: Math.max(0.03, 0.055 - (level - 1) * 0.0025)
     readonly property bool aligned: error <= tolerance
@@ -149,6 +161,12 @@ Item {
         return Math.max(Math.min(0, edge), Math.min(Math.max(0, edge), value));
     }
 
+    // Pixels per wave unit. Zooming out is horizontal only: the curve keeps its size so it
+    // stays readable, and the extra width shows more of it.
+    function verticalHalf(pixelHeight: real): real {
+        return (pixelHeight / 2 - 8) / Math.max(0.2, scaleMax) * Math.max(1, zoom);
+    }
+
     function resetView(): void {
         zoom = 1;
         viewX = 0;
@@ -261,7 +279,7 @@ Item {
 
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 200
+                Layout.preferredHeight: 230
                 radius: Tokens.rounding.large
                 color: Qt.alpha(Colours.palette.m3surfaceContainer, 0.6)
                 border.width: 1
@@ -284,7 +302,7 @@ Item {
                         // Visible window: `zoom` scales both axes, `viewX` is the left edge in
                         // wave units and `centerY` shifts the zero line for vertical panning.
                         const span = 1 / root.zoom;
-                        const half = (height / 2 - 6) * root.zoom;
+                        const half = root.verticalHalf(height);
                         const mid = height / 2 - root.centerY * half;
 
                         const stroke = (list, colour, lineWidth, dash) => {
@@ -345,7 +363,7 @@ Item {
                         const span = 1 / root.zoom;
                         root.viewX = root.clampViewX(fromX - (e.x - pressX) / width * span, span);
 
-                        const half = (height / 2 - 6) * root.zoom;
+                        const half = root.verticalHalf(height);
                         root.centerY = Math.max(-1, Math.min(1, fromY - (e.y - pressY) / half));
                         waveCanvas.requestPaint();
                     }
