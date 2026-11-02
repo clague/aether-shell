@@ -18,6 +18,12 @@ Variants {
 
         screen: modelData
         name: "drawers" // Use 'drawers' namespace so Hyprland blurs it automatically
+
+        // A hidden layer surface holds no buffers. This window is full screen on every
+        // display and only has something to show while the video plays, so map it only
+        // then instead of leaving a 2560x1440 surface (and its swapchain) resident for
+        // a feature that is idle almost all the time.
+        visible: BadApplePlayer.shouldPlay
         WlrLayershell.exclusionMode: ExclusionMode.Ignore
         WlrLayershell.layer: WlrLayer.Bottom
         color: "transparent"

@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Wayland
 import Aether.Config
+import Aether.Services
 import Aether.State
 import qs.components
 import qs.components.containers
@@ -21,7 +22,12 @@ Variants {
         // lyrics are off or disabled — same condition as the content loader
         readonly property bool lyricsActive: Config.background.desktopLyrics.enabled && Config.background.desktopLyrics.overlay && !(RuntimeState.gameMode && GlobalConfig.utilities.gameMode.disableDesktopLyrics)
 
-        visible: lyricsActive
+        // Same reasoning as BadAppleOverlay in reverse: with no lyrics there is nothing to
+        // draw, and an unmapped layer surface releases its buffers. Most tracks have no
+        // synced lyrics, so this is the common case rather than the exception.
+        readonly property bool lyricsVisible: lyricsActive && Lyrics.hasLyrics
+
+        visible: lyricsVisible
 
         screen: modelData
         name: "desktopLyricsOverlay"
@@ -44,7 +50,7 @@ Variants {
             readonly property int lyricsBaseMargin: Tokens.padding.large * 2
 
             asynchronous: true
-            active: Config.background.desktopLyrics.enabled && Config.background.desktopLyrics.overlay && !(RuntimeState.gameMode && GlobalConfig.utilities.gameMode.disableDesktopLyrics)
+            active: win.lyricsVisible
 
             anchors.margins: lyricsBaseMargin
             anchors.leftMargin: Config.bar.position === "left" ? lyricsBaseMargin + lyricsBarZone : lyricsBaseMargin

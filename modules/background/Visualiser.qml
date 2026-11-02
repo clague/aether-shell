@@ -30,6 +30,10 @@ Item {
 
     readonly property bool rendererGpu: Config.background.visualiser.renderer !== "cpu"
 
+    // The blur is a full-screen wallpaper pass masked by the bars, so it is invisible in
+    // silence and expensive to keep alive. Cava reports zeros when nothing is playing.
+    readonly property bool audioActive: (Audio.cava.values ?? []).some(v => v > 0.01)
+
     opacity: shouldBeActive ? 1 : 0
 
     Loader {
@@ -37,7 +41,7 @@ Item {
 
         anchors.fill: parent
 
-        active: root.opacity > 0 && Config.background.visualiser.blur
+        active: root.opacity > 0 && Config.background.visualiser.blur && root.audioActive
 
         sourceComponent: MultiEffect {
             source: root.wallpaper
