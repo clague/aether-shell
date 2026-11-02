@@ -30,6 +30,7 @@
   pkg-config,
   caelestia-cli,
   m3shapes,
+  gettext,
   debug ? false,
   withCli ? false,
   extraRuntimeDeps ? [],
