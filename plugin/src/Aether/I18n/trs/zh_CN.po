@@ -8354,3 +8354,7 @@ msgstr "让实线的合成波形与虚线目标重合；每个分量都可以单
 #: modules/nexus/common/AetherAttunement.qml
 msgid "Sine components"
 msgstr "正弦分量"
+
+#: modules/nexus/common/AetherAttunement.qml
+msgid "Wheel to zoom · drag to pan · double-click to reset"
+msgstr "滚轮缩放 · 拖动平移 · 双击复位"

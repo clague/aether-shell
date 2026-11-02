@@ -28,6 +28,11 @@ Item {
     property var parts: []
     property int selected: 0
 
+    // Canvas view: wheel zooms around the pointer, dragging pans, double-click resets.
+    property real zoom: 1
+    property real viewX: 0
+    property real centerY: 0
+
     readonly property int partCount: targetParts.length
     readonly property real maxAmp: Math.max(0.2, 0.8 / Math.max(1, partCount))
     readonly property real error: waveError()
@@ -64,6 +69,7 @@ Item {
         cleared = 0;
         completing = false;
         newTarget();
+        resetView();
         forceActiveFocus();
     }
 
@@ -133,6 +139,13 @@ Item {
             } : part);
         }
         parts = next;
+        waveCanvas.requestPaint();
+    }
+
+    function resetView(): void {
+        zoom = 1;
+        viewX = 0;
+        centerY = 0;
         waveCanvas.requestPaint();
     }
 
@@ -261,14 +274,17 @@ Item {
                         const ctx = getContext("2d");
                         ctx.clearRect(0, 0, width, height);
 
-                        const mid = height / 2;
-                        const half = height / 2 - 6;
+                        // Visible window: `zoom` scales both axes, `viewX` is the left edge in
+                        // wave units and `centerY` shifts the zero line for vertical panning.
+                        const span = 1 / root.zoom;
+                        const half = (height / 2 - 6) * root.zoom;
+                        const mid = height / 2 - root.centerY * half;
 
-                        const stroke = (samples, colour, lineWidth, dash) => {
+                        const stroke = (list, colour, lineWidth, dash) => {
                             ctx.beginPath();
-                            for (let i = 0; i <= samples.length - 1; i++) {
-                                const px = i / (samples.length - 1) * width;
-                                const py = mid - samples[i] * half;
+                            for (let i = 0; i <= 160; i++) {
+                                const px = i / 160 * width;
+                                const py = mid - root.sumAt(list, root.viewX + span * i / 160) * half;
                                 if (i === 0)
                                     ctx.moveTo(px, py);
                                 else
@@ -280,28 +296,98 @@ Item {
                             ctx.stroke();
                         };
 
-                        const sample = list => {
-                            const out = [];
-                            for (let i = 0; i <= 160; i++)
-                                out.push(root.sumAt(list, i / 160));
-                            return out;
-                        };
+                        const selectedTarget = root.targetParts[root.selected] ? [root.targetParts[root.selected]] : [];
+                        const selectedMine = root.parts[root.selected] ? [root.parts[root.selected]] : [];
 
                         // With one component the sum *is* the component, so the thin guide
                         // lines would only double every curve.
                         if (root.partCount > 1) {
-                            const selectedTarget = root.targetParts[root.selected] ? [root.targetParts[root.selected]] : [];
-                            const selectedMine = root.parts[root.selected] ? [root.parts[root.selected]] : [];
-
-                            stroke(sample(selectedTarget), Qt.alpha(Colours.palette.m3onSurfaceVariant, 0.22), 1, [3, 5]);
-                            stroke(sample(selectedMine), Qt.alpha(Colours.palette.m3primary, 0.35), 1, []);
+                            stroke(selectedTarget, Qt.alpha(Colours.palette.m3onSurfaceVariant, 0.22), 1, [3, 5]);
+                            stroke(selectedMine, Qt.alpha(Colours.palette.m3primary, 0.35), 1, []);
                         }
 
-                        stroke(sample(root.targetParts), Qt.alpha(Colours.palette.m3onSurfaceVariant, 0.8), 2, [6, 5]);
-                        stroke(sample(root.parts), Colours.palette.m3primary, 2, []);
+                        stroke(root.targetParts, Qt.alpha(Colours.palette.m3onSurfaceVariant, 0.8), 2, [6, 5]);
+                        stroke(root.parts, Colours.palette.m3primary, 2, []);
                         ctx.setLineDash([]);
                     }
                 }
+
+                MouseArea {
+                    id: viewport
+
+                    property real pressX: 0
+                    property real pressY: 0
+                    property real fromX: 0
+                    property real fromY: 0
+
+                    anchors.fill: parent
+                    acceptedButtons: Qt.LeftButton
+                    cursorShape: root.zoom > 1.001 ? Qt.ClosedHandCursor : Qt.ArrowCursor
+
+                    onPressed: e => {
+                        pressX = e.x;
+                        pressY = e.y;
+                        fromX = root.viewX;
+                        fromY = root.centerY;
+                    }
+
+                    onPositionChanged: e => {
+                        if (!pressed)
+                            return;
+
+                        const span = 1 / root.zoom;
+                        root.viewX = Math.max(0, Math.min(1 - span, fromX - (e.x - pressX) / width * span));
+
+                        const half = (height / 2 - 6) * root.zoom;
+                        root.centerY = Math.max(-1, Math.min(1, fromY - (e.y - pressY) / half));
+                        waveCanvas.requestPaint();
+                    }
+
+                    onDoubleClicked: root.resetView()
+
+                    onWheel: wheel => {
+                        const span = 1 / root.zoom;
+                        const fraction = wheel.x / width;
+                        const anchor = root.viewX + fraction * span;
+
+                        const step = wheel.angleDelta.y > 0 ? 1.15 : 1 / 1.15;
+                        const next = Math.max(1, Math.min(12, root.zoom * step));
+                        if (Math.abs(next - root.zoom) < 0.0001)
+                            return;
+
+                        const nextSpan = 1 / next;
+                        root.zoom = next;
+                        // Keep the wave under the pointer where it is while the zoom changes.
+                        root.viewX = Math.max(0, Math.min(1 - nextSpan, anchor - fraction * nextSpan));
+                        waveCanvas.requestPaint();
+                    }
+                }
+
+                StyledText {
+                    visible: root.zoom > 1.001
+                    anchors.top: parent.top
+                    anchors.right: parent.right
+                    anchors.margins: 8
+                    text: "×" + root.zoom.toFixed(1)
+                    color: Colours.palette.m3onSurfaceVariant
+                    font: Tokens.font.label.small
+                    opacity: 0.8
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: root.resetView()
+                    }
+                }
+            }
+
+            StyledText {
+                Layout.fillWidth: true
+                horizontalAlignment: Text.AlignRight
+                text: Tr.tr("Wheel to zoom · drag to pan · double-click to reset")
+                color: Colours.palette.m3onSurfaceVariant
+                font: Tokens.font.label.small
+                opacity: 0.6
             }
 
             RowLayout {
