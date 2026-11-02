@@ -68,15 +68,6 @@ PageBase {
             onClicked: Glass.resetAll()
         }
 
-        InfoRow {
-            first: true
-            last: true
-            Layout.fillWidth: true
-            icon: "info"
-            label: Tr.tr("Stored in hypr-vars.lua")
-            subtext: Tr.tr("Hyprland reads this file at startup; clear a row to remove its override.")
-        }
-
         SectionHeader {
             text: Tr.tr("Blur")
         }

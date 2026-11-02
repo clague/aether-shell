@@ -51,5 +51,17 @@ PageBase {
             subtext: Tr.tr("Advanced configuration options")
             onClicked: root.nState.openSubPage(5)
         }
+
+        // Everything in this section ultimately edits hypr-vars.lua; the note lives here rather
+        // than being repeated inside every sub-page.
+        InfoRow {
+            first: true
+            last: true
+            Layout.fillWidth: true
+            Layout.topMargin: Tokens.spacing.large
+            icon: "info"
+            label: Tr.tr("Stored in hypr-vars.lua")
+            subtext: Tr.tr("Hyprland reads this file at startup; clear a row to remove its override.")
+        }
     }
 }
