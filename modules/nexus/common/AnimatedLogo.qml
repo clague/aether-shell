@@ -25,6 +25,13 @@ Item {
     readonly property alias star2: star2
     readonly property alias star3: star3
 
+    // Easter egg: holding the logo charges it. The A shakes and the stars orbit faster;
+    // 0 is the resting state (see AboutPage).
+    property real energy: 0
+    property real orbitAngle: 0
+    property real shakeX: 0
+    property real shakeY: 0
+
     signal animationCompleted
 
     implicitWidth: 128
@@ -99,453 +106,493 @@ Item {
             }
         }
 
-        // The A: two legs and a crossbar
-        Shape {
-            id: topShape
+        // The A: two legs and a crossbar. Kept apart from the orbit and the stars so the
+        // easter egg can shake the letter without moving either of them.
+        Item {
+            id: aShapes
 
             anchors.fill: parent
-            preferredRendererType: Shape.CurveRenderer
+            transform: Translate {
+                x: root.shakeX
+                y: root.shakeY
+            }
 
-            ShapePath {
-                fillColor: "transparent"
-                strokeColor: logo.topColour
-                strokeWidth: 10.5
-                capStyle: ShapePath.RoundCap
+            Shape {
+                id: topShape
 
-                PathSvg {
-                    path: "M27 106 L62 26"
+                anchors.fill: parent
+                preferredRendererType: Shape.CurveRenderer
+
+                ShapePath {
+                    fillColor: "transparent"
+                    strokeColor: logo.topColour
+                    strokeWidth: 10.5
+                    capStyle: ShapePath.RoundCap
+
+                    PathSvg {
+                        path: "M27 106 L62 26"
+                    }
+                }
+            }
+
+            Shape {
+                id: bottomShape
+
+                anchors.fill: parent
+                preferredRendererType: Shape.CurveRenderer
+
+                ShapePath {
+                    fillColor: "transparent"
+                    strokeColor: logo.bottomColour
+                    strokeWidth: 10.5
+                    capStyle: ShapePath.RoundCap
+
+                    PathSvg {
+                        path: "M101 106 L66 26"
+                    }
+                }
+
+                ShapePath {
+                    fillColor: "transparent"
+                    strokeColor: logo.bottomColour
+                    strokeWidth: 9
+                    capStyle: ShapePath.RoundCap
+
+                    PathSvg {
+                        path: "M42 82 L86 82"
+                    }
                 }
             }
         }
 
-        Shape {
-            id: bottomShape
+        // The three stars orbit the letter while the logo is charged.
+        Item {
+            id: starLayer
 
             anchors.fill: parent
-            preferredRendererType: Shape.CurveRenderer
+            rotation: root.orbitAngle
+            transformOrigin: Item.Center
 
-            ShapePath {
-                fillColor: "transparent"
-                strokeColor: logo.bottomColour
-                strokeWidth: 10.5
-                capStyle: ShapePath.RoundCap
+            Shape {
+                id: star1
 
-                PathSvg {
-                    path: "M101 106 L66 26"
+                anchors.fill: parent
+                preferredRendererType: Shape.CurveRenderer
+                opacity: 0.0
+
+                ShapePath {
+                    fillColor: logo.starColour
+                    strokeColor: "transparent"
+
+                    PathSvg {
+                        path: "M64 5 L67 16 L78 19 L67 22 L64 33 L61 22 L50 19 L61 16 Z"
+                    }
                 }
             }
 
-            ShapePath {
-                fillColor: "transparent"
-                strokeColor: logo.bottomColour
-                strokeWidth: 9
-                capStyle: ShapePath.RoundCap
+            Shape {
+                id: star2
 
-                PathSvg {
-                    path: "M42 82 L86 82"
+                anchors.fill: parent
+                preferredRendererType: Shape.CurveRenderer
+                opacity: 0.0
+
+                ShapePath {
+                    fillColor: logo.starColour
+                    strokeColor: "transparent"
+
+                    PathSvg {
+                        path: "M102 39 L104 43 L108 45 L104 47 L102 51 L100 47 L96 45 L100 43 Z"
+                    }
+                }
+            }
+
+            Shape {
+                id: star3
+
+                anchors.fill: parent
+                preferredRendererType: Shape.CurveRenderer
+                opacity: 0.0
+
+                ShapePath {
+                    fillColor: logo.starColour
+                    strokeColor: "transparent"
+
+                    PathSvg {
+                        path: "M24 90 L25.5 94.5 L30 96 L25.5 97.5 L24 102 L22.5 97.5 L18 96 L22.5 94.5 Z"
+                    }
                 }
             }
         }
 
-        Shape {
-            id: star1
+        SequentialAnimation {
+            running: !root.skipIntroAnimation
+            onFinished: root.animationCompleted()
 
-            anchors.fill: parent
-            preferredRendererType: Shape.CurveRenderer
-            opacity: 0.0
+            ParallelAnimation {
+                SequentialAnimation {
+                    NumberAnimation {
+                        target: logo
+                        property: "rotation"
+                        from: 0
+                        to: 750
+                        duration: 1000
+                        easing.type: Easing.OutCubic
+                    }
 
-            ShapePath {
-                fillColor: logo.starColour
-                strokeColor: "transparent"
+                    NumberAnimation {
+                        target: logo
+                        property: "rotation"
+                        from: 750
+                        to: 710
+                        duration: 300
+                        easing.type: Easing.InOutQuad
+                    }
 
-                PathSvg {
-                    path: "M64 5 L67 16 L78 19 L67 22 L64 33 L61 22 L50 19 L61 16 Z"
-                }
-            }
-        }
+                    NumberAnimation {
+                        target: logo
+                        property: "rotation"
+                        from: 710
+                        to: 725
+                        duration: 350
+                        easing.type: Easing.InOutQuad
+                    }
 
-        Shape {
-            id: star2
+                    NumberAnimation {
+                        target: logo
+                        property: "rotation"
+                        from: 725
+                        to: 720
+                        duration: 250
+                        easing.type: Easing.OutQuad
+                    }
 
-            anchors.fill: parent
-            preferredRendererType: Shape.CurveRenderer
-            opacity: 0.0
-
-            ShapePath {
-                fillColor: logo.starColour
-                strokeColor: "transparent"
-
-                PathSvg {
-                    path: "M102 39 L104 43 L108 45 L104 47 L102 51 L100 47 L96 45 L100 43 Z"
-                }
-            }
-        }
-
-        Shape {
-            id: star3
-
-            anchors.fill: parent
-            preferredRendererType: Shape.CurveRenderer
-            opacity: 0.0
-
-            ShapePath {
-                fillColor: logo.starColour
-                strokeColor: "transparent"
-
-                PathSvg {
-                    path: "M24 90 L25.5 94.5 L30 96 L25.5 97.5 L24 102 L22.5 97.5 L18 96 L22.5 94.5 Z"
-                }
-            }
-        }
-    }
-
-    SequentialAnimation {
-        running: !root.skipIntroAnimation
-        onFinished: root.animationCompleted()
-
-        ParallelAnimation {
-            SequentialAnimation {
-                NumberAnimation {
-                    target: logo
-                    property: "rotation"
-                    from: 0
-                    to: 750
-                    duration: 1000
-                    easing.type: Easing.OutCubic
+                    ScriptAction {
+                        script: logo.rotation = 0
+                    }
                 }
 
-                NumberAnimation {
-                    target: logo
-                    property: "rotation"
-                    from: 750
-                    to: 710
-                    duration: 300
-                    easing.type: Easing.InOutQuad
-                }
+                SequentialAnimation {
+                    NumberAnimation {
+                        target: logo
+                        property: "scale"
+                        from: 0.0
+                        to: 1.08
+                        duration: 1000
+                        easing.type: Easing.OutCubic
+                    }
 
-                NumberAnimation {
-                    target: logo
-                    property: "rotation"
-                    from: 710
-                    to: 725
-                    duration: 350
-                    easing.type: Easing.InOutQuad
+                    NumberAnimation {
+                        target: logo
+                        property: "scale"
+                        from: 1.08
+                        to: 0.96
+                        duration: 200
+                        easing.type: Easing.InOutQuad
+                    }
+
+                    NumberAnimation {
+                        target: logo
+                        property: "scale"
+                        from: 0.96
+                        to: 1.0
+                        duration: 250
+                        easing.type: Easing.OutBack
+                        easing.overshoot: 1.05
+                    }
                 }
 
                 NumberAnimation {
                     target: logo
-                    property: "rotation"
-                    from: 725
-                    to: 720
-                    duration: 250
-                    easing.type: Easing.OutQuad
-                }
-
-                ScriptAction {
-                    script: logo.rotation = 0
-                }
-            }
-
-            SequentialAnimation {
-                NumberAnimation {
-                    target: logo
-                    property: "scale"
+                    property: "opacity"
                     from: 0.0
-                    to: 1.08
-                    duration: 1000
-                    easing.type: Easing.OutCubic
-                }
-
-                NumberAnimation {
-                    target: logo
-                    property: "scale"
-                    from: 1.08
-                    to: 0.96
-                    duration: 200
+                    to: 1.0
+                    duration: 600
                     easing.type: Easing.InOutQuad
                 }
 
                 NumberAnimation {
-                    target: logo
-                    property: "scale"
-                    from: 0.96
-                    to: 1.0
-                    duration: 250
-                    easing.type: Easing.OutBack
-                    easing.overshoot: 1.05
-                }
-            }
-
-            NumberAnimation {
-                target: logo
-                property: "opacity"
-                from: 0.0
-                to: 1.0
-                duration: 600
-                easing.type: Easing.InOutQuad
-            }
-
-            NumberAnimation {
-                target: root
-                property: "blurAmount"
-                from: 1.0
-                to: 0.0
-                duration: 900
-                easing.type: Easing.OutCubic
-            }
-
-            SequentialAnimation {
-                PauseAnimation {
-                    duration: 1100
+                    target: root
+                    property: "blurAmount"
+                    from: 1.0
+                    to: 0.0
+                    duration: 900
+                    easing.type: Easing.OutCubic
                 }
 
-                ParallelAnimation {
+                SequentialAnimation {
+                    PauseAnimation {
+                        duration: 1100
+                    }
+
+                    ParallelAnimation {
+                        NumberAnimation {
+                            target: root
+                            property: "star1Opacity"
+                            from: 0.0
+                            to: 1.0
+                            duration: 700
+                            easing.type: Easing.InOutQuad
+                        }
+
+                        SequentialAnimation {
+                            NumberAnimation {
+                                target: root
+                                property: "star1Scale"
+                                from: 0.0
+                                to: 1.08
+                                duration: 500
+                                easing.type: Easing.OutQuad
+                            }
+
+                            NumberAnimation {
+                                target: root
+                                property: "star1Scale"
+                                from: 1.08
+                                to: 1.0
+                                duration: 400
+                                easing.type: Easing.InOutQuad
+                            }
+                        }
+                    }
+                }
+
+                SequentialAnimation {
+                    PauseAnimation {
+                        duration: 1250
+                    }
+
+                    ParallelAnimation {
+                        NumberAnimation {
+                            target: root
+                            property: "star2Opacity"
+                            from: 0.0
+                            to: 1.0
+                            duration: 700
+                            easing.type: Easing.InOutQuad
+                        }
+
+                        SequentialAnimation {
+                            NumberAnimation {
+                                target: root
+                                property: "star2Scale"
+                                from: 0.0
+                                to: 1.08
+                                duration: 500
+                                easing.type: Easing.OutQuad
+                            }
+
+                            NumberAnimation {
+                                target: root
+                                property: "star2Scale"
+                                from: 1.08
+                                to: 1.0
+                                duration: 400
+                                easing.type: Easing.InOutQuad
+                            }
+                        }
+                    }
+                }
+
+                SequentialAnimation {
+                    PauseAnimation {
+                        duration: 1400
+                    }
+
+                    ParallelAnimation {
+                        NumberAnimation {
+                            target: root
+                            property: "star3Opacity"
+                            from: 0.0
+                            to: 1.0
+                            duration: 700
+                            easing.type: Easing.InOutQuad
+                        }
+
+                        SequentialAnimation {
+                            NumberAnimation {
+                                target: root
+                                property: "star3Scale"
+                                from: 0.0
+                                to: 1.08
+                                duration: 500
+                                easing.type: Easing.OutQuad
+                            }
+
+                            NumberAnimation {
+                                target: root
+                                property: "star3Scale"
+                                from: 1.08
+                                to: 1.0
+                                duration: 400
+                                easing.type: Easing.InOutQuad
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        SequentialAnimation {
+            running: true
+            loops: Animation.Infinite
+
+            PauseAnimation {
+                duration: 2500
+            }
+
+            ParallelAnimation {
+                SequentialAnimation {
+                    loops: Animation.Infinite
+
                     NumberAnimation {
-                        target: root
-                        property: "star1Opacity"
-                        from: 0.0
-                        to: 1.0
-                        duration: 700
+                        target: root.star1
+                        property: "y"
+                        from: root.star1.y
+                        to: root.star1.y - 5
+                        duration: 2500
                         easing.type: Easing.InOutQuad
                     }
 
-                    SequentialAnimation {
-                        NumberAnimation {
-                            target: root
-                            property: "star1Scale"
-                            from: 0.0
-                            to: 1.08
-                            duration: 500
-                            easing.type: Easing.OutQuad
-                        }
-
-                        NumberAnimation {
-                            target: root
-                            property: "star1Scale"
-                            from: 1.08
-                            to: 1.0
-                            duration: 400
-                            easing.type: Easing.InOutQuad
-                        }
+                    NumberAnimation {
+                        target: root.star1
+                        property: "y"
+                        from: root.star1.y - 5
+                        to: root.star1.y
+                        duration: 2500
+                        easing.type: Easing.InOutQuad
                     }
                 }
-            }
 
-            SequentialAnimation {
-                PauseAnimation {
-                    duration: 1250
-                }
+                SequentialAnimation {
+                    loops: Animation.Infinite
 
-                ParallelAnimation {
                     NumberAnimation {
-                        target: root
-                        property: "star2Opacity"
-                        from: 0.0
-                        to: 1.0
-                        duration: 700
+                        target: root.star2
+                        property: "y"
+                        from: root.star2.y
+                        to: root.star2.y + 5
+                        duration: 3000
                         easing.type: Easing.InOutQuad
                     }
 
-                    SequentialAnimation {
-                        NumberAnimation {
-                            target: root
-                            property: "star2Scale"
-                            from: 0.0
-                            to: 1.08
-                            duration: 500
-                            easing.type: Easing.OutQuad
-                        }
-
-                        NumberAnimation {
-                            target: root
-                            property: "star2Scale"
-                            from: 1.08
-                            to: 1.0
-                            duration: 400
-                            easing.type: Easing.InOutQuad
-                        }
+                    NumberAnimation {
+                        target: root.star2
+                        property: "y"
+                        from: root.star2.y + 5
+                        to: root.star2.y
+                        duration: 3000
+                        easing.type: Easing.InOutQuad
                     }
                 }
-            }
 
-            SequentialAnimation {
-                PauseAnimation {
-                    duration: 1400
-                }
+                SequentialAnimation {
+                    loops: Animation.Infinite
 
-                ParallelAnimation {
                     NumberAnimation {
-                        target: root
-                        property: "star3Opacity"
-                        from: 0.0
-                        to: 1.0
-                        duration: 700
+                        target: root.star3
+                        property: "y"
+                        from: root.star3.y
+                        to: root.star3.y - 5
+                        duration: 2800
                         easing.type: Easing.InOutQuad
                     }
 
-                    SequentialAnimation {
-                        NumberAnimation {
-                            target: root
-                            property: "star3Scale"
-                            from: 0.0
-                            to: 1.08
-                            duration: 500
-                            easing.type: Easing.OutQuad
-                        }
+                    NumberAnimation {
+                        target: root.star3
+                        property: "y"
+                        from: root.star3.y - 5
+                        to: root.star3.y
+                        duration: 2800
+                        easing.type: Easing.InOutQuad
+                    }
+                }
 
-                        NumberAnimation {
-                            target: root
-                            property: "star3Scale"
-                            from: 1.08
-                            to: 1.0
-                            duration: 400
-                            easing.type: Easing.InOutQuad
-                        }
+                SequentialAnimation {
+                    loops: Animation.Infinite
+
+                    NumberAnimation {
+                        target: root.star1
+                        property: "scale"
+                        from: 1.0
+                        to: 1.08
+                        duration: 2500
+                        easing.type: Easing.InOutQuad
+                    }
+
+                    NumberAnimation {
+                        target: root.star1
+                        property: "scale"
+                        from: 1.08
+                        to: 1.0
+                        duration: 2500
+                        easing.type: Easing.InOutQuad
+                    }
+                }
+
+                SequentialAnimation {
+                    loops: Animation.Infinite
+
+                    NumberAnimation {
+                        target: root.star2
+                        property: "scale"
+                        from: 1.0
+                        to: 1.12
+                        duration: 3000
+                        easing.type: Easing.InOutQuad
+                    }
+
+                    NumberAnimation {
+                        target: root.star2
+                        property: "scale"
+                        from: 1.12
+                        to: 1.0
+                        duration: 3000
+                        easing.type: Easing.InOutQuad
+                    }
+                }
+
+                SequentialAnimation {
+                    loops: Animation.Infinite
+
+                    NumberAnimation {
+                        target: root.star3
+                        property: "scale"
+                        from: 1.0
+                        to: 1.08
+                        duration: 2800
+                        easing.type: Easing.InOutQuad
+                    }
+
+                    NumberAnimation {
+                        target: root.star3
+                        property: "scale"
+                        from: 1.08
+                        to: 1.0
+                        duration: 2800
+                        easing.type: Easing.InOutQuad
                     }
                 }
             }
         }
     }
 
-    SequentialAnimation {
-        running: true
-        loops: Animation.Infinite
+    // Drives both easter egg effects: the letter's jitter and the stars' orbit. Two
+    // different frequencies so it reads as a shake rather than a sway.
+    FrameAnimation {
+        running: root.energy > 0.001
 
-        PauseAnimation {
-            duration: 2500
+        onTriggered: {
+            root.orbitAngle = (root.orbitAngle + frameTime * (30 + root.energy * 540)) % 360;
+            const amp = root.energy * 3.2;
+            root.shakeX = Math.sin(elapsedTime * 57) * amp;
+            root.shakeY = Math.cos(elapsedTime * 43) * amp;
         }
 
-        ParallelAnimation {
-            SequentialAnimation {
-                loops: Animation.Infinite
-
-                NumberAnimation {
-                    target: root.star1
-                    property: "y"
-                    from: root.star1.y
-                    to: root.star1.y - 5
-                    duration: 2500
-                    easing.type: Easing.InOutQuad
-                }
-
-                NumberAnimation {
-                    target: root.star1
-                    property: "y"
-                    from: root.star1.y - 5
-                    to: root.star1.y
-                    duration: 2500
-                    easing.type: Easing.InOutQuad
-                }
-            }
-
-            SequentialAnimation {
-                loops: Animation.Infinite
-
-                NumberAnimation {
-                    target: root.star2
-                    property: "y"
-                    from: root.star2.y
-                    to: root.star2.y + 5
-                    duration: 3000
-                    easing.type: Easing.InOutQuad
-                }
-
-                NumberAnimation {
-                    target: root.star2
-                    property: "y"
-                    from: root.star2.y + 5
-                    to: root.star2.y
-                    duration: 3000
-                    easing.type: Easing.InOutQuad
-                }
-            }
-
-            SequentialAnimation {
-                loops: Animation.Infinite
-
-                NumberAnimation {
-                    target: root.star3
-                    property: "y"
-                    from: root.star3.y
-                    to: root.star3.y - 5
-                    duration: 2800
-                    easing.type: Easing.InOutQuad
-                }
-
-                NumberAnimation {
-                    target: root.star3
-                    property: "y"
-                    from: root.star3.y - 5
-                    to: root.star3.y
-                    duration: 2800
-                    easing.type: Easing.InOutQuad
-                }
-            }
-
-            SequentialAnimation {
-                loops: Animation.Infinite
-
-                NumberAnimation {
-                    target: root.star1
-                    property: "scale"
-                    from: 1.0
-                    to: 1.08
-                    duration: 2500
-                    easing.type: Easing.InOutQuad
-                }
-
-                NumberAnimation {
-                    target: root.star1
-                    property: "scale"
-                    from: 1.08
-                    to: 1.0
-                    duration: 2500
-                    easing.type: Easing.InOutQuad
-                }
-            }
-
-            SequentialAnimation {
-                loops: Animation.Infinite
-
-                NumberAnimation {
-                    target: root.star2
-                    property: "scale"
-                    from: 1.0
-                    to: 1.12
-                    duration: 3000
-                    easing.type: Easing.InOutQuad
-                }
-
-                NumberAnimation {
-                    target: root.star2
-                    property: "scale"
-                    from: 1.12
-                    to: 1.0
-                    duration: 3000
-                    easing.type: Easing.InOutQuad
-                }
-            }
-
-            SequentialAnimation {
-                loops: Animation.Infinite
-
-                NumberAnimation {
-                    target: root.star3
-                    property: "scale"
-                    from: 1.0
-                    to: 1.08
-                    duration: 2800
-                    easing.type: Easing.InOutQuad
-                }
-
-                NumberAnimation {
-                    target: root.star3
-                    property: "scale"
-                    from: 1.08
-                    to: 1.0
-                    duration: 2800
-                    easing.type: Easing.InOutQuad
-                }
+        onRunningChanged: {
+            if (!running) {
+                root.shakeX = 0;
+                root.shakeY = 0;
             }
         }
     }

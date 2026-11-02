@@ -16,6 +16,8 @@ QtObject {
     readonly property bool canGoForward: historyIndex >= 0 && historyIndex < pageHistory.length - 1
     property bool searchOpen
     property string searchText
+    // About page easter egg: set by holding the logo, cleared by the game when it closes.
+    property bool easterEgg: false
     // Label of the row to scroll to and flash once its page has loaded
     property string pendingHighlight
     property bool justUnlockedDevMode: false

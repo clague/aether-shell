@@ -8,6 +8,7 @@ import qs.components
 import qs.components.controls
 import qs.services
 import qs.modules.nexus
+import qs.modules.nexus.common
 import qs.modules.nexus.pages.bluetooth
 
 Item {
@@ -97,10 +98,14 @@ Item {
     // Arrow keys walk the same focus chain Tab uses; see FocusNav. Keys that a focused control
     // consumes for itself (a slider's value, a text field's caret) never reach these handlers.
     Keys.onUpPressed: event => {
+        if (nState.easterEgg)
+            return;
         event.accepted = root.moveFocus(false);
     }
 
     Keys.onDownPressed: event => {
+        if (nState.easterEgg)
+            return;
         event.accepted = root.moveFocus(true);
     }
 
@@ -108,11 +113,15 @@ Item {
     // is navigation, the right-hand side is the page. A focused control that uses the arrows
     // itself (slider, stepper, text field) consumes the key before it reaches here.
     Keys.onLeftPressed: event => {
+        if (nState.easterEgg)
+            return;
         if (root.isInside(root.focusedItem, pages))
             event.accepted = navPane.focusPageRow(nState.currentPageIdx);
     }
 
     Keys.onRightPressed: event => {
+        if (nState.easterEgg)
+            return;
         if (!root.focusedItem || root.focusedItem === root || root.isInside(root.focusedItem, navPane))
             event.accepted = FocusNav.focusFirstIn(pages);
     }
@@ -239,6 +248,7 @@ Item {
 
     Shortcut {
         sequence: "Ctrl+F"
+        enabled: !nState.easterEgg
         onActivated: nState.focusSearch()
     }
 
@@ -246,20 +256,20 @@ Item {
     // slash instead of letting the user type it.
     Shortcut {
         sequence: "/"
-        enabled: !root.textInputFocused
+        enabled: !root.textInputFocused && !nState.easterEgg
         onActivated: nState.focusSearch()
     }
 
     // Keyboard equivalents of the mouse's back/forward buttons.
     Shortcut {
         sequence: "Alt+Left"
-        enabled: !root.textInputFocused
+        enabled: !root.textInputFocused && !nState.easterEgg
         onActivated: nState.goBack()
     }
 
     Shortcut {
         sequence: "Alt+Right"
-        enabled: !root.textInputFocused
+        enabled: !root.textInputFocused && !nState.easterEgg
         onActivated: nState.goForward()
     }
 
@@ -280,5 +290,14 @@ Item {
         active: GlobalConfig.hybrid.features.btAgent
 
         sourceComponent: BluetoothPairingDialog {}
+    }
+
+    // The About page's easter egg. Hosted here for the same reason as the pairing dialog:
+    // it has to cover the pages and their flickable, not live inside one.
+    AetherAttunement {
+        anchors.fill: parent
+        z: 200
+        open: root.nState.easterEgg
+        onClose: root.nState.easterEgg = false
     }
 }

@@ -76,9 +76,70 @@ PageBase {
                 spacing: Tokens.spacing.small
 
                 AnimatedLogo {
+                    id: logo
+
                     Layout.alignment: Qt.AlignHCenter
                     Layout.preferredWidth: implicitWidth
                     Layout.preferredHeight: implicitHeight
+
+                    // Long-press easter egg: while held the logo charges (the A shakes and
+                    // its stars orbit faster), and holding on opens the little game.
+                    property real charge: 0
+
+                    energy: charge
+
+                    NumberAnimation {
+                        id: chargeUp
+
+                        target: logo
+                        property: "charge"
+                        to: 1
+                        duration: 1500
+                        easing.type: Easing.InQuad
+                    }
+
+                    NumberAnimation {
+                        id: chargeDown
+
+                        target: logo
+                        property: "charge"
+                        to: 0
+                        duration: 240
+                    }
+
+                    Timer {
+                        id: holdTimer
+
+                        interval: 2100
+                        onTriggered: {
+                            root.nState.easterEgg = true;
+                            chargeUp.stop();
+                            chargeDown.restart();
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+
+                        onPressed: {
+                            chargeDown.stop();
+                            chargeUp.restart();
+                            holdTimer.restart();
+                        }
+
+                        onReleased: {
+                            holdTimer.stop();
+                            chargeUp.stop();
+                            chargeDown.restart();
+                        }
+
+                        onCanceled: {
+                            holdTimer.stop();
+                            chargeUp.stop();
+                            chargeDown.restart();
+                        }
+                    }
                 }
 
                 StyledText {
