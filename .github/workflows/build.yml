@@ -54,7 +54,16 @@ jobs:
           purge-primary-key: never
 
       - name: Build flake
-        run: nix build
+        run: |
+          # The failure detail is otherwise only visible in the (authenticated) job log; turn the
+          # last lines into annotations so a fork can diagnose it from the check run.
+          set -o pipefail
+          if ! nix build --print-build-logs 2>&1 | tee /tmp/nix-build.log; then
+            tail -n 40 /tmp/nix-build.log | while IFS= read -r line; do
+              echo "::error title=nix build::$line"
+            done
+            exit 1
+          fi
 
   build-cpp:
     needs: changes
