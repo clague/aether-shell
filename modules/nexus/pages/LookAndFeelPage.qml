@@ -86,13 +86,48 @@ PageBase {
         }
 
         // Written by scripts/app-fonts.py, which Nexus cannot show in a row: the switch below
-        // edits files outside the shell, so say so before the user turns it on.
-        InfoRow {
-            first: true
+        // edits files outside the shell, so say so before the user turns it on. A wrapping card
+        // rather than an InfoRow, whose subtext is elided to one line and would cut the paths off.
+        ConnectedRect {
             Layout.fillWidth: true
-            icon: "info"
-            label: Tr.tr("This changes your system font settings")
-            subtext: Tr.tr("It writes %1 and sets the GTK font, so every application uses these fonts, not only the shell. Fonts you add are copied to %2. Turning it off removes the file and puts the previous GTK fonts back.").arg("~/.config/fontconfig/conf.d/60-caelestia-app-fonts.conf").arg("~/.local/share/fonts/caelestia")
+            first: true
+            implicitHeight: notice.implicitHeight + Tokens.padding.largeIncreased * 2
+
+            RowLayout {
+                id: notice
+
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.margins: Tokens.padding.largeIncreased
+                spacing: Tokens.spacing.medium
+
+                MaterialIcon {
+                    Layout.alignment: Qt.AlignTop
+                    text: "info"
+                    color: Colours.palette.m3onSurfaceVariant
+                    fontStyle: Tokens.font.icon.medium
+                }
+
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    spacing: Tokens.spacing.extraSmall
+
+                    StyledText {
+                        Layout.fillWidth: true
+                        text: Tr.tr("This changes your system font settings")
+                        font: Tokens.font.body.medium
+                    }
+
+                    StyledText {
+                        Layout.fillWidth: true
+                        text: Tr.tr("It writes %1 and sets the GTK font, so every application uses these fonts, not only the shell. Fonts you add are copied to %2. Turning it off removes the file and puts the previous GTK fonts back.").arg("~/.config/fontconfig/conf.d/60-caelestia-app-fonts.conf").arg("~/.local/share/fonts/caelestia")
+                        color: Colours.palette.m3onSurfaceVariant
+                        font: Tokens.font.body.small
+                        wrapMode: Text.WordWrap
+                    }
+                }
+            }
         }
 
         ToggleRow {
