@@ -216,7 +216,7 @@ if("shell" IN_LIST ENABLE_MODULES)
         PATTERN "__pycache__" EXCLUDE PATTERN "*.pyc" EXCLUDE)
     # wifi-connect.sh is executed directly (Nmcli.runWifiConnect), and a directory install
     # gives it 0644; PROGRAMS sets the executable bit back.
-    install(PROGRAMS scripts/wifi-connect.sh DESTINATION "${INSTALL_QSCONFDIR}/scripts")
+    install(PROGRAMS scripts/wifi-connect.sh scripts/askpass.sh DESTINATION "${INSTALL_QSCONFDIR}/scripts")
 
     install(PROGRAMS assets/wrap_term_launch.sh DESTINATION "${INSTALL_QSCONFDIR}/assets")
 

@@ -8300,3 +8300,11 @@ msgstr "它会写入 %1 并设置 GTK 字体，因此所有应用都会使用这
 msgid "Plugin settings"
 msgstr "插件设置"
 
+#: modules/polkit/AskpassDialog.qml
+msgid "Unlock"
+msgstr "解锁"
+
+#: services/Askpass.qml
+msgid "Password required"
+msgstr "需要密码"
+
