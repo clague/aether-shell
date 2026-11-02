@@ -159,6 +159,11 @@ QString CUtils::readFile(const QString& path) {
 }
 
 bool CUtils::writeFile(const QString& path, const QString& content) {
+    // Callers write into config directories that need not exist yet -- a fresh home, or a
+    // throwaway XDG_CONFIG_HOME in a test run -- and failing the write because of a missing
+    // parent would turn "persist this setting" into a silent no-op.
+    QDir().mkpath(QFileInfo(path).absolutePath());
+
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         qCWarning(lcCUtils) << "writeFile: failed to open" << path;

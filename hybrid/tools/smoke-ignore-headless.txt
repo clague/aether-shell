@@ -64,3 +64,9 @@ Could not load icon "[^"]*" at size QSize\([0-9]+, [0-9]+\) from request
 # nothing; a missing optional binary is not a defect in the shell.
 Command: QList\("cliphist"
 
+
+# Glass, Motion, Density and HyprVars mirror the Hyprland contract in ~/.config/hypr, so they
+# watch variables.lua and hyprland/animations.lua. Sway has no Hyprland config to read, and
+# these files are absent in the container by construction. The mirror is inert under sway --
+# that is one of the things this backend trades away, like the hyprland-* protocols above.
+Read of .*/\.config/hypr/(variables\.lua|hyprland/(animations|rules|variables)\.lua) failed: File does not exist

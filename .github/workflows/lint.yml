@@ -79,14 +79,23 @@ jobs:
 
           cat $lint_out
 
-          # The job log is only readable with admin rights, so surface the diagnostics as
-          # annotations; without them a fork sees "Process completed with exit code 1".
+          # Hand the diagnostics to the next step, which turns them into annotations: the
+          # job log needs admin rights to read, so a fork would only see "exit code 1".
+          cp $lint_out .lint-output.txt
+
           if test -s $lint_out
-            head -n 10 $lint_out | while read -r line
-              echo "::error title=qmllint::$line"
-            end
             exit 1
           end
+
+      - name: Report QML lint failures
+        if: failure()
+        shell: bash
+        run: |
+          [ -s .lint-output.txt ] || exit 0
+          # GitHub keeps at most ten annotations per step.
+          head -n 10 .lint-output.txt | while IFS= read -r line; do
+            echo "::error title=qmllint::$line"
+          done
 
   lint-cpp:
     needs: changes
