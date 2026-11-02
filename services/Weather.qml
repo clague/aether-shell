@@ -233,6 +233,38 @@ Singleton {
         });
     }
 
+    // Geocoding search for the location picker: up to eight matches, each
+    // `{ name, admin1, country, coords }`. An empty array means "no match", which the picker
+    // shows as such -- a typo is the common case, not an error.
+    function searchCities(query: string, callback: var): void {
+        const trimmed = query.trim();
+        if (trimmed.length < 2) {
+            callback([]);
+            return;
+        }
+
+        const lang = Tr.locale.name.split("_")[0] || "en";
+        const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(trimmed)}&count=8&language=${lang}&format=json`;
+
+        Requests.get(url, text => {
+            try {
+                const json = JSON.parse(text);
+                callback((json.results ?? []).map(r => ({
+                            name: r.name,
+                            admin1: r.admin1 ?? "",
+                            country: r.country ?? "",
+                            coords: `${r.latitude},${r.longitude}`
+                        })));
+            } catch (e) {
+                console.warn(lc, `Unable to parse geocoding search: ${e}`);
+                callback([]);
+            }
+        }, error => {
+            console.warn(lc, `Geocoding search failed: ${error}`);
+            callback([]);
+        });
+    }
+
     function fetchWeatherData(): void {
         const url = getWeatherUrl();
         if (url === "")

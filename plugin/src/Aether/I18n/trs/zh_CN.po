@@ -7867,3 +7867,31 @@ msgstr "配置 Shell"
 
 #~ msgid "App volumes"
 #~ msgstr "应用音量"
+
+#: modules/nexus/pages/LanguageAndRegion.qml
+msgid "Search for a city"
+msgstr "搜索城市"
+
+#: modules/nexus/pages/LanguageAndRegion.qml
+msgid "Searching…"
+msgstr "搜索中…"
+
+#: modules/nexus/pages/LanguageAndRegion.qml
+msgid "No matching city"
+msgstr "没有匹配的城市"
+
+#: modules/nexus/pages/LanguageAndRegion.qml
+msgid "Automatic location"
+msgstr "自动定位"
+
+#: modules/nexus/pages/LanguageAndRegion.qml
+msgid "Use the location your network provider reports"
+msgstr "使用网络服务商提供的位置"
+
+#: modules/nexus/pages/LanguageAndRegion.qml
+msgid "Currently using the automatic location"
+msgstr "当前使用自动定位"
+
+#: modules/nexus/pages/LanguageAndRegion.qml
+msgid "Currently set to %1"
+msgstr "当前设置为 %1"
