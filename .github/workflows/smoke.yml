@@ -70,7 +70,17 @@ jobs:
         run: ./hybrid/tools/smoke-matrix.sh --compositor sway --self-test
 
       - name: Smoke matrix
-        run: ./hybrid/tools/smoke-matrix.sh --compositor sway --keep-logs
+        shell: bash
+        run: |
+          # The job log needs admin rights to read, so publish the failure lines as
+          # annotations; GitHub keeps ten per step, which is enough for the first failure.
+          set -o pipefail
+          if ! ./hybrid/tools/smoke-matrix.sh --compositor sway --keep-logs 2>&1 | tee /tmp/smoke.log; then
+            grep -E "FAIL|fail|error|Error" /tmp/smoke.log | tail -8 | while IFS= read -r line; do
+              echo "::error title=smoke::$line"
+            done
+            exit 1
+          fi
 
       - uses: actions/upload-artifact@v4
         if: failure()

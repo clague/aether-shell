@@ -79,7 +79,14 @@ jobs:
 
           cat $lint_out
 
-          ! test -s $lint_out
+          # The job log is only readable with admin rights, so surface the diagnostics as
+          # annotations; without them a fork sees "Process completed with exit code 1".
+          if test -s $lint_out
+            head -n 10 $lint_out | while read -r line
+              echo "::error title=qmllint::$line"
+            end
+            exit 1
+          end
 
   lint-cpp:
     needs: changes
