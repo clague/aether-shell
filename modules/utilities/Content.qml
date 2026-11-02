@@ -308,9 +308,12 @@ Item {
 
                                 MouseArea {
                                     // The dot is a few pixels wide, so the hit area is padded
-                                    // outwards; neighbouring areas meet without overlapping.
+                                    // outwards by half the gap: neighbouring areas then meet
+                                    // exactly. Padding by the whole gap made them overlap, and
+                                    // the later dot won the shared strip, so the earlier dot's
+                                    // live area looked shifted left.
                                     anchors.fill: parent
-                                    anchors.margins: -Tokens.spacing.small
+                                    anchors.margins: -Tokens.spacing.small / 2
                                     cursorShape: Qt.PointingHandCursor
 
                                     onClicked: mediaLayout.currentIndex = dot.index
