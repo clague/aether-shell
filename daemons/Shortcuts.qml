@@ -21,6 +21,24 @@ Scope {
         onPressed: WindowFactory.create()
     }
 
+    // The mouse's back/forward buttons only reach Qt for some device codes; the compositor
+    // routes the rest here (see hybrid/hypr/keybinds.shell.lua).
+    // qmllint disable unresolved-type
+    CustomShortcut {
+        // qmllint enable unresolved-type
+        name: "nexusBack"
+        description: "Settings: go back"
+        onPressed: NexusTarget.state?.goBack()
+    }
+
+    // qmllint disable unresolved-type
+    CustomShortcut {
+        // qmllint enable unresolved-type
+        name: "nexusForward"
+        description: "Settings: go forward"
+        onPressed: NexusTarget.state?.goForward()
+    }
+
     // qmllint disable unresolved-type
     CustomShortcut {
         // qmllint enable unresolved-type

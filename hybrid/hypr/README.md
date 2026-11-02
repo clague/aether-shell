@@ -24,6 +24,7 @@ up on a new machine.
 | `variables.shell.lua` | appended to `~/.config/hypr/variables.lua` | keys the shell writes that upstream `variables.lua` does not define |
 | `rules.shell.lua` | `~/.config/hypr/hyprland/rules.lua` | two insertions, with the exact spot described in the file |
 | `animations.lua` | replaces `~/.config/hypr/hyprland/animations.lua` | applies `animSpeed` and `animMatchShell` to every leaf |
+| `keybinds.shell.lua` | appended to `~/.config/hypr/hyprland/keybinds.lua` | routes the mouse back/forward buttons the shell cannot see |
 
 ## What writes what
 
@@ -45,6 +46,18 @@ before a reload. Persistence is the config side above; the live push is only the
 `solidTextClasses` is a regex maintained by `Glass.solidClasses`. The shell writes it whenever the
 toggle changes, so the value in `variables.shell.lua` (and in `variables.lua`) is just the default
 for a machine where the shell has not written that key yet.
+
+## Mouse back/forward in the settings window
+
+Qt only turns `BTN_SIDE`/`BTN_EXTRA` (275/276, what most mice send) into
+`Qt.BackButton`/`Qt.ForwardButton`; `BTN_BACK`/`BTN_FORWARD` (278/277) never reach QML. The Nexus window
+handles the first pair directly, and `keybinds.shell.lua` routes the second pair through the
+shell's global shortcuts (`caelestia:nexusBack`/`caelestia:nexusForward`, registered in
+`daemons/Shortcuts.qml`). The binds are `non_consuming`, so apps that do understand the buttons
+keep working, and the shell only acts while a settings window is focused.
+
+A compositor bind on the same button elsewhere in the config would still swallow it, which is the
+other way these buttons appear to stop working.
 
 ## If a key or file is missing
 

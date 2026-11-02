@@ -42,6 +42,19 @@ VerticalFadeFlickable {
         root.contentY = Math.max(minY, Math.min(maxY, y));
     }
 
+    // Puts keyboard focus on the row of `page`, so the left arrow can return to the sidebar at
+    // the page the user is actually on.
+    function focusPageRow(page: int): bool {
+        for (let i = 0; i < list.count; i++) {
+            const row = list.itemAt(i);
+            if (row && row.modelData && row.modelData.originalIndex === page) {
+                row.forceActiveFocus(Qt.TabFocusReason);
+                return true;
+            }
+        }
+        return false;
+    }
+
     topMargin: Tokens.padding.large
     bottomMargin: Tokens.padding.large
     contentHeight: content.implicitHeight

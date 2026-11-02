@@ -21,6 +21,8 @@ Item {
 
     property color blobColour: Colours.tPalette.m3surfaceContainerLow
 
+    readonly property Item focusedItem: root.Window.window ? root.Window.window.activeFocusItem : null
+
     // True while a text input owns the keyboard, so shortcuts for printable characters can stay
     // out of the way. Qt reports the inner input item for text-field controls.
     readonly property bool textInputFocused: {
@@ -29,6 +31,29 @@ Item {
     }
 
     signal close
+
+    function isInside(item: Item, container: Item): bool {
+        let node = item;
+        while (node) {
+            if (node === container)
+                return true;
+            node = node.parent;
+        }
+        return false;
+    }
+
+    // Global shortcuts need to know which settings window a back/forward press belongs to.
+    Window.onActiveChanged: {
+        if (Window.active)
+            NexusTarget.state = nState;
+        else if (NexusTarget.state === nState)
+            NexusTarget.state = null;
+    }
+
+    Component.onDestruction: {
+        if (NexusTarget.state === nState)
+            NexusTarget.state = null;
+    }
 
     // Tokens are per-screen. `targetScreen` is the *config target* and is deliberately empty
     // in Global mode ("applies to all monitors"), but Tokens still needs a real screen: with
@@ -40,6 +65,7 @@ Item {
     // Sized from the screen height, but never wider than the screen (a rotated, portrait display
     // is taller than it is wide, which used to make the window many times wider than the screen)
     implicitWidth: Math.round(implicitHeight * Tokens.sizes.nexus.ratio)
+
     implicitHeight: Math.round(Math.min(nState.screen.height * Tokens.sizes.nexus.heightMult, nState.screen.width * 0.92 / Tokens.sizes.nexus.ratio))
 
     // Arrow keys walk the same focus chain Tab uses; see FocusNav. Keys that a focused control
@@ -54,14 +80,17 @@ Item {
         event.accepted = true;
     }
 
+    // Left/right switch between the panes rather than walking the flat focus chain: the sidebar
+    // is navigation, the right-hand side is the page. A focused control that uses the arrows
+    // itself (slider, stepper, text field) consumes the key before it reaches here.
     Keys.onLeftPressed: event => {
-        FocusNav.move(Window.window, false);
-        event.accepted = true;
+        if (root.isInside(root.focusedItem, pages))
+            event.accepted = navPane.focusPageRow(nState.currentPageIdx);
     }
 
     Keys.onRightPressed: event => {
-        FocusNav.move(Window.window, true);
-        event.accepted = true;
+        if (root.isInside(root.focusedItem, navPane))
+            event.accepted = FocusNav.focusFirstIn(pages);
     }
 
     Behavior on blobColour {
@@ -155,6 +184,8 @@ Item {
     }
 
     Pages {
+        id: pages
+
         anchors.left: navPane.right
         anchors.right: parent.right
         anchors.top: parent.top

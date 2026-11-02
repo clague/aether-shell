@@ -24,7 +24,7 @@ Singleton {
     // and what stops sixteen of them piling up.
     function openPage(page: int): void {
         if (root.current)
-            root.current.page = page;
+            root.current.openPage(page);
         else
             root.create(null, {
                 page
@@ -44,6 +44,12 @@ Singleton {
             // Which settings page to land on. Set through WindowFactory.create()'s props,
             // which is how the `nexus openPage` IPC call reaches it.
             property int page: 0
+
+            // `page` only seeds the initial page: nState's binding to it breaks on the first
+            // navigation, so a later openPage() has to address the state directly.
+            function openPage(p: int): void {
+                nexus.nState.currentPageIdx = p;
+            }
 
             color: Colours.tPalette.m3surface
 

@@ -13,6 +13,14 @@ ColumnLayout {
 
     required property NexusState nState
 
+    // Focuses the sidebar row of the given page, used when the left arrow leaves the settings
+    // pane. Falls back to the first focusable control (the search field) if the row is hidden.
+    function focusPageRow(page: int): bool {
+        if (locations.focusPageRow(page))
+            return true;
+        return FocusNav.focusFirstIn(root);
+    }
+
     spacing: Tokens.spacing.large
 
     SearchBar {
@@ -112,6 +120,8 @@ ColumnLayout {
     }
 
     NavLocations {
+        id: locations
+
         z: 1
 
         Layout.fillWidth: true

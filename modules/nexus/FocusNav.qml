@@ -29,6 +29,16 @@ QtObject {
             first.forceActiveFocus(forward ? Qt.TabFocusReason : Qt.BacktabFocusReason);
     }
 
+    // Focuses the first item that can take focus inside `container`, e.g. moving from the
+    // sidebar into the settings pane. Returns false when there is nothing to focus there.
+    function focusFirstIn(container: Item): bool {
+        const first = firstFocusable(container, true);
+        if (!first)
+            return false;
+        first.forceActiveFocus(Qt.TabFocusReason);
+        return true;
+    }
+
     // Depth-first walk of the visual tree for the first item that can take focus.
     function firstFocusable(item: Item, forward: bool): Item {
         if (!item || !item.visible || !item.enabled)

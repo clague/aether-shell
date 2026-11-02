@@ -419,6 +419,7 @@ copy of the required files lives in `hybrid/hypr/`:
 | `hybrid/hypr/variables.shell.lua` | append to `~/.config/hypr/variables.lua` |
 | `hybrid/hypr/rules.shell.lua` | two insertions in `~/.config/hypr/hyprland/rules.lua` |
 | `hybrid/hypr/animations.lua` | replaces `~/.config/hypr/hyprland/animations.lua` |
+| `hybrid/hypr/keybinds.shell.lua` | append to `~/.config/hypr/hyprland/keybinds.lua` |
 
 Keep that directory in sync with your dotfiles checkout; `hybrid/hypr/README.md` lists which Nexus
 setting writes which key. If a key is missing the setting still applies live, it just does not
