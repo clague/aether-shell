@@ -45,7 +45,33 @@ Singleton {
 
     function changed(): void {
         touched = true;
+        syncLater.restart();
         applyLater.restart();
+    }
+
+    function curveString(curve: var): string {
+        const p = curve.bezierCurve;
+        return `${p[0]}, ${p[1]}, ${p[2]}, ${p[3]}`;
+    }
+
+    // Animation preferences live in hypr-vars.lua too, so the Hyprland half survives a restart
+    // instead of depending on the shell pushing it again. The curves are written as plain
+    // comma-separated numbers because the override table is a flat Lua table of scalars.
+    function syncVars(): void {
+        const values = {
+            animSpeed: Math.round(speed * 100) / 100
+        };
+        const removed = [];
+        if (matchShell) {
+            values.animMatchShell = true;
+            values.animSpatialCurve = curveString(Tokens.anim.expressiveDefaultSpatial);
+            values.animEffectsCurve = curveString(Tokens.anim.expressiveSlowEffects);
+            values.animSpatialSpeed = Math.max(0.5, Math.round(Tokens.anim.durations.expressiveDefaultSpatial / 100 * 10) / 10);
+            values.animEffectsSpeed = Math.max(0.5, Math.round(Tokens.anim.durations.expressiveSlowEffects / 100 * 10) / 10);
+        } else {
+            removed.push("animMatchShell", "animSpatialCurve", "animEffectsCurve", "animSpatialSpeed", "animEffectsSpeed");
+        }
+        HyprVars.updateVars(values, removed);
     }
 
     function resetAll(): void {
@@ -96,6 +122,13 @@ Singleton {
 
         interval: 400
         onTriggered: root.apply()
+    }
+
+    Timer {
+        id: syncLater
+
+        interval: 250
+        onTriggered: root.syncVars()
     }
 
     Connections {
@@ -150,6 +183,7 @@ Singleton {
             } catch (e) {
                 console.warn("[motion] could not read motion.json:", e);
             }
+            syncLater.restart();
             applyLater.restart();
         }
     }
@@ -159,14 +193,17 @@ Singleton {
         watchChanges: true
         onFileChanged: reload()
         onLoaded: {
-            const re = /hl\.animation\(\{([^}]*)\}\)/g;
+            // Two shapes are understood: the upstream `hl.animation({ ... })` table and the
+            // helper call this tree's config uses so it can apply animSpeed/animMatchShell.
+            const tableRe = /hl\.animation\(\{([^}]*)\}\)/g;
+            const callRe = /animation\(\s*"([^"]+)"\s*,\s*(true|false)\s*,\s*([\d.]+)\s*,\s*"([^"]+)"(?:\s*,\s*"([^"]*)")?\s*\)/g;
             const field = (s, k) => {
                 const m = s.match(new RegExp(`${k}\\s*=\\s*("([^"]*)"|[\\w.]+)`));
                 return m ? (m[2] ?? m[1]) : null;
             };
             const list = [];
             let m;
-            while ((m = re.exec(text())) !== null) {
+            while ((m = tableRe.exec(text())) !== null) {
                 const leaf = field(m[1], "leaf");
                 const spd = parseFloat(field(m[1], "speed"));
                 if (leaf && !isNaN(spd))
@@ -176,6 +213,17 @@ Singleton {
                         speed: spd,
                         bezier: field(m[1], "bezier") ?? "default",
                         style: field(m[1], "style")
+                    });
+            }
+            while ((m = callRe.exec(text())) !== null) {
+                const spd = parseFloat(m[3]);
+                if (!isNaN(spd))
+                    list.push({
+                        leaf: m[1],
+                        enabled: m[2] !== "false",
+                        speed: spd,
+                        bezier: m[4],
+                        style: m[5] || null
                     });
             }
             root.base = list;

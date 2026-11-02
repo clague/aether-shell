@@ -65,6 +65,7 @@ Singleton {
     function setPreset(name: string): void {
         preset = name;
         save();
+        syncLater.restart();
         apply();
     }
 
@@ -82,7 +83,23 @@ Singleton {
             customBorder = value;
         preset = "custom";
         save();
+        syncLater.restart();
         apply();
+    }
+
+    // The numbers are also written to hypr-vars.lua so Hyprland applies them from the config on
+    // its own. "Comfortable" is the absence of an override: removing the keys restores whatever
+    // variables.lua says, which keeps editing that file meaningful.
+    function syncVars(): void {
+        if (preset === "comfortable") {
+            HyprVars.removeVars(["windowGapsIn", "windowGapsOut", "windowBorderSize"]);
+            return;
+        }
+        HyprVars.setVars({
+            windowGapsIn: gapsIn,
+            windowGapsOut: gapsOut,
+            windowBorderSize: border
+        });
     }
 
     function apply(): void {
@@ -113,6 +130,14 @@ Singleton {
 
         interval: 400
         onTriggered: root.apply()
+    }
+
+    // Coalesces a slider drag into one file write
+    Timer {
+        id: syncLater
+
+        interval: 250
+        onTriggered: root.syncVars()
     }
 
     Connections {
@@ -168,9 +193,13 @@ Singleton {
             } catch (e) {
                 console.warn("[density] could not read density.json:", e);
             }
+            syncLater.restart();
             applyLater.restart();
         }
-        onLoadFailed: applyLater.restart()
+        onLoadFailed: {
+            syncLater.restart();
+            applyLater.restart();
+        }
     }
 
     FileView {

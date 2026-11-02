@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 
+import qs.services
 import qs.modules.nexus.common
 
 // A StepperRow bound to one integer key of ~/.config/caelestia/hypr-vars.lua

@@ -2271,8 +2271,8 @@ QtObject {
             kind: "row",
             page: 4,
             sub: 0,
-            label: Tr.tr("Most settings are saved in hypr-vars.lua"),
-            subtext: Tr.tr("Glass, Motion and the spacing sliders apply live; clear a row to remove its override."),
+            label: Tr.tr("Saved in hypr-vars.lua"),
+            subtext: Tr.tr("Hyprland reads it at startup, so settings survive restarts; clear a row to remove its override."),
             section: "",
             subTitle: Tr.tr("Hyprland"),
             kw: ["hypr-vars"]

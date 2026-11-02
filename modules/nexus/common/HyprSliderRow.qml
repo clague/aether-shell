@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 
+import qs.services
 import qs.modules.nexus.common
 
 // A SliderRow bound to one key of ~/.config/caelestia/hypr-vars.lua. The slider itself works in

@@ -54,7 +54,32 @@ Singleton {
     function changed(): void {
         touched = true;
         save();
+        syncLater.restart();
         apply();
+    }
+
+    // Persist the choices in hypr-vars.lua: Hyprland applies them from the config on its own,
+    // while apply() below still pushes them live for an immediate preview. Clearing a value
+    // removes its key, so variables.lua decides again.
+    function syncVars(): void {
+        const values = {};
+        const removed = [];
+        if (windowPercentSet)
+            values.windowOpacity = Math.round(effectivePercent) / 100;
+        else
+            removed.push("windowOpacity");
+        if (overviewBlur)
+            values.overviewBlur = true;
+        else
+            removed.push("overviewBlur");
+        if (solidText) {
+            values.solidTextWindows = true;
+            values.solidTextClasses = root.solidClasses;
+        } else {
+            removed.push("solidTextWindows");
+            removed.push("solidTextClasses");
+        }
+        HyprVars.updateVars(values, removed);
     }
 
     function apply(): void {
@@ -75,6 +100,14 @@ Singleton {
             windowPercent: windowPercentSet ? windowPercent : null,
             solidText: solidText
         }, null, 4));
+    }
+
+    // Coalesces rapid changes into one file write
+    Timer {
+        id: syncLater
+
+        interval: 250
+        onTriggered: root.syncVars()
     }
 
     Timer {
@@ -147,6 +180,7 @@ Singleton {
             } catch (e) {
                 console.warn("[glass] could not read glass.json:", e);
             }
+            syncLater.restart();
             applyLater.restart();
         }
     }

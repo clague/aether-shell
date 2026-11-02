@@ -52,18 +52,17 @@ PageBase {
             onClicked: root.nState.openSubPage(5)
         }
 
-        // One note for the whole category instead of repeating it inside each sub-page. Most rows
-        // write hypr-vars.lua (read by the Hyprland config at startup); Glass, Motion and the
-        // spacing sliders are the exceptions -- they are pushed live and stored in the shell's
-        // own state, so the note has to say so rather than claim the whole section is in the file.
+        // One note for the whole category instead of repeating it inside each sub-page. Every
+        // option here ends up in hypr-vars.lua: the plain rows write it directly, and Glass,
+        // Motion and Density persist their values there too while still pushing them live.
         InfoRow {
             first: true
             last: true
             Layout.fillWidth: true
             Layout.topMargin: Tokens.spacing.large
             icon: "info"
-            label: Tr.tr("Most settings are saved in hypr-vars.lua")
-            subtext: Tr.tr("Glass, Motion and the spacing sliders apply live; clear a row to remove its override.")
+            label: Tr.tr("Saved in hypr-vars.lua")
+            subtext: Tr.tr("Hyprland reads it at startup, so settings survive restarts; clear a row to remove its override.")
         }
     }
 }

@@ -6,10 +6,12 @@ import Aether
 
 // Read/write access to ~/.config/caelestia/hypr-vars.lua, the override table that the Hyprland
 // config requires next to its own variables. Nexus uses it from Hyprland > Variables (apps and
-// misc) and from Hyprland > Window effects / Spacing & animations.
+// misc) and from Hyprland > Window effects / Spacing & animations; the shell's own Glass, Motion
+// and Density services write their preferences here too, so they survive a restart instead of
+// living only in ~/.local/state.
 //
-// Only the values the user overrides are written; deleting a row removes its key so the default
-// from ~/.config/hypr/variables.lua applies again.
+// Only the values the user overrides are written; deleting a key restores the default from
+// ~/.config/hypr/variables.lua.
 QtObject {
     id: root
 
@@ -47,6 +49,14 @@ QtObject {
             keys: ["windowOpacity", "windowRounding", "windowBorderSize", "activeWindowBorderColour", "inactiveWindowBorderColour"]
         },
         {
+            cat: "Glass",
+            keys: ["overviewBlur", "solidTextWindows", "solidTextClasses"]
+        },
+        {
+            cat: "Motion",
+            keys: ["animSpeed", "animMatchShell", "animSpatialCurve", "animEffectsCurve", "animSpatialSpeed", "animEffectsSpeed"]
+        },
+        {
             cat: "Misc",
             keys: ["volumeStep", "cursorTheme", "cursorSize", "sleepGestureCmd"]
         }
@@ -70,6 +80,10 @@ QtObject {
                 val = val.substring(1, val.length - 1).replace(/\\n/g, "\n").replace(/\\"/g, "\"").replace(/\\\\/g, "\\");
             else if (/^-?[0-9]+(\.[0-9]+)?$/.test(val))
                 val = parseFloat(val);
+            else if (val.startsWith("{") && val.endsWith("}"))
+                val = {
+                    lua: val // table literal, e.g. a keybind list: written back verbatim
+                };
             out[match[1]] = val;
         }
         return out;
@@ -79,6 +93,8 @@ QtObject {
     // added back here -- including every unchanged key, or one bad write silently leaves
     // bare identifiers such as `editor = zeditor` in the file and Hyprland fails to load it.
     function luaValue(value: var): string {
+        if (value && typeof value === "object" && typeof value.lua === "string")
+            return value.lua;
         if (value && typeof value === "object" && typeof value.join === "function")
             value = value.join(" ");
         if (typeof value === "boolean")
@@ -134,6 +150,34 @@ QtObject {
         if (!CUtils.writeFile(root.configPath, serializeVars(currentVars)))
             console.warn("[hypr-vars] could not write", root.configPath);
         loadVars();
+    }
+
+    // One read and one write for a batch of changes: the shell services use this so a dragged
+    // slider does not rewrite the file once per key.
+    function updateVars(values: var, removed: var): void {
+        const current = CUtils.fileExists(root.configPath) ? parseVars(CUtils.readFile(root.configPath)) : {};
+        let changed = !CUtils.fileExists(root.configPath);
+        for (const key of removed ?? []) {
+            if (current[key] !== undefined) {
+                delete current[key];
+                changed = true;
+            }
+        }
+        for (const key in values ?? {}) {
+            if (current[key] !== values[key])
+                changed = true;
+            current[key] = values[key];
+        }
+        if (changed)
+            root.write(current);
+    }
+
+    function setVars(values: var): void {
+        updateVars(values, []);
+    }
+
+    function removeVars(keys: var): void {
+        updateVars({}, keys);
     }
 
     function saveVar(key: string, value: var): void {
