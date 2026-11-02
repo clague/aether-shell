@@ -17,6 +17,11 @@ Item {
     required property matrix4x4 deformMatrix
 
     readonly property bool mediaActive: Config.utilities.cards.recorder || QuickShare.isEnabled
+
+    // Enabling QuickShare should reveal its page in the media area; previously it was added
+    // next to the recorder page and the user had to swipe to it.
+    property string pendingMediaPage: ""
+
     readonly property int enabledCards: (idleInhibit.active ? 1 : 0) + (mediaActive ? 1 : 0) + (toggles.active ? 1 : 0)
 
     // Calculate nonAnimHeight
@@ -35,6 +40,15 @@ Item {
     }
 
     implicitHeight: layout.implicitHeight
+
+    Connections {
+        function onIsEnabledChanged(): void {
+            if (QuickShare.isEnabled)
+                root.pendingMediaPage = "quickShare";
+        }
+
+        target: QuickShare
+    }
 
     ColumnLayout {
         id: layout
@@ -79,7 +93,20 @@ Item {
                     return itemHeight + (mediaRepeater.count > 1 ? bgRow.implicitHeight + spacing : 0);
                 }
 
+                function showPendingPage(): void {
+                    if (!root.pendingMediaPage)
+                        return;
+                    const pages = mediaRepeater.model ?? [];
+                    const index = pages.indexOf(root.pendingMediaPage);
+                    if (index < 0)
+                        return;
+                    currentIndex = index;
+                    root.pendingMediaPage = "";
+                }
+
                 spacing: Tokens.spacing.small
+
+                Component.onCompleted: showPendingPage()
 
                 onCurrentIndexChanged: {
                     animEnabled = true;
@@ -91,6 +118,23 @@ Item {
                     if (swipeItem) {
                         lastValidItemHeight = (swipeItem.nonAnimHeight ?? swipeItem.implicitHeight);
                     }
+                }
+
+                Connections {
+                    function onPendingMediaPageChanged(): void {
+                        mediaLayout.showPendingPage();
+                    }
+
+                    target: root
+                }
+
+                Connections {
+                    function onCountChanged(): void {
+                        mediaLayout.currentIndex = Math.min(mediaLayout.currentIndex, mediaRepeater.count - 1);
+                        mediaLayout.showPendingPage();
+                    }
+
+                    target: mediaRepeater
                 }
 
                 Timer {

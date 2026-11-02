@@ -52,11 +52,6 @@ Column {
         }
     }
 
-    SessionButton {
-        icon: Config.session.icons.shutdown
-        command: Config.session.commands.shutdown
-    }
-
     Loader {
         active: Config.paths.sessionGif.trim() !== ""
 
