@@ -49,6 +49,8 @@ void Tokens::inheritScreen(const QString& screen) {
 
     propagateScreen();
     emit sourceChanged();
+    // m_config changes with the screen, so the tokens behind `font` are different objects.
+    emit fontChanged();
 }
 
 qreal Tokens::fontScale() const {
@@ -61,7 +63,8 @@ void Tokens::inheritFontScale(qreal scale) {
 
     m_fontScale = scale;
     propagateFontScale();
-    emit sourceChanged();
+    emit fontScaleChanged();
+    emit fontChanged();
 }
 
 void Tokens::propagateFontScale() {

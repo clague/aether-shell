@@ -20,13 +20,19 @@ class Tokens : public QQuickAttachedPropertyPropagator, public QQmlParserStatus 
     // Multiplies every Tokens.font size for this item and its children. A window that wants
     // larger type than the rest of the shell sets it once on its root; 1 is the configured
     // size. Icons scale with the text so rows keep their proportions.
-    Q_PROPERTY(qreal fontScale READ fontScale WRITE inheritFontScale NOTIFY sourceChanged)
+    // Its own notify, not sourceChanged: the useful binding is
+    // `Tokens.fontScale: Tokens.sizes.nexus.textScale`, and `sizes` already notifies
+    // sourceChanged. Sharing it made every write of fontScale dirty the binding that
+    // had just written it, which Qt reports as a binding loop.
+    Q_PROPERTY(qreal fontScale READ fontScale WRITE inheritFontScale NOTIFY fontScaleChanged)
     Q_PROPERTY(const aether::shell::config::AppearanceRounding* rounding READ rounding NOTIFY sourceChanged)
     Q_PROPERTY(const aether::shell::config::AppearanceSpacing* spacing READ spacing NOTIFY sourceChanged)
     Q_PROPERTY(const aether::shell::config::AppearancePadding* padding READ padding NOTIFY sourceChanged)
     Q_PROPERTY(const aether::shell::config::AppearanceTransparency* transparency READ transparency NOTIFY sourceChanged)
     Q_PROPERTY(const aether::shell::config::SizeTokens* sizes READ sizes NOTIFY sourceChanged)
-    Q_PROPERTY(const aether::shell::config::FontTokens* font READ font NOTIFY sourceChanged)
+    // Likewise separate from sourceChanged: fontScale changes the returned tokens without
+    // the screen changing, and consumers of `Tokens.font.*` must refresh for it.
+    Q_PROPERTY(const aether::shell::config::FontTokens* font READ font NOTIFY fontChanged)
     Q_PROPERTY(const aether::shell::config::AnimTokens* anim READ anim CONSTANT)
 
 public:
@@ -56,6 +62,8 @@ public:
 
 signals:
     void sourceChanged();
+    void fontScaleChanged();
+    void fontChanged();
 
 protected:
     void attachedParentChange(

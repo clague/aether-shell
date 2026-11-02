@@ -3021,3 +3021,35 @@ monotonic. The tail is a few frames longer, entirely sub-pixel.
 
 This is a mitigation, not a fix for the underlying behaviour: the text is still native-rendered,
 it is just no longer re-rendered per frame.
+
+## T68 — A property must not share a notify signal with the property its own binding reads
+
+`Tokens` is an attached property (`QQuickAttachedPropertyPropagator`), and nearly every member
+notified `sourceChanged`, because almost all of them are views onto the per-screen config. That
+was fine while the only writer was `inheritScreen`. It stopped being fine when the Nexus window
+gained a per-window type scale:
+
+```qml
+contentItem.Tokens.fontScale: contentItem.Tokens.sizes.nexus.textScale
+```
+
+The binding reads `Tokens.sizes` (NOTIFY `sourceChanged`) and writes `Tokens.fontScale`, which
+was *also* NOTIFY `sourceChanged`. So writing the property emitted the signal that the binding
+depends on: Qt saw the binding dirty itself during evaluation and warned
+
+```
+Binding loop detected for property "fontScale"
+```
+
+even though the value never changed and the binding settled after one extra pass. The fix is a
+notify signal per property rather than one shared one:
+
+- `fontScale` → `fontScaleChanged`
+- `font` → `fontChanged`, since the returned `FontTokens` object changes with the factor; and
+  `inheritScreen` emits it too, because a new screen means a new config to read the fonts from.
+- everything still genuinely keyed to the screen keeps `sourceChanged`.
+
+The rule generalises: an attached or C++ property that is designed to be bound to another
+property of the same object needs its own notify. A shared signal makes any such binding
+self-dirty, which is invisible at rest but warns the moment the object is created — that is why
+this one only showed up when the settings window opened.
