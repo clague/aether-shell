@@ -7901,8 +7901,8 @@ msgid "Installed plugins"
 msgstr "已安装插件"
 
 #: modules/nexus/pages/PluginsPage.qml
-msgid "No plugins installed. A plugin is a folder with a plugin.json dropped into %1"
-msgstr "没有安装插件。插件就是一个包含 plugin.json 的文件夹，放到 %1 即可"
+msgid "No plugins installed. A plugin is a folder holding a manifest.json, placed in %1"
+msgstr "没有安装插件。插件就是一个包含 manifest.json 的文件夹，放到 %1 即可"
 
 #: modules/nexus/pages/PluginsPage.qml
 msgid "Open plugins folder"
@@ -8295,4 +8295,8 @@ msgstr "这会修改系统的字体设置"
 #: modules/nexus/pages/LookAndFeelPage.qml
 msgid "It writes %1 and sets the GTK font, so every application uses these fonts, not only the shell. Fonts you add are copied to %2. Turning it off removes the file and puts the previous GTK fonts back."
 msgstr "它会写入 %1 并设置 GTK 字体，因此所有应用都会使用这些字体，而不只是 shell。你添加的字体会被复制到 %2。关闭后会删除该文件，并恢复之前的 GTK 字体。"
+
+#: modules/nexus/pages/PluginsPage.qml
+msgid "Plugin settings"
+msgstr "插件设置"
 
