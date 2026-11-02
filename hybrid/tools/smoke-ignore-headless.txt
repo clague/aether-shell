@@ -70,3 +70,13 @@ Command: QList\("cliphist"
 # these files are absent in the container by construction. The mirror is inert under sway --
 # that is one of the things this backend trades away, like the hyprland-* protocols above.
 Read of .*/\.config/hypr/(variables\.lua|hyprland/(animations|rules|variables)\.lua) failed: File does not exist
+
+# The avatar is drawn through Aether's Multimedia image element, which reports a missing
+# file as "Cannot open: file://" rather than the "Source file does not exist" wording the
+# main list already ignores for the same ~/.face. No container home has one.
+Cannot open: file://.*/\.face
+
+# Qt Multimedia's own PipeWire backend looks for a daemon and finds none. The main list
+# already ignores the shell's audio worker failing to connect; this is Qt's registry
+# probing independently of it.
+qt\.multimedia\.pipewire\.registry: Failed to connect to pipewire instance

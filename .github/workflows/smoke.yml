@@ -89,3 +89,6 @@ jobs:
         with:
           name: smoke-logs
           path: .smoke-logs/
+          # upload-artifact v4 skips hidden paths by default, and the harness writes to
+          # .smoke-logs -- so without this the artifact is always empty.
+          include-hidden-files: true
