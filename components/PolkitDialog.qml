@@ -8,6 +8,7 @@ import Quickshell.Wayland
 import Quickshell.Services.Polkit 0.1
 import M3Shapes
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.containers
 import qs.services
@@ -15,7 +16,16 @@ import qs.services
 StyledWindow {
     id: root
 
-    required property PolkitAgent agent
+    // The real PolkitAgent, or a stand-in with the two members this dialog actually uses:
+    // `isActive`, and a `flow` exposing message / supplementaryMessage / submit /
+    // cancelAuthenticationRequest. AskpassDialog passes such a stand-in.
+    required property var agent
+
+    // ssh and sudo prompts are free text ("Enter passphrase for key '…':"), not polkit's
+    // "action: command" shape, so their key paths must not be split out into the command chip.
+    property bool splitMessages: true
+
+    property string windowName: "polkit"
 
     property int activeScreenScale: 1
     readonly property real centerScale: Math.max(0.8, Math.min(1, root.height / 1440))
@@ -29,6 +39,13 @@ StyledWindow {
 
     readonly property var splitMessage: {
         let msg = rawMessage.trim();
+
+        if (!splitMessages)
+            return {
+                message: msg,
+                command: ""
+            };
+
         let cmd = "";
 
         let pkexecMatch = msg.match(/Authentication is needed to run `(.+?)' as the super user/);
@@ -75,7 +92,7 @@ StyledWindow {
 
     property bool isActive: agent.isActive && agent.flow != null // qmllint disable unresolved-type
 
-    name: "polkit"
+    name: windowName
     WlrLayershell.layer: WlrLayer.Overlay
     WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
     visible: isActive || closeAnim.running
@@ -164,7 +181,7 @@ StyledWindow {
     TextMetrics {
         id: nonAnimPlaceholder
 
-        text: "Enter your password"
+        text: Tr.tr("Enter your password")
         font: AppFonts.pinned(Tokens.font.body.builders.medium, "body", "medium").scale(root.centerScale).width(110).build()
     }
 
@@ -314,7 +331,7 @@ StyledWindow {
 
                     StyledText {
                         Layout.fillWidth: true
-                        text: "Authentication Required"
+                        text: Tr.tr("Authentication Required")
                         font: AppFonts.pinned(Tokens.font.title.builders.large, "title", "large").weight(Font.Medium).build()
                         color: Colours.palette.m3onSurface
                         horizontalAlignment: Text.AlignHCenter

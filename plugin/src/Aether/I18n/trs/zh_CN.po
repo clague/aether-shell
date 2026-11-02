@@ -8308,3 +8308,6 @@ msgstr "解锁"
 msgid "Password required"
 msgstr "需要密码"
 
+#: components/PolkitDialog.qml
+msgid "Authentication Required"
+msgstr "需要认证"
