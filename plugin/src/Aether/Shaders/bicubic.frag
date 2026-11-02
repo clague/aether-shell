@@ -10,51 +10,39 @@ layout(std140, binding = 0) uniform buf {
 
 layout(binding = 1) uniform sampler2D source;
 
-// Catmull-Rom weights for the four taps around a fractional offset.
-vec4 cubic(float v) {
-    vec4 n = vec4(1.0, 2.0, 3.0, 4.0) - v;
-    vec4 s = n * n * n;
-    float x = s.x;
-    float y = s.y - 4.0 * s.x;
-    float z = s.z - 4.0 * s.y + 6.0 * s.x;
-    float w = 6.0 - x - y - z;
-    return vec4(x, y, z, w) * (1.0 / 6.0);
-}
-
-vec4 textureBicubic(sampler2D tex, vec2 texCoords) {
-    // The real texture size, not the item's size. A layer is rounded up to whole pixels while
-    // the item it belongs to can be fractional, so deriving the texel grid from the item drifts
-    // by a fraction per pixel -- a periodic moire across the whole panel.
-    vec2 texSize = vec2(textureSize(tex, 0));
-    vec2 invTexSize = 1.0 / texSize;
-
-    texCoords = texCoords * texSize - 0.5;
-    vec2 fxy = fract(texCoords);
-    texCoords -= fxy;
-
-    vec4 xcubic = cubic(fxy.x);
-    vec4 ycubic = cubic(fxy.y);
-
-    vec4 c = texCoords.xxyy + vec2(-0.5, 1.5).xyxy;
-
-    vec4 s = vec4(xcubic.xz + xcubic.yw, ycubic.xz + ycubic.yw);
-    vec4 offset = c + vec4(xcubic.yw, ycubic.yw) / s;
-
-    offset *= invTexSize.xxyy;
-
-    vec4 sample0 = texture(tex, offset.xz);
-    vec4 sample1 = texture(tex, offset.yz);
-    vec4 sample2 = texture(tex, offset.xw);
-    vec4 sample3 = texture(tex, offset.yw);
-
-    float sx = s.x / (s.x + s.y);
-    float sy = s.z / (s.z + s.w);
-
-    return mix(mix(sample3, sample2, sx), mix(sample1, sample0, sx), sy);
+// Catmull-Rom weights for the taps at -1, 0, +1 and +2 relative to floor(t). At t == 0 they
+// collapse to (0, 1, 0, 0), which is what makes the filter an identity on the pixel grid.
+vec4 weights(float t) {
+    float t2 = t * t;
+    float t3 = t2 * t;
+    return vec4(-0.5 * t3 + t2 - 0.5 * t, 1.5 * t3 - 2.5 * t2 + 1.0, -1.5 * t3 + 2.0 * t2 + 0.5 * t, 0.5 * t3 - 0.5 * t2);
 }
 
 void main() {
-    // Catmull-Rom has negative lobes, which on premultiplied alpha can push a channel below
-    // zero and ring around high-contrast edges.
-    fragColor = max(textureBicubic(source, qt_TexCoord0), vec4(0.0)) * qt_Opacity;
+    // The real texture size, not the item's size: a layer is rounded up to whole pixels while
+    // the item can be fractional, and a size that disagrees with the texture drifts the texel
+    // grid a fraction per pixel -- a periodic checkerboard over the whole panel.
+    vec2 texSize = vec2(textureSize(source, 0));
+
+    // Texel-space position with texel centres on whole numbers, then split into the whole part
+    // and the fraction the kernel needs.
+    vec2 t = qt_TexCoord0 * texSize - 0.5;
+    vec2 base = floor(t);
+    vec2 f = t - base;
+
+    vec4 wx = weights(f.x);
+    vec4 wy = weights(f.y);
+
+    vec4 acc = vec4(0.0);
+    for (int j = 0; j < 4; ++j) {
+        float wyj = wy[j];
+        for (int i = 0; i < 4; ++i) {
+            vec2 samplePos = (base + vec2(float(i) - 1.0, float(j) - 1.0) + 0.5) / texSize;
+            acc += texture(source, samplePos) * (wx[i] * wyj);
+        }
+    }
+
+    // Catmull-Rom has negative lobes; on premultiplied alpha that can push a channel below zero
+    // and ring around high-contrast edges.
+    fragColor = max(acc, vec4(0.0)) * qt_Opacity;
 }

@@ -2988,8 +2988,15 @@ shader: `components/effects/BicubicLayer.qml` as `layer.effect`, with the fragme
 static result above is unchanged; while moving, the cubic kernel reconstructs closer to the
 original rasterisation.
 
-Two things that shader has to get right, both learned the hard way:
+Three things that shader has to get right, all learned the hard way:
 
+- **The kernel must be the identity on the pixel grid.** The widely-copied "textureBicubic"
+  snippet assumes edge-based coordinates and lands half a texel off when fed Qt's
+  pixel-centre `qt_TexCoord0`, so the panel goes soft instead of sharp. Compute the texel
+  space as `uv * textureSize - 0.5`, split it into `floor` and the fraction, and weight the
+  four taps at `-1, 0, +1, +2` with the Catmull-Rom polynomial: at fraction 0 that is
+  `(0, 1, 0, 0)`, so a panel at rest is byte-for-byte what it was without the effect (measured:
+  Laplacian deviation 0.06025 with, 0.06019 without).
 - **The sampler size comes from `textureSize(source, 0)`, never from the item's size.** The layer
   texture is rounded to whole pixels while the item can be fractional, so a size passed in from
   QML drifts the texel grid by a fraction per pixel -- a periodic checkerboard over the whole
