@@ -19,11 +19,16 @@ void BlobRect::updatePolish() {
     BlobShape::updatePolish();
 
     if (m_physicsActive) {
-        // Check if deformation is visually imperceptible
+        // Snap only when the deformation can no longer move a pixel. The matrix scales the
+        // panel about its centre, so the displacement at the edge is delta * size / 2; a fixed
+        // threshold on the raw matrix values therefore snapped by up to several pixels on a
+        // large panel. With the panels rasterised as sharp layers, that final jump is visible
+        // as the text being "corrected" a frame after it lands (T67).
+        const float halfSize = static_cast<float>(std::max(width(), height())) * 0.5f;
         const float totalDelta = std::abs(m_dm00 - 1.0f) + std::abs(m_dm01) + std::abs(m_dm11 - 1.0f);
         const float totalVel = std::abs(m_dmVel00) + std::abs(m_dmVel01) + std::abs(m_dmVel11);
 
-        if (totalDelta < 0.004f && totalVel < 0.05f) {
+        if (totalDelta * halfSize < 0.1f && totalVel * halfSize < 1.0f) {
             // Snap to rest, no visible deformation
             m_dm00 = 1.0f;
             m_dm01 = 0.0f;

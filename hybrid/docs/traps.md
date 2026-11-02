@@ -3010,5 +3010,14 @@ engine's resource table when something imports it, which is why `BicubicLayer.qm
 otherwise-unused `import Aether.Shaders` (with a matching `qmllint disable`). Without it the
 shader URL resolves to nothing and `layer.effect` has no program to run.
 
+Sharp layers also exposed the blob deformation's landing. `BlobRect` runs an underdamped spring
+on the deformation matrix and snapped it to identity once the matrix values were small
+(`delta < 0.004`), which is a fixed *relative* threshold: the matrix scales the panel about its
+centre, so that snap moved an edge by `delta * size / 2` -- about 1px on a 476px popout and
+several px on a wide launcher. Blurred text hid it; sharp text does not, and it reads as the font
+being corrected a frame after the panel lands. The threshold is now pixel-aware
+(`delta * halfSize < 0.1`), so the snap happens below a tenth of a pixel and the settle is
+monotonic. The tail is a few frames longer, entirely sub-pixel.
+
 This is a mitigation, not a fix for the underlying behaviour: the text is still native-rendered,
 it is just no longer re-rendered per frame.
