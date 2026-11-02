@@ -161,12 +161,32 @@ void PluginManifest::parse() {
         emit moduleUriChanged();
     }
 
-    ASSIGN(m_name, name, nameChanged)
-    ASSIGN(m_version, version, versionChanged)
-    ASSIGN(m_icon, icon, iconChanged)
-    ASSIGN(m_description, description, descriptionChanged)
-    ASSIGN(m_author, author, authorChanged)
-    ASSIGN(m_requires, requirement, requirementChanged)
+    // Spelled out rather than through ASSIGN: the dead-signal checker reads for a literal
+    // `emit nameChanged()`, and a macro hides the name from it (T21).
+    if (m_name != name) {
+        m_name = name;
+        emit nameChanged();
+    }
+    if (m_version != version) {
+        m_version = version;
+        emit versionChanged();
+    }
+    if (m_icon != icon) {
+        m_icon = icon;
+        emit iconChanged();
+    }
+    if (m_description != description) {
+        m_description = description;
+        emit descriptionChanged();
+    }
+    if (m_author != author) {
+        m_author = author;
+        emit authorChanged();
+    }
+    if (m_requires != requirement) {
+        m_requires = requirement;
+        emit requirementChanged();
+    }
     ASSIGN(m_settingsSource, settingsSource, settingsSourceChanged)
     ASSIGN(m_settingsUiSource, settingsUiSource, settingsUiSourceChanged)
     ASSIGN(m_entryPoints, entryPoints, entryPointsChanged)

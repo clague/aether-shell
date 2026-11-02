@@ -243,7 +243,7 @@ QtObject {
         },
         Component {
             // Plugins
-            PlaceholderComp {}
+            PluginsPage {}
         },
         Component {
             // Doctor
