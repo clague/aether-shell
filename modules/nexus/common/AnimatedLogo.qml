@@ -25,14 +25,27 @@ Item {
     readonly property alias star2: star2
     readonly property alias star3: star3
 
-    // Easter egg: holding the logo charges it. The A shakes and the stars orbit faster;
-    // 0 is the resting state (see AboutPage).
+    // Easter egg: holding the logo charges it. The A shakes and the stars move along the
+    // orbit faster; 0 is the resting state (see AboutPage).
     property real energy: 0
-    property real orbitAngle: 0
+    property real orbitPhase: 0
     property real shakeX: 0
     property real shakeY: 0
 
+    // The orbit is the ellipse drawn below: centre (64, 72), radii 53 x 19, rotated -14
+    // degrees. Stars are placed on that path rather than on a circle of their own.
+    readonly property point star1Pos: orbitPoint(Math.PI * 1.5 + orbitPhase)
+    readonly property point star2Pos: orbitPoint(Math.PI / 6 + orbitPhase)
+    readonly property point star3Pos: orbitPoint(Math.PI * 5 / 6 + orbitPhase)
+
     signal animationCompleted
+
+    function orbitPoint(angle: real): point {
+        const sx = 53 * Math.cos(angle);
+        const sy = 19 * Math.sin(angle);
+        const rot = -14 * Math.PI / 180;
+        return Qt.point(64 + sx * Math.cos(rot) - sy * Math.sin(rot), 72 + sx * Math.sin(rot) + sy * Math.cos(rot));
+    }
 
     implicitWidth: 128
     implicitHeight: 128
@@ -165,13 +178,12 @@ Item {
             }
         }
 
-        // The three stars orbit the letter while the logo is charged.
+        // The three stars travel along the orbit while the logo is charged. Each keeps its
+        // own shape upright; only its centre moves.
         Item {
             id: starLayer
 
             anchors.fill: parent
-            rotation: root.orbitAngle
-            transformOrigin: Item.Center
 
             Shape {
                 id: star1
@@ -179,6 +191,10 @@ Item {
                 anchors.fill: parent
                 preferredRendererType: Shape.CurveRenderer
                 opacity: 0.0
+                transform: Translate {
+                    x: root.star1Pos.x - 64
+                    y: root.star1Pos.y - 19
+                }
 
                 ShapePath {
                     fillColor: logo.starColour
@@ -196,6 +212,10 @@ Item {
                 anchors.fill: parent
                 preferredRendererType: Shape.CurveRenderer
                 opacity: 0.0
+                transform: Translate {
+                    x: root.star2Pos.x - 102
+                    y: root.star2Pos.y - 45
+                }
 
                 ShapePath {
                     fillColor: logo.starColour
@@ -213,6 +233,10 @@ Item {
                 anchors.fill: parent
                 preferredRendererType: Shape.CurveRenderer
                 opacity: 0.0
+                transform: Translate {
+                    x: root.star3Pos.x - 24
+                    y: root.star3Pos.y - 96
+                }
 
                 ShapePath {
                     fillColor: logo.starColour
@@ -583,7 +607,7 @@ Item {
         running: root.energy > 0.001
 
         onTriggered: {
-            root.orbitAngle = (root.orbitAngle + frameTime * (30 + root.energy * 540)) % 360;
+            root.orbitPhase = (root.orbitPhase + frameTime * (0.55 + root.energy * 9.5)) % (Math.PI * 2);
             const amp = root.energy * 3.2;
             root.shakeX = Math.sin(elapsedTime * 57) * amp;
             root.shakeY = Math.cos(elapsedTime * 43) * amp;
