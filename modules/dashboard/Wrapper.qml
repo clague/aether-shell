@@ -6,6 +6,7 @@ import Aether
 import Aether.Config
 import Aether.I18n
 import qs.components
+import qs.components.effects
 import qs.components.filedialog
 import qs.utils
 
@@ -41,6 +42,7 @@ Item {
     // frame; see T67.
     layer.enabled: true
     layer.smooth: true
+    layer.effect: BicubicLayer {}
 
     Behavior on offsetScale {
         Anim {}

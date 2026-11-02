@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Aether.Config
 import qs.components
+import qs.components.effects
 import qs.modules.launcher.services
 
 Item {
@@ -43,6 +44,7 @@ Item {
     // frame; see T67.
     layer.enabled: true
     layer.smooth: true
+    layer.effect: BicubicLayer {}
 
     Component.onCompleted: Qt.callLater(() => Apps) // Load apps on init
 

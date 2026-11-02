@@ -4,6 +4,7 @@ import QtQuick
 import Aether
 import Aether.Config
 import qs.components
+import qs.components.effects
 
 Item {
     id: root
@@ -30,6 +31,7 @@ Item {
     // frame; see T67.
     layer.enabled: true
     layer.smooth: true
+    layer.effect: BicubicLayer {}
 
     Behavior on offsetScale {
         Anim {}

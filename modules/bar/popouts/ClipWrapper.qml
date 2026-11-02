@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Aether.Config
 import qs.components
+import qs.components.effects
 import qs.modules.bar.popouts // Need to import this module so the Wrapper type is the same as others
 
 Item {
@@ -91,6 +92,7 @@ Item {
         // every frame; see T67.
         layer.enabled: true
         layer.smooth: true
+        layer.effect: BicubicLayer {}
 
         // A layer is only sampled 1:1 when the item is a whole number of pixels wide and
         // sits on a whole pixel. Both were fractional here -- the width comes from font

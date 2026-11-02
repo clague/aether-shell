@@ -5,6 +5,7 @@ import Quickshell
 import Aether
 import Aether.Config
 import qs.components
+import qs.components.effects
 import qs.modules.sidebar as Sidebar
 import qs.modules.bar.popouts as BarPopouts
 
@@ -48,6 +49,7 @@ Item {
     // frame; see T67.
     layer.enabled: true
     layer.smooth: true
+    layer.effect: BicubicLayer {}
 
     states: State {
         name: "attachedToSidebar"

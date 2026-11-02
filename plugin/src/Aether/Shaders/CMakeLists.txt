@@ -12,6 +12,7 @@ qt_add_shaders(aether-shaders "shaders"
     GLSL "300es,330"
     PREFIX "/shaders"
     FILES
+        bicubic.frag
         crossfade.frag
         chromatic-bloom.frag
         colour-distance.frag

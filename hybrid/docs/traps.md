@@ -2981,9 +2981,27 @@ content by up to a pixel): the launcher settles at `989, 897` with `632 x 533`, 
 because their sizes and centring happen to land on whole pixels. Do not "round everything" by
 reflex; measure the panel, and round the ones that are actually fractional.
 
-A Catmull-Rom resampling shader was tried for the remaining motion-phase softness and is not in
-the tree: it only helps while the panel moves, and it needs the integral geometry above to avoid
-turning a permanent stretch into visible moire.
+For the remaining motion-phase softness -- a panel that is moving is a texture sampled between
+texels, and bilinear loses edge contrast doing it -- the panels now use a Catmull-Rom resampling
+shader: `components/effects/BicubicLayer.qml` as `layer.effect`, with the fragment shader in
+`plugin/src/Aether/Shaders/bicubic.frag`. At whole-pixel alignment it is the identity, so the
+static result above is unchanged; while moving, the cubic kernel reconstructs closer to the
+original rasterisation.
+
+Two things that shader has to get right, both learned the hard way:
+
+- **The sampler size comes from `textureSize(source, 0)`, never from the item's size.** The layer
+  texture is rounded to whole pixels while the item can be fractional, so a size passed in from
+  QML drifts the texel grid by a fraction per pixel -- a periodic checkerboard over the whole
+  panel, which reads as "the panel is behind a mesh veil". `textureSize()` cannot disagree with
+  the texture it is sampling, on any display scale.
+- **Catmull-Rom has negative lobes.** On premultiplied alpha that can push a channel below zero
+  and ring around high-contrast edges, so clamp the result at zero.
+
+The `.qsb` is compiled by `qt_add_shaders` in the `Aether.Shaders` module and only reaches the QML
+engine's resource table when something imports it, which is why `BicubicLayer.qml` carries an
+otherwise-unused `import Aether.Shaders` (with a matching `qmllint disable`). Without it the
+shader URL resolves to nothing and `layer.effect` has no program to run.
 
 This is a mitigation, not a fix for the underlying behaviour: the text is still native-rendered,
 it is just no longer re-rendered per frame.
