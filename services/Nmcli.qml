@@ -1948,10 +1948,10 @@ Singleton {
     Process {
         id: reapMonitorProc
 
-        // Kill only monitors whose parent is not a running shell: the current one is a child of
-        // qs, and so is a second live instance's, while leftovers from a killed shell were
-        // reparented to the user manager (PID 1 or systemd --user), not to init.
-        command: ["sh", "-c", "live=$(pgrep -x qs | tr '\n' ' '); for pid in $(pgrep -f '^/usr/bin/nmcli monitor$'); do ppid=$(ps -o ppid= -p \"$pid\" 2>/dev/null | tr -d ' '); if [ -n \"$ppid\" ] && ! printf ' %s ' $live | grep -q \" $ppid \"; then kill \"$pid\" 2>/dev/null; fi; done"]
+        // Only touches monitors this shell started: AETHER_NMCLI_MONITOR is set on them below,
+        // so a monitor run by any other program is never considered, however it was launched.
+        // Of ours, only those whose parent is not a live qs are leftovers.
+        command: ["sh", "-c", "live=$(pgrep -x qs | tr '\n' ' '); for pid in $(pgrep -f '^/usr/bin/nmcli monitor$'); do ppid=$(ps -o ppid= -p \"$pid\" 2>/dev/null | tr -d ' '); [ -n \"$ppid\" ] && printf ' %s ' $live | grep -q \" $ppid \" && continue; tr '\\0' '\\n' < /proc/$pid/environ 2>/dev/null | grep -qx AETHER_NMCLI_MONITOR=1 && kill \"$pid\" 2>/dev/null; done"]
     }
 
     Process {
@@ -1960,6 +1960,7 @@ Singleton {
         running: true
         command: ["nmcli", "monitor"]
         environment: ({
+                AETHER_NMCLI_MONITOR: "1",
                 LANG: "C.UTF-8",
                 LC_ALL: "C.UTF-8"
             })

@@ -624,6 +624,14 @@ Singleton {
 
         running: root.selectedProvider.length > 0
         command: ["nmcli", "monitor"]
+        // Marks the process as one of ours for the stale-monitor cleanup in Nmcli.qml.
+        // qmllint disable incompatible-type
+        environment: ({
+                // qmllint enable incompatible-type
+                AETHER_NMCLI_MONITOR: "1",
+                LANG: "C.UTF-8",
+                LC_ALL: "C.UTF-8"
+            })
         stdout: SplitParser {
             onRead: statusCheckTimer.restart()
         }
