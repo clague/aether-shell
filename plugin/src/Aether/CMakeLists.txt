@@ -15,8 +15,9 @@ qml_module(aether-core
 )
 target_link_libraries(aether-core PUBLIC aether-util)
 
-# Bake the shell version in so CUtils can expose it without spawning a process
-target_compile_definitions(aether-core PRIVATE AETHER_VERSION="${VERSION}")
+# Bake the shell version in so CUtils can expose it without spawning a process. This is the
+# display string from the top-level CMakeLists (a tag, or r<short sha> for untagged builds).
+target_compile_definitions(aether-core PRIVATE AETHER_VERSION="${AETHER_DISPLAY_VERSION}")
 
 # Node macros expand to Q_OBJECT, automoc can't see it otherwise
 list(APPEND CMAKE_AUTOMOC_MACRO_NAMES

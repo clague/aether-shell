@@ -1694,6 +1694,13 @@ Both paths are verified, because fixing one had already broken the other once:
 | bare | `2.4.0` | the real local HEAD |
 | `-DVERSION= -DGIT_REVISION=` | `0.0.0` | `unknown` |
 
+The shell's own version -- `CUtils.version`, which the About page and the Software rows show --
+is a second string on top of those placeholders: when `VERSION` was unset the top-level
+CMakeLists derives `r<short sha>` with a local `git rev-parse` (offline, so the gate keeps its
+no-network property) and bakes that into `AETHER_VERSION`. Without it every gate-built shell
+reported `v0.0.0`, which names nothing a bug report could be checked against. Tagged checkouts
+still report their tag, and `extras/version.cpp` keeps printing the raw placeholders.
+
 The lesson is narrower than T34's and worth keeping separate: **a variable can be set and
 still be empty, and `if(NOT DEFINED)` does not notice.** The guard has to match how callers
 actually pass the value, not how you imagine they do.

@@ -88,10 +88,34 @@ string(REGEX REPLACE "^v" "" VERSION "${VERSION}")
 # exactly the network dependency the empty values exist to avoid. A build that says 0.0.0 and
 # "unknown" is honest about being an unversioned build; one that says nothing looks broken.
 if("${VERSION}" STREQUAL "")
+    set(AETHER_VERSION_WAS_UNSET TRUE)
     set(VERSION "0.0.0")
 endif()
 if("${GIT_REVISION}" STREQUAL "")
     set(GIT_REVISION "unknown")
+endif()
+
+# What the shell shows as its version. A tagged checkout keeps its tag; an untagged one --
+# including the gate builds above, which deliberately hide the tag -- reports `r<short sha>`,
+# so the About page names the commit it is actually running instead of 0.0.0. The revision is
+# read from the local repository only: `rev-parse` needs no network, which is the property the
+# empty gate values protect.
+if(AETHER_VERSION_WAS_UNSET)
+    execute_process(
+        COMMAND git -C "${CMAKE_CURRENT_SOURCE_DIR}" rev-parse --short=7 HEAD
+        OUTPUT_VARIABLE AETHER_LOCAL_REVISION
+        RESULT_VARIABLE AETHER_LOCAL_REVISION_RESULT
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_QUIET
+    )
+
+    if(AETHER_LOCAL_REVISION_RESULT EQUAL 0 AND NOT "${AETHER_LOCAL_REVISION}" STREQUAL "")
+        set(AETHER_DISPLAY_VERSION "r${AETHER_LOCAL_REVISION}")
+    else()
+        set(AETHER_DISPLAY_VERSION "${VERSION}")
+    endif()
+else()
+    set(AETHER_DISPLAY_VERSION "${VERSION}")
 endif()
 
 project(aether-shell VERSION ${VERSION} LANGUAGES CXX)

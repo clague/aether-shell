@@ -88,7 +88,9 @@ PageBase {
 
                 StyledText {
                     Layout.alignment: Qt.AlignHCenter
-                    text: CUtils.version ? `v${CUtils.version}` : "…"
+                    // Untagged builds report `r<short sha>` and are already self-describing; a
+                    // release tag gets the version prefix it has always had.
+                    text: CUtils.version ? (CUtils.version.startsWith("r") ? CUtils.version : `v${CUtils.version}`) : "…"
                     color: Colours.palette.m3onSurfaceVariant
                     font: Tokens.font.body.medium
 
