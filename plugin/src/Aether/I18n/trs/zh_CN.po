@@ -8311,3 +8311,16 @@ msgstr "需要密码"
 #: components/PolkitDialog.qml
 msgid "Authentication Required"
 msgstr "需要认证"
+
+#: modules/nexus/pages/TokensPage.qml
+msgid "Shell Tokens is a developer page. Turning it off hides it from the sidebar; tap the version in About seven times to bring it back."
+msgstr "Shell Tokens 是开发者页面。关闭后会从侧栏隐藏；在「关于」页连点版本号 7 次可重新开启。"
+
+#: modules/nexus/pages/TokensPage.qml
+msgid "Turn off developer options"
+msgstr "关闭开发者选项"
+
+#: modules/nexus/pages/TokensPage.qml
+msgid "Turned off. Shell Tokens is hidden from the sidebar."
+msgstr "已关闭，Shell Tokens 已从侧栏隐藏。"
+

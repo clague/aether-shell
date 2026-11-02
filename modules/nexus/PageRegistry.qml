@@ -125,7 +125,8 @@ QtObject {
             label: Tr.tr("About"),
             icon: "info",
             description: Tr.tr("System information, preset, credits"),
-            category: "about"
+            category: "about",
+            key: "about"
         },
     ]
 }
