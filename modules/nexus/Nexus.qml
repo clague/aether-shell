@@ -42,12 +42,38 @@ Item {
         return false;
     }
 
+    // Walks the focus chain, or starts in the sidebar when only the window root holds focus
+    // (right after opening), so the arrows work before the first click.
+    function moveFocus(forward: bool): bool {
+        const item = root.focusedItem;
+        if (!item || item === root)
+            return FocusNav.focusFirstIn(navPane, forward);
+        FocusNav.move(root.Window.window, forward);
+        return true;
+    }
+
+    // The window's initial focus item, so key events have somewhere to go before the first
+    // click. Qt hands it active focus when the window is activated; children take over as soon
+    // as the user clicks or tabs into them.
+    focus: true
+
     // Global shortcuts need to know which settings window a back/forward press belongs to.
+    // Keys only reach these handlers through the focused item, so the window has to hand the
+    // root focus when it opens (or when it is re-activated with nothing focused); without this
+    // the arrows did nothing until the first click.
     Window.onActiveChanged: {
-        if (Window.active)
+        if (Window.active) {
             NexusTarget.state = nState;
-        else if (NexusTarget.state === nState)
+            if (!Window.activeFocusItem)
+                root.forceActiveFocus(Qt.TabFocusReason);
+        } else if (NexusTarget.state === nState) {
             NexusTarget.state = null;
+        }
+    }
+
+    Component.onCompleted: {
+        if (Window.active && !Window.activeFocusItem)
+            root.forceActiveFocus(Qt.TabFocusReason);
     }
 
     Component.onDestruction: {
@@ -71,13 +97,11 @@ Item {
     // Arrow keys walk the same focus chain Tab uses; see FocusNav. Keys that a focused control
     // consumes for itself (a slider's value, a text field's caret) never reach these handlers.
     Keys.onUpPressed: event => {
-        FocusNav.move(Window.window, false);
-        event.accepted = true;
+        event.accepted = root.moveFocus(false);
     }
 
     Keys.onDownPressed: event => {
-        FocusNav.move(Window.window, true);
-        event.accepted = true;
+        event.accepted = root.moveFocus(true);
     }
 
     // Left/right switch between the panes rather than walking the flat focus chain: the sidebar
@@ -89,7 +113,7 @@ Item {
     }
 
     Keys.onRightPressed: event => {
-        if (root.isInside(root.focusedItem, navPane))
+        if (!root.focusedItem || root.focusedItem === root || root.isInside(root.focusedItem, navPane))
             event.accepted = FocusNav.focusFirstIn(pages);
     }
 
@@ -105,6 +129,10 @@ Item {
     // was tapped, so this does not steal the ordinary left click above.
     TapHandler {
         acceptedButtons: Qt.BackButton | Qt.ForwardButton
+
+        // A click that drags the mouse by a pixel or two is still a tap for these buttons; the
+        // default DragThreshold policy drops exactly the presses people make while moving.
+        gesturePolicy: TapHandler.ReleaseWithinBounds
 
         onTapped: (eventPoint, button) => {
             if (button === Qt.BackButton)
