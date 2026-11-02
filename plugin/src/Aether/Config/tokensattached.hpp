@@ -17,6 +17,10 @@ class Tokens : public QQuickAttachedPropertyPropagator, public QQmlParserStatus 
     QML_ATTACHED(Tokens)
 
     Q_PROPERTY(QString screen READ screen WRITE inheritScreen NOTIFY sourceChanged)
+    // Multiplies every Tokens.font size for this item and its children. A window that wants
+    // larger type than the rest of the shell sets it once on its root; 1 is the configured
+    // size. Icons scale with the text so rows keep their proportions.
+    Q_PROPERTY(qreal fontScale READ fontScale WRITE inheritFontScale NOTIFY sourceChanged)
     Q_PROPERTY(const aether::shell::config::AppearanceRounding* rounding READ rounding NOTIFY sourceChanged)
     Q_PROPERTY(const aether::shell::config::AppearanceSpacing* spacing READ spacing NOTIFY sourceChanged)
     Q_PROPERTY(const aether::shell::config::AppearancePadding* padding READ padding NOTIFY sourceChanged)
@@ -30,6 +34,9 @@ public:
 
     [[nodiscard]] QString screen() const;
     void inheritScreen(const QString& screen);
+
+    [[nodiscard]] qreal fontScale() const;
+    void inheritFontScale(qreal scale);
 
     [[nodiscard]] const AppearanceRounding* rounding() const;
     [[nodiscard]] const AppearanceSpacing* spacing() const;
@@ -56,9 +63,11 @@ protected:
 
 private:
     void propagateScreen();
+    void propagateFontScale();
 
     bool m_complete = false;
     QString m_screen;
+    qreal m_fontScale = 1;
     ConfigRoot* m_config = nullptr;
     TokensRoot* m_tokens = nullptr;
 };

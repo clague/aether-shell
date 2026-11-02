@@ -142,6 +142,9 @@ public:
     void bindFont(AppearanceFont* font);
     // Binds the appearance tokens layer for mono font sizes
     void bindTokens(AppearanceTokens* tokens);
+    // Multiplies the size the appearance config already applies (its own interface-size
+    // scale included). 1 means "exactly as configured".
+    void setExtraScale(qreal scale);
 
     [[nodiscard]] FontStyle* headline() const;
     [[nodiscard]] FontStyle* title() const;
@@ -162,6 +165,7 @@ private:
 
     AppearanceFont* m_font = nullptr;
     AppearanceTokens* m_tokens = nullptr;
+    qreal m_extraScale = 1;
     FontStyle* m_headline;
     FontStyle* m_title;
     FontStyle* m_body;

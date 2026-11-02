@@ -51,6 +51,27 @@ void Tokens::inheritScreen(const QString& screen) {
     emit sourceChanged();
 }
 
+qreal Tokens::fontScale() const {
+    return m_fontScale;
+}
+
+void Tokens::inheritFontScale(qreal scale) {
+    if (qFuzzyCompare(m_fontScale, scale))
+        return;
+
+    m_fontScale = scale;
+    propagateFontScale();
+    emit sourceChanged();
+}
+
+void Tokens::propagateFontScale() {
+    const auto children = attachedChildren();
+    for (auto* const child : children) {
+        if (auto* const tokens = qobject_cast<Tokens*>(child))
+            tokens->inheritFontScale(m_fontScale);
+    }
+}
+
 void Tokens::propagateScreen() {
     const auto children = attachedChildren();
     for (auto* const child : children) {
@@ -64,8 +85,10 @@ void Tokens::attachedParentChange(
     QQuickAttachedPropertyPropagator* newParent, QQuickAttachedPropertyPropagator* oldParent) {
     Q_UNUSED(oldParent);
     const auto* tokens = qobject_cast<Tokens*>(newParent);
-    if (tokens)
+    if (tokens) {
         inheritScreen(tokens->screen());
+        inheritFontScale(tokens->fontScale());
+    }
 }
 
 #define TOKENS_ATTACHED_GETTER(Type, name)                                                                             \
@@ -93,7 +116,8 @@ const SizeTokens* Tokens::sizes() const {
 }
 
 const FontTokens* Tokens::font() const {
-    return (m_config ? m_config : ConfigSingleton::instance())->fontTokens();
+    auto* config = m_config ? m_config : ConfigSingleton::instance();
+    return config->fontTokens(m_fontScale);
 }
 
 const AnimTokens* Tokens::anim() {

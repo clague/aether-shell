@@ -1,5 +1,7 @@
 #pragma once
 
+#include <qhash.h>
+
 #include "settings/rootnode.hpp"
 #include "settings/singleton.hpp"
 #include "aiconfig.hpp"
@@ -64,12 +66,17 @@ public:
     explicit ConfigRoot(const QString& path, ConfigRoot* fallback = nullptr, QObject* parent = nullptr);
 
     [[nodiscard]] const FontTokens* fontTokens() const;
+    // Font tokens for the same appearance config with an extra scale applied. Cached per
+    // scale: a window-wide font scale then costs one token set, not one per item that reads
+    // Tokens.font.
+    [[nodiscard]] const FontTokens* fontTokens(qreal extraScale);
 
 private:
     // Binds computed values to the global token base values
     void bindTokens();
 
     FontTokens* const m_fontTokens;
+    QHash<int, FontTokens*> m_scaledFontTokens;
 };
 
 class TokensRoot : public settings::RootNode {

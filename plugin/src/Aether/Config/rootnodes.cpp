@@ -71,6 +71,22 @@ const FontTokens* ConfigRoot::fontTokens() const {
     return m_fontTokens;
 }
 
+const FontTokens* ConfigRoot::fontTokens(qreal extraScale) {
+    if (qFuzzyCompare(extraScale, 1.0))
+        return m_fontTokens;
+
+    // Quantised so a binding that keeps producing the same scale does not allocate again.
+    const int key = qRound(extraScale * 1000);
+    if (const auto it = m_scaledFontTokens.constFind(key); it != m_scaledFontTokens.constEnd())
+        return it.value();
+
+    auto* tokens = new FontTokens(this);
+    tokens->setExtraScale(key / 1000.0);
+    tokens->bindFont(m_appearance->font());
+    m_scaledFontTokens.insert(key, tokens);
+    return tokens;
+}
+
 void ConfigRoot::bindTokens() {
     const auto* tokens = TokensSingleton::instance()->appearance();
     m_appearance->rounding()->bindTokens(tokens->rounding());

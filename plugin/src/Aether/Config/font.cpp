@@ -257,8 +257,16 @@ void FontTokens::bindFont(AppearanceFont* font) {
     emit workspacesChanged();
 }
 
+void FontTokens::setExtraScale(qreal scale) {
+    if (qFuzzyCompare(m_extraScale + 1.0, scale + 1.0))
+        return;
+
+    m_extraScale = scale;
+    rebuildScale();
+}
+
 void FontTokens::rebuildScale() {
-    const qreal s = m_font ? m_font->scale() : 1;
+    const qreal s = (m_font ? m_font->scale() : 1) * m_extraScale;
     m_headline->setScale(s);
     m_title->setScale(s);
     m_body->setScale(s);
