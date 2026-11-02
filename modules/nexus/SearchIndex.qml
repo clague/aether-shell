@@ -2271,11 +2271,11 @@ QtObject {
             kind: "row",
             page: 4,
             sub: 0,
-            label: Tr.tr("Stored in hypr-vars.lua"),
-            subtext: Tr.tr("Hyprland reads this file at startup; clear a row to remove its override."),
+            label: Tr.tr("Most settings are saved in hypr-vars.lua"),
+            subtext: Tr.tr("Glass, Motion and the spacing sliders apply live; clear a row to remove its override."),
             section: "",
             subTitle: Tr.tr("Hyprland"),
-            kw: []
+            kw: ["hypr-vars"]
         },
         {
             kind: "page",

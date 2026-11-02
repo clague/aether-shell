@@ -3040,18 +3040,17 @@ msgstr "屏幕边缘的间隙"
 msgid "Window border"
 msgstr "窗口边框"
 
-#: modules/nexus/pages/hyprland/HyprSpacingPage.qml
-#: modules/nexus/pages/hyprland/HyprWindowEffectsPage.qml
+#: modules/nexus/pages/hyprland/HyprlandPage.qml
 #: modules/nexus/SearchIndex.qml
-msgid "Stored in hypr-vars.lua"
-msgstr "保存在 hypr-vars.lua"
+msgid "Most settings are saved in hypr-vars.lua"
+msgstr "大部分设置保存在 hypr-vars.lua"
 
-#: modules/nexus/pages/hyprland/HyprSpacingPage.qml
-#: modules/nexus/pages/hyprland/HyprWindowEffectsPage.qml
+#: modules/nexus/pages/hyprland/HyprlandPage.qml
 #: modules/nexus/SearchIndex.qml
 msgid ""
-"Hyprland reads this file at startup; clear a row to remove its override."
-msgstr "Hyprland 启动时读取此文件；清除某一行即可移除对应覆盖。"
+"Glass, Motion and the spacing sliders apply live; clear a row to remove its "
+"override."
+msgstr "玻璃、动效和间距滑块即时生效；清除某一行即可移除对应覆盖。"
 
 #: modules/nexus/pages/hyprland/HyprSpacingPage.qml
 msgid "Workspace gaps"
