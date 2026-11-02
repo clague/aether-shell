@@ -89,6 +89,11 @@ Item {
         offsetScale: root.offsetScale
         screenState: root.screenState
 
+        // Slide this popout as one rasterised texture instead of re-rasterising its text
+        // every frame; see T67.
+        layer.enabled: true
+        layer.smooth: true
+
         // Apply slide animation margins based on edge
         anchors.leftMargin: root.bar.position === "left" ? (-implicitWidth - 5) * root.offsetScale : 0
         anchors.rightMargin: root.bar.position === "right" ? (-implicitWidth - 5) * root.offsetScale : 0

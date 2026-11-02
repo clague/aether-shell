@@ -39,6 +39,11 @@ Item {
     implicitWidth: content.implicitWidth || 630 // Hard coded fallback for first open
     opacity: 1 - offsetScale
 
+    // Slide this panel as one rasterised texture instead of re-rasterising its text every
+    // frame; see T67.
+    layer.enabled: true
+    layer.smooth: true
+
     Component.onCompleted: Qt.callLater(() => Apps) // Load apps on init
 
     Behavior on offsetScale {

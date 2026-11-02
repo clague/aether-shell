@@ -44,6 +44,11 @@ Item {
     implicitWidth: sidebar.width * (1 - sidebar.offsetScale) * horizontalStretch * sidebarLerp + Tokens.sizes.utilities.width * (1 - sidebarLerp)
     opacity: 1 - offsetScale
 
+    // Slide this panel as one rasterised texture instead of re-rasterising its text every
+    // frame; see T67.
+    layer.enabled: true
+    layer.smooth: true
+
     states: State {
         name: "attachedToSidebar"
         when: root.screenState.sidebar

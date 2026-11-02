@@ -22,6 +22,11 @@ Item {
     implicitHeight: content.implicitHeight || 510 // Hard coded fallback for first open
     opacity: 1 - offsetScale
 
+    // Slide this panel as one rasterised texture instead of re-rasterising its text every
+    // frame; see T67.
+    layer.enabled: true
+    layer.smooth: true
+
     Behavior on offsetScale {
         Anim {}
     }

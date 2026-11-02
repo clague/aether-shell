@@ -2918,3 +2918,51 @@ QtWayland's own bookkeeping about which surface it thinks has the text-input obj
 consequence of several surfaces existing in one process and is not itself the fault. The
 `TextInput` warnings do not indicate whether an IME is working; the `fcitx5-diagnose` focus
 list does.
+
+## T67 — Text jitters during panel animations because it is re-rasterised every frame
+
+Every animated panel moves by a fractional amount: `offsetScale` is a `real`, and it drives
+`anchors.margins`, `height` or `x` (`modules/launcher/Wrapper.qml`,
+`modules/sidebar/Wrapper.qml`, the popout `ClipWrapper`). Text is drawn with
+`Text.NativeRendering` (`components/StyledText.qml`), which is what makes 1×-scale text crisp:
+it disables subpixel glyph positioning and snaps each glyph to whole device pixels.
+
+Those two together are the bug. The panel's position changes smoothly, the glyphs inside do
+not: each frame Qt re-rasterises the text at a freshly rounded position, so a label appears to
+jump one pixel at a time while the panel slides. On a 1× display it is most visible on small
+labels and icons, and it looks like "pixel jitter" rather than motion blur. Upstream has the
+same report in caelestia-dots/shell discussion #1841 ("Text tearing inside animating panels"),
+unanswered; their PR #1271 fixed exactly this mechanism once, for icons, by making the size an
+integer.
+
+The fix is to stop re-rasterising: put the animated panel root in a Qt layer.
+
+```qml
+layer.enabled: true
+layer.smooth: true
+```
+
+The panel is rendered into a texture once, at an integer position, and the *texture* is what
+moves. Glyphs keep their pixel-snapped rasterisation for the whole animation, and
+`layer.smooth` makes the sampler bilinear instead of nearest, which is the difference between
+subpixel slide and visible stepping.
+
+Two details that cost an earlier attempt (reverted in `118e0082`):
+
+- **`layer.smooth` is not the default.** Without it the layer texture is sampled with nearest
+  filtering, which looks like the same jitter it was meant to remove -- the stepping just moves
+  from the glyphs to the whole panel. Set both.
+- **Leave the layer on permanently, do not scope it to `offsetScale > 0 && offsetScale < 1`.**
+  Enabling a layer allocates a texture and re-rasterises the item at that instant; doing it on
+  the first frame of the animation re-rasterises exactly when the motion starts, which is a
+  visible pop, and it re-rasterises again on the way back. A panel that is always layered costs
+  one FBO and never switches.
+
+The trade-off is real: while moving, the panel is a filtered texture, so text is very slightly
+soft, and it snaps back to 1:1 at rest. Integer geometry rounding and a Catmull-Rom resampling
+shader were both tried to remove that softness; rounding alone does nothing for
+`offsetScale`-driven motion, and the shader needs every panel's size to already be integral to
+avoid a permanent resample, which the font-metric-derived sizes are not. Neither is in the tree.
+
+This is a mitigation, not a fix for the underlying behaviour: the text is still native-rendered,
+it is just no longer re-rendered per frame.
