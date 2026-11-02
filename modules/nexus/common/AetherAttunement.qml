@@ -10,10 +10,10 @@ import qs.services
 
 // The About page's easter egg, opened by holding the logo for a couple of seconds.
 //
-// A target waveform is generated at random -- its form, amplitude, period and phase -- and
-// is drawn as a dim curve. The player tunes their own curve's form, amplitude, period and
-// phase until the two overlap; when the deviation drops below the level's tolerance the
-// level clears and a harder target appears (more forms, less slack).
+// The target is a random sum of sine components -- one more per level -- drawn dashed.
+// The player gets the same number of components, each with its own amplitude, period and
+// phase, and the solid curve is their sum. Aligning the sums clears the level and a new
+// target appears with one more component (up to four), then just a tighter tolerance.
 Item {
     id: root
 
@@ -23,67 +23,40 @@ Item {
     property int cleared: 0
     property bool completing: false
 
-    property string targetForm: "sine"
-    property real targetAmp: 0.7
-    property real targetPeriod: 0.9
-    property real targetPhase: 0
+    // [{ amp, period, phase }, ...]
+    property var targetParts: []
+    property var parts: []
+    property int selected: 0
 
-    property string form: "sine"
-    property real amp: 0.5
-    property real period: 1
-    property real phase: 0
-
-    readonly property var forms: ["sine", "triangle", "square", "saw"]
-
-    // Root-mean-square difference between the two curves, sampled across the canvas. It is
-    // 0 when they coincide exactly and grows with any amplitude, period or phase error.
+    readonly property int partCount: targetParts.length
+    readonly property real maxAmp: Math.max(0.2, 0.8 / Math.max(1, partCount))
     readonly property real error: waveError()
-    readonly property real tolerance: Math.max(0.03, 0.06 - (level - 1) * 0.004)
+    readonly property real tolerance: Math.max(0.03, 0.055 - (level - 1) * 0.0025)
     readonly property bool aligned: error <= tolerance
 
     signal close
 
-    function waveAt(f: string, x: real, amplitude: real, per: real, shift: real): real {
-        const t = 2 * Math.PI * (x / per) + shift;
-        let v;
-        switch (f) {
-        case "triangle":
-            v = 2 / Math.PI * Math.asin(Math.sin(t));
-            break;
-        case "square":
-            v = Math.sin(t) >= 0 ? 1 : -1;
-            break;
-        case "saw":
-            v = 2 * (t / (2 * Math.PI) - Math.floor(t / (2 * Math.PI) + 0.5));
-            break;
-        default:
-            v = Math.sin(t);
+    function sumAt(list: var, x: real): real {
+        let value = 0;
+        for (let i = 0; i < list.length; i++) {
+            const part = list[i];
+            value += part.amp * Math.sin(2 * Math.PI * x / part.period + part.phase);
         }
-        return amplitude * v;
+        return value;
     }
 
     function waveError(): real {
-        const samples = 96;
+        if (targetParts.length === 0 || parts.length === 0)
+            return 1;
+
+        const samples = 128;
         let sum = 0;
         for (let i = 0; i <= samples; i++) {
             const x = i / samples;
-            const d = waveAt(form, x, amp, period, phase) - waveAt(targetForm, x, targetAmp, targetPeriod, targetPhase);
+            const d = sumAt(parts, x) - sumAt(targetParts, x);
             sum += d * d;
         }
         return Math.sqrt(sum / (samples + 1));
-    }
-
-    function formLabel(f: string): string {
-        switch (f) {
-        case "triangle":
-            return Tr.tr("Triangle wave");
-        case "square":
-            return Tr.tr("Square wave");
-        case "saw":
-            return Tr.tr("Sawtooth wave");
-        default:
-            return Tr.tr("Sine wave");
-        }
     }
 
     function startGame(): void {
@@ -95,17 +68,71 @@ Item {
     }
 
     function newTarget(): void {
-        const pool = forms.slice(0, Math.min(forms.length, level));
-        targetForm = pool[Math.floor(Math.random() * pool.length)];
-        targetAmp = 0.45 + Math.random() * 0.4;
-        targetPeriod = 0.55 + Math.random() * 0.6;
-        targetPhase = Math.random() * Math.PI * 2;
+        const count = Math.min(4, level);
+        const maxA = 0.8 / count;
+        const minA = maxA / 2;
 
-        form = "sine";
-        amp = 0.5;
-        period = 1;
-        phase = 0;
+        const target = [];
+        const mine = [];
+        for (let i = 0; i < count; i++) {
+            target.push({
+                amp: minA + Math.random() * (maxA - minA),
+                period: 0.5 + Math.random() * 0.8,
+                phase: Math.random() * Math.PI * 2
+            });
+            // The player starts from a flat, neutral component rather than from the answer.
+            mine.push({
+                amp: minA,
+                period: 1,
+                phase: 0
+            });
+        }
 
+        targetParts = target;
+        parts = mine;
+        selected = 0;
+        waveCanvas.requestPaint();
+    }
+
+    function setPartAmp(value: real): void {
+        const next = [];
+        for (let i = 0; i < parts.length; i++) {
+            const part = parts[i];
+            next.push(i === selected ? {
+                amp: value,
+                period: part.period,
+                phase: part.phase
+            } : part);
+        }
+        parts = next;
+        waveCanvas.requestPaint();
+    }
+
+    function setPartPeriod(value: real): void {
+        const next = [];
+        for (let i = 0; i < parts.length; i++) {
+            const part = parts[i];
+            next.push(i === selected ? {
+                amp: part.amp,
+                period: value,
+                phase: part.phase
+            } : part);
+        }
+        parts = next;
+        waveCanvas.requestPaint();
+    }
+
+    function setPartPhase(value: real): void {
+        const next = [];
+        for (let i = 0; i < parts.length; i++) {
+            const part = parts[i];
+            next.push(i === selected ? {
+                amp: part.amp,
+                period: part.period,
+                phase: value
+            } : part);
+        }
+        parts = next;
         waveCanvas.requestPaint();
     }
 
@@ -206,7 +233,7 @@ Item {
 
             StyledText {
                 Layout.fillWidth: true
-                text: Tr.tr("Match the solid wave to the dashed target with phase, period and amplitude")
+                text: Tr.tr("Line the solid sum up with the dashed target; every component can be tuned on its own")
                 color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.body.small
                 wrapMode: Text.WordWrap
@@ -237,27 +264,41 @@ Item {
                         const mid = height / 2;
                         const half = height / 2 - 6;
 
-                        const stroke = (f, amplitude, per, shift, colour, dash) => {
+                        const stroke = (samples, colour, lineWidth, dash) => {
                             ctx.beginPath();
-                            for (let i = 0; i <= 160; i++) {
-                                const x = i / 160;
-                                const v = root.waveAt(f, x, amplitude, per, shift);
-                                const px = x * width;
-                                const py = mid - v * half;
+                            for (let i = 0; i <= samples.length - 1; i++) {
+                                const px = i / (samples.length - 1) * width;
+                                const py = mid - samples[i] * half;
                                 if (i === 0)
                                     ctx.moveTo(px, py);
                                 else
                                     ctx.lineTo(px, py);
                             }
                             ctx.strokeStyle = colour;
-                            ctx.lineWidth = 2;
+                            ctx.lineWidth = lineWidth;
                             ctx.setLineDash(dash);
                             ctx.stroke();
                         };
 
-                        ctx.setLineDash([5, 5]);
-                        stroke(root.targetForm, root.targetAmp, root.targetPeriod, root.targetPhase, Qt.alpha(Colours.palette.m3onSurfaceVariant, 0.75), [5, 5]);
-                        stroke(root.form, root.amp, root.period, root.phase, Colours.palette.m3primary, []);
+                        const sample = list => {
+                            const out = [];
+                            for (let i = 0; i <= 160; i++)
+                                out.push(root.sumAt(list, i / 160));
+                            return out;
+                        };
+
+                        // With one component the sum *is* the component, so the thin guide
+                        // lines would only double every curve.
+                        if (root.partCount > 1) {
+                            const selectedTarget = root.targetParts[root.selected] ? [root.targetParts[root.selected]] : [];
+                            const selectedMine = root.parts[root.selected] ? [root.parts[root.selected]] : [];
+
+                            stroke(sample(selectedTarget), Qt.alpha(Colours.palette.m3onSurfaceVariant, 0.22), 1, [3, 5]);
+                            stroke(sample(selectedMine), Qt.alpha(Colours.palette.m3primary, 0.35), 1, []);
+                        }
+
+                        stroke(sample(root.targetParts), Qt.alpha(Colours.palette.m3onSurfaceVariant, 0.8), 2, [6, 5]);
+                        stroke(sample(root.parts), Colours.palette.m3primary, 2, []);
                         ctx.setLineDash([]);
                     }
                 }
@@ -267,17 +308,22 @@ Item {
                 Layout.fillWidth: true
                 spacing: Tokens.spacing.small
 
+                StyledText {
+                    text: Tr.tr("Sine components")
+                    font: Tokens.font.label.large
+                }
+
                 Repeater {
-                    model: root.forms
+                    model: root.partCount
 
                     IconTextButton {
-                        required property string modelData
+                        required property int index
 
                         Layout.fillWidth: true
-                        text: root.formLabel(modelData)
-                        type: root.form === modelData ? IconTextButton.Filled : IconTextButton.Text
+                        text: (index + 1).toString()
+                        type: root.selected === index ? IconTextButton.Filled : IconTextButton.Text
                         onClicked: {
-                            root.form = modelData;
+                            root.selected = index;
                             waveCanvas.requestPaint();
                         }
                     }
@@ -295,21 +341,19 @@ Item {
                 }
 
                 StyledSlider {
-                    id: ampSlider
-
                     Layout.fillWidth: true
-                    from: 0.2
-                    to: 1
-                    stepSize: 0.01
-                    value: root.amp
-                    onInteraction: v => root.amp = Math.round((from + v * (to - from)) * 100) / 100
-                    onReleased: v => root.amp = Math.round((from + v * (to - from)) * 100) / 100
+                    from: 0
+                    to: root.maxAmp
+                    stepSize: 0.005
+                    value: root.parts[root.selected] ? root.parts[root.selected].amp : 0
+                    onInteraction: v => root.setPartAmp(from + v * (to - from))
+                    onReleased: v => root.setPartAmp(from + v * (to - from))
                 }
 
                 StyledText {
                     Layout.preferredWidth: 46
                     horizontalAlignment: Text.AlignRight
-                    text: Math.round(root.amp * 100) + "%"
+                    text: Math.round((root.parts[root.selected] ? root.parts[root.selected].amp : 0) * 100) + "%"
                     color: Colours.palette.m3onSurfaceVariant
                     font: Tokens.font.label.medium
                 }
@@ -326,21 +370,19 @@ Item {
                 }
 
                 StyledSlider {
-                    id: periodSlider
-
                     Layout.fillWidth: true
-                    from: 0.35
-                    to: 1.6
+                    from: 0.5
+                    to: 1.3
                     stepSize: 0.005
-                    value: root.period
-                    onInteraction: v => root.period = Math.round((from + v * (to - from)) * 200) / 200
-                    onReleased: v => root.period = Math.round((from + v * (to - from)) * 200) / 200
+                    value: root.parts[root.selected] ? root.parts[root.selected].period : 1
+                    onInteraction: v => root.setPartPeriod(from + v * (to - from))
+                    onReleased: v => root.setPartPeriod(from + v * (to - from))
                 }
 
                 StyledText {
                     Layout.preferredWidth: 46
                     horizontalAlignment: Text.AlignRight
-                    text: root.period.toFixed(2)
+                    text: (root.parts[root.selected] ? root.parts[root.selected].period : 1).toFixed(2)
                     color: Colours.palette.m3onSurfaceVariant
                     font: Tokens.font.label.medium
                 }
@@ -357,21 +399,19 @@ Item {
                 }
 
                 StyledSlider {
-                    id: phaseSlider
-
                     Layout.fillWidth: true
                     from: 0
                     to: 360
                     stepSize: 0.5
-                    value: root.phase * 180 / Math.PI
-                    onInteraction: v => root.phase = Math.round(v * 360) * Math.PI / 180
-                    onReleased: v => root.phase = Math.round(v * 360) * Math.PI / 180
+                    value: (root.parts[root.selected] ? root.parts[root.selected].phase * 180 / Math.PI : 0)
+                    onInteraction: v => root.setPartPhase(Math.round(v * 360) * Math.PI / 180)
+                    onReleased: v => root.setPartPhase(Math.round(v * 360) * Math.PI / 180)
                 }
 
                 StyledText {
                     Layout.preferredWidth: 46
                     horizontalAlignment: Text.AlignRight
-                    text: Math.round(phaseSlider.value) + "°"
+                    text: Math.round(root.parts[root.selected] ? root.parts[root.selected].phase * 180 / Math.PI : 0) + "°"
                     color: Colours.palette.m3onSurfaceVariant
                     font: Tokens.font.label.medium
                 }

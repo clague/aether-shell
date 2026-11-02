@@ -8328,10 +8328,6 @@ msgid "Resonance × %1"
 msgstr "共鸣 × %1"
 
 #: modules/nexus/common/AetherAttunement.qml
-msgid "Match the solid wave to the dashed target with phase, period and amplitude"
-msgstr "调整相位、周期与振幅，让实线波形与虚线目标重合"
-
-#: modules/nexus/common/AetherAttunement.qml
 msgid "Amplitude"
 msgstr "振幅"
 
@@ -8344,25 +8340,17 @@ msgid "Phase"
 msgstr "相位"
 
 #: modules/nexus/common/AetherAttunement.qml
-msgid "Sine wave"
-msgstr "正弦波"
-
-#: modules/nexus/common/AetherAttunement.qml
-msgid "Triangle wave"
-msgstr "三角波"
-
-#: modules/nexus/common/AetherAttunement.qml
-msgid "Square wave"
-msgstr "方波"
-
-#: modules/nexus/common/AetherAttunement.qml
-msgid "Sawtooth wave"
-msgstr "锯齿波"
-
-#: modules/nexus/common/AetherAttunement.qml
 msgid "Level %1"
 msgstr "第 %1 关"
 
 #: modules/nexus/common/AetherAttunement.qml
 msgid "Aligned"
 msgstr "已对齐"
+
+#: modules/nexus/common/AetherAttunement.qml
+msgid "Line the solid sum up with the dashed target; every component can be tuned on its own"
+msgstr "让实线的合成波形与虚线目标重合；每个分量都可以单独调整"
+
+#: modules/nexus/common/AetherAttunement.qml
+msgid "Sine components"
+msgstr "正弦分量"
