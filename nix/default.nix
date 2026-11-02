@@ -31,6 +31,7 @@
   caelestia-cli,
   m3shapes,
   gettext,
+  openssl,
   debug ? false,
   withCli ? false,
   extraRuntimeDeps ? [],
