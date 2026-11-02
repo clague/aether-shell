@@ -4,7 +4,9 @@
 #include <qdir.h>
 #include <qfile.h>
 #include <qfileinfo.h>
+#include <qhash.h>
 #include <qimage.h>
+#include <qimagereader.h>
 #include <qloggingcategory.h>
 #include <qmutex.h>
 #include <qpainter.h>
@@ -23,7 +25,23 @@ using Qt::StringLiterals::operator""_s;
 
 namespace {
 
+// Hashing the source is how a changed file gets a new cache entry, but it reads the whole
+// file: 34MB for an 8K wallpaper, and cachePathFor is called more than once per request.
+// Size and mtime identify a version just as well and cost a stat.
 QString sha256sum(const QString& path) {
+    static QMutex cacheMutex;
+    static QHash<QString, QString> stamps;
+    static QHash<QString, QString> hashes;
+
+    const QFileInfo info(path);
+    const QString stamp = u"%1:%2"_s.arg(info.size()).arg(info.lastModified().toMSecsSinceEpoch());
+
+    {
+        const QMutexLocker locker(&cacheMutex);
+        if (stamps.value(path) == stamp && hashes.contains(path))
+            return hashes.value(path);
+    }
+
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly)) {
         qCWarning(lcCacher).noquote() << "sha256sum: failed to open" << path;
@@ -34,7 +52,13 @@ QString sha256sum(const QString& path) {
     hash.addData(&file);
     file.close();
 
-    return QString::fromLatin1(hash.result().toHex());
+    const QString result = QString::fromLatin1(hash.result().toHex());
+    {
+        const QMutexLocker locker(&cacheMutex);
+        stamps.insert(path, stamp);
+        hashes.insert(path, result);
+    }
+    return result;
 }
 
 QString fillSuffix(ImageCacher::FillMode fillMode) {
@@ -107,12 +131,6 @@ void ImageCacher::runJob(const QString& sourcePath, const QString& cachePath, co
         return;
     }
 
-    QImage image(sourcePath);
-    if (image.isNull()) {
-        qCWarning(lcCacher).noquote() << "Failed to decode source" << sourcePath;
-        return;
-    }
-
     Qt::AspectRatioMode scaleMode;
     switch (fillMode) {
     case FillMode::Crop:
@@ -124,6 +142,25 @@ void ImageCacher::runJob(const QString& sourcePath, const QString& cachePath, co
     case FillMode::Stretch:
         scaleMode = Qt::IgnoreAspectRatio;
         break;
+    }
+
+    // Ask the reader for the size we are going to draw, instead of decoding the file whole and
+    // scaling afterwards: thumbnails of an 8K wallpaper would each hold it at 130MB on the way.
+    QImageReader reader(sourcePath);
+    reader.setAutoTransform(true);
+    const auto sourceSize = reader.size();
+    if (sourceSize.isValid() && !sourceSize.isEmpty()) {
+        QSize decodeSize = size;
+        if (fillMode != FillMode::Stretch)
+            decodeSize = sourceSize.scaled(size, scaleMode);
+        if (decodeSize.isValid() && !decodeSize.isEmpty())
+            reader.setScaledSize(decodeSize);
+    }
+
+    QImage image = reader.read();
+    if (image.isNull()) {
+        qCWarning(lcCacher).noquote() << "Failed to decode source" << sourcePath;
+        return;
     }
 
     image.convertTo(QImage::Format_ARGB32);

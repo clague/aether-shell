@@ -356,7 +356,10 @@ Item {
 
                 anchors.fill: parent
                 path: img.verifiedPath
-                source: img.verifiedPath || ""
+                // AnimatedImage decodes at full resolution and keeps the frames, which is
+                // ~130MB for a 7680x4320 source. Only bind it when the wallpaper really is
+                // animated; a static one is drawn by thumbImg/CachingImage above.
+                source: (img.isGif && !img.isVideo) ? (img.verifiedPath || "") : ""
                 playing: !WallpaperPauser.paused
                 visible: img.isGif && !img.isVideo
                 asynchronous: true

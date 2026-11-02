@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Widgets
 import Aether.Config
@@ -169,6 +170,12 @@ Item {
 
                     anchors.fill: parent
                     source: Wallpapers.current ? `file://${Wallpapers.current}` : ""
+                    // The card is a few hundred pixels wide; without a source size Qt decodes
+                    // the wallpaper at file resolution (130MB for an 8K source) per card.
+                    sourceSize: {
+                        const dpr = (QsWindow.window as QsWindow)?.devicePixelRatio ?? 1;
+                        return Qt.size(Math.max(1, width * dpr), Math.max(1, height * dpr));
+                    }
                     fillMode: Image.PreserveAspectCrop
                     opacity: 0.35
                     asynchronous: true

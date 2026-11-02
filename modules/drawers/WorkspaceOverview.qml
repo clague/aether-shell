@@ -282,6 +282,13 @@ Item {
                                     x: -(wsDelegate.effectiveMinX / wsDelegate.effectiveMw) * parent.width
                                     y: -(wsDelegate.effectiveMinY / wsDelegate.effectiveMh) * parent.height
                                     source: Wallpapers.current ? (Wallpapers.getThumbnailPath(Wallpapers.current) || "") : ""
+                                    // getThumbnailPath only returns a thumbnail for videos, so a static
+                                    // wallpaper arrives at file resolution: 7680x4320 is a 130MB
+                                    // decode, cached, for a card a few hundred pixels wide.
+                                    sourceSize: {
+                                        const dpr = (QsWindow.window as QsWindow)?.devicePixelRatio ?? 1;
+                                        return Qt.size(Math.max(1, width * dpr), Math.max(1, height * dpr));
+                                    }
                                     fillMode: Image.PreserveAspectCrop
                                     asynchronous: true
                                     cache: true

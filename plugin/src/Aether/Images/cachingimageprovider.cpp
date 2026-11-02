@@ -116,13 +116,27 @@ void CachingImageResponse::process() {
         }
     }
 
-    // Schedule cache job (this call will return the original image, but later ones will use cache)
+    // Schedule cache job (this call will return a scaled image, later ones will use the cache)
     ImageCacher::instance()->schedule(path, cachePath, size, m_fillMode);
 
-    m_image = QImage(path);
+    // Decode at the requested size rather than loading the file whole: this path runs on a
+    // cache miss, and returning the original here meant a 7680x4320 source allocated 130MB
+    // (and kept it in the pixmap cache) for every first request of a new size.
+    QImageReader reader(path);
+    reader.setAutoTransform(true);
+    const auto sourceSize = reader.size();
+    if (sourceSize.isValid() && !sourceSize.isEmpty())
+        reader.setScaledSize(sourceSize.scaled(size, Qt::KeepAspectRatio));
+    m_image = reader.read();
+
     if (m_image.isNull()) {
-        m_error = u"Failed to decode source: "_s + path;
-        qCWarning(lcCProv).noquote() << m_error;
+        // Some formats refuse scaled reads; fall back to the plain decode so the image still
+        // shows, just at full size.
+        m_image = QImage(path);
+        if (m_image.isNull()) {
+            m_error = u"Failed to decode source: "_s + path;
+            qCWarning(lcCProv).noquote() << m_error;
+        }
     }
 }
 

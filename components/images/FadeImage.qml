@@ -24,7 +24,10 @@ Image {
 
     sourceSize: {
         const dpr = (QsWindow.window as QsWindow)?.devicePixelRatio ?? 1;
-        return Qt.size(width * dpr, height * dpr);
+        // 0x0 means "no constraint" to Qt, i.e. decode the file at full resolution. Before
+        // layout that is what a width of 0 turned into, so clamp to one pixel: the image is
+        // replaced as soon as the item has a size.
+        return Qt.size(Math.max(1, width * dpr), Math.max(1, height * dpr));
     }
 
     retainWhileLoading: true

@@ -3053,3 +3053,31 @@ The rule generalises: an attached or C++ property that is designed to be bound t
 property of the same object needs its own notify. A shared signal makes any such binding
 self-dirty, which is invisible at rest but warns the moment the object is created — that is why
 this one only showed up when the settings window opened.
+
+## T69 — An image without a source size is decoded at file resolution, and kept
+
+A 7680x4320 wallpaper is 33MB on disk and 132MB decoded (RGBA). Qt decodes at the size you ask
+for, and `Image.sourceSize` is what asks; leave it unset and the whole file lands in memory.
+Four places were doing that, and together they held roughly 500MB once the shell had settled:
+
+- `CachingAnimatedImage` had no `sourceSize`, and `Wallpaper.qml` bound its `source` to
+  `img.verifiedPath` whether or not the wallpaper was animated. AnimatedImage keeps decoded
+  frames, so a static PNG cost 130MB for an item that was `visible: false` the whole time.
+  Gate the `source` on the actual type, and cap `sourceSize` for the genuine animated case.
+- `WorkspaceOverview` builds the workspace preview from
+  `Wallpapers.getThumbnailPath(Wallpapers.current)`, which only returns a thumbnail for
+  *videos*; a static wallpaper arrives as its path, and the `Image` had no `sourceSize`.
+  Every workspace card decoded the wallpaper whole.
+- `CachingImage` computed `sourceSize` from `width * dpr`, which is 0 before layout. The
+  provider reads 0x0 as "no constraint" and returns the original file -- a full-resolution
+  decode that then sat in the pixmap cache. Wait for a real size, and give `sourceSize` a floor
+  of one pixel so "not laid out yet" never means "no constraint".
+- `CachingImageResponse`'s cache-miss fallback returned `QImage(path)` even when a size *was*
+  requested: the caller got its image, but only after allocating the whole file. Decode with
+  `QImageReader::setScaledSize` instead, and let the cache job produce the exact crop.
+
+The tell is an anonymous mapping the size of the source's pixel count with `0xFF` in every
+fourth byte: a decoded ARGB image. `LD_PRELOAD`-ing a malloc shim that records `backtrace()`
+for allocations over a few MB, then dumping the live set on `SIGUSR1`, names the decoder in
+one run. The fixes took the shell from ~1.25GB RSS / 1.63GB peak to ~0.77GB / 1.02GB with the
+same 8K wallpaper, and removed the full-resolution reads from the startup log.
