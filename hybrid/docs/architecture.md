@@ -175,6 +175,23 @@ from git on demand.
 For monitoring: a scheduled workflow comparing pinned vs. upstream HEAD that opens an **issue** —
 never a PR, never an automatic merge into `main`.
 
+### D11 — Hyprland settings persist through hypr-vars.lua
+
+The shell writes exactly one Hyprland file: `~/.config/caelestia/hypr-vars.lua`, the override table
+that the dotfiles' `hyprland.lua` merges into `variables`. Every compositor setting the shell owns
+is written there as an override; clearing the key restores the user's `variables.lua` value. The
+live `hyprctl eval` pushes stay, but only as an immediate preview — persistence is the config, not
+the running session.
+
+A few options need variables upstream's dotfiles do not define: overview blur, solid-text windows,
+and the animation speed / match-shell pair. The config fragment that defines them — variable
+defaults, two rules and an animation helper — lives in `hybrid/hypr/` as a reference copy, with
+`hybrid/hypr/README.md` mapping every Nexus setting to the keys it writes.
+
+Rejected: keeping these choices only in `~/.local/state` (they vanish with a compositor restart and
+need the shell to push them again) and writing the user's dotfiles directly (that is a separate
+checkout upstream updates; an editor conflict would silently drop the settings).
+
 ---
 
 ## 5. Testing

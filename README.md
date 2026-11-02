@@ -403,6 +403,27 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
 >   `defaultPlayer`, `playerAliases`, `lyricsBackend`)
 > - `paths` (`wallpaperDir`, `lyricsDir`)>> </details>
 
+### Hyprland config
+
+The shell keeps the Hyprland-side settings it owns in `~/.config/caelestia/hypr-vars.lua`, the
+override table that the dotfiles' `hyprland.lua` merges into `variables`. Nexus writes only the
+keys you changed; clearing a key (the trash icon on a row) restores the value from
+`~/.config/hypr/variables.lua`.
+
+Some options need variables that upstream's `variables.lua` does not define — the gaps/border and
+opacity ones exist there already, but glass, motion and the overview blur rule do not. A reference
+copy of the required files lives in `hybrid/hypr/`:
+
+| file | goes into |
+|---|---|
+| `hybrid/hypr/variables.shell.lua` | append to `~/.config/hypr/variables.lua` |
+| `hybrid/hypr/rules.shell.lua` | two insertions in `~/.config/hypr/hyprland/rules.lua` |
+| `hybrid/hypr/animations.lua` | replaces `~/.config/hypr/hyprland/animations.lua` |
+
+Keep that directory in sync with your dotfiles checkout; `hybrid/hypr/README.md` lists which Nexus
+setting writes which key. If a key is missing the setting still applies live, it just does not
+survive a Hyprland restart.
+
 ### Example configuration
 
 > [!WARNING]

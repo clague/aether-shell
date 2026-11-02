@@ -102,6 +102,7 @@ These were settled by source audit on 2026-09-02. Do not re-litigate without new
 | D8 | **No presets** (superseded) | Every setting has a static default and one switch on its Nexus page. `hybrid/presets/*.json` are smoke-matrix inputs only. |
 | D9 | **Merge upstream; cherry-pick OP** | Upstream is a true ancestor. OP shares ancestor `ad8dca0a`, so `git cherry-pick -x` works directly. Never rebase onto an upstream. |
 | D10 | **OP's pattern lock does not ship as-is** | It is a lock-screen bypass. See `hybrid/docs/traps.md`. Release blocker. |
+| D11 | **Hyprland settings persist via `hypr-vars.lua`**, with the config contract in `hybrid/hypr/` | The shell writes that one override table (never `variables.lua`/`rules.lua`/`animations.lua`); `hybrid/hypr/` is the reference copy of the variables and rules those keys need, so code and dotfiles stay in sync. |
 
 ## Hard rules
 
@@ -125,6 +126,7 @@ modules/  components/  services/  plugin/  shell.qml   ← upstream-shaped. Merg
 scripts/  assets/  .github/                            ← upstream-shaped. Same rule.
 hybrid/                                                ← ours. Upstream will never touch it.
   ├── docs/       architecture, traps, provenance ledger
+  ├── hypr/       reference copy of the Hyprland config the shell depends on
   ├── presets/    smoke-matrix configs (all-on, all-off, variants-flipped, theme-nebula)
   └── tools/      bootstrap, upstream-status, smoke-matrix, dev-shell
 .claude/                                               ← ours (skills + agents)
