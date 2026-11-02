@@ -6082,6 +6082,10 @@ msgstr "最大内容宽度"
 msgid "Popup Width"
 msgstr "弹出窗口宽度"
 
+#: modules/nexus/pages/tokens/WindowLockPage.qml
+msgid "Text Scale"
+msgstr "文字缩放"
+
 #: modules/nexus/pages/tokens/WindowLockPage.qml modules/nexus/SearchIndex.qml
 msgid "Window Information Overlay"
 msgstr "窗口信息浮层"

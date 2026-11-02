@@ -138,6 +138,19 @@ PageBase {
             }
         }
 
+        SliderRow {
+            Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
+            Layout.fillWidth: true
+            label: Tr.tr("Text Scale")
+            value: (TokenConfig.sizes.nexus.textScale - 0.8) / 0.7
+            valueLabel: `${Math.round((0.8 + value * 0.7) * 100)}%`
+            showReset: true
+            onMoved: v => TokenConfig.sizes.nexus.textScale = 0.8 + v * 0.7
+            onReset: {
+                TokenConfig.sizes.nexus.resetOption("textScale");
+            }
+        }
+
         StepperRow {
             Layout.topMargin: TokenConfig.appearance.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true

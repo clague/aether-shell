@@ -78,10 +78,11 @@ Singleton {
             contentItem.Tokens.screen: screen.name
 
             // The settings window is read at arm's length, so its type is a step larger than
-            // the panels it configures. Scoped to this window: every Tokens.font read inside
-            // Nexus inherits the factor, and nothing outside it does. The appearance config's
-            // own interface size still applies on top, so a per-display scale is not lost.
-            contentItem.Tokens.fontScale: 1.1
+            // the panels it configures, adjustable from Shell Tokens > Window & Lock Sizes.
+            // Scoped to this window: every Tokens.font read inside Nexus inherits the factor,
+            // and nothing outside it does. The appearance config's own interface size still
+            // applies on top, so a per-display scale is not lost.
+            contentItem.Tokens.fontScale: contentItem.Tokens.sizes.nexus.textScale
 
             title: Tr.tr("Nexus — %1").arg(PageRegistry.pages[nexus.nState.currentPageIdx]?.label ?? "")
 

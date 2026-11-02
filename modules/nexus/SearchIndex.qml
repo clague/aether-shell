@@ -4231,6 +4231,16 @@ QtObject {
             kind: "row",
             page: 15,
             sub: 4,
+            label: Tr.tr("Text Scale"),
+            subtext: "",
+            section: Tr.tr("Nexus Settings Window"),
+            subTitle: Tr.tr("Window & Lock Sizes"),
+            kw: ["font", "size", "settings window"]
+        },
+        {
+            kind: "row",
+            page: 15,
+            sub: 4,
             label: Tr.tr("Aspect Ratio"),
             subtext: "",
             section: Tr.tr("Nexus Settings Window"),

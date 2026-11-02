@@ -223,6 +223,9 @@ class NexusTokens : public settings::ObjectNode {
 
     CONFIG_PROPERTY(qreal, heightMult, 0.7)
     CONFIG_PROPERTY(qreal, ratio, 16.0 / 9.0)
+    // Multiplies the type size inside the settings window only, so its rows are readable at
+    // arm's length; 1 keeps the size the rest of the shell uses. See Tokens.fontScale.
+    CONFIG_PROPERTY(qreal, textScale, 1.1)
     CONFIG_PROPERTY(int, minWidth, 800)
     CONFIG_PROPERTY(int, minHeight, 500)
     CONFIG_PROPERTY(int, maxNavWidth, 600)
