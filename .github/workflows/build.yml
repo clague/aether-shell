@@ -63,7 +63,7 @@ jobs:
             # than the tail of the log (which is mostly context lines).
             at=$(grep -n -m1 -E "^[[:space:]]*error:" /tmp/nix-build.log | cut -d: -f1)
             [ -z "$at" ] && at=1
-            from=$((at > 2 ? at - 2 : 1))
+            from=$at
             to=$((at + 8))
             sed -n "${from},${to}p" /tmp/nix-build.log | while IFS= read -r line; do
               echo "::error title=nix build::$line"
