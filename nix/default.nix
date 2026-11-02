@@ -92,7 +92,9 @@
     name = "aether-qml-plugin${lib.optionalString debug "-debug"}";
     src = lib.fileset.toSource {
       root = ./..;
-      fileset = lib.fileset.union ./../CMakeLists.txt ./../plugin;
+      # scripts/trs.fish compiles the .po files as part of the plugin build, so it has to be in
+      # the source, not only the plugin directory itself.
+      fileset = lib.fileset.unions [./../CMakeLists.txt ./../plugin ./../scripts];
     };
 
     nativeBuildInputs = [cmake ninja pkg-config];

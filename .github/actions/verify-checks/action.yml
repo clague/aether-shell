@@ -9,6 +9,15 @@ inputs:
     description: JSON mapping of job IDs to change-detection output names.
     required: true
 
+name: Verify checks
+description: Fail unless every dependent job ran (or was skipped) as the change filter requires
+inputs:
+  needs:
+    description: The `needs` context, serialised with toJSON
+    required: true
+  checks:
+    description: JSON object mapping job name to the detect-changes output that gates it
+    required: true
 runs:
   using: composite
   steps:
