@@ -50,7 +50,27 @@ Scope {
             const v = ShellState.forActive();
             if (!v)
                 return;
-            v.launcher = v.dashboard = v.osd = v.utilities = !(v.launcher || v.dashboard || v.osd || v.utilities);
+
+            // Read the current state once and assign one panel at a time. Chaining them
+            // (v.launcher = v.dashboard = ...) fires each change handler while the other
+            // properties still hold their old values, and those handlers switch panels back
+            // off, so the set of panels that end up open depends on the assignment order.
+            const open = !(v.launcher || v.dashboard || v.osd || v.utilities);
+
+            // One property at a time rather than a chain: each change runs the drawer handlers
+            // (ScreenState's own exclusivity, Interactions' shortcut flags) while the other
+            // properties still hold their old values.
+            if (open) {
+                v.dashboard = true;
+                v.utilities = true;
+                v.osd = true;
+                v.launcher = true;
+            } else {
+                v.launcher = false;
+                v.dashboard = false;
+                v.utilities = false;
+                v.osd = false;
+            }
         }
     }
 

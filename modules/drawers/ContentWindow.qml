@@ -152,6 +152,12 @@ StyledWindow {
             })()
         windows: [root]
         onCleared: {
+            // The grab also goes inactive when a text drawer takes keyboard focus for itself --
+            // opening the launcher or sidebar is not the user clicking outside, and clearing the
+            // dashboard here made "show all panels" impossible (T67's sibling: layers).
+            if (root.textDrawerOpen)
+                return;
+
             root.screenState.workspaceDrawer = false;
             root.screenState.launcher = false;
             root.screenState.session = false;

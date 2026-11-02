@@ -54,7 +54,6 @@ PersistentProperties {
             dock = false;
             overview = false;
             quicknote = false;
-            dashboard = false;
             session = false;
         }
     }
@@ -70,7 +69,6 @@ PersistentProperties {
 
     onDashboardChanged: {
         if (dashboard) {
-            launcher = false;
             overview = false;
             session = false;
         }
