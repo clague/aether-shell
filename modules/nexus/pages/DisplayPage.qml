@@ -97,9 +97,16 @@ PageBase {
 
         spacing: Tokens.spacing.extraSmall / 2
 
-        SectionHeader {
+        InfoRow {
             first: true
+            last: true
+            Layout.fillWidth: true
+            icon: "info"
+            label: Tr.tr("Monitor settings are applied through hyprmoncfg")
+            subtext: Tr.tr("Your Hyprland config is not edited. Install hyprmoncfg if this page stays empty.")
+        }
 
+        SectionHeader {
             text: Tr.tr("Layout")
         }
 

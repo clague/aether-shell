@@ -2693,6 +2693,14 @@ msgstr "输入名称并按 Enter"
 msgid "Profile name"
 msgstr "配置方案名称"
 
+#: modules/nexus/pages/DisplayPage.qml
+msgid "Monitor settings are applied through hyprmoncfg"
+msgstr "显示器设置通过 hyprmoncfg 应用"
+
+#: modules/nexus/pages/DisplayPage.qml
+msgid "Your Hyprland config is not edited. Install hyprmoncfg if this page stays empty."
+msgstr "不会改动你的 Hyprland 配置；如果此页面一直为空，请安装 hyprmoncfg。"
+
 #: modules/nexus/pages/DoctorPage.qml
 msgid "The checks could not run"
 msgstr "无法运行检查"
