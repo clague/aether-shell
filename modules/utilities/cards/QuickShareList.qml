@@ -5,6 +5,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Widgets
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.containers
 import qs.components.controls
@@ -58,14 +59,14 @@ StyledRect {
 
                 StyledText {
                     Layout.fillWidth: true
-                    text: qsTr("Quick Share")
+                    text: Tr.tr("Quick Share")
                     font: Tokens.font.body.medium
                     elide: Text.ElideRight
                 }
 
                 StyledText {
                     Layout.fillWidth: true
-                    text: QuickShare.isEnabled ? (QuickShare.isVisible ? qsTr("Visible to everyone") : qsTr("Hidden")) : qsTr("Disabled")
+                    text: QuickShare.isEnabled ? (QuickShare.isVisible ? Tr.tr("Visible to everyone") : Tr.tr("Hidden")) : Tr.tr("Disabled")
                     color: Colours.palette.m3onSurfaceVariant
                     font: Tokens.font.body.small
                     elide: Text.ElideRight
@@ -104,7 +105,7 @@ StyledRect {
                     StyledText {
                         Layout.alignment: Qt.AlignVCenter
                         Layout.fillWidth: true
-                        text: qsTr("Recent Transfers")
+                        text: Tr.tr("Recent Transfers")
                         font: Tokens.font.body.medium
                     }
 
@@ -147,7 +148,7 @@ StyledRect {
                         Layout.rightMargin: Tokens.spacing.extraSmall
                         text: {
                             const date = new Date(entry.modelData.timestamp * 1000);
-                            return qsTr("%1 at %2").arg(entry.modelData.fileName).arg(Qt.formatDateTime(date, Qt.locale()));
+                            return Tr.tr("%1 at %2").arg(entry.modelData.fileName).arg(Qt.formatDateTime(date, Qt.locale()));
                         }
                         color: Colours.palette.m3onSurfaceVariant
                         elide: Text.ElideRight
@@ -275,7 +276,7 @@ StyledRect {
                             }
 
                             StyledText {
-                                text: qsTr("No recent transfers")
+                                text: Tr.tr("No recent transfers")
                                 color: Colours.palette.m3outline
                             }
                         }

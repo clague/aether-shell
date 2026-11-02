@@ -7920,3 +7920,55 @@ msgstr "重新扫描插件"
 msgid "Reload manifests and entry points without restarting the shell"
 msgstr "无需重启 shell，重新加载清单与入口点"
 
+#: modules/utilities/cards/QuickShareList.qml
+msgid "Visible to everyone"
+msgstr "所有人可见"
+
+#: modules/utilities/cards/QuickShareList.qml
+msgid "Recent Transfers"
+msgstr "最近的传输"
+
+#: modules/utilities/cards/QuickShareList.qml
+msgid "%1 at %2"
+msgstr "%1 · %2"
+
+#: modules/utilities/cards/QuickShareList.qml modules/utilities/QuickShareDeleteModal.qml
+msgid "No recent transfers"
+msgstr "没有最近的传输"
+
+#: modules/utilities/QuickShareDeleteModal.qml
+msgid "Delete file?"
+msgstr "删除文件？"
+
+#: modules/utilities/QuickShareDeleteModal.qml
+msgid "File '%1' will be permanently deleted."
+msgstr "文件“%1”将被永久删除。"
+
+#: modules/utilities/QuickShareDeviceSelector.qml
+msgid "Select Device"
+msgstr "选择设备"
+
+#: modules/utilities/QuickShareDeviceSelector.qml
+msgid "Choose a nearby device to send the file to."
+msgstr "选择附近的一台设备来发送文件。"
+
+#: modules/utilities/QuickShareDeviceSelector.qml
+msgid "No devices found"
+msgstr "未找到设备"
+
+#: modules/utilities/QuickShareDeviceSelector.qml
+msgid "Select a file to send"
+msgstr "选择要发送的文件"
+
+#: modules/notifications/QuickSharePrompt.qml
+msgid "Quick Share Request"
+msgstr "Quick Share 请求"
+
+#: modules/notifications/QuickSharePrompt.qml
+msgid "%1 wants to share '%2' (%3) with you."
+msgstr "%1 想与你共享“%2”（%3）。"
+
+#: modules/notifications/QuickSharePrompt.qml
+msgid "Decline"
+msgstr "拒绝"
+

@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.controls
 import qs.services
@@ -42,14 +43,14 @@ StyledRect {
             }
 
             StyledText {
-                text: qsTr("Quick Share Request")
+                text: Tr.tr("Quick Share Request")
                 font: Tokens.font.body.large
                 Layout.fillWidth: true
             }
         }
 
         StyledText {
-            text: qsTr("%1 wants to share '%2' (%3) with you.").arg(root.deviceName).arg(root.fileName).arg(root.fileSize)
+            text: Tr.tr("%1 wants to share '%2' (%3) with you.").arg(root.deviceName).arg(root.fileName).arg(root.fileSize)
             color: Colours.palette.m3onSurfaceVariant
             font: Tokens.font.body.medium
             Layout.fillWidth: true
@@ -62,7 +63,7 @@ StyledRect {
             Layout.topMargin: Tokens.spacing.small
 
             TextButton {
-                text: qsTr("Decline")
+                text: Tr.tr("Decline")
                 type: TextButton.Text
                 onClicked: {
                     QuickShare.rejectIncomingTransfer();
@@ -71,7 +72,7 @@ StyledRect {
             }
 
             TextButton {
-                text: qsTr("Accept")
+                text: Tr.tr("Accept")
                 type: TextButton.Filled
                 onClicked: {
                     QuickShare.acceptIncomingTransfer();

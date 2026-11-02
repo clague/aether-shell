@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Widgets
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.containers
 import qs.components.controls
@@ -90,13 +91,13 @@ Loader {
                 spacing: Tokens.spacing.medium
 
                 StyledText {
-                    text: qsTr("Select Device")
+                    text: Tr.tr("Select Device")
                     font: Tokens.font.body.large
                 }
 
                 StyledText {
                     Layout.fillWidth: true
-                    text: qsTr("Choose a nearby device to send the file to.")
+                    text: Tr.tr("Choose a nearby device to send the file to.")
                     color: Colours.palette.m3onSurfaceVariant
                     font: Tokens.font.body.small
                     wrapMode: Text.WrapAtWordBoundaryOrAnywhere
@@ -157,7 +158,7 @@ Loader {
 
                     StyledText {
                         anchors.centerIn: parent
-                        text: qsTr("No devices found")
+                        text: Tr.tr("No devices found")
                         color: Colours.palette.m3outline
                         visible: deviceList.count === 0
                     }
@@ -169,7 +170,7 @@ Loader {
                     spacing: Tokens.spacing.medium
 
                     TextButton {
-                        text: qsTr("Cancel")
+                        text: Tr.tr("Cancel")
                         type: TextButton.Text
                         onClicked: root.props.quickShareDeviceSelectorOpen = false
                     }
@@ -187,7 +188,7 @@ Loader {
 
         property string targetDeviceId: ""
 
-        title: qsTr("Select a file to send")
+        title: Tr.tr("Select a file to send")
 
         onAccepted: path => {
             if (targetDeviceId !== "" && path) {

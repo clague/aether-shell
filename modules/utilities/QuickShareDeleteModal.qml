@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import Aether
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.controls
 import qs.components.effects
@@ -90,13 +91,13 @@ Loader {
                 spacing: Tokens.spacing.medium
 
                 StyledText {
-                    text: qsTr("Delete file?")
+                    text: Tr.tr("Delete file?")
                     font: Tokens.font.body.large
                 }
 
                 StyledText {
                     Layout.fillWidth: true
-                    text: qsTr("File '%1' will be permanently deleted.").arg(deleteConfirmation.path)
+                    text: Tr.tr("File '%1' will be permanently deleted.").arg(deleteConfirmation.path)
                     color: Colours.palette.m3onSurfaceVariant
                     font: Tokens.font.body.small
                     wrapMode: Text.WrapAtWordBoundaryOrAnywhere
@@ -108,7 +109,7 @@ Loader {
                     spacing: Tokens.spacing.medium
 
                     TextButton {
-                        text: qsTr("Cancel")
+                        text: Tr.tr("Cancel")
                         type: TextButton.Text
                         onClicked: {
                             root.props.quickShareConfirmDeletePath = "";
@@ -117,7 +118,7 @@ Loader {
                     }
 
                     TextButton {
-                        text: qsTr("Delete")
+                        text: Tr.tr("Delete")
                         type: TextButton.Text
                         onClicked: {
                             if (deleteConfirmation.path !== "") {
