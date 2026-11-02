@@ -51,41 +51,16 @@ jobs:
       - name: Self-test the QML gate
         run: ./hybrid/tools/qml-lint.sh --self-test
 
+      # One implementation, not a second copy of the argument construction. The copy that
+      # used to sit here omitted `--bare --import disable`, so Qt's default import directory
+      # took priority over build/qml (trap T18) and every module import reported "Are your
+      # import paths set up properly?" -- while the gate script, run over the same tree,
+      # printed nothing. Anything the script prints is a failure, Info level included.
       - name: Lint QML
-        shell: fish {0}
+        shell: bash
         run: |
-          /usr/lib/qt6/bin/qmllint --version
-
-          # Generate tooling
-          touch .qmlls.ini
-          QT_QPA_PLATFORM=offscreen QML2_IMPORT_PATH="$PWD/build/qml:$QML2_IMPORT_PATH" timeout 2 qs -p .
-
-          # Construct linter args
-          set -l build_dir (grep -oP "(?<=buildDir=\")(.*)(?=\")" .qmlls.ini)
-          set -l import_paths (grep -oP "(?<=importPaths=\")(.*)(?=\")" .qmlls.ini | string split :)
-          set -l args -I $build_dir
-          for path in $import_paths
-            set -a args -I $path
-          end
-          set -l qml_files (string match -vr 'build/.*' **.qml)
-
-          # Lint
-          set -l lint_out (mktemp)
-          /usr/lib/qt6/bin/qmllint $args $qml_files 2> $lint_out
-
-          set -l singleton_pattern 'Type [A-Z][a-zA-Z0-9]* not declared as singleton in qmldir but using pragma Singleton'
-          set -l post_reload_hook_pattern 'PostReloadHook was not found\. Did you add all imports and dependencies\?'
-          sed -i -E "/(($singleton_pattern)|($post_reload_hook_pattern)) \[import\]/d" $lint_out
-
-          cat $lint_out
-
-          # Hand the diagnostics to the next step, which turns them into annotations: the
-          # job log needs admin rights to read, so a fork would only see "exit code 1".
-          cp $lint_out .lint-output.txt
-
-          if test -s $lint_out
-            exit 1
-          end
+          set -o pipefail
+          ./hybrid/tools/qml-lint.sh 2>&1 | tee .lint-output.txt
 
       - name: Report QML lint failures
         if: failure()

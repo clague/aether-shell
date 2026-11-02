@@ -76,7 +76,9 @@ jobs:
           # annotations; GitHub keeps ten per step, which is enough for the first failure.
           set -o pipefail
           if ! ./hybrid/tools/smoke-matrix.sh --compositor sway --keep-logs 2>&1 | tee /tmp/smoke.log; then
-            grep -E "FAIL|fail|error|Error" /tmp/smoke.log | tail -8 | while IFS= read -r line; do
+            # Everything from the first failure to the end is the diagnosis; GitHub keeps ten
+            # annotations per step and the log itself needs admin rights to read.
+            awk '/FAIL/ { seen = 1 } seen' /tmp/smoke.log | head -n 10 | while IFS= read -r line; do
               echo "::error title=smoke::$line"
             done
             exit 1
