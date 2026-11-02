@@ -6,6 +6,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Aether.Config
+import Aether.Plugins
 import qs.components
 import qs.services
 import qs.modules.bar.components
@@ -165,6 +166,13 @@ Item {
             } else {
                 popouts.hasCurrent = false;
             }
+        } else if (Plugins.entryPoints(EntryPointType.BarPopout).some(p => p.properties.entry === id)) {
+            // A plugin popout: the bar entry names it, and Content.qml instantiates the plugin's
+            // component under that name.
+            const item = ch.item as Item;
+            popouts.currentName = id.toLowerCase();
+            popouts.currentCenter = isHorizontal ? item.mapToItem(null, item.implicitWidth / 2, 0).x : (item.mapToItem(null, 0, item.implicitHeight / 2).y ?? 0);
+            popouts.hasCurrent = true;
         } else {
             popouts.hasCurrent = false;
         }
@@ -409,6 +417,23 @@ Item {
                 Power {
                     objectName: "taskbarPowerButton"
                     screenState: root.screenState
+                }
+            }
+        }
+        // Fallback: an id no built-in choice matched is looked up among the installed plugins'
+        // bar entry points, so a plugin can add an entry just by being named in the bar config.
+        DelegateChoice {
+            delegate: EntryWrapper {
+                id: pluginEntryWrapper
+
+                EntryPointLoader {
+                    entryPoint: {
+                        const id = pluginEntryWrapper.modelData.id;
+                        const entry = Plugins.entryPoints(EntryPointType.BarEntry).find(e => e.properties.name === id);
+                        if (!entry)
+                            console.warn("No plugin entry point found for", id);
+                        return entry;
+                    }
                 }
             }
         }

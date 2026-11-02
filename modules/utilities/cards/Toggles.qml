@@ -6,6 +6,7 @@ import Quickshell.Bluetooth
 import Aether.Components
 import Aether.Config
 import Aether.I18n
+import Aether.Plugins
 import Aether.State
 import qs.components
 import qs.components.controls
@@ -217,6 +218,30 @@ StyledRect {
                         Component.onCompleted: checked = Qt.binding(() => GlobalConfig.services.pipPaused)
                         onClicked: {
                             GlobalConfig.services.pipPaused = !GlobalConfig.services.pipPaused;
+                        }
+                    }
+                }
+                // Fallback: an id no built-in choice matched is looked up among the installed
+                // plugins' quick-toggle entry points, so a plugin toggle only needs to be named
+                // in the quick toggles config to appear here.
+                DelegateChoice {
+                    delegate: EntryPointLoader {
+                        id: entryLoader
+
+                        required property var modelData
+
+                        // qmllint disable missing-property
+                        readonly property bool fillWidth: item?.fillWidth ?? true
+                        readonly property bool shapeMorph: item?.shapeMorph ?? true
+                        readonly property real shapeMorphExpansion: item?.shapeMorphExpansion ?? 0
+                        // qmllint enable missing-property
+
+                        entryPoint: {
+                            const id = modelData.id;
+                            const entry = Plugins.entryPoints(EntryPointType.QuickToggle).find(e => e.properties.name === id);
+                            if (!entry)
+                                console.warn("No plugin entry point found for", id);
+                            return entry;
                         }
                     }
                 }
