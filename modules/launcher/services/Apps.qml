@@ -45,8 +45,12 @@ Searcher {
             keys = ["keywords", "name"];
             weights = [0.9, 0.1];
         } else {
-            keys = ["name"];
-            weights = [1];
+            // Keywords are what an app calls itself when you do not know its name: "browser"
+            // should find Firefox, "video" should find mpv. Name keeps the larger weight so a
+            // real name match still ranks above a keyword match -- a perfect keyword hit scores
+            // 0.3 against a perfect name hit's 0.7 (fuzzysort normalises 1 = exact).
+            keys = ["name", "keywords"];
+            weights = [0.7, 0.3];
 
             if (!search.startsWith(`${prefix}t `))
                 return query(search).map(e => e.entry);
