@@ -88,7 +88,7 @@ Item {
                 property real lastValidItemHeight: 0
 
                 property real nonAnimHeight: {
-                    const swipeItem = mediaFlickable.currentItem ? mediaFlickable.currentItem.item : null; // qmllint disable missing-property
+                    const swipeItem = mediaViewport.currentItem ? mediaViewport.currentItem.item : null; // qmllint disable missing-property
                     const itemHeight = swipeItem ? (swipeItem.nonAnimHeight ?? swipeItem.implicitHeight) : lastValidItemHeight;
                     return itemHeight + (mediaRepeater.count > 1 ? bgRow.implicitHeight + spacing : 0);
                 }
@@ -102,7 +102,6 @@ Item {
                         return;
                     currentIndex = index;
                     root.pendingMediaPage = "";
-                    mediaFlickable.snapToCurrent();
                 }
 
                 spacing: Tokens.spacing.small
@@ -112,11 +111,10 @@ Item {
                 onCurrentIndexChanged: {
                     animEnabled = true;
                     animDisableTimer.restart();
-                    mediaFlickable.snapToCurrent();
                 }
 
                 onNonAnimHeightChanged: {
-                    const swipeItem = mediaFlickable.currentItem ? mediaFlickable.currentItem.item : null; // qmllint disable missing-property
+                    const swipeItem = mediaViewport.currentItem ? mediaViewport.currentItem.item : null; // qmllint disable missing-property
                     if (swipeItem) {
                         lastValidItemHeight = (swipeItem.nonAnimHeight ?? swipeItem.implicitHeight);
                     }
@@ -134,7 +132,6 @@ Item {
                     function onCountChanged(): void {
                         mediaLayout.currentIndex = Math.min(mediaLayout.currentIndex, mediaRepeater.count - 1);
                         mediaLayout.showPendingPage();
-                        mediaFlickable.snapToCurrent();
                     }
 
                     target: mediaRepeater
@@ -153,8 +150,8 @@ Item {
                     Anim {}
                 }
 
-                Flickable {
-                    id: mediaFlickable
+                Item {
+                    id: mediaViewport
 
                     readonly property Item currentItem: {
                         mediaRepeater.count; // qmllint disable confusing-expression-statement
@@ -162,28 +159,31 @@ Item {
                         return mediaRepeater.itemAt(mediaLayout.currentIndex);
                     }
 
-                    // Every page is exactly one viewport wide, so page i starts at
-                    // i * (width + spacing). Deriving the offset from the index matters: on
-                    // the frame a page is added the Row has not laid it out yet, so item.x is
-                    // still 0 and snapping to it does nothing.
+                    // One page is one viewport wide, so page i sits at i * (width + spacing).
+                    // The position is derived from the index, never from the item's own x: on
+                    // the frame a page is added the Row has not laid it out yet, and x is 0.
                     readonly property real pageStride: width + mediaRow.spacing
 
                     property real lastValidImplicitHeight: 0
 
-                    // A drag replaces the contentX binding with a plain value, so every path
-                    // that changes the current page has to put the binding back, or the view
-                    // stays where the drag left it and the new page is only reachable by
-                    // dragging again.
-                    function snapToCurrent(): void {
-                        contentX = Qt.binding(() => mediaLayout.currentIndex * pageStride);
+                    // A wheel over a list that can itself scroll belongs to that list. Handlers
+                    // are offered the event before the item under the cursor, so without this
+                    // check the pager would steal scrolling from a long transfer or recording
+                    // list instead of merely being unable to page past the first item.
+                    function overScrollable(pos: point): bool {
+                        let item = childAt(pos.x, pos.y);
+                        while (item && item !== mediaViewport) {
+                            // Only Flickable-derived items carry contentHeight; anything else
+                            // reads as undefined and is skipped.
+                            if (item.contentHeight !== undefined && item.contentHeight > item.height) // qmllint disable missing-property
+                                return true;
+                            item = item.parent;
+                        }
+                        return false;
                     }
 
                     Layout.fillWidth: true
-
                     clip: true
-                    interactive: mediaRepeater.count > 1
-
-                    flickableDirection: Flickable.HorizontalFlick
                     implicitHeight: currentItem ? currentItem.implicitHeight : lastValidImplicitHeight
 
                     onImplicitHeightChanged: {
@@ -191,32 +191,44 @@ Item {
                             lastValidImplicitHeight = currentItem.implicitHeight;
                     }
 
-                    contentX: mediaLayout.currentIndex * pageStride
-                    contentWidth: mediaRow.implicitWidth
-                    contentHeight: mediaRow.implicitHeight
+                    // Desktop paging is a wheel step, not a drag: one notch per page. A notch
+                    // is 120, a touchpad sends less per event, so accumulate rather than
+                    // switching on every event -- and only consume it when there is a page to
+                    // reach, so a single-card panel still scrolls its parent.
+                    WheelHandler {
+                        property real accumulated: 0
 
-                    // Let the drag decide the page on release, then always snap: the flick used
-                    // to keep whatever offset the gesture ended on, which left the panel between
-                    // two pages.
-                    onDragEnded: {
-                        const offset = contentX - mediaLayout.currentIndex * pageStride;
-                        if (offset > width / 10)
-                            mediaLayout.currentIndex = Math.min(mediaLayout.currentIndex + 1, mediaRepeater.count - 1);
-                        else if (offset < -width / 10)
-                            mediaLayout.currentIndex = Math.max(mediaLayout.currentIndex - 1, 0);
+                        enabled: mediaRepeater.count > 1
+
+                        acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+
+                        onWheel: event => {
+                            const delta = Math.abs(event.angleDelta.x) > Math.abs(event.angleDelta.y) ? event.angleDelta.x : event.angleDelta.y;
+                            // event.x/y are the wheel position in this item's coordinates.
+                            if (delta === 0 || mediaViewport.overScrollable(Qt.point(event.x, event.y)))
+                                return;
+
+                            accumulated += delta;
+                            const steps = Math.trunc(accumulated / 120);
+                            if (steps === 0)
+                                return;
+
+                            accumulated -= steps * 120;
+                            event.accepted = true;
+                            // Wheel up (positive delta) moves towards the first page.
+                            mediaLayout.currentIndex = Math.max(0, Math.min(mediaLayout.currentIndex - steps, mediaRepeater.count - 1));
+                        }
                     }
-
-                    // A release can still be followed by the flick animation, which keeps moving
-                    // contentX; snapping has to wait for the movement to stop, otherwise the
-                    // page ends up half-scrolled.
-                    onMovementEnded: snapToCurrent()
-
-                    onWidthChanged: snapToCurrent()
 
                     Row {
                         id: mediaRow
 
                         spacing: Tokens.spacing.medium
+                        x: -mediaLayout.currentIndex * mediaViewport.pageStride
+
+                        Behavior on x {
+                            Anim {}
+                        }
 
                         Repeater {
                             id: mediaRepeater
@@ -246,19 +258,9 @@ Item {
                                 active: true
                                 sourceComponent: modelData === "record" ? recordComp : quickShareComp
 
-                                width: mediaFlickable.width
+                                width: mediaViewport.width
                             }
                         }
-                    }
-
-                    Behavior on contentX {
-                        Anim {}
-                    }
-
-                    Behavior on implicitHeight {
-                        enabled: mediaLayout.animEnabled
-
-                        Anim {}
                     }
                 }
 
@@ -290,13 +292,29 @@ Item {
                         Repeater {
                             model: mediaRepeater.count
 
-                            StyledRect {
+                            Item {
+                                id: dot
+
                                 required property int index
 
                                 width: Tokens.spacing.medium
                                 height: Tokens.spacing.small
-                                radius: Tokens.rounding.full
-                                color: Colours.palette.m3surfaceVariant
+
+                                StyledRect {
+                                    anchors.fill: parent
+                                    radius: Tokens.rounding.full
+                                    color: Colours.palette.m3surfaceVariant
+                                }
+
+                                MouseArea {
+                                    // The dot is a few pixels wide, so the hit area is padded
+                                    // outwards; neighbouring areas meet without overlapping.
+                                    anchors.fill: parent
+                                    anchors.margins: -Tokens.spacing.small
+                                    cursorShape: Qt.PointingHandCursor
+
+                                    onClicked: mediaLayout.currentIndex = dot.index
+                                }
                             }
                         }
                     }
