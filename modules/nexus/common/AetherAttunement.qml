@@ -20,7 +20,6 @@ Item {
     property bool open: false
 
     property int level: 1
-    property int cleared: 0
     property bool completing: false
 
     // [{ amp, period, phase }, ...]
@@ -78,7 +77,6 @@ Item {
 
     function startGame(): void {
         level = 1;
-        cleared = 0;
         completing = false;
         newTarget();
         resetView();
@@ -179,7 +177,6 @@ Item {
             return;
 
         completing = true;
-        cleared++;
         level++;
         advanceTimer.restart();
     }
@@ -541,15 +538,6 @@ Item {
                     visible: root.aligned
                     text: Tr.tr("Aligned")
                     color: Colours.palette.m3primary
-                    font: Tokens.font.label.large
-                }
-
-                Item {
-                    Layout.fillWidth: true
-                }
-
-                StyledText {
-                    text: Tr.tr("Resonance × %1").arg(root.cleared)
                     font: Tokens.font.label.large
                 }
             }

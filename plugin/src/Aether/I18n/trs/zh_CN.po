@@ -8324,10 +8324,6 @@ msgid "Aether Attunement"
 msgstr "以太共鸣"
 
 #: modules/nexus/common/AetherAttunement.qml
-msgid "Resonance × %1"
-msgstr "共鸣 × %1"
-
-#: modules/nexus/common/AetherAttunement.qml
 msgid "Amplitude"
 msgstr "振幅"
 
