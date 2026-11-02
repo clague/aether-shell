@@ -68,7 +68,7 @@ PageBase {
     ]
 
     function applyLocation(coords: string, name: string): void {
-        GlobalConfig.services.weatherLocation = coords;
+        Weather.setLocation(coords, name);
         locationSearch.text = "";
         root.locationResults = [];
         root.locationSearched = false;
@@ -139,6 +139,10 @@ PageBase {
             id: locationSearch
 
             Layout.fillWidth: true
+            // The field is a control, not a row: give it the same breathing room above and
+            // below so it reads as its own element instead of a card that lost its fill.
+            Layout.topMargin: Tokens.spacing.small
+            Layout.bottomMargin: Tokens.spacing.small
             placeholderText: Tr.tr("Search for a city")
             leadingIcon: "search"
             inputMethodHints: Qt.ImhNoPredictiveText
@@ -166,7 +170,7 @@ PageBase {
                 last: index === root.locationResults.length - 1
                 icon: "location_on"
                 text: modelData.name
-                subtext: [modelData.admin1, modelData.country].filter(part => part.length > 0).join(", ")
+                subtext: modelData.detail
                 onClicked: root.applyLocation(modelData.coords, modelData.name)
             }
         }
@@ -229,8 +233,22 @@ PageBase {
         Timer {
             id: locationSearchTimer
 
-            interval: 350
+            // Nominatim allows one request per second; restarting on every keystroke normally
+            // spaces requests out further than that, and the elapsed-time check enforces the
+            // floor when it does not (paste, backspace, retype).
+            property double lastRequest: 0
+
+            interval: 700
             onTriggered: {
+                const sinceLast = Date.now() - lastRequest;
+                if (sinceLast < 1000) {
+                    interval = 1000 - sinceLast;
+                    restart();
+                    return;
+                }
+                interval = 700;
+                lastRequest = Date.now();
+
                 const query = locationSearch.text;
                 if (query.trim().length < 2) {
                     root.locationSearching = false;

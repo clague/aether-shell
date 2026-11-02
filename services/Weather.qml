@@ -233,9 +233,14 @@ Singleton {
         });
     }
 
-    // Geocoding search for the location picker: up to eight matches, each
-    // `{ name, admin1, country, coords }`. An empty array means "no match", which the picker
-    // shows as such -- a typo is the common case, not an error.
+    // Location search for the picker. Nominatim rather than open-meteo's geocoder: the latter
+    // only knows cities, so a district ("红谷滩区") returns nothing and the picker silently
+    // offers the city instead. Nominatim indexes administrative boundaries, suburbs and
+    // neighbourhoods, and returns the same address hierarchy the reverse lookup below uses, so
+    // what the user picks matches what the page shows afterwards.
+    //
+    // Nominatim asks for at most one request per second; the picker debounces for longer than
+    // that, and this refuses to run faster even if a caller does not.
     function searchCities(query: string, callback: var): void {
         const trimmed = query.trim();
         if (trimmed.length < 2) {
@@ -243,26 +248,59 @@ Singleton {
             return;
         }
 
-        const lang = Tr.locale.name.split("_")[0] || "en";
-        const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(trimmed)}&count=8&language=${lang}&format=json`;
+        // The full tag ("zh-CN"), not the bare language: Nominatim otherwise answers in
+        // Traditional Chinese for a Simplified locale.
+        const lang = Tr.locale.name.replace("_", "-") || "en";
+        const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(trimmed)}&format=geojson&addressdetails=1&limit=8&accept-language=${lang}`;
+        const headers = {
+            "User-Agent": `caelestia-shell/${CUtils.version} (+https://github.com/caelestia-dots/shell)`
+        };
 
         Requests.get(url, text => {
+            let json;
             try {
-                const json = JSON.parse(text);
-                callback((json.results ?? []).map(r => ({
-                            name: r.name,
-                            admin1: r.admin1 ?? "",
-                            country: r.country ?? "",
-                            coords: `${r.latitude},${r.longitude}`
-                        })));
+                json = JSON.parse(text);
             } catch (e) {
-                console.warn(lc, `Unable to parse geocoding search: ${e}`);
+                console.warn(lc, `Unable to parse location search: ${e}`);
                 callback([]);
+                return;
             }
+
+            const results = [];
+            for (const feature of json.features ?? []) {
+                const props = feature.properties ?? {};
+                const address = props.address ?? {};
+                const name = props.name || String(props.display_name ?? "").split(",")[0].trim();
+                const [lon, lat] = feature.geometry?.coordinates ?? [];
+                if (!name || lat === undefined || lon === undefined)
+                    continue;
+
+                // Everything above the place itself, deduplicated: Nominatim repeats the name in
+                // `city` for city-level results and in `state` for city-states like Tokyo.
+                const detail = [address.region || address.city, address.state, address.country].filter((part, index, all) => part && part !== name && all.indexOf(part) === index).join(", ");
+
+                results.push({
+                    name,
+                    detail,
+                    coords: `${lat},${lon}`
+                });
+            }
+            callback(results);
         }, error => {
-            console.warn(lc, `Geocoding search failed: ${error}`);
+            console.warn(lc, `Location search failed: ${error}`);
             callback([]);
-        });
+        }, headers);
+    }
+
+    // Apply a location chosen in the picker. The coordinates are what the forecast uses, but the
+    // name is remembered too: otherwise the readout flips to whatever the reverse geocoder
+    // prefers a second later (a district when the user picked a city, or the other way round).
+    function setLocation(coords: string, name: string): void {
+        if (name) {
+            cacheCity(coords, name);
+            city = fixCityName(name);
+        }
+        GlobalConfig.services.weatherLocation = coords;
     }
 
     function fetchWeatherData(): void {
