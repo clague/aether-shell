@@ -201,7 +201,12 @@ Item {
 
                     onTriggered: {
                         bars.advance(frameTime);
-                        if (!root.rendererGpu) {
+                        // The GPU path draws from the data texture the canvas paints, so it is
+                        // the GPU renderer that needs the repaint. 6c1e0f2d replaced this test
+                        // with `!rendererGpu` while caching the config read, inverting it: the
+                        // shader then read a texture that was painted once, at completion, and
+                        // never updated -- so "GPU shader" rendered nothing.
+                        if (root.rendererGpu) {
                             dataCanvas.requestPaint();
                         }
                     }
