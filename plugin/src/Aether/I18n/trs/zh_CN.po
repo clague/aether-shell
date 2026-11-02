@@ -1758,11 +1758,6 @@ msgstr "电源与空闲"
 msgid "Idle timeouts, sleep and screen-off behaviour"
 msgstr "空闲超时、睡眠与熄屏行为"
 
-#: modules/nexus/PageRegistry.qml modules/nexus/pages/TokensPage.qml
-#: modules/nexus/SearchIndex.qml
-msgid "Shell Tokens"
-msgstr "Shell 令牌"
-
 #: modules/nexus/PageRegistry.qml modules/nexus/SearchIndex.qml
 msgid "Modify interface spacing, rounding, and sizing"
 msgstr "调整界面间距、圆角与尺寸"
