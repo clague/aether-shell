@@ -2959,10 +2959,31 @@ Two details that cost an earlier attempt (reverted in `118e0082`):
   one FBO and never switches.
 
 The trade-off is real: while moving, the panel is a filtered texture, so text is very slightly
-soft, and it snaps back to 1:1 at rest. Integer geometry rounding and a Catmull-Rom resampling
-shader were both tried to remove that softness; rounding alone does nothing for
-`offsetScale`-driven motion, and the shader needs every panel's size to already be integral to
-avoid a permanent resample, which the font-metric-derived sizes are not. Neither is in the tree.
+soft, and it snaps back to 1:1 at rest -- **but only if the layer's rectangle is a whole number
+of pixels wide and sits on a whole pixel**. Otherwise the texture is resampled permanently, and
+the panel is soft even after the animation, which is the complaint that produced this note's
+second half.
+
+The bar popouts were exactly that case, because their geometry is computed rather than anchored
+to integers: measured at rest, a tray menu sat at `25.245, 847.353` with an implicit size of
+`476.733 x 586` -- a quarter-pixel translation plus a 0.27px stretch across the width. Both come
+from the same places: the width is derived from font metrics, and the cross-axis position from
+`(parent - height) / 2`.
+
+`ClipWrapper` now rounds its own `x`/`y`, gives the popout `Math.ceil(implicitWidth/Height)` and
+places it from the bar edge by whole pixels, replacing the four anchored states with explicit
+`x`/`y` bindings (the slide term is the same `(-size - 5) * offsetScale`). The same popout then
+measures `60, 845` with `475 x 586`, so the layer is a 1:1 blit at rest.
+
+The other panels were measured rather than assumed, because rounding is not free (it shifts
+content by up to a pixel): the launcher settles at `989, 897` with `632 x 533`, the OSD at
+`2488, 548` with `62 x 344`, toasts at `2132, 1346` with `406 x 77` -- all integral already,
+because their sizes and centring happen to land on whole pixels. Do not "round everything" by
+reflex; measure the panel, and round the ones that are actually fractional.
+
+A Catmull-Rom resampling shader was tried for the remaining motion-phase softness and is not in
+the tree: it only helps while the panel moves, and it needs the integral geometry above to avoid
+turning a permanent stretch into visible moire.
 
 This is a mitigation, not a fix for the underlying behaviour: the text is still native-rendered,
 it is just no longer re-rendered per frame.

@@ -26,38 +26,36 @@ Item {
     implicitWidth: isHorizontal ? content.implicitWidth : content.implicitWidth * (1 - offsetScale)
     implicitHeight: isHorizontal ? content.implicitHeight * (1 - offsetScale) : content.implicitHeight
 
+    // Whole pixels on both axes: the popout inside carries a layer, and a layer is only
+    // mapped 1:1 when its rectangle lands on the pixel grid (T67).
     x: {
         if (content.isDetached)
-            return (parent.width - content.nonAnimWidth) / 2;
+            return Math.round((parent.width - content.nonAnimWidth) / 2);
         if (isHorizontal) {
             if (content.sidebarOpen && !content.isDockPopout && content.currentSection === "end")
-                return parent.width - content.nonAnimWidth;
+                return Math.round(parent.width - content.nonAnimWidth);
 
             const off = content.currentCenter - parent.leftMargin - content.nonAnimWidth / 2; // qmllint disable missing-property
             const diff = parent.width - Math.floor(off + content.nonAnimWidth);
-            if (diff < 0)
-                return off + diff;
-            return Math.max(off, 0);
+            return Math.round(diff < 0 ? off + diff : Math.max(off, 0));
         }
         if (bar.position === "right")
-            return parent.width - implicitWidth;
+            return Math.round(parent.width - implicitWidth);
         return 0;
     }
 
     y: {
         if (content.isDetached)
-            return (parent.height - content.nonAnimHeight) / 2;
+            return Math.round((parent.height - content.nonAnimHeight) / 2);
         if (isHorizontal) {
             if (bar.position === "bottom")
-                return parent.height - implicitHeight;
+                return Math.round(parent.height - implicitHeight);
             return 0;
         }
 
         const off = content.currentCenter - parent.topMargin - content.nonAnimHeight / 2; // qmllint disable missing-property
         const diff = parent.height - Math.floor(off + content.nonAnimHeight);
-        if (diff < 0)
-            return off + diff;
-        return Math.max(off, 0);
+        return Math.round(diff < 0 ? off + diff : Math.max(off, 0));
     }
 
     Behavior on offsetScale {
@@ -94,69 +92,31 @@ Item {
         layer.enabled: true
         layer.smooth: true
 
-        // Apply slide animation margins based on edge
-        anchors.leftMargin: root.bar.position === "left" ? (-implicitWidth - 5) * root.offsetScale : 0
-        anchors.rightMargin: root.bar.position === "right" ? (-implicitWidth - 5) * root.offsetScale : 0
-        anchors.topMargin: root.bar.position === "top" ? (-implicitHeight - 5) * root.offsetScale : 0
-        anchors.bottomMargin: root.bar.position === "bottom" ? (-implicitHeight - 5) * root.offsetScale : 0
+        // A layer is only sampled 1:1 when the item is a whole number of pixels wide and
+        // sits on a whole pixel. Both were fractional here -- the width comes from font
+        // metrics (476.733) and the cross-axis position from a centred half pixel -- so the
+        // texture was resampled even at rest, which is why the menu looked soft after the
+        // animation. Round the size up (never clip a partial pixel) and place it from the
+        // bar edge by whole pixels.
+        width: Math.ceil(implicitWidth)
+        height: Math.ceil(implicitHeight)
 
-        states: [
-            State {
-                name: "left"
-                when: root.bar.position === "left"
+        x: {
+            const slide = (-width - 5) * root.offsetScale;
+            if (root.bar.position === "left")
+                return Math.round(slide);
+            if (root.bar.position === "right")
+                return Math.round(root.width - width - slide);
+            return Math.round((root.width - width) / 2);
+        }
 
-                AnchorChanges {
-                    target: content
-                    anchors.left: parent.left
-                    anchors.right: undefined
-                    anchors.top: undefined
-                    anchors.bottom: undefined
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.horizontalCenter: undefined
-                }
-            },
-            State {
-                name: "right"
-                when: root.bar.position === "right"
-
-                AnchorChanges {
-                    target: content
-                    anchors.left: undefined
-                    anchors.right: parent.right
-                    anchors.top: undefined
-                    anchors.bottom: undefined
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.horizontalCenter: undefined
-                }
-            },
-            State {
-                name: "top"
-                when: root.bar.position === "top"
-
-                AnchorChanges {
-                    target: content
-                    anchors.left: undefined
-                    anchors.right: undefined
-                    anchors.top: parent.top
-                    anchors.bottom: undefined
-                    anchors.verticalCenter: undefined
-                    anchors.horizontalCenter: parent.horizontalCenter
-                }
-            },
-            State {
-                name: "bottom"
-                when: root.bar.position === "bottom"
-
-                AnchorChanges {
-                    target: content
-                    anchors.left: undefined
-                    anchors.right: undefined
-                    anchors.top: undefined
-                    anchors.bottom: parent.bottom
-                    anchors.verticalCenter: undefined
-                    anchors.horizontalCenter: parent.horizontalCenter
-                }
-            }
-        ]
+        y: {
+            const slide = (-height - 5) * root.offsetScale;
+            if (root.bar.position === "top")
+                return Math.round(slide);
+            if (root.bar.position === "bottom")
+                return Math.round(root.height - height - slide);
+            return Math.round((root.height - height) / 2);
+        }
     }
 }
