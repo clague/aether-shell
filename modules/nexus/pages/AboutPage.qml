@@ -18,6 +18,17 @@ PageBase {
     property string quickshellVersion
     property string cliVersion
 
+    // CUtils.version is a SemVer string: `2.5.0` at a release tag, or
+    // `2.6.0-dev.978+g8867aae` for a build N commits past one. The `dev.N` counter is what
+    // makes two builds comparable, so it is shown verbatim; only a plain release keeps the
+    // `v` prefix the page has always used.
+    readonly property string displayVersion: {
+        const version = CUtils.version;
+        if (!version)
+            return "…";
+        return /^\d+\.\d+\.\d+$/.test(version) ? `v${version}` : version;
+    }
+
     title: Tr.tr("About")
 
     ColumnLayout {
@@ -88,9 +99,7 @@ PageBase {
 
                 StyledText {
                     Layout.alignment: Qt.AlignHCenter
-                    // Untagged builds report `r<short sha>` and are already self-describing; a
-                    // release tag gets the version prefix it has always had.
-                    text: CUtils.version ? (CUtils.version.startsWith("r") ? CUtils.version : `v${CUtils.version}`) : "…"
+                    text: root.displayVersion
                     color: Colours.palette.m3onSurfaceVariant
                     font: Tokens.font.body.medium
 
@@ -158,7 +167,7 @@ PageBase {
         InfoRow {
             first: true
             label: Tr.trCtx("Shell", "the Aether shell itself, not a unix shell")
-            value: CUtils.version || "…"
+            value: root.displayVersion
         }
 
         InfoRow {

@@ -95,27 +95,67 @@ if("${GIT_REVISION}" STREQUAL "")
     set(GIT_REVISION "unknown")
 endif()
 
-# What the shell shows as its version. A tagged checkout keeps its tag; an untagged one --
-# including the gate builds above, which deliberately hide the tag -- reports `r<short sha>`,
-# so the About page names the commit it is actually running instead of 0.0.0. The revision is
-# read from the local repository only: `rev-parse` needs no network, which is the property the
-# empty gate values protect.
-if(AETHER_VERSION_WAS_UNSET)
-    execute_process(
-        COMMAND git -C "${CMAKE_CURRENT_SOURCE_DIR}" rev-parse --short=7 HEAD
-        OUTPUT_VARIABLE AETHER_LOCAL_REVISION
-        RESULT_VARIABLE AETHER_LOCAL_REVISION_RESULT
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-        ERROR_QUIET
-    )
+# What the shell shows as its version. Semantic Versioning, with the build's distance from the
+# last release tag as the pre-release counter:
+#
+#   2.6.0-dev.978+g8867aae        HEAD is 978 commits past v2.5.0
+#   2.6.0-dev.978+g8867aae-dirty  ...and the working tree has uncommitted changes
+#   2.5.0                         HEAD is exactly the release tag
+#
+# `dev.N` is the load-bearing part. SemVer ignores build metadata when ordering, so a bare
+# `+<sha>` -- or the `r<sha>` this used to print -- can never be compared to another build,
+# and a bare tag cannot say how far past it the build is. The distance and the tag come from
+# `git describe --long`; the tag's minor number is bumped to name the release this build is
+# heading for. Everything is read from the local repository, so the `-DVERSION=
+# -DGIT_REVISION=` gate builds still need no network.
+set(AETHER_DISPLAY_VERSION "${VERSION}")
 
-    if(AETHER_LOCAL_REVISION_RESULT EQUAL 0 AND NOT "${AETHER_LOCAL_REVISION}" STREQUAL "")
-        set(AETHER_DISPLAY_VERSION "r${AETHER_LOCAL_REVISION}")
-    else()
-        set(AETHER_DISPLAY_VERSION "${VERSION}")
+execute_process(
+    COMMAND git -C "${CMAKE_CURRENT_SOURCE_DIR}" describe --tags --long --always --abbrev=7 --dirty
+    OUTPUT_VARIABLE AETHER_DESCRIBE
+    RESULT_VARIABLE AETHER_DESCRIBE_RESULT
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+)
+
+if(AETHER_DESCRIBE_RESULT EQUAL 0 AND NOT "${AETHER_DESCRIBE}" STREQUAL "")
+    if("${AETHER_DESCRIBE}" MATCHES "^v?([0-9]+)\\.([0-9]+)\\.([0-9]+)-([0-9]+)-g([0-9a-f]+)(-dirty)?$")
+        set(AETHER_TAG_MAJOR "${CMAKE_MATCH_1}")
+        set(AETHER_TAG_MINOR "${CMAKE_MATCH_2}")
+        set(AETHER_TAG_PATCH "${CMAKE_MATCH_3}")
+        set(AETHER_DISTANCE "${CMAKE_MATCH_4}")
+        set(AETHER_SHORT_SHA "${CMAKE_MATCH_5}")
+        set(AETHER_DIRTY "${CMAKE_MATCH_6}")
+
+        if("${AETHER_DISTANCE}" STREQUAL "0" AND NOT AETHER_DIRTY)
+            # HEAD *is* the tagged release, so there is nothing to qualify.
+            set(AETHER_DISPLAY_VERSION "${AETHER_TAG_MAJOR}.${AETHER_TAG_MINOR}.${AETHER_TAG_PATCH}")
+        else()
+            math(EXPR AETHER_NEXT_MINOR "${AETHER_TAG_MINOR} + 1")
+            set(AETHER_DISPLAY_VERSION
+                "${AETHER_TAG_MAJOR}.${AETHER_NEXT_MINOR}.0-dev.${AETHER_DISTANCE}+g${AETHER_SHORT_SHA}${AETHER_DIRTY}")
+        endif()
+    elseif("${AETHER_DESCRIBE}" MATCHES "^([0-9a-f]+)(-dirty)?$")
+        # No reachable tag, so `--always` returned the commit itself: a shallow clone or a
+        # tagless export. The commit count stands in for the distance so the string still
+        # orders sensibly; it is 1 in a depth-1 clone, which is the most that can be known.
+        set(AETHER_SHORT_SHA "${CMAKE_MATCH_1}")
+        set(AETHER_DIRTY "${CMAKE_MATCH_2}")
+
+        execute_process(
+            COMMAND git -C "${CMAKE_CURRENT_SOURCE_DIR}" rev-list --count HEAD
+            OUTPUT_VARIABLE AETHER_COMMIT_COUNT
+            RESULT_VARIABLE AETHER_COMMIT_COUNT_RESULT
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+            ERROR_QUIET
+        )
+
+        if(NOT AETHER_COMMIT_COUNT_RESULT EQUAL 0 OR "${AETHER_COMMIT_COUNT}" STREQUAL "")
+            set(AETHER_COMMIT_COUNT "0")
+        endif()
+
+        set(AETHER_DISPLAY_VERSION "0.0.0-dev.${AETHER_COMMIT_COUNT}+g${AETHER_SHORT_SHA}${AETHER_DIRTY}")
     endif()
-else()
-    set(AETHER_DISPLAY_VERSION "${VERSION}")
 endif()
 
 project(aether-shell VERSION ${VERSION} LANGUAGES CXX)

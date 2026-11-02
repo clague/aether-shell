@@ -1695,11 +1695,25 @@ Both paths are verified, because fixing one had already broken the other once:
 | `-DVERSION= -DGIT_REVISION=` | `0.0.0` | `unknown` |
 
 The shell's own version -- `CUtils.version`, which the About page and the Software rows show --
-is a second string on top of those placeholders: when `VERSION` was unset the top-level
-CMakeLists derives `r<short sha>` with a local `git rev-parse` (offline, so the gate keeps its
-no-network property) and bakes that into `AETHER_VERSION`. Without it every gate-built shell
-reported `v0.0.0`, which names nothing a bug report could be checked against. Tagged checkouts
-still report their tag, and `extras/version.cpp` keeps printing the raw placeholders.
+is a second string on top of those placeholders: the top-level CMakeLists derives it from a
+local `git describe` and bakes it into `AETHER_VERSION`, so the gate keeps its no-network
+property. Without it every gate-built shell reported `v0.0.0`, which names nothing a bug
+report could be checked against. `extras/version.cpp` keeps printing the raw placeholders.
+
+The format is SemVer with the distance from the last release tag as the pre-release counter:
+
+| state | `CUtils.version` |
+|---|---|
+| HEAD is the tag | `2.5.0` |
+| 978 commits past `v2.5.0` | `2.6.0-dev.978+g8867aae` |
+| ... with uncommitted changes | `2.6.0-dev.978+g8867aae-dirty` |
+| no reachable tag (shallow clone) | `0.0.0-dev.<commit count>+g<sha>` |
+
+It replaced a bare `r<short sha>`, which told you which commit you had but never which build
+was newer: a sha has no order, and SemVer deliberately ignores build metadata (`+<sha>`) when
+comparing. `dev.N` is a numeric pre-release identifier, which SemVer *does* order, so two
+builds compare by themselves and both still name their commit. Bumping the tag's minor number
+names the release the build is heading for; a tagged checkout is exact and keeps no counter.
 
 The lesson is narrower than T34's and worth keeping separate: **a variable can be set and
 still be empty, and `if(NOT DEFINED)` does not notice.** The guard has to match how callers
