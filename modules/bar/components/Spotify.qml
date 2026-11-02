@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Mpris
 import Aether.Config
+import Aether.I18n
 import Aether.Services
 import qs.components
 import qs.services
@@ -17,7 +18,7 @@ StyledRect {
     readonly property MprisPlayer player: Players.active
 
     readonly property int maxLen: Config.bar.spotify.maxTitleLength
-    readonly property string rawTitle: player?.trackTitle || qsTr("Spotify")
+    readonly property string rawTitle: player?.trackTitle || Tr.tr("Spotify")
     readonly property string trackTitle: rawTitle.length > maxLen ? rawTitle.substring(0, maxLen) + "…" : rawTitle
     readonly property bool isPlaying: player?.isPlaying ?? false
 

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.services
 import qs.modules.launcher.services
@@ -52,7 +53,7 @@ Item {
 
             StyledText {
                 Layout.fillWidth: true
-                text: (root.modelData && root.modelData.bind) ? root.modelData.bind : qsTr("No keybinds")
+                text: (root.modelData && root.modelData.bind) ? root.modelData.bind : Tr.tr("No keybinds")
                 font: Tokens.font.body.medium
                 color: Colours.palette.m3onSurface
                 elide: Text.ElideRight

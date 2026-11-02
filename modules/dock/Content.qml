@@ -5,6 +5,7 @@ import QtQml.Models
 import Quickshell
 import Quickshell.Widgets
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.services
 import qs.modules.launcher.services
@@ -154,7 +155,7 @@ Item {
 
             if (instances.length > 0) {
                 items.push({
-                    text: qsTr("New Instance"),
+                    text: Tr.tr("New Instance"),
                     icon: "add",
                     action: () => {
                         const entry = getAppEntry(appId);
@@ -166,7 +167,7 @@ Item {
 
                 for (let i = 0; i < instances.length; i++) {
                     const t = instances[i];
-                    const title = t.title || t.lastIpcObject?.class || qsTr("Window");
+                    const title = t.title || t.lastIpcObject?.class || Tr.tr("Window");
                     items.push({
                         text: title,
                         icon: "open_in_new",
@@ -185,7 +186,7 @@ Item {
 
                 if (instances.length === 1) {
                     items.push({
-                        text: qsTr("Close"),
+                        text: Tr.tr("Close"),
                         icon: "close",
                         action: () => {
                             closeWindow(instances[0]);
@@ -193,7 +194,7 @@ Item {
                     });
                 } else {
                     items.push({
-                        text: qsTr("Close All (%1)").arg(instances.length),
+                        text: Tr.tr("Close All (%1)").arg(instances.length),
                         icon: "close",
                         action: () => {
                             for (const t of instances)
@@ -208,7 +209,7 @@ Item {
             }
 
             items.push({
-                text: qsTr("Remove"),
+                text: Tr.tr("Remove"),
                 icon: "remove_circle_outline",
                 action: () => {
                     let newApps = [...GlobalConfig.dock.pinnedApps];
@@ -217,14 +218,14 @@ Item {
                 }
             });
             items.push({
-                text: qsTr("Edit"),
+                text: Tr.tr("Edit"),
                 icon: "edit",
                 action: () => {
                     root.editMode = true;
                 }
             });
             items.push({
-                text: qsTr("Add App"),
+                text: Tr.tr("Add App"),
                 icon: "add_circle_outline",
                 action: () => {
                     root.screenState.launcherPickCallback = app => {
@@ -268,7 +269,7 @@ Item {
             const entry = DesktopEntries.heuristicLookup(className);
 
             items.push({
-                text: qsTr("New Instance"),
+                text: Tr.tr("New Instance"),
                 icon: "add",
                 action: () => {
                     if (entry)
@@ -298,7 +299,7 @@ Item {
 
             if (currentToplevels.length === 1) {
                 items.push({
-                    text: qsTr("Close"),
+                    text: Tr.tr("Close"),
                     icon: "close",
                     action: () => {
                         closeWindow(currentToplevels[0]);
@@ -306,7 +307,7 @@ Item {
                 });
             } else {
                 items.push({
-                    text: qsTr("Close All (%1)").arg(currentToplevels.length),
+                    text: Tr.tr("Close All (%1)").arg(currentToplevels.length),
                     icon: "close",
                     action: () => {
                         for (const t of currentToplevels)
@@ -320,7 +321,7 @@ Item {
             });
 
             items.push({
-                text: qsTr("Pin to Dock"),
+                text: Tr.tr("Pin to Dock"),
                 icon: "push_pin",
                 action: () => {
                     if (entry) {
@@ -357,7 +358,7 @@ Item {
         const items = [];
 
         items.push({
-            text: qsTr("Add App"),
+            text: Tr.tr("Add App"),
             icon: "add_circle_outline",
             action: () => {
                 root.screenState.launcherPickCallback = app => {
@@ -372,7 +373,7 @@ Item {
             }
         });
         items.push({
-            text: qsTr("Edit Dock"),
+            text: Tr.tr("Edit Dock"),
             icon: "edit",
             action: () => {
                 root.editMode = true;

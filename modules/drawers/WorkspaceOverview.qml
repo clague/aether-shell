@@ -6,6 +6,7 @@ import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Widgets
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.containers
 import qs.components.effects
@@ -57,7 +58,7 @@ Item {
                     spacing: Tokens.spacing.medium
 
                     StyledText {
-                        text: qsTr("Workspaces")
+                        text: Tr.tr("Workspaces")
                         font: Tokens.font.title.large
                         Layout.alignment: Qt.AlignHCenter
                         Layout.bottomMargin: Tokens.spacing.small

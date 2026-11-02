@@ -6,6 +6,7 @@ import QtQuick.Layouts
 import Quickshell.Widgets
 import Quickshell.Services.Pipewire
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.containers
 import qs.components.controls
@@ -49,7 +50,7 @@ Item {
         spacing: Tokens.spacing.medium
 
         StyledText {
-            text: qsTr("Output device")
+            text: Tr.tr("Output device")
             font: Tokens.font.body.builders.medium.weight(Font.Medium).build()
         }
 
@@ -70,7 +71,7 @@ Item {
 
         StyledText {
             Layout.topMargin: Tokens.spacing.medium
-            text: qsTr("Input device")
+            text: Tr.tr("Input device")
             font: Tokens.font.body.builders.medium.weight(Font.Medium).build()
         }
 
@@ -101,7 +102,7 @@ Item {
 
             StyledText {
                 Layout.fillWidth: true
-                text: qsTr("Volume (%1)").arg(Audio.muted ? qsTr("Muted") : `${Math.round(Audio.volume * 100)}%`)
+                text: Tr.tr("Volume (%1)").arg(Audio.muted ? Tr.tr("Muted") : `${Math.round(Audio.volume * 100)}%`)
                 font: Tokens.font.body.builders.medium.weight(Font.Medium).build()
             }
         }
@@ -135,7 +136,7 @@ Item {
             spacing: Tokens.spacing.small
 
             StyledText {
-                text: qsTr("Applications")
+                text: Tr.tr("Applications")
                 font: Tokens.font.body.builders.medium.weight(Font.Medium).build()
             }
 
@@ -154,7 +155,7 @@ Item {
                     id: countText
 
                     anchors.centerIn: parent
-                    text: qsTr("%1 active").arg(root.sortedStreams.length)
+                    text: Tr.tr("%1 active").arg(root.sortedStreams.length)
                     font: Tokens.font.body.small
                     color: Colours.palette.m3onSurfaceVariant
                 }
@@ -176,7 +177,7 @@ Item {
 
             StyledText {
                 Layout.fillWidth: true
-                text: qsTr("No apps playing audio")
+                text: Tr.tr("No apps playing audio")
                 color: Colours.palette.m3onSurfaceVariant
                 font: Tokens.font.body.small
             }
@@ -225,7 +226,7 @@ Item {
                     }
 
                     StyledText {
-                        text: streamControl.streamMuted ? qsTr("Muted") : `${Math.round(streamControl.streamVol * 100)}%`
+                        text: streamControl.streamMuted ? Tr.tr("Muted") : `${Math.round(streamControl.streamVol * 100)}%`
                         color: Colours.palette.m3onSurfaceVariant
                         font: Tokens.font.body.small
                     }
@@ -457,7 +458,7 @@ Item {
                 }
 
                 StyledText {
-                    text: compactStreamControl.streamMuted ? qsTr("Muted") : `${Math.round(compactStreamControl.streamVol * 100)}%`
+                    text: compactStreamControl.streamMuted ? Tr.tr("Muted") : `${Math.round(compactStreamControl.streamVol * 100)}%`
                     color: Colours.palette.m3onSurfaceVariant
                     font: Tokens.font.body.small
                 }
@@ -501,7 +502,7 @@ Item {
             inactiveColour: Colours.palette.m3primaryContainer
             inactiveOnColour: Colours.palette.m3onPrimaryContainer
             verticalPadding: Tokens.padding.extraSmall
-            text: qsTr("Open settings")
+            text: Tr.tr("Open settings")
             icon: "settings"
 
             onClicked: root.popouts.detachRequested("audio")

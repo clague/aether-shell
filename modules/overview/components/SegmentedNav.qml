@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.services
 import qs.modules.overview
@@ -11,17 +12,17 @@ StyledRect {
 
     readonly property list<var> tabs: [
         {
-            name: qsTr("Workspaces"),
+            name: Tr.tr("Workspaces"),
             icon: "view_carousel",
             tabId: 0
         },
         {
-            name: qsTr("Special"),
+            name: Tr.tr("Special"),
             icon: "crop_square",
             tabId: 1
         },
         {
-            name: qsTr("All Windows"),
+            name: Tr.tr("All Windows"),
             icon: "grid_view",
             tabId: 2
         }

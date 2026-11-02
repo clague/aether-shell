@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.services
 
@@ -28,7 +29,7 @@ Item {
             }
 
             StyledText {
-                text: qsTr("Navigate")
+                text: Tr.tr("Navigate")
                 font.pixelSize: 12
                 color: Colours.palette.m3onSurfaceVariant
                 anchors.verticalCenter: parent.verticalCenter
@@ -52,7 +53,7 @@ Item {
                     id: enterText
 
                     anchors.centerIn: parent
-                    text: qsTr("Enter")
+                    text: Tr.tr("Enter")
                     font.pixelSize: 10
                     font.weight: Font.Bold
                     color: Colours.palette.m3primary
@@ -60,7 +61,7 @@ Item {
             }
 
             StyledText {
-                text: qsTr("Switch to Workspace")
+                text: Tr.tr("Switch to Workspace")
                 font.pixelSize: 12
                 color: Colours.palette.m3onSurfaceVariant
                 anchors.verticalCenter: parent.verticalCenter
@@ -84,7 +85,7 @@ Item {
                     id: dragKeyText
 
                     anchors.centerIn: parent
-                    text: qsTr("Drag")
+                    text: Tr.tr("Drag")
                     font.pixelSize: 10
                     font.weight: Font.Bold
                     color: Colours.palette.m3primary
@@ -92,7 +93,7 @@ Item {
             }
 
             StyledText {
-                text: qsTr("Move Window")
+                text: Tr.tr("Move Window")
                 font.pixelSize: 12
                 color: Colours.palette.m3onSurfaceVariant
                 anchors.verticalCenter: parent.verticalCenter
@@ -116,7 +117,7 @@ Item {
                     id: midKeyText
 
                     anchors.centerIn: parent
-                    text: qsTr("Middle Click")
+                    text: Tr.tr("Middle Click")
                     font.pixelSize: 10
                     font.weight: Font.Bold
                     color: Colours.palette.m3primary
@@ -124,7 +125,7 @@ Item {
             }
 
             StyledText {
-                text: qsTr("Close Window")
+                text: Tr.tr("Close Window")
                 font.pixelSize: 12
                 color: Colours.palette.m3onSurfaceVariant
                 anchors.verticalCenter: parent.verticalCenter
@@ -144,7 +145,7 @@ Item {
             }
 
             StyledText {
-                text: qsTr("4-Finger Swipe Gesture")
+                text: Tr.tr("4-Finger Swipe Gesture")
                 font.pixelSize: 12
                 color: Colours.palette.m3onSurfaceVariant
                 anchors.verticalCenter: parent.verticalCenter

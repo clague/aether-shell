@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Aether
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.services
 import qs.modules.launcher.services
@@ -18,7 +19,7 @@ Item {
         root.list.screenState.launcher = false;
         const preview = root.modelData.preview.length > 30 ? root.modelData.preview.slice(0, 30) + "..." : root.modelData.preview;
         Quickshell.execDetached(["sh", "-c", 'cliphist decode "$1" | wl-copy', "sh", String(root.modelData.id)]);
-        Toaster.toast(qsTr("Copied to clipboard"), preview, "content_paste");
+        Toaster.toast(Tr.tr("Copied to clipboard"), preview, "content_paste");
     }
 
     Component.onCompleted: {

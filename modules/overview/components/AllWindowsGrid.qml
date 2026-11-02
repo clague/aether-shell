@@ -5,6 +5,7 @@ import Quickshell.Hyprland
 import Quickshell.Wayland
 import Quickshell.Widgets
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.controls
 import qs.services
@@ -128,7 +129,7 @@ Item {
                                         }
 
                                         StyledText {
-                                            text: itemCard.modelData?.title || itemCard.ipc.class || qsTr("Window")
+                                            text: itemCard.modelData?.title || itemCard.ipc.class || Tr.tr("Window")
                                             font.pixelSize: 11
                                             font.weight: Font.DemiBold
                                             color: Colours.palette.m3onSurface
@@ -162,7 +163,7 @@ Item {
                                         id: wsText
 
                                         anchors.centerIn: parent
-                                        text: itemCard.modelData?.workspace?.name ?? qsTr("WS")
+                                        text: itemCard.modelData?.workspace?.name ?? Tr.tr("WS")
                                         font.pixelSize: 10
                                         font.weight: Font.Medium
                                         color: itemCard.isFocused ? Colours.palette.m3onPrimaryContainer : Colours.palette.m3onSurfaceVariant
@@ -208,7 +209,7 @@ Item {
         }
 
         StyledText {
-            text: qsTr("No active windows open")
+            text: Tr.tr("No active windows open")
             font.pixelSize: 14
             color: Colours.palette.m3onSurfaceVariant
             anchors.horizontalCenter: parent.horizontalCenter

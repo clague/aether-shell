@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.controls
 import qs.services
@@ -15,7 +16,7 @@ PageBase {
 
     property string newTagInput: ""
 
-    title: qsTr("Scratchpad & Notes")
+    title: Tr.tr("Scratchpad & Notes")
 
     isSubPage: true
 
@@ -31,7 +32,7 @@ PageBase {
         // Section: Storage & Directory
         SectionHeader {
             first: true
-            text: qsTr("Storage & Paths")
+            text: Tr.tr("Storage & Paths")
         }
 
         ConnectedRect {
@@ -66,7 +67,7 @@ PageBase {
                     }
 
                     StyledText {
-                        text: qsTr("Notes Directory")
+                        text: Tr.tr("Notes Directory")
 
                         font: Tokens.font.body.medium
                     }
@@ -94,7 +95,7 @@ PageBase {
 
                         icon: "folder_open"
 
-                        text: qsTr("Open Folder")
+                        text: Tr.tr("Open Folder")
 
                         onClicked: {
                             Quickshell.execDetached(["xdg-open", QuickNoteState.notesDir]);
@@ -106,7 +107,7 @@ PageBase {
 
                         icon: "refresh"
 
-                        text: qsTr("Rescan Notes")
+                        text: Tr.tr("Rescan Notes")
 
                         onClicked: {
                             QuickNoteState.refreshFiles();
@@ -118,7 +119,7 @@ PageBase {
 
         // Section: Custom Tags
         SectionHeader {
-            text: qsTr("Custom Tags")
+            text: Tr.tr("Custom Tags")
         }
 
         // Add New Tag Input Box
@@ -153,7 +154,7 @@ PageBase {
 
                     Layout.fillWidth: true
 
-                    placeholderText: qsTr("New tag name (e.g. project, reading)...")
+                    placeholderText: Tr.tr("New tag name (e.g. project, reading)...")
 
                     text: root.newTagInput
 
@@ -172,7 +173,7 @@ PageBase {
 
                     icon: "add"
 
-                    text: qsTr("Add Tag")
+                    text: Tr.tr("Add Tag")
 
                     onClicked: {
                         if (root.newTagInput.trim()) {
@@ -248,7 +249,7 @@ PageBase {
                     StyledText {
                         Layout.fillWidth: true
 
-                        text: qsTr("%1 notes tagged").arg(tagRow.noteCount)
+                        text: Tr.tr("%1 notes tagged").arg(tagRow.noteCount)
 
                         font: Tokens.font.body.small
 
@@ -270,7 +271,7 @@ PageBase {
 
         // Section: Shortcuts
         SectionHeader {
-            text: qsTr("Quick Access")
+            text: Tr.tr("Quick Access")
         }
 
         ConnectedRect {
@@ -305,7 +306,7 @@ PageBase {
                     }
 
                     StyledText {
-                        text: qsTr("Scratchpad IPC & Hotkeys")
+                        text: Tr.tr("Scratchpad IPC & Hotkeys")
 
                         font: Tokens.font.body.medium
                     }
@@ -314,7 +315,7 @@ PageBase {
                 StyledText {
                     Layout.fillWidth: true
 
-                    text: qsTr("Run `caelestia ipc quicknote toggle` or bind it in Hyprland to pop up your scratchpad with tags from anywhere.")
+                    text: Tr.tr("Run `caelestia ipc quicknote toggle` or bind it in Hyprland to pop up your scratchpad with tags from anywhere.")
 
                     color: Colours.palette.m3onSurfaceVariant
 

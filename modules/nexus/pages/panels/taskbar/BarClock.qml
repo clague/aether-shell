@@ -51,7 +51,7 @@ PageBase {
 
         ToggleRow {
             last: true
-            text: qsTr("Show seconds")
+            text: Tr.tr("Show seconds")
             configNode: root.targetConfig.bar.clock
             propertyName: "showSeconds"
             checked: root.targetConfig.bar.clock.showSeconds

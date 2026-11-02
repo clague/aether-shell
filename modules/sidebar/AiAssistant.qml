@@ -9,6 +9,7 @@ import Quickshell.Io
 import M3Shapes
 import Aether.Blobs
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.containers
 import qs.components.controls
@@ -67,25 +68,25 @@ Item {
         if (GlobalConfig.ai.enableOllama !== false)
             list.push({
                 "id": "ollama",
-                "label": qsTr("Local (Ollama)"),
+                "label": Tr.tr("Local (Ollama)"),
                 "icon": "memory"
             });
         if (GlobalConfig.ai.enableOpenRouter === true)
             list.push({
                 "id": "openrouter",
-                "label": qsTr("OpenRouter"),
+                "label": Tr.tr("OpenRouter"),
                 "icon": "public"
             });
         if (GlobalConfig.ai.enableOpenClaw === true)
             list.push({
                 "id": "openclaw",
-                "label": qsTr("OpenClaw"),
+                "label": Tr.tr("OpenClaw"),
                 "icon": "hub"
             });
         if (list.length === 0)
             list.push({
                 "id": "ollama",
-                "label": qsTr("Local (Ollama)"),
+                "label": Tr.tr("Local (Ollama)"),
                 "icon": "memory"
             });
         return list;
@@ -131,7 +132,7 @@ Item {
         if (recents.length > 0)
             secs.push({
                 "id": "recent",
-                "label": qsTr("Recent"),
+                "label": Tr.tr("Recent"),
                 "icon": "history",
                 "models": recents
             });
@@ -2775,7 +2776,7 @@ Item {
 
                                 verticalAlignment: TextInput.AlignVCenter
 
-                                placeholderText: qsTr("Ask assistant...")
+                                placeholderText: Tr.tr("Ask assistant...")
 
                                 color: Colours.palette.m3onSurface
 
@@ -2971,7 +2972,7 @@ Item {
                                 Layout.fillWidth: true
 
                                 visible: root.totalModelCount > 8
-                                placeholderText: qsTr("Search models...")
+                                placeholderText: Tr.tr("Search models...")
                                 font: Tokens.font.body.small
                                 onTextEdited: searchDebounce.restart()
                             }
@@ -3168,7 +3169,7 @@ Item {
 
                                 StyledText {
                                     anchors.verticalCenter: parent.verticalCenter
-                                    text: qsTr("Loading models...")
+                                    text: Tr.tr("Loading models...")
                                     color: Colours.palette.m3onSurfaceVariant
                                     font: Tokens.font.body.small
                                 }
@@ -3179,7 +3180,7 @@ Item {
                                 Layout.alignment: Qt.AlignHCenter
 
                                 visible: root.searchResultCount === 0 && root.modelQuery.length > 0 && !root.modelsLoading
-                                text: qsTr("No models found")
+                                text: Tr.tr("No models found")
                                 color: Colours.palette.m3onSurfaceVariant
                                 font: Tokens.font.body.small
                             }

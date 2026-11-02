@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Widgets
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.containers
 import qs.components.controls
@@ -103,7 +104,7 @@ Item {
                         id: searchField
 
                         Layout.fillWidth: true
-                        placeholderText: qsTr("Search wallpapers...")
+                        placeholderText: Tr.tr("Search wallpapers...")
                         onTextChanged: root.searchQuery = text
 
                         Keys.onReturnPressed: {
@@ -143,7 +144,7 @@ Item {
                 // Results header with pagination
                 RowLayout {
                     StyledText {
-                        text: root.currentResults.length > 0 ? qsTr("Found %1 wallpapers (page %2 of %3)").arg(root.currentResults.length).arg(WallhavenSearcher.currentPage).arg(WallhavenSearcher.lastPage) : qsTr("No results")
+                        text: root.currentResults.length > 0 ? Tr.tr("Found %1 wallpapers (page %2 of %3)").arg(root.currentResults.length).arg(WallhavenSearcher.currentPage).arg(WallhavenSearcher.lastPage) : Tr.tr("No results")
                         font: Tokens.font.body.small
                     }
 
@@ -152,7 +153,7 @@ Item {
                     }
 
                     TextButton {
-                        text: qsTr("Load more")
+                        text: Tr.tr("Load more")
                         visible: WallhavenSearcher.currentPage < WallhavenSearcher.lastPage && !root.isLoading && root.currentResults.length > 0
                         onClicked: {
                             root.isLoading = true;
@@ -266,7 +267,7 @@ Item {
                 }
 
                 TextButton {
-                    text: qsTr("Download & Set")
+                    text: Tr.tr("Download & Set")
                     onClicked: {
                         const wallpaper = root.selectedWallpaper;
                         if (wallpaper)

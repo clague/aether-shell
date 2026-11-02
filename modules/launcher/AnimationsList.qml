@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.containers
 import qs.components.controls
@@ -138,7 +139,7 @@ StyledListView {
                 }
 
                 StyledText {
-                    text: delegateRoot.modelData ? (delegateRoot.modelData.path === "default" ? qsTr("Use default shell animations") : qsTr("Click to apply animation")) : ""
+                    text: delegateRoot.modelData ? (delegateRoot.modelData.path === "default" ? Tr.tr("Use default shell animations") : Tr.tr("Click to apply animation")) : ""
                     font: Tokens.font.body.small
                     color: Colours.palette.m3outline
                     elide: Text.ElideRight

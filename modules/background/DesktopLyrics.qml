@@ -5,6 +5,7 @@ import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
 import Aether.Config
+import Aether.I18n
 import Aether.Services
 import Aether.State
 import qs.components
@@ -272,7 +273,7 @@ Item {
                 }
 
                 StyledText {
-                    text: qsTr("Loading lyrics...")
+                    text: Tr.tr("Loading lyrics...")
                     color: root.safeSecondary
                     font.pointSize: Tokens.font.title.medium.pointSize * root.lyricsScale
                     font.family: Tokens.font.title.medium.family

@@ -7972,3 +7972,327 @@ msgstr "%1 想与你共享“%2”（%3）。"
 msgid "Decline"
 msgstr "拒绝"
 
+#: modules/
+msgid "%1 active"
+msgstr "%1 个活动"
+#: modules/
+msgid "%1 commits"
+msgstr "%1 次提交"
+#: modules/
+msgid "%1 notes tagged"
+msgstr "%1 条笔记已加标签"
+#: modules/
+msgid "%1 unread"
+msgstr "%1 条未读"
+#: modules/
+msgid "4-Finger Swipe Gesture"
+msgstr "四指滑动手势"
+#: modules/
+msgid "7-Day Forecast"
+msgstr "未来 7 天预报"
+#: modules/
+msgid "Active"
+msgstr "活动"
+#: modules/
+msgid "Add App"
+msgstr "添加应用"
+#: modules/
+msgid "Add Tag"
+msgstr "添加标签"
+#: modules/
+msgid "All Windows"
+msgstr "所有窗口"
+#: modules/
+msgid "Applications"
+msgstr "应用程序"
+#: modules/
+msgid "Apply theme assets and wallpaper"
+msgstr "应用主题资源与壁纸"
+#: modules/
+msgid "Arch Linux News"
+msgstr "Arch Linux 新闻"
+#: modules/
+msgid "Ask assistant..."
+msgstr "向助手提问…"
+#: modules/
+msgid "Base URL of the OpenClaw gateway"
+msgstr "OpenClaw 网关的基础 URL"
+#: modules/
+msgid "Bearer key used for OpenRouter requests"
+msgstr "用于 OpenRouter 请求的 Bearer 密钥"
+#: modules/
+msgid "Clear all"
+msgstr "全部清除"
+#: modules/
+msgid "Click to apply animation"
+msgstr "点击应用动画"
+#: modules/
+msgid "Close"
+msgstr "关闭"
+#: modules/
+msgid "Close All (%1)"
+msgstr "全部关闭（%1）"
+#: modules/
+msgid "Close Window"
+msgstr "关闭窗口"
+#: modules/
+msgid "Copied to clipboard"
+msgstr "已复制到剪贴板"
+#: modules/
+msgid "CPU (QPainter)"
+msgstr "CPU（QPainter）"
+#: modules/
+msgid "Create"
+msgstr "创建"
+#: modules/
+msgid "Custom Tags"
+msgstr "自定义标签"
+#: modules/
+msgid "Display seconds for the clock in the main panel"
+msgstr "在主面板时钟中显示秒数"
+#: modules/
+msgid "Download & Set"
+msgstr "下载并设置"
+#: modules/
+msgid "Drag"
+msgstr "拖动"
+#: modules/
+msgid "Edit"
+msgstr "编辑"
+#: modules/
+msgid "Edit Dock"
+msgstr "编辑 Dock"
+#: modules/
+msgid "Enable OpenClaw"
+msgstr "启用 OpenClaw"
+#: modules/
+msgid "Enable OpenRouter"
+msgstr "启用 OpenRouter"
+#: modules/
+msgid "End task"
+msgstr "结束任务"
+#: modules/
+msgid "Enter"
+msgstr "Enter"
+#: modules/
+msgid "Enter new note name (e.g. Ideas.md)..."
+msgstr "输入新笔记名（例如 Ideas.md）…"
+#: modules/
+msgid "Esc"
+msgstr "Esc"
+#: modules/
+msgid "Failed to fetch news (Status: %1)"
+msgstr "获取新闻失败（状态：%1）"
+#: modules/
+msgid "Fetching latest news..."
+msgstr "正在获取最新新闻…"
+#: modules/
+msgid "Focused"
+msgstr "聚焦"
+#: modules/
+msgid "Found %1 wallpapers (page %2 of %3)"
+msgstr "找到 %1 张壁纸（第 %2 / %3 页）"
+#: modules/
+msgid "G A M E   O V E R"
+msgstr "游 戏 结 束"
+#: modules/
+msgid "Gateway bearer token used for authentication"
+msgstr "用于认证的网关 Bearer 令牌"
+#: modules/
+msgid "Gateway token"
+msgstr "网关令牌"
+#: modules/
+msgid "GPU (Shader)"
+msgstr "GPU（Shader）"
+#: modules/
+msgid "Last 7 days"
+msgstr "最近 7 天"
+#: modules/
+msgid "Loading models..."
+msgstr "正在加载模型…"
+#: modules/
+msgid "Load more"
+msgstr "加载更多"
+#: modules/
+msgid "Local (Ollama)"
+msgstr "本地（Ollama）"
+#: modules/
+msgid "Middle Click"
+msgstr "中键单击"
+#: modules/
+msgid "Model id used when the OpenClaw provider is active"
+msgstr "使用 OpenClaw 提供方时的模型 id"
+#: modules/
+msgid "Model id used when the OpenRouter provider is active"
+msgstr "使用 OpenRouter 提供方时的模型 id"
+#: modules/
+msgid "Move Window"
+msgstr "移动窗口"
+#: modules/
+msgid "Navigate"
+msgstr "导航"
+#: modules/
+msgid "New Instance"
+msgstr "新建实例"
+#: modules/
+msgid "New tag name (e.g. project, reading)..."
+msgstr "新标签名（例如 project、reading）…"
+#: modules/
+msgid "No Active Scratchpads"
+msgstr "没有活动的草稿本"
+#: modules/
+msgid "No active windows open"
+msgstr "没有打开的窗口"
+#: modules/
+msgid "No keybinds"
+msgstr "没有快捷键"
+#: modules/
+msgid "No models found"
+msgstr "未找到模型"
+#: modules/
+msgid "No news articles found."
+msgstr "没有找到新闻。"
+#: modules/
+msgid "Not authenticated"
+msgstr "未认证"
+#: modules/
+msgid "Notes Directory"
+msgstr "笔记目录"
+#: modules/
+msgid "Notifications off"
+msgstr "通知已关闭"
+#: modules/
+msgid "OpenClaw"
+msgstr "OpenClaw"
+#: modules/
+msgid "OpenClaw gateway URL"
+msgstr "OpenClaw 网关地址"
+#: modules/
+msgid "OpenClaw model"
+msgstr "OpenClaw 模型"
+#: modules/
+msgid "OpenClaw token"
+msgstr "OpenClaw 令牌"
+#: modules/
+msgid "Open Folder"
+msgstr "打开文件夹"
+#: modules/
+msgid "Open new window"
+msgstr "打开新窗口"
+#: modules/
+msgid "Open profile"
+msgstr "打开个人主页"
+#: modules/
+msgid "OpenRouter"
+msgstr "OpenRouter"
+#: modules/
+msgid "OpenRouter API key"
+msgstr "OpenRouter API 密钥"
+#: modules/
+msgid "OpenRouter model"
+msgstr "OpenRouter 模型"
+#: modules/
+msgid "Pin to dock"
+msgstr "固定到 Dock"
+#: modules/
+msgid "Pin to Dock"
+msgstr "固定到 Dock"
+#: modules/
+msgid "PLAY DINO RUNNER"
+msgstr "玩 DINO RUNNER"
+#: modules/
+msgid "Press Space to Start, Down to Duck"
+msgstr "按空格开始，按下方向键下蹲"
+#: modules/
+msgid "Quick Access"
+msgstr "快速访问"
+#: modules/
+msgid "Recent"
+msgstr "最近"
+#: modules/
+msgid "Remove"
+msgstr "移除"
+#: modules/
+msgid "Renderer"
+msgstr "渲染器"
+#: modules/
+msgid "Rescan Notes"
+msgstr "重新扫描笔记"
+#: modules/
+msgid "Run `caelestia ipc quicknote toggle` or bind it in Hyprland to pop up your scratchpad with tags from anywhere."
+msgstr "运行 `caelestia ipc quicknote toggle`，或在 Hyprland 中绑定它，即可在任意位置弹出带标签的草稿本。"
+#: modules/
+msgid "Score: %1"
+msgstr "得分：%1"
+#: modules/
+msgid "Scratchpad IPC & Hotkeys"
+msgstr "草稿本 IPC 与快捷键"
+#: modules/
+msgid "Search models..."
+msgstr "搜索模型…"
+#: modules/
+msgid "Search wallpapers..."
+msgstr "搜索壁纸…"
+#: modules/
+msgid "Show clock seconds"
+msgstr "显示时钟秒数"
+#: modules/
+msgid "Show seconds"
+msgstr "显示秒数"
+#: modules/
+msgid "Shut Down"
+msgstr "关机"
+#: modules/
+msgid "Shut down the system?"
+msgstr "要关闭系统吗？"
+#: modules/
+msgid "Size"
+msgstr "大小"
+#: modules/
+msgid "Special"
+msgstr "特殊"
+#: modules/
+msgid "Storage & Paths"
+msgstr "存储与路径"
+#: modules/
+msgid "Switch to Workspace"
+msgstr "切换到工作区"
+#: modules/
+msgid "Tag Note"
+msgstr "标注笔记"
+#: modules/
+msgid "Toggle tags for '%1':"
+msgstr "切换「%1」的标签："
+#: modules/
+msgid "Unpin from dock"
+msgstr "从 Dock 取消固定"
+#: modules/
+msgid "Use a local OpenClaw gateway as the assistant backend"
+msgstr "使用本地 OpenClaw 网关作为助手后端"
+#: modules/
+msgid "Use cloud models through the OpenRouter API"
+msgstr "通过 OpenRouter API 使用云端模型"
+#: modules/
+msgid "Use default shell animations"
+msgstr "使用默认 Shell 动画"
+#: modules/
+msgid "Use 'special:<name>' workspaces to manage background scratchpad windows"
+msgstr "使用 'special:<name>' 工作区管理后台草稿本窗口"
+#: modules/
+msgid "Window"
+msgstr "窗口"
+#: modules/
+msgid "Workspace"
+msgstr "工作区"
+#: modules/
+msgid "WS"
+msgstr "WS"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "This changes your system font settings"
+msgstr "这会修改系统的字体设置"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "It writes %1 and sets the GTK font, so every application uses these fonts, not only the shell. Fonts you add are copied to %2. Turning it off removes the file and puts the previous GTK fonts back."
+msgstr "它会写入 %1 并设置 GTK 字体，因此所有应用都会使用这些字体，而不只是 shell。你添加的字体会被复制到 %2。关闭后会删除该文件，并恢复之前的 GTK 字体。"
+

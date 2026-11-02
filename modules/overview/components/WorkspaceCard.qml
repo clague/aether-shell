@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell.Hyprland
 import Quickshell.Widgets
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.services
 import qs.modules.overview
@@ -74,7 +75,7 @@ Item {
 
         // Workspace Name
         StyledText {
-            text: root.modelData?.name ?? qsTr("Workspace")
+            text: root.modelData?.name ?? Tr.tr("Workspace")
             font.pixelSize: 13
             font.weight: Font.DemiBold
             color: root.isFocused ? Colours.palette.m3primary : Colours.palette.m3onSurface
@@ -96,7 +97,7 @@ Item {
                 id: statusText
 
                 anchors.centerIn: parent
-                text: root.isFocused ? qsTr("Focused") : qsTr("Active")
+                text: root.isFocused ? Tr.tr("Focused") : Tr.tr("Active")
                 font.pixelSize: 10
                 font.weight: Font.Bold
                 color: root.isFocused ? Colours.palette.m3onPrimaryContainer : Colours.palette.m3onSurfaceVariant

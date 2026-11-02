@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.controls
 import qs.services
@@ -129,21 +130,21 @@ Item {
                                 var tabs = [
                                     {
                                         id: "notifications",
-                                        label: qsTr("Notifications"),
+                                        label: Tr.tr("Notifications"),
                                         icon: "notifications"
                                     }
                                 ];
                                 if (root.aiAvailable) {
                                     tabs.push({
                                         id: "ai",
-                                        label: qsTr("AI Assistant"),
+                                        label: Tr.tr("AI Assistant"),
                                         icon: "smart_toy"
                                     });
                                 }
                                 if (GlobalConfig.sidebar.showNews !== false) {
                                     tabs.push({
                                         id: "news",
-                                        label: qsTr("News"),
+                                        label: Tr.tr("News"),
                                         icon: "newspaper"
                                     });
                                 }

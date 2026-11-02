@@ -44,7 +44,7 @@ Item {
             {
                 component: terminalComponent,
                 iconName: "terminal",
-                text: qsTr("Terminal"),
+                text: Tr.tr("Terminal"),
                 enabled: Config.dashboard.showTerminal
             }
         ];

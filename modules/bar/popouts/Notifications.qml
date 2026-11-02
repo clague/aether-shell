@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Aether.Config
+import Aether.I18n
 import Aether.State
 import qs.components
 import qs.components.controls
@@ -22,7 +23,7 @@ ColumnLayout {
     StyledText {
         Layout.topMargin: Tokens.padding.medium
         Layout.leftMargin: Tokens.padding.small
-        text: qsTr("Notifications")
+        text: Tr.tr("Notifications")
         font.weight: 500
     }
 
@@ -43,13 +44,13 @@ ColumnLayout {
             spacing: Tokens.spacing.medium
 
             Toggle {
-                label: qsTr("Do not disturb")
+                label: Tr.tr("Do not disturb")
                 checked: Notifs.dnd
                 toggle.onToggled: Notifs.setDnd(checked)
             }
 
             StyledText {
-                text: PersistentState.doNotDisturb ? qsTr("Notifications off") : qsTr("%1 unread").arg(Notifs.notClosed.length)
+                text: PersistentState.doNotDisturb ? Tr.tr("Notifications off") : Tr.tr("%1 unread").arg(Notifs.notClosed.length)
                 color: Colours.palette.m3onSurfaceVariant
                 font.pointSize: Tokens.font.body.small.pointSize
             }
@@ -61,7 +62,7 @@ ColumnLayout {
         inactiveColour: Colours.palette.m3primaryContainer
         inactiveOnColour: Colours.palette.m3onPrimaryContainer
         verticalPadding: Tokens.padding.small
-        text: qsTr("Clear all")
+        text: Tr.tr("Clear all")
         icon: "clear_all"
 
         onClicked: Notifs.clear()

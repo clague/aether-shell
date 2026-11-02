@@ -111,8 +111,8 @@ PageBase {
 
         ToggleRow {
             Layout.fillWidth: true
-            text: qsTr("Enable OpenRouter")
-            subtext: qsTr("Use cloud models through the OpenRouter API")
+            text: Tr.tr("Enable OpenRouter")
+            subtext: Tr.tr("Use cloud models through the OpenRouter API")
             configNode: root.targetConfig.ai
             propertyName: "enableOpenRouter"
             checked: root.targetConfig.ai.enableOpenRouter
@@ -123,8 +123,8 @@ PageBase {
         }
 
         TextFieldRow {
-            label: qsTr("OpenRouter API key")
-            subtext: qsTr("Bearer key used for OpenRouter requests")
+            label: Tr.tr("OpenRouter API key")
+            subtext: Tr.tr("Bearer key used for OpenRouter requests")
             value: root.targetConfig.ai.openRouterApiKey
             placeholderText: "sk-or-..."
             onEditingFinished: value => {
@@ -134,8 +134,8 @@ PageBase {
         }
 
         TextFieldRow {
-            label: qsTr("OpenRouter model")
-            subtext: qsTr("Model id used when the OpenRouter provider is active")
+            label: Tr.tr("OpenRouter model")
+            subtext: Tr.tr("Model id used when the OpenRouter provider is active")
             value: root.targetConfig.ai.openRouterModel
             placeholderText: "openrouter/auto"
             onEditingFinished: value => {
@@ -146,8 +146,8 @@ PageBase {
 
         ToggleRow {
             Layout.fillWidth: true
-            text: qsTr("Enable OpenClaw")
-            subtext: qsTr("Use a local OpenClaw gateway as the assistant backend")
+            text: Tr.tr("Enable OpenClaw")
+            subtext: Tr.tr("Use a local OpenClaw gateway as the assistant backend")
             configNode: root.targetConfig.ai
             propertyName: "enableOpenClaw"
             checked: root.targetConfig.ai.enableOpenClaw
@@ -158,8 +158,8 @@ PageBase {
         }
 
         TextFieldRow {
-            label: qsTr("OpenClaw gateway URL")
-            subtext: qsTr("Base URL of the OpenClaw gateway")
+            label: Tr.tr("OpenClaw gateway URL")
+            subtext: Tr.tr("Base URL of the OpenClaw gateway")
             value: root.targetConfig.ai.openClawUrl
             placeholderText: "http://127.0.0.1:18789"
             onEditingFinished: value => {
@@ -169,10 +169,10 @@ PageBase {
         }
 
         TextFieldRow {
-            label: qsTr("OpenClaw token")
-            subtext: qsTr("Gateway bearer token used for authentication")
+            label: Tr.tr("OpenClaw token")
+            subtext: Tr.tr("Gateway bearer token used for authentication")
             value: root.targetConfig.ai.openClawToken
-            placeholderText: qsTr("Gateway token")
+            placeholderText: Tr.tr("Gateway token")
             onEditingFinished: value => {
                 root.targetConfig.ai.openClawToken = value;
                 root.targetConfig.save();
@@ -181,8 +181,8 @@ PageBase {
 
         TextFieldRow {
             last: true
-            label: qsTr("OpenClaw model")
-            subtext: qsTr("Model id used when the OpenClaw provider is active")
+            label: Tr.tr("OpenClaw model")
+            subtext: Tr.tr("Model id used when the OpenClaw provider is active")
             value: root.targetConfig.ai.openClawModel
             placeholderText: "openclaw/default"
             onEditingFinished: value => {

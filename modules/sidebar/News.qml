@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.controls
 import qs.services
@@ -60,7 +61,7 @@ Item {
             if (xhr.status === 200)
                 root.parseNews(xhr.responseText);
             else
-                root.errorMessage = qsTr("Failed to fetch news (Status: %1)").arg(xhr.status);
+                root.errorMessage = Tr.tr("Failed to fetch news (Status: %1)").arg(xhr.status);
         };
         xhr.send();
     }
@@ -101,7 +102,7 @@ Item {
         }
 
         if (newsModel.count === 0) {
-            root.errorMessage = qsTr("No news articles found.");
+            root.errorMessage = Tr.tr("No news articles found.");
         }
     }
 
@@ -131,7 +132,7 @@ Item {
 
             StyledText {
                 Layout.fillWidth: true
-                text: qsTr("Arch Linux News")
+                text: Tr.tr("Arch Linux News")
                 font: Tokens.font.title.medium
                 color: root.cOnSurface
             }
@@ -159,7 +160,7 @@ Item {
 
             StyledText {
                 anchors.centerIn: parent
-                text: qsTr("Fetching latest news...")
+                text: Tr.tr("Fetching latest news...")
                 color: root.cOnSurfaceVariant
             }
         }

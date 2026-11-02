@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Aether
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.services
 
@@ -13,7 +14,7 @@ ColumnLayout {
     StyledText {
         Layout.leftMargin: Tokens.padding.medium
         visible: forecastRepeater.count > 0
-        text: qsTr("7-Day Forecast")
+        text: Tr.tr("7-Day Forecast")
         font: AppFonts.pinned(Tokens.font.body.builders.medium, "body", "medium").weight(Font.DemiBold).build()
         color: Colours.palette.m3onSurface
     }
@@ -47,7 +48,7 @@ ColumnLayout {
 
                     StyledText {
                         Layout.alignment: Qt.AlignHCenter
-                        text: forecastItem.index === 0 ? qsTr("Today") : new Date(forecastItem.modelData.date).toLocaleDateString(Qt.locale(), "ddd")
+                        text: forecastItem.index === 0 ? Tr.tr("Today") : new Date(forecastItem.modelData.date).toLocaleDateString(Qt.locale(), "ddd")
                         font: AppFonts.pinned(Tokens.font.body.builders.medium, "body", "medium").weight(Font.DemiBold).build()
                         color: Colours.palette.m3primary
                     }

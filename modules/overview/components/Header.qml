@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.services
 
@@ -48,7 +49,7 @@ Item {
 
                 StyledText {
                     anchors.centerIn: parent
-                    text: qsTr("Esc")
+                    text: Tr.tr("Esc")
                     font.pixelSize: 10
                     font.weight: Font.Bold
                     color: Colours.palette.m3onSurfaceVariant
@@ -56,7 +57,7 @@ Item {
             }
 
             StyledText {
-                text: qsTr("Close")
+                text: Tr.tr("Close")
                 font.pixelSize: 12
                 color: Colours.palette.m3onSurface
                 anchors.verticalCenter: parent.verticalCenter

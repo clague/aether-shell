@@ -5,6 +5,7 @@ import ".."
 import QtQuick
 import Quickshell
 import Aether.Config
+import Aether.I18n
 import Aether.Models
 import qs.services
 import qs.utils
@@ -75,7 +76,7 @@ Searcher {
         required property FileSystemEntry modelData
         readonly property string folder: modelData?.name ?? ""
         readonly property string name: root.prettyName(folder)
-        readonly property string desc: qsTr("Apply theme assets and wallpaper")
+        readonly property string desc: Tr.tr("Apply theme assets and wallpaper")
         readonly property string wallpaperPath: modelData ? `${modelData.path}/wallpaper.jpg` : ""
 
         function onClicked(list: AppList): void {

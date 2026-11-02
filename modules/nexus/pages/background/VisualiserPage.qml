@@ -66,15 +66,15 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             last: true
             Layout.fillWidth: true
-            label: qsTr("Renderer")
+            label: Tr.tr("Renderer")
             configNode: root.targetConfig.background.visualiser
             propertyName: "renderer"
             menuItems: [
                 MenuItem {
-                    text: qsTr("GPU (Shader)")
+                    text: Tr.tr("GPU (Shader)")
                 },
                 MenuItem {
-                    text: qsTr("CPU (QPainter)")
+                    text: Tr.tr("CPU (QPainter)")
                 }
             ]
             active: root.targetConfig.background.visualiser.renderer === "cpu" ? menuItems[1] : menuItems[0]

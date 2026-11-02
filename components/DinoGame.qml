@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.controls
 import qs.components.effects
@@ -537,14 +538,14 @@ Item {
 
         StyledText {
             Layout.alignment: Qt.AlignHCenter
-            text: qsTr("PLAY DINO RUNNER")
+            text: Tr.tr("PLAY DINO RUNNER")
             color: Colours.palette.m3primary
             font: Tokens.font.title.builders.small.weight(Font.Bold).build()
         }
 
         StyledText {
             Layout.alignment: Qt.AlignHCenter
-            text: qsTr("Press Space to Start, Down to Duck")
+            text: Tr.tr("Press Space to Start, Down to Duck")
             color: Colours.palette.m3outline
             font: Tokens.font.body.small
         }
@@ -559,14 +560,14 @@ Item {
 
         StyledText {
             Layout.alignment: Qt.AlignHCenter
-            text: qsTr("G A M E   O V E R")
+            text: Tr.tr("G A M E   O V E R")
             color: Colours.palette.m3error
             font: Tokens.font.title.builders.medium.weight(Font.Bold).build()
         }
 
         StyledText {
             Layout.alignment: Qt.AlignHCenter
-            text: qsTr("Score: %1").arg(root.score)
+            text: Tr.tr("Score: %1").arg(root.score)
             color: Colours.palette.m3outline
             font: Tokens.font.body.medium
         }

@@ -243,7 +243,7 @@ Item {
 
                             anchors.centerIn: parent
 
-                            text: qsTr("All")
+                            text: Tr.tr("All")
 
                             font.pixelSize: 11
 
@@ -346,7 +346,7 @@ Item {
                     IconTextButton {
                         type: ButtonBase.Text
                         icon: "label_important"
-                        text: qsTr("Tag Note")
+                        text: Tr.tr("Tag Note")
                         onClicked: root.showTagAssignMenu = !root.showTagAssignMenu
                     }
 
@@ -388,7 +388,7 @@ Item {
                         spacing: Tokens.spacing.small
 
                         StyledText {
-                            text: qsTr("Toggle tags for '%1':").arg(QuickNoteState.currentFileName)
+                            text: Tr.tr("Toggle tags for '%1':").arg(QuickNoteState.currentFileName)
 
                             font: Tokens.font.label.small
 
@@ -497,7 +497,7 @@ Item {
 
                             Layout.fillWidth: true
 
-                            placeholderText: qsTr("Enter new note name (e.g. Ideas.md)...")
+                            placeholderText: Tr.tr("Enter new note name (e.g. Ideas.md)...")
 
                             text: root.newNoteName
 
@@ -517,7 +517,7 @@ Item {
 
                             icon: "add"
 
-                            text: qsTr("Create")
+                            text: Tr.tr("Create")
 
                             onClicked: {
                                 if (root.newNoteName.trim()) {

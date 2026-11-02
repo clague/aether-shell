@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.controls
 import qs.services as Services
@@ -23,7 +24,7 @@ ColumnLayout {
     StyledText {
         Layout.topMargin: Tokens.padding.medium
         Layout.leftMargin: Tokens.padding.small
-        text: qsTr("GitHub")
+        text: Tr.tr("GitHub")
         font.weight: 500
     }
 
@@ -54,7 +55,7 @@ ColumnLayout {
 
                 StyledText {
                     Layout.fillWidth: true
-                    text: root.username.length > 0 ? `@${root.username}` : qsTr("Not authenticated")
+                    text: root.username.length > 0 ? `@${root.username}` : Tr.tr("Not authenticated")
                     color: Services.Colours.palette.m3onSurface
                 }
             }
@@ -71,12 +72,12 @@ ColumnLayout {
 
                 StyledText {
                     Layout.fillWidth: true
-                    text: qsTr("Last 7 days")
+                    text: Tr.tr("Last 7 days")
                     color: Services.Colours.palette.m3onSurfaceVariant
                 }
 
                 StyledText {
-                    text: qsTr("%1 commits").arg(root.total)
+                    text: Tr.tr("%1 commits").arg(root.total)
                     font.weight: 600
                     color: Services.Colours.palette.m3onSurface
                 }
@@ -107,7 +108,7 @@ ColumnLayout {
         inactiveColour: Services.Colours.palette.m3primaryContainer
         inactiveOnColour: Services.Colours.palette.m3onPrimaryContainer
         verticalPadding: Tokens.padding.small
-        text: qsTr("Open profile")
+        text: Tr.tr("Open profile")
         icon: "open_in_new"
 
         onClicked: {

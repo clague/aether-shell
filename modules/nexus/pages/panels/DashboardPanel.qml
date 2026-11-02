@@ -220,8 +220,8 @@ PageBase {
 
         ToggleRow {
             last: true
-            text: qsTr("Show clock seconds")
-            subtext: qsTr("Display seconds for the clock in the main panel")
+            text: Tr.tr("Show clock seconds")
+            subtext: Tr.tr("Display seconds for the clock in the main panel")
             configNode: root.targetConfig.dashboard
             propertyName: "showClockSeconds"
             checked: root.targetConfig.dashboard.showClockSeconds

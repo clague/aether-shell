@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell.Hyprland
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.services
 import qs.modules.overview
@@ -90,7 +91,7 @@ Item {
         }
 
         StyledText {
-            text: qsTr("No Active Scratchpads")
+            text: Tr.tr("No Active Scratchpads")
             font.pixelSize: 16
             font.weight: Font.DemiBold
             color: Colours.palette.m3onSurface
@@ -98,7 +99,7 @@ Item {
         }
 
         StyledText {
-            text: qsTr("Use 'special:<name>' workspaces to manage background scratchpad windows")
+            text: Tr.tr("Use 'special:<name>' workspaces to manage background scratchpad windows")
             font.pixelSize: 12
             color: Colours.palette.m3onSurfaceVariant
             anchors.horizontalCenter: parent.horizontalCenter

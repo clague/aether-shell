@@ -52,7 +52,7 @@ PageBase {
             Layout.fillWidth: true
             configNode: root.targetConfig.shimeji
             propertyName: "scale"
-            label: qsTr("Size")
+            label: Tr.tr("Size")
             value: (root.targetConfig.shimeji.scale - 0.5) / 1.5
             valueLabel: Math.round(root.targetConfig.shimeji.scale * 100) + "%"
             onMoved: v => {

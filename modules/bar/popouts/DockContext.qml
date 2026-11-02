@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.controls
 import qs.services
@@ -90,7 +91,7 @@ ColumnLayout {
                     id: pinLabel
 
                     anchors.left: parent.left
-                    text: root.isPinned ? qsTr("Unpin from dock") : qsTr("Pin to dock")
+                    text: root.isPinned ? Tr.tr("Unpin from dock") : Tr.tr("Pin to dock")
                 }
             }
 
@@ -127,7 +128,7 @@ ColumnLayout {
                     id: newWinLabel
 
                     anchors.left: parent.left
-                    text: qsTr("Open new window")
+                    text: Tr.tr("Open new window")
                 }
             }
         }
@@ -138,7 +139,7 @@ ColumnLayout {
         inactiveColour: Colours.palette.m3primaryContainer
         inactiveOnColour: Colours.palette.m3onPrimaryContainer
         verticalPadding: Tokens.padding.small
-        text: qsTr("End task")
+        text: Tr.tr("End task")
         icon: "close"
         visible: root.model && root.model.toplevels && root.model.toplevels.length > 0
 

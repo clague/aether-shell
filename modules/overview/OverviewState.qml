@@ -4,6 +4,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Hyprland
+import Aether.I18n
 import qs.services
 
 Singleton {
@@ -15,7 +16,7 @@ Singleton {
     property int selectedCardIndex: 0
     property int selectedWindowIndex: 0
 
-    readonly property list<string> tabNames: [qsTr("Workspaces"), qsTr("Special"), qsTr("All Windows")]
+    readonly property list<string> tabNames: [Tr.tr("Workspaces"), Tr.tr("Special"), Tr.tr("All Windows")]
 
     function reset(): void {
         searchQuery = "";

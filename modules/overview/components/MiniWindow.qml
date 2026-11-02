@@ -5,6 +5,7 @@ import Quickshell.Hyprland
 import Quickshell.Wayland
 import Quickshell.Widgets
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.controls
 import qs.services
@@ -137,7 +138,7 @@ Item {
                         StyledText {
                             id: titleText
 
-                            text: root.modelData?.title || root.ipc.class || qsTr("Window")
+                            text: root.modelData?.title || root.ipc.class || Tr.tr("Window")
                             font.pixelSize: Math.max(8, Math.min(11, topBar.height * 0.6))
                             font.weight: Font.DemiBold
                             color: Colours.palette.m3onSurface

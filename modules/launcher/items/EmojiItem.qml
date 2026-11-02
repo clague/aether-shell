@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Aether
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.services
 import qs.modules.launcher.services
@@ -18,7 +19,7 @@ Item {
         root.list.screenState.launcher = false;
         Quickshell.execDetached(["wl-copy", root.modelData.char]);
         Emojis.recordUsage(root.modelData.char);
-        Toaster.toast(qsTr("Copied to clipboard"), root.modelData.char + " " + root.modelData.name, "emoji_emotions");
+        Toaster.toast(Tr.tr("Copied to clipboard"), root.modelData.char + " " + root.modelData.name, "emoji_emotions");
     }
 
     implicitHeight: Tokens.sizes.launcher.itemHeight

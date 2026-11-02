@@ -85,10 +85,19 @@ PageBase {
             text: Tr.tr("App fonts")
         }
 
+        // Written by scripts/app-fonts.py, which Nexus cannot show in a row: the switch below
+        // edits files outside the shell, so say so before the user turns it on.
+        InfoRow {
+            first: true
+            Layout.fillWidth: true
+            icon: "info"
+            label: Tr.tr("This changes your system font settings")
+            subtext: Tr.tr("It writes %1 and sets the GTK font, so every application uses these fonts, not only the shell. Fonts you add are copied to %2. Turning it off removes the file and puts the previous GTK fonts back.").arg("~/.config/fontconfig/conf.d/60-caelestia-app-fonts.conf").arg("~/.local/share/fonts/caelestia")
+        }
+
         ToggleRow {
             id: fontsRow
 
-            first: true
             text: Tr.tr("Use these fonts in apps")
             subtext: AppFonts.message || (AppFonts.enabled ? Tr.tr("Apps pick this up the next time they start") : Tr.tr("Apps currently use %1 and %2 by default").arg(AppFonts.nowSans).arg(AppFonts.nowMono))
             enabled: AppFonts.sansChoices.length > 0 && AppFonts.monoChoices.length > 0

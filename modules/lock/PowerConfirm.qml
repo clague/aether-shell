@@ -5,6 +5,7 @@ import QtQuick.Effects
 import QtQuick.Layouts
 import Quickshell
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.services
 
@@ -138,7 +139,7 @@ Item {
 
             StyledText {
                 Layout.alignment: Qt.AlignHCenter
-                text: qsTr("Shut down the system?")
+                text: Tr.tr("Shut down the system?")
                 color: Colours.palette.m3onSurface
                 font: AppFonts.pinned(Tokens.font.title.builders.medium, "title", "medium").build()
             }
@@ -149,14 +150,14 @@ Item {
                 spacing: Tokens.spacing.medium
 
                 ConfirmButton {
-                    text: qsTr("Cancel")
+                    text: Tr.tr("Cancel")
                     colour: Colours.tPalette.m3surfaceContainerHighest
                     onColour: Colours.palette.m3onSurfaceVariant // qmllint disable confusing-expression-statement
                     onClicked: root.cancel()
                 }
 
                 ConfirmButton {
-                    text: qsTr("Shut Down")
+                    text: Tr.tr("Shut Down")
                     colour: Colours.palette.m3error
                     onColour: Colours.palette.m3onError // qmllint disable confusing-expression-statement
                     onClicked: root.accept()
