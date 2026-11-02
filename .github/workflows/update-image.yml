@@ -26,6 +26,13 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "0 0 * * 0"
+  # Rebuild when the recipe changes, so the image the containerised jobs pull cannot lag
+  # behind the dependencies they need (the first build in a fork happens this way).
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/update-image.yml
 
 permissions:
   packages: write
