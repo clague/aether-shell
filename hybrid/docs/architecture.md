@@ -184,9 +184,10 @@ live `hyprctl eval` pushes stay, but only as an immediate preview — persistenc
 the running session.
 
 A few options need variables upstream's dotfiles do not define: overview blur, solid-text windows,
-and the animation speed / match-shell pair. The config fragment that defines them — variable
-defaults, two rules and an animation helper — lives in `hybrid/hypr/` as a reference copy, with
-`hybrid/hypr/README.md` mapping every Nexus setting to the keys it writes.
+and the animation speed / match-shell pair. The complete config files that carry them — the entry
+that merges `hypr-vars`, `variables.lua`, the two rules, the animation helper and the mouse-button
+binds — live in `hybrid/hypr/` as full copies rather than fragments, so setting a machine up is
+copying the tree; `hybrid/hypr/README.md` maps every Nexus setting to the keys it writes.
 
 Rejected: keeping these choices only in `~/.local/state` (they vanish with a compositor restart and
 need the shell to push them again) and writing the user's dotfiles directly (that is a separate

@@ -22,7 +22,7 @@ Scope {
     }
 
     // The mouse's back/forward buttons only reach Qt for some device codes; the compositor
-    // routes the rest here (see hybrid/hypr/keybinds.shell.lua).
+    // routes the rest here (see hybrid/hypr/hyprland/keybinds.lua).
     // qmllint disable unresolved-type
     CustomShortcut {
         // qmllint enable unresolved-type

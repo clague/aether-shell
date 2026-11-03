@@ -411,19 +411,21 @@ keys you changed; clearing a key (the trash icon on a row) restores the value fr
 `~/.config/hypr/variables.lua`.
 
 Some options need variables that upstream's `variables.lua` does not define — the gaps/border and
-opacity ones exist there already, but glass, motion and the overview blur rule do not. A reference
-copy of the required files lives in `hybrid/hypr/`:
+opacity ones exist there already, but glass, motion and the overview blur rule do not. The complete
+config files (full copies with those additions merged in, not fragments) live in `hybrid/hypr/`:
 
 | file | goes into |
 |---|---|
-| `hybrid/hypr/variables.shell.lua` | append to `~/.config/hypr/variables.lua` |
-| `hybrid/hypr/rules.shell.lua` | two insertions in `~/.config/hypr/hyprland/rules.lua` |
-| `hybrid/hypr/animations.lua` | replaces `~/.config/hypr/hyprland/animations.lua` |
-| `hybrid/hypr/keybinds.shell.lua` | append to `~/.config/hypr/hyprland/keybinds.lua` |
+| `hybrid/hypr/hyprland.lua` | `~/.config/hypr/hyprland.lua` |
+| `hybrid/hypr/variables.lua` | `~/.config/hypr/variables.lua` |
+| `hybrid/hypr/hyprland/animations.lua` | `~/.config/hypr/hyprland/animations.lua` |
+| `hybrid/hypr/hyprland/rules.lua` | `~/.config/hypr/hyprland/rules.lua` |
+| `hybrid/hypr/hyprland/keybinds.lua` | `~/.config/hypr/hyprland/keybinds.lua` |
 
-Keep that directory in sync with your dotfiles checkout; `hybrid/hypr/README.md` lists which Nexus
-setting writes which key. If a key is missing the setting still applies live, it just does not
-survive a Hyprland restart.
+Copy the tree over the dotfiles checkout, leaving the user-owned `hypr-user.lua` and
+`hyprmoncfg-monitors.lua` in place. Keep it in sync with that checkout; `hybrid/hypr/README.md`
+lists which Nexus setting writes which key. If a key is missing the setting still applies live, it
+just does not survive a Hyprland restart.
 
 ### Example configuration
 

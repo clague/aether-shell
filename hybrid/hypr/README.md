@@ -12,19 +12,30 @@ for k, v in pairs(overrides) do vars[k] = v end
 That makes every key in the table an override of the matching `variables.lua` default, which is
 why clearing a key is the way to reset: delete it and the user's own value applies again.
 
-The directory you are reading is the **reference copy of the config side** of that contract. It is
-not installed by the build and not read at runtime — the shell only knows the key names. Keep it in
-sync with the dotfiles checkout (`~/.config/hypr`), and copy from here when you set the dotfiles
-up on a new machine.
+This directory is the **complete config side** of that contract: full files, not fragments. They are
+the dotfiles' own files with the shell additions already merged — the entry that loads `hypr-vars`,
+the variables the shell writes, the two rules and the animation helper, and the keybinds that route
+buttons the shell cannot see. Setting a machine up is copying the tree, not patching snippets into
+it.
+
+Nothing here is installed by the build or read at runtime; the shell only knows the key names.
+Keep it in sync with the dotfiles checkout (`~/.config/hypr`) when either side changes.
 
 ## Files
 
-| file here | goes into | notes |
-|---|---|---|
-| `variables.shell.lua` | appended to `~/.config/hypr/variables.lua` | keys the shell writes that upstream `variables.lua` does not define |
-| `rules.shell.lua` | `~/.config/hypr/hyprland/rules.lua` | two insertions, with the exact spot described in the file |
-| `animations.lua` | replaces `~/.config/hypr/hyprland/animations.lua` | applies `animSpeed` and `animMatchShell` to every leaf |
-| `keybinds.shell.lua` | appended to `~/.config/hypr/hyprland/keybinds.lua` | routes the mouse back/forward buttons the shell cannot see |
+| file here | goes into |
+|---|---|
+| `hyprland.lua` | `~/.config/hypr/hyprland.lua` |
+| `variables.lua` | `~/.config/hypr/variables.lua` |
+| `hyprland/animations.lua` | `~/.config/hypr/hyprland/animations.lua` |
+| `hyprland/rules.lua` | `~/.config/hypr/hyprland/rules.lua` |
+| `hyprland/keybinds.lua` | `~/.config/hypr/hyprland/keybinds.lua` |
+
+Copy the five files over the dotfiles checkout. Leave the user-owned files alone:
+`~/.config/caelestia/hypr-user.lua` (loaded by `hyprland.lua` after the modules) and
+`~/.config/hypr/hyprmoncfg-monitors.lua` (generated per machine; also loaded by the entry). The
+dotfiles' other modules (`general`, `decoration`, `env`, `execs`, ...) are not part of this contract
+and stay with the dotfiles.
 
 ## What writes what
 
@@ -44,17 +55,18 @@ the running compositor (`hyprctl eval` / live options), so a slider has an immed
 before a reload. Persistence is the config side above; the live push is only the preview.
 
 `solidTextClasses` is a regex maintained by `Glass.solidClasses`. The shell writes it whenever the
-toggle changes, so the value in `variables.shell.lua` (and in `variables.lua`) is just the default
-for a machine where the shell has not written that key yet.
+toggle changes, so the value in `variables.lua` is just the default for a machine where the shell has
+not written that key yet.
 
 ## Mouse back/forward in the settings window
 
 Qt only turns `BTN_SIDE`/`BTN_EXTRA` (275/276, what most mice send) into
 `Qt.BackButton`/`Qt.ForwardButton`; `BTN_BACK`/`BTN_FORWARD` (278/277) never reach QML. The Nexus window
-handles the first pair directly, and `keybinds.shell.lua` routes the second pair through the
-shell's global shortcuts (`caelestia:nexusBack`/`caelestia:nexusForward`, registered in
-`daemons/Shortcuts.qml`). The binds are `non_consuming`, so apps that do understand the buttons
-keep working, and the shell only acts while a settings window is focused.
+handles the first pair directly, and the two `mouse:278`/`mouse:277` binds at the end of
+`hyprland/keybinds.lua` route the second pair through the shell's global shortcuts
+(`caelestia:nexusBack`/`caelestia:nexusForward`, registered in `daemons/Shortcuts.qml`). The binds
+are `non_consuming`, so apps that do understand the buttons keep working, and the shell only acts
+while a settings window is focused.
 
 A compositor bind on the same button elsewhere in the config would still swallow it, which is the
 other way these buttons appear to stop working.
@@ -65,6 +77,6 @@ Nothing breaks, but nothing persists either. The shell still applies the change 
 current session, then writes a `hypr-vars.lua` key that no one reads and the value is back to the
 `variables.lua` default after the next Hyprland start. `hyprctl configerrors` stays empty.
 
-This is also what happens after a dotfiles update that replaces `variables.lua`, `rules.lua` or
-`animations.lua`: re-apply the three files from this directory. `hybrid/docs/provenance.md`
-records that the shell side owns this contract, not the dotfiles.
+This is also what happens after a dotfiles update replaces one of these five files: copy them in
+again from this directory. `hybrid/docs/provenance.md` records that the shell side owns this
+contract, not the dotfiles.
