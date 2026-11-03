@@ -5,3 +5,4 @@ HyprSpacingPage 1.0 HyprSpacingPage.qml
 HyprWindowEffectsPage 1.0 HyprWindowEffectsPage.qml
 UserConfigPage 1.0 UserConfigPage.qml
 HyprKeybindsPage 1.0 HyprKeybindsPage.qml
+HyprInputPage 1.0 HyprInputPage.qml

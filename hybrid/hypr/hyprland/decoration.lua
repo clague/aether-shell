@@ -4,6 +4,8 @@ hl.config({
     decoration = {
         rounding = vars.windowRounding,
         rounding_power = vars.windowRoundingPower,
+        dim_inactive = vars.dimInactive,
+        dim_strength = vars.dimStrength,
 
         blur = {
             enabled           = vars.blurEnabled,

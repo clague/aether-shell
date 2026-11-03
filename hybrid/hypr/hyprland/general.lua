@@ -4,7 +4,8 @@ hl.config({
     general = {
         layout          = "dwindle",
 
-        allow_tearing   = false, -- Allows `immediate` window rule to work
+        allow_tearing   = vars.allowTearing, -- Allows `immediate` window rule to work
+        resize_on_border = vars.resizeOnBorder,
 
         gaps_workspaces = vars.workspaceGaps,
         gaps_in         = vars.windowGapsIn,
@@ -18,9 +19,9 @@ hl.config({
     },
 
     dwindle = {
-        preserve_split = true,
-        smart_split    = false,
-        smart_resizing = true,
+        preserve_split = vars.preserveSplit,
+        smart_split    = vars.smartSplit,
+        smart_resizing = vars.smartResizing,
     },
 
     scrolling = {

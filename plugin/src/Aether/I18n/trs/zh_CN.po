@@ -8354,3 +8354,213 @@ msgstr "正弦分量"
 #: modules/nexus/common/AetherAttunement.qml
 msgid "Wheel to zoom · drag to pan · double-click to reset"
 msgstr "滚轮缩放 · 拖动平移 · 双击复位"
+#: modules/nexus/pages/hyprland
+msgid "Keyboard"
+msgstr "键盘"
+
+#: modules/nexus/pages/hyprland
+msgid "XKB layout, for example us or de"
+msgstr "XKB 布局，例如 us 或 de"
+
+#: modules/nexus/pages/hyprland
+msgid "XKB variant, for example nodeadkeys"
+msgstr "XKB 变体，例如 nodeadkeys"
+
+#: modules/nexus/pages/hyprland
+msgid "Options"
+msgstr "选项"
+
+#: modules/nexus/pages/hyprland
+msgid "XKB options, for example caps:escape"
+msgstr "XKB 选项，例如 caps:escape"
+
+#: modules/nexus/pages/hyprland
+msgid "Repeat rate"
+msgstr "重复速率"
+
+#: modules/nexus/pages/hyprland
+msgid "Repeat delay"
+msgstr "重复延迟"
+
+#: modules/nexus/pages/hyprland
+msgid "Numlock on by default"
+msgstr "默认开启数字锁定"
+
+#: modules/nexus/pages/hyprland
+msgid "Mouse"
+msgstr "鼠标"
+
+#: modules/nexus/pages/hyprland
+msgid "Follow mouse"
+msgstr "鼠标跟随焦点"
+
+#: modules/nexus/pages/hyprland
+msgid "0 is off, 1 normal, 2 loose, 3 full"
+msgstr "0 关闭，1 普通，2 宽松，3 完全"
+
+#: modules/nexus/pages/hyprland
+msgid "Sensitivity"
+msgstr "灵敏度"
+
+#: modules/nexus/pages/hyprland
+msgid "Acceleration profile"
+msgstr "加速曲线"
+
+#: modules/nexus/pages/hyprland
+msgid "adaptive or flat"
+msgstr "adaptive 或 flat"
+
+#: modules/nexus/pages/hyprland
+msgid "Natural scroll"
+msgstr "自然滚动"
+
+#: modules/nexus/pages/hyprland
+msgid "Middle button emulation"
+msgstr "中键模拟"
+
+#: modules/nexus/pages/hyprland
+msgid "Disable while typing"
+msgstr "输入时禁用"
+
+#: modules/nexus/pages/hyprland
+msgid "Gestures"
+msgstr "手势"
+
+#: modules/nexus/pages/hyprland
+msgid "Special workspace fingers"
+msgstr "特殊工作区手势手指数"
+
+#: modules/nexus/pages/hyprland
+msgid "Sleep gesture fingers"
+msgstr "睡眠手势手指数"
+
+#: modules/nexus/pages/hyprland
+msgid "Swipe distance"
+msgstr "滑动距离"
+
+#: modules/nexus/pages/hyprland
+msgid "Pixels the fingers travel for a full workspace switch"
+msgstr "切换整个工作区所需的手指移动像素"
+
+#: modules/nexus/pages/hyprland
+msgid "Swipe cancel ratio"
+msgstr "滑动取消比例"
+
+#: modules/nexus/pages/hyprland
+msgid "Swipe force speed"
+msgstr "滑动强制速度"
+
+#: modules/nexus/pages/hyprland
+msgid "Swipe direction lock"
+msgstr "锁定滑动方向"
+
+#: modules/nexus/pages/hyprland
+msgid "Swipe at the edge opens a new workspace"
+msgstr "在边缘滑动会新建工作区"
+
+#: modules/nexus/pages/hyprland
+msgid "Compositor"
+msgstr "合成器"
+
+#: modules/nexus/pages/hyprland
+msgid "Variable refresh rate"
+msgstr "可变刷新率（VRR）"
+
+#: modules/nexus/pages/hyprland
+msgid "0 is off, 1 fullscreen only, 2 always"
+msgstr "0 关闭，1 仅全屏，2 始终"
+
+#: modules/nexus/pages/hyprland
+msgid "Disable the Hyprland logo"
+msgstr "隐藏 Hyprland 标志"
+
+#: modules/nexus/pages/hyprland
+msgid "No logo on an empty workspace"
+msgstr "空工作区不显示标志"
+
+#: modules/nexus/pages/hyprland
+msgid "Focus windows on activate"
+msgstr "激活时聚焦窗口"
+
+#: modules/nexus/pages/hyprland
+msgid "Middle click paste"
+msgstr "中键粘贴"
+
+#: modules/nexus/pages/hyprland
+msgid "Session lock xray"
+msgstr "锁屏透视"
+
+#: modules/nexus/pages/hyprland
+msgid "Keep the locked desktop visible instead of covering it"
+msgstr "锁屏时保留桌面画面而不是完全遮挡"
+
+#: modules/nexus/pages/hyprland
+msgid "Mouse movement wakes the screen"
+msgstr "鼠标移动唤醒屏幕"
+
+#: modules/nexus/pages/hyprland
+msgid "Key press wakes the screen"
+msgstr "按键唤醒屏幕"
+
+#: modules/nexus/pages/hyprland
+msgid "Animate manual resizes"
+msgstr "手动调整大小时播放动画"
+
+#: modules/nexus/pages/hyprland
+msgid "Animate mouse window dragging"
+msgstr "鼠标拖动窗口时播放动画"
+#: modules/nexus/pages/hyprland
+msgid "Rounding power"
+msgstr "圆角力度"
+
+#: modules/nexus/pages/hyprland
+msgid "Dimming"
+msgstr "变暗"
+
+#: modules/nexus/pages/hyprland
+msgid "Dim inactive windows"
+msgstr "未聚焦窗口变暗"
+
+#: modules/nexus/pages/hyprland
+msgid "Fade everything except the focused window"
+msgstr "除聚焦窗口外全部变淡"
+
+#: modules/nexus/pages/hyprland
+msgid "Dim strength"
+msgstr "变暗强度"
+
+#: modules/nexus/pages/hyprland
+msgid "Window behaviour"
+msgstr "窗口行为"
+
+#: modules/nexus/pages/hyprland
+msgid "Allow tearing"
+msgstr "允许撕裂"
+
+#: modules/nexus/pages/hyprland
+msgid "Lets immediate window rules work for fullscreen games"
+msgstr "让全屏游戏可以使用 immediate 窗口规则"
+
+#: modules/nexus/pages/hyprland
+msgid "Resize windows on the border"
+msgstr "拖动边框调整窗口"
+
+#: modules/nexus/pages/hyprland
+msgid "Dwindle layout"
+msgstr "Dwindle 布局"
+
+#: modules/nexus/pages/hyprland
+msgid "Preserve split"
+msgstr "保留分割"
+
+#: modules/nexus/pages/hyprland
+msgid "Smart split"
+msgstr "智能分割"
+
+#: modules/nexus/pages/hyprland
+msgid "Smart resizing"
+msgstr "智能调整大小"
+
+#: modules/nexus/pages/hyprland
+msgid "Keyboard, mouse, touchpad and gestures"
+msgstr "键盘、鼠标、触摸板与手势"

@@ -144,8 +144,20 @@ PageBase {
                 keys: ["terminal", "browser", "editor", "fileExplorer", "audioSettings"]
             },
             {
+                cat: "Keyboard",
+                keys: ["kbLayout", "kbVariant", "kbOptions", "repeatRate", "repeatDelay", "numlockByDefault"]
+            },
+            {
+                cat: "Mouse",
+                keys: ["followMouse", "sensitivity", "accelProfile", "naturalScroll", "middleButtonEmulation"]
+            },
+            {
                 cat: "Touchpad",
-                keys: ["touchpadDisableTyping", "touchpadScrollFactor", "gestureFingers", "workspaceSwipeFingers", "gestureFingersMore"]
+                keys: ["touchpadNaturalScroll", "touchpadDisableTyping", "touchpadScrollFactor"]
+            },
+            {
+                cat: "Gestures",
+                keys: ["gestureFingers", "workspaceSwipeFingers", "gestureFingersMore", "workspaceSwipeDistance", "workspaceSwipeCancelRatio", "workspaceSwipeMinSpeed", "workspaceSwipeDirLock", "workspaceSwipeCreateNew"]
             },
             {
                 cat: "Blur",
@@ -160,12 +172,16 @@ PageBase {
                 keys: ["workspaceGaps", "windowGapsIn", "windowGapsOut", "singleWindowGapsOut"]
             },
             {
+                cat: "Window behaviour",
+                keys: ["allowTearing", "resizeOnBorder", "preserveSplit", "smartSplit", "smartResizing"]
+            },
+            {
                 cat: "Window styling",
-                keys: ["windowOpacity", "windowRounding", "windowBorderSize", "activeWindowBorderColour", "inactiveWindowBorderColour"]
+                keys: ["windowOpacity", "windowRounding", "windowRoundingPower", "windowBorderSize", "activeWindowBorderColour", "inactiveWindowBorderColour", "dimInactive", "dimStrength"]
             },
             {
                 cat: "Misc",
-                keys: ["volumeStep", "cursorTheme", "cursorSize", "sleepGestureCmd"]
+                keys: ["volumeStep", "cursorTheme", "cursorSize", "sleepGestureCmd", "vrr", "disableHyprlandLogo", "focusOnActivate", "middleClickPaste", "sessionLockXray", "mouseMoveEnablesDpms", "keyPressEnablesDpms", "animateManualResizes", "animateMouseWindowdragging"]
             },
             {
                 cat: "Workspaces",

@@ -60,41 +60,6 @@ PageBase {
         }
 
         SectionHeader {
-            text: Tr.tr("Touchpad")
-        }
-
-        HyprBoolRow {
-            first: true
-            text: Tr.tr("Disable typing")
-            varKey: "touchpadDisableTyping"
-        }
-        HyprFloatRow {
-            label: Tr.tr("Scroll factor")
-            // The config reads `touchpadScrollFactor` (input.lua). The old name here wrote an
-            // override nothing consumed, so the slider silently did nothing.
-            varKey: "touchpadScrollFactor"
-        }
-        HyprIntRow {
-            label: Tr.tr("Gesture fingers")
-            varKey: "gestureFingers"
-            from: 1
-            to: 10
-        }
-        HyprIntRow {
-            label: Tr.tr("Workspace swipe fingers")
-            varKey: "workspaceSwipeFingers"
-            from: 1
-            to: 10
-        }
-        HyprIntRow {
-            last: true
-            label: Tr.tr("Gesture fingers more")
-            varKey: "gestureFingersMore"
-            from: 1
-            to: 10
-        }
-
-        SectionHeader {
             text: Tr.tr("Misc")
         }
 
@@ -116,9 +81,56 @@ PageBase {
             to: 128
         }
         HyprStringRow {
-            last: true
             label: Tr.tr("Sleep gesture command")
             varKey: "sleepGestureCmd"
+        }
+
+        SectionHeader {
+            text: Tr.tr("Compositor")
+        }
+
+        HyprIntRow {
+            first: true
+            label: Tr.tr("Variable refresh rate")
+            subtext: Tr.tr("0 is off, 1 fullscreen only, 2 always")
+            varKey: "vrr"
+            from: 0
+            to: 2
+        }
+        HyprBoolRow {
+            text: Tr.tr("Disable the Hyprland logo")
+            subtext: Tr.tr("No logo on an empty workspace")
+            varKey: "disableHyprlandLogo"
+        }
+        HyprBoolRow {
+            text: Tr.tr("Focus windows on activate")
+            varKey: "focusOnActivate"
+        }
+        HyprBoolRow {
+            text: Tr.tr("Middle click paste")
+            varKey: "middleClickPaste"
+        }
+        HyprBoolRow {
+            text: Tr.tr("Session lock xray")
+            subtext: Tr.tr("Keep the locked desktop visible instead of covering it")
+            varKey: "sessionLockXray"
+        }
+        HyprBoolRow {
+            text: Tr.tr("Mouse movement wakes the screen")
+            varKey: "mouseMoveEnablesDpms"
+        }
+        HyprBoolRow {
+            text: Tr.tr("Key press wakes the screen")
+            varKey: "keyPressEnablesDpms"
+        }
+        HyprBoolRow {
+            text: Tr.tr("Animate manual resizes")
+            varKey: "animateManualResizes"
+        }
+        HyprBoolRow {
+            last: true
+            text: Tr.tr("Animate mouse window dragging")
+            varKey: "animateMouseWindowdragging"
         }
 
         Item {

@@ -42,9 +42,12 @@ shell addition:
 | variable group | consumer |
 |---|---|
 | gaps, border size, `activeWindowBorderColour` | `hyprland/general.lua`, `hyprland/group.lua` |
-| blur, shadow, rounding, border colours, opacity | `hyprland/decoration.lua`, `hyprland/rules.lua` |
+| tearing, border resizing, dwindle behaviour | `hyprland/general.lua` |
+| blur, shadow, rounding, rounding power, dim, opacity | `hyprland/decoration.lua`, `hyprland/rules.lua` |
 | solid-text windows, overview blur, single-window gaps | `hyprland/rules.lua` |
-| touchpad, gesture fingers, scroll factor | `hyprland/input.lua`, `hyprland/gestures.lua` |
+| keyboard layout/rate, mouse, touchpad | `hyprland/input.lua` |
+| gesture fingers, workspace swipe | `hyprland/gestures.lua` |
+| vrr, dpms, session lock, Hyprland logo, misc toggles | `hyprland/misc.lua` |
 | cursor theme/size, volume step, sleep gesture | `hyprland/env.lua`, `hyprland/execs.lua`, `hyprland/keybinds.lua` |
 | animation speed / match shell | `hyprland/animations.lua` |
 | every `kb*` bind | `hyprland/keybinds.lua` |

@@ -136,6 +136,44 @@ PageBase {
         }
 
         SectionHeader {
+            text: Tr.tr("Window behaviour")
+        }
+
+        HyprBoolRow {
+            first: true
+            text: Tr.tr("Allow tearing")
+            subtext: Tr.tr("Lets immediate window rules work for fullscreen games")
+            varKey: "allowTearing"
+        }
+
+        HyprBoolRow {
+            last: true
+            text: Tr.tr("Resize windows on the border")
+            varKey: "resizeOnBorder"
+        }
+
+        SectionHeader {
+            text: Tr.tr("Dwindle layout")
+        }
+
+        HyprBoolRow {
+            first: true
+            text: Tr.tr("Preserve split")
+            varKey: "preserveSplit"
+        }
+
+        HyprBoolRow {
+            text: Tr.tr("Smart split")
+            varKey: "smartSplit"
+        }
+
+        HyprBoolRow {
+            last: true
+            text: Tr.tr("Smart resizing")
+            varKey: "smartResizing"
+        }
+
+        SectionHeader {
             text: Tr.tr("Motion")
         }
 

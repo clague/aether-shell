@@ -12,12 +12,35 @@ return {
     fileExplorer               = "thunar",
     audioSettings              = "pwvucontrol",
 
+    -- Keyboard
+    kbLayout                   = "us",
+    kbVariant                  = "",
+    kbOptions                  = "",
+    repeatRate                 = 35,
+    repeatDelay                = 250,
+    numlockByDefault           = false,
+
+    -- Mouse
+    followMouse                = 1,
+    sensitivity                = 0.0,
+    accelProfile               = "flat",
+    naturalScroll              = false,
+    middleButtonEmulation      = false,
+
     -- Touchpad
     touchpadDisableTyping      = true,
     touchpadScrollFactor       = 0.3,
+    touchpadNaturalScroll      = true,
+
+    -- Gestures
     gestureFingers             = 3,
     workspaceSwipeFingers      = 4,
     gestureFingersMore         = 4,
+    workspaceSwipeDistance     = 700,
+    workspaceSwipeCancelRatio  = 0.15,
+    workspaceSwipeMinSpeed     = 5,
+    workspaceSwipeDirLock      = true,
+    workspaceSwipeCreateNew    = true,
 
     -- Blur
     blurEnabled                = true,
@@ -40,6 +63,15 @@ return {
     windowGapsOut              = 10,
     singleWindowGapsOut        = 20,
 
+    -- Window behaviour
+    allowTearing               = false,
+    resizeOnBorder             = false,
+
+    -- Dwindle layout
+    preserveSplit              = true,
+    smartSplit                 = false,
+    smartResizing              = true,
+
     -- Window styling
     windowOpacity              = 0.95,
     windowRounding             = 15,
@@ -47,6 +79,8 @@ return {
     windowBorderSize           = 1,
     activeWindowBorderColour   = "rgba(" .. scheme.primary .. "e6)",
     inactiveWindowBorderColour = "rgba(" .. scheme.onSurfaceVariant .. "11)",
+    dimInactive                = false,
+    dimStrength                = 0.2,
 
     -- Glass (written by the shell from Settings)
     overviewBlur               = false,
@@ -68,6 +102,15 @@ return {
     cursorSize                 = 24,
     sleepGestureCmd            = "systemctl suspend-then-hibernate",
     specialWsCloseAny          = true,
+    vrr                        = 0,
+    disableHyprlandLogo        = true,
+    mouseMoveEnablesDpms       = true,
+    keyPressEnablesDpms        = true,
+    focusOnActivate            = true,
+    middleClickPaste           = false,
+    sessionLockXray            = true,
+    animateManualResizes       = false,
+    animateMouseWindowdragging = false,
 
     ------------------
     ---- KEYBINDS ----

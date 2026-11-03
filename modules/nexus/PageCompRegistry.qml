@@ -171,6 +171,9 @@ QtObject {
                 Component {
                     UserConfigPage {}
                 }
+                Component {
+                    HyprInputPage {}
+                }
             }
         },
         // Connectivity

@@ -38,6 +38,13 @@ PageBase {
         }
 
         NavRow {
+            icon: "mouse"
+            text: Tr.tr("Input")
+            subtext: Tr.tr("Keyboard, mouse, touchpad and gestures")
+            onClicked: root.nState.openSubPage(6)
+        }
+
+        NavRow {
             icon: "keyboard"
             text: Tr.tr("Keybinds")
             subtext: Tr.tr("Manage your hyprland keybinds")

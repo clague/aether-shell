@@ -170,15 +170,42 @@ PageBase {
             to: 100
         }
 
+        HyprSliderRow {
+            label: Tr.tr("Rounding power")
+            varKey: "windowRoundingPower"
+            from: 1
+            to: 10
+            step: 0.5
+        }
+
         HyprStringRow {
             label: Tr.tr("Active window border colour")
             varKey: "activeWindowBorderColour"
         }
 
         HyprStringRow {
-            last: true
             label: Tr.tr("Inactive window border colour")
             varKey: "inactiveWindowBorderColour"
+        }
+
+        SectionHeader {
+            text: Tr.tr("Dimming")
+        }
+
+        HyprBoolRow {
+            first: true
+            text: Tr.tr("Dim inactive windows")
+            subtext: Tr.tr("Fade everything except the focused window")
+            varKey: "dimInactive"
+        }
+
+        HyprSliderRow {
+            last: true
+            label: Tr.tr("Dim strength")
+            varKey: "dimStrength"
+            from: 0
+            to: 1
+            step: 0.05
         }
 
         Item {
