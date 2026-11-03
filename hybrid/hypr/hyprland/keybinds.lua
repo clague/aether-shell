@@ -58,6 +58,8 @@ create_bind(
         return normalise_keybind(key) == launcher_default and release or nil
     end
 )
+create_bind("SUPER + mouse_up", hl.dsp.global("caelestia:launcherInterrupt"))
+create_bind("SUPER + mouse_down", hl.dsp.global("caelestia:launcherInterrupt"))
 
 -- Misc
 create_bind(vars.kbSession, hl.dsp.global("caelestia:session"))
@@ -70,15 +72,11 @@ create_bind(vars.kbLock, hl.dsp.global("caelestia:lock"))
 create_bind(vars.kbRestoreLock, function()
     hl.dispatch(hl.dsp.exec_cmd("caelestia shell -d"))
     hl.dispatch(hl.dsp.global("caelestia:lock"))
-end)
+end, locked)
 
 -- Kill/restart
-create_bind("CTRL + SUPER + SHIFT + R", hl.dsp.exec_cmd("qs -c caelestia kill"), release)
-create_bind(
-    "CTRL + SUPER + ALT + R",
-    hl.dsp.exec_cmd("qs -c caelestia kill; sleep .1; caelestia shell -d"),
-    release
-)
+create_bind("CTRL + SUPER + SHIFT + R", hl.dsp.exec_cmd("caelestia shell -k"), release)
+create_bind("CTRL + SUPER + ALT + R", hl.dsp.exec_cmd("caelestia shell -r -d"), release)
 
 for i = 1, 10 do
     local key = i % 10 -- 10 maps to key 0
@@ -86,6 +84,7 @@ for i = 1, 10 do
     create_bind(extend_keybind(vars.kbMoveWinToWs, key), fn.wsaction("move", "", i))
     create_bind(extend_keybind(vars.kbGoToWsGroup, key), fn.wsaction("focus", "group", i))
     create_bind(extend_keybind(vars.kbMoveWinToWsGroup, key), fn.wsaction("move", "group", i))
+    create_bind(extend_keybind(vars.kbMoveWinToWsSilent, key), fn.wsaction("move_silent", "", i))
 end
 
 -- Go to workspace -1/+1
@@ -111,7 +110,7 @@ create_bind(vars.kbWindowGroupCycleNext, hl.dsp.group.next(), repeating)
 create_bind(vars.kbWindowGroupCyclePrev, hl.dsp.group.prev(), repeating)
 create_bind(vars.kbToggleGroup, hl.dsp.group.toggle())
 create_bind(vars.kbUngroup, hl.dsp.window.move({ out_of_group = true }))
-create_bind(vars.kbGroupLockActive, hl.dsp.group.lock_active())
+create_bind(vars.kbGroupLockActive, hl.dsp.group.lock())
 
 -- Window actions
 for _, dir in ipairs({ "left", "right", "up", "down" }) do

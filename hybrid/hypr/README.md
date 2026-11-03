@@ -18,6 +18,9 @@ the variables the shell writes, the two rules and the animation helper, and the 
 buttons the shell cannot see. Setting a machine up is copying the tree, not patching snippets into
 it.
 
+Based on `caelestia-dots/caelestia` `f9c50b5`. The merge keeps the local `hyprmoncfg` loader at the
+end of `hyprland.lua`; everything else in these five files is upstream plus the shell contract.
+
 Nothing here is installed by the build or read at runtime; the shell only knows the key names.
 Keep it in sync with the dotfiles checkout (`~/.config/hypr`) when either side changes.
 
