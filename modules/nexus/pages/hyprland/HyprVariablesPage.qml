@@ -70,7 +70,9 @@ PageBase {
         }
         HyprFloatRow {
             label: Tr.tr("Scroll factor")
-            varKey: "touchScrollFactor"
+            // The config reads `touchpadScrollFactor` (input.lua). The old name here wrote an
+            // override nothing consumed, so the slider silently did nothing.
+            varKey: "touchpadScrollFactor"
         }
         HyprIntRow {
             label: Tr.tr("Gesture fingers")

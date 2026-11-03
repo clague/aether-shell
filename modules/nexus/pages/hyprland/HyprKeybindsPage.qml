@@ -145,7 +145,7 @@ PageBase {
             },
             {
                 cat: "Touchpad",
-                keys: ["touchpadDisableTyping", "touchScrollFactor", "gestureFingers", "workspaceSwipeFingers", "gestureFingersMore"]
+                keys: ["touchpadDisableTyping", "touchpadScrollFactor", "gestureFingers", "workspaceSwipeFingers", "gestureFingersMore"]
             },
             {
                 cat: "Blur",
@@ -270,7 +270,7 @@ PageBase {
             },
             {
                 cat: "Touchpad",
-                keys: ["touchpadDisableTyping", "touchScrollFactor", "gestureFingers", "workspaceSwipeFingers", "gestureFingersMore"]
+                keys: ["touchpadDisableTyping", "touchpadScrollFactor", "gestureFingers", "workspaceSwipeFingers", "gestureFingersMore"]
             },
             {
                 cat: "Blur",
