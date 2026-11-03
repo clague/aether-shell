@@ -414,18 +414,19 @@ Some options need variables that upstream's `variables.lua` does not define — 
 opacity ones exist there already, but glass, motion and the overview blur rule do not. The complete
 config files (full copies with those additions merged in, not fragments) live in `hybrid/hypr/`:
 
-| file | goes into |
+| path | goes into |
 |---|---|
 | `hybrid/hypr/hyprland.lua` | `~/.config/hypr/hyprland.lua` |
 | `hybrid/hypr/variables.lua` | `~/.config/hypr/variables.lua` |
-| `hybrid/hypr/hyprland/animations.lua` | `~/.config/hypr/hyprland/animations.lua` |
-| `hybrid/hypr/hyprland/rules.lua` | `~/.config/hypr/hyprland/rules.lua` |
-| `hybrid/hypr/hyprland/keybinds.lua` | `~/.config/hypr/hyprland/keybinds.lua` |
+| `hybrid/hypr/hyprland/` | `~/.config/hypr/hyprland/` |
+| `hybrid/hypr/utils/` | `~/.config/hypr/utils/` |
+| `hybrid/hypr/scheme/default.lua` | `~/.config/hypr/scheme/default.lua` |
 
-Copy the tree over the dotfiles checkout, leaving the user-owned `hypr-user.lua` and
-`hyprmoncfg-monitors.lua` in place. Keep it in sync with that checkout; `hybrid/hypr/README.md`
-lists which Nexus setting writes which key. If a key is missing the setting still applies live, it
-just does not survive a Hyprland restart.
+The tree carries every module that consumes a variable Nexus writes, so the Hyprland settings
+pages work against it as-is. Copy it over the dotfiles checkout, leaving the user-owned
+`hypr-user.lua` and `hyprmoncfg-monitors.lua` in place. Keep it in sync with that checkout;
+`hybrid/hypr/README.md` maps every Nexus setting to the key it writes. If a key is missing the
+setting still applies live, it just does not survive a Hyprland restart.
 
 ### Example configuration
 

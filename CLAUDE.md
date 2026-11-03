@@ -102,7 +102,7 @@ These were settled by source audit on 2026-09-02. Do not re-litigate without new
 | D8 | **No presets** (superseded) | Every setting has a static default and one switch on its Nexus page. `hybrid/presets/*.json` are smoke-matrix inputs only. |
 | D9 | **Merge upstream; cherry-pick OP** | Upstream is a true ancestor. OP shares ancestor `ad8dca0a`, so `git cherry-pick -x` works directly. Never rebase onto an upstream. |
 | D10 | **OP's pattern lock does not ship as-is** | It is a lock-screen bypass. See `hybrid/docs/traps.md`. Release blocker. |
-| D11 | **Hyprland settings persist via `hypr-vars.lua`**, with the config contract in `hybrid/hypr/` | The shell writes that one override table (never `variables.lua`/`rules.lua`/`animations.lua`); `hybrid/hypr/` holds full copies of the files those keys live in (`hyprland.lua`, `variables.lua`, `hyprland/{animations,rules,keybinds}.lua`), so setting up a machine is copying the tree rather than merging fragments. |
+| D11 | **Hyprland settings persist via `hypr-vars.lua`**, with the config contract in `hybrid/hypr/` | The shell writes that one override table (never the dotfiles); `hybrid/hypr/` holds the full config side — `hyprland.lua`, `variables.lua`, every `hyprland/*.lua` module that consumes a Nexus-written key, `utils/` and `scheme/default.lua` — so setting up a machine is copying the tree, and every settings page has its consumer in the repo. |
 
 ## Hard rules
 

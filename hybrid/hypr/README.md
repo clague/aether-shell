@@ -12,33 +12,50 @@ for k, v in pairs(overrides) do vars[k] = v end
 That makes every key in the table an override of the matching `variables.lua` default, which is
 why clearing a key is the way to reset: delete it and the user's own value applies again.
 
-This directory is the **complete config side** of that contract: full files, not fragments. They are
-the dotfiles' own files with the shell additions already merged — the entry that loads `hypr-vars`,
-the variables the shell writes, the two rules and the animation helper, and the keybinds that route
-buttons the shell cannot see. Setting a machine up is copying the tree, not patching snippets into
-it.
+This directory is the **complete config side** of that contract: full files, not fragments, and
+every module that consumes a variable Nexus writes. It is the dotfiles' tree with the shell
+additions already merged, so setting a machine up is copying it, not patching snippets into an
+existing checkout.
 
 Based on `caelestia-dots/caelestia` `f9c50b5`. The merge keeps the local `hyprmoncfg` loader at the
-end of `hyprland.lua`; everything else in these five files is upstream plus the shell contract.
+end of `hyprland.lua`; everything else is upstream plus the shell contract.
 
 Nothing here is installed by the build or read at runtime; the shell only knows the key names.
 Keep it in sync with the dotfiles checkout (`~/.config/hypr`) when either side changes.
 
 ## Files
 
-| file here | goes into |
+| path here | goes into |
 |---|---|
 | `hyprland.lua` | `~/.config/hypr/hyprland.lua` |
 | `variables.lua` | `~/.config/hypr/variables.lua` |
-| `hyprland/animations.lua` | `~/.config/hypr/hyprland/animations.lua` |
-| `hyprland/rules.lua` | `~/.config/hypr/hyprland/rules.lua` |
-| `hyprland/keybinds.lua` | `~/.config/hypr/hyprland/keybinds.lua` |
+| `hyprland/` | `~/.config/hypr/hyprland/` |
+| `utils/` | `~/.config/hypr/utils/` |
+| `scheme/default.lua` | `~/.config/hypr/scheme/default.lua` |
 
-Copy the five files over the dotfiles checkout. Leave the user-owned files alone:
-`~/.config/caelestia/hypr-user.lua` (loaded by `hyprland.lua` after the modules) and
-`~/.config/hypr/hyprmoncfg-monitors.lua` (generated per machine; also loaded by the entry). The
-dotfiles' other modules (`general`, `decoration`, `env`, `execs`, ...) are not part of this contract
-and stay with the dotfiles.
+Copy the tree over the dotfiles checkout. `scheme/current.lua` is not stored: `hyprland.lua`
+creates it from `scheme/default.lua` on first start, and the scheme commands rewrite it.
+
+Every module that consumes a variable Nexus writes is here, not just the ones that needed a
+shell addition:
+
+| variable group | consumer |
+|---|---|
+| gaps, border size, `activeWindowBorderColour` | `hyprland/general.lua`, `hyprland/group.lua` |
+| blur, shadow, rounding, border colours, opacity | `hyprland/decoration.lua`, `hyprland/rules.lua` |
+| solid-text windows, overview blur, single-window gaps | `hyprland/rules.lua` |
+| touchpad, gesture fingers, scroll factor | `hyprland/input.lua`, `hyprland/gestures.lua` |
+| cursor theme/size, volume step, sleep gesture | `hyprland/env.lua`, `hyprland/execs.lua`, `hyprland/keybinds.lua` |
+| animation speed / match shell | `hyprland/animations.lua` |
+| every `kb*` bind | `hyprland/keybinds.lua` |
+
+`hyprland/keybinds.lua` and `hyprland/execs.lua` require `utils/functions.lua`, which requires
+`utils/json.lua`; `variables.lua` requires `scheme.current`. That is the whole dependency set.
+
+Leave the user-owned files alone: `~/.config/caelestia/hypr-user.lua` (loaded by `hyprland.lua`
+after the modules) and `~/.config/hypr/hyprmoncfg-monitors.lua` (generated per machine, also
+loaded by the entry). `hyprland/env.lua` keeps this machine's `QML2_IMPORT_PATH` line for the
+development checkout; drop it when installing a packaged shell.
 
 ## What writes what
 
