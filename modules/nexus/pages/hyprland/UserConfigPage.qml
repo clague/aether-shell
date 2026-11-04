@@ -22,13 +22,11 @@ PageBase {
 
     readonly property string filePath: `${Paths.config}/hypr-user.lua`
     readonly property bool dirty: editor.text !== root.savedText
-    readonly property real lineHeight: Math.max(1, editor.cursorRectangle.height)
-    readonly property string lineNumbers: {
-        let out = "";
-        for (let i = 1; i <= editor.lineCount; i++)
-            out += (i === 1 ? "" : "\n") + i;
-        return out;
-    }
+    // The top/height of every line, straight from the text layout. Drawing the numbers from the
+    // editor's own line positions is what keeps them aligned: font metrics, CJK comments and
+    // line spacing can all differ from what a separate Text would assume.
+    property var lineRects: []
+    property real lineHeight: 1
 
     property string savedText: ""
     property string notice: ""
@@ -296,6 +294,25 @@ PageBase {
         root.ensureCursorVisible();
     }
 
+    function recomputeLineRects(): void {
+        const text = editor.text;
+        const rects = [];
+        let offset = 0;
+        while (true) {
+            const rect = editor.positionToRectangle(offset);
+            rects.push({
+                top: rect.y,
+                height: rect.height
+            });
+            const next = text.indexOf("\n", offset);
+            if (next < 0)
+                break;
+            offset = next + 1;
+        }
+        root.lineRects = rects;
+        root.lineHeight = Math.max(1, rects.length > 0 ? rects[0].height : 1);
+    }
+
     function lineCharacterAt(position: int): var {
         const before = editor.text.slice(0, position);
         return {
@@ -461,7 +478,11 @@ PageBase {
                 }
             }
 
-            onDiagnosticsChanged: root.diagnosticTip = ""
+            onDiagnosticsChanged: {
+                root.diagnosticTip = "";
+                // The panel takes height away from the editor once the view has been laid out.
+                Qt.callLater(root.ensureCursorVisible);
+            }
         }
 
         Timer {
@@ -586,14 +607,20 @@ PageBase {
                 width: 52
                 clip: true
 
-                Text {
-                    x: 10
-                    y: editor.y - flick.contentY
-                    text: root.lineNumbers
-                    color: Qt.alpha(Colours.palette.m3onSurfaceVariant, 0.7)
-                    font: editor.font
-                    lineHeightMode: Text.FixedHeight
-                    lineHeight: root.lineHeight
+                Repeater {
+                    // The count comes from the document; the positions come from lineRects so the
+                    // delegates are only recreated when a line is added or removed.
+                    model: editor.lineCount
+
+                    Text {
+                        required property int index
+
+                        x: 10
+                        y: editor.y + (root.lineRects[index] ? root.lineRects[index].top : index * root.lineHeight) - flick.contentY
+                        text: index + 1
+                        color: Qt.alpha(Colours.palette.m3onSurfaceVariant, 0.7)
+                        font: editor.font
+                    }
                 }
 
                 Repeater {
@@ -605,7 +632,12 @@ PageBase {
                         required property var modelData
 
                         x: 4
-                        y: editor.y + gutterMarker.modelData.line * root.lineHeight + (root.lineHeight - 5) / 2 - flick.contentY
+                        y: {
+                            const rect = root.lineRects[gutterMarker.modelData.line];
+                            const top = rect ? rect.top : gutterMarker.modelData.line * root.lineHeight;
+                            const height = rect ? rect.height : root.lineHeight;
+                            return editor.y + top + (height - 5) / 2 - flick.contentY;
+                        }
                         width: 5
                         height: 5
                         radius: 2.5
@@ -631,13 +663,6 @@ PageBase {
                         root.ensureCursorVisible();
                 }
 
-                // The diagnostics panel appears/grows asynchronously and takes height away from the
-                // editor; without this the last line ends up clipped at the new bottom edge.
-                onHeightChanged: {
-                    if (editor.activeFocus)
-                        root.ensureCursorVisible();
-                }
-
                 StyledScrollBar {
                     anchors.right: parent.right
                     anchors.top: parent.top
@@ -650,7 +675,7 @@ PageBase {
                     x: 0
                     y: editor.y + editor.cursorRectangle.y
                     width: flick.contentWidth
-                    height: root.lineHeight
+                    height: editor.cursorRectangle.height
                     color: Qt.alpha(Colours.palette.m3primary, 0.05)
                 }
 
@@ -672,6 +697,8 @@ PageBase {
 
                     onTextChanged: {
                         root.diagnosticTip = "";
+                        root.recomputeLineRects();
+                        Qt.callLater(root.recomputeLineRects);
                         if (lsp.status === "ready")
                             syncTimer.restart();
                         if (!root.suppressCompletion) {
@@ -681,6 +708,10 @@ PageBase {
                                 root.completionOpen = false;
                         }
                     }
+
+                    onContentHeightChanged: root.recomputeLineRects()
+
+                    onFontChanged: root.recomputeLineRects()
 
                     onSelectedTextChanged: {
                         if (editor.selectedText !== "")
