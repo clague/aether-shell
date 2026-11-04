@@ -27,6 +27,7 @@ PageBase {
     // line spacing can all differ from what a separate Text would assume.
     property var lineRects: []
     property real lineHeight: 1
+    property var squiggles: []
 
     property string savedText: ""
     property string notice: ""
@@ -313,6 +314,47 @@ PageBase {
         root.lineHeight = Math.max(1, rects.length > 0 ? rects[0].height : 1);
     }
 
+    function cssColour(colour: color): string {
+        return `rgba(${Math.round(colour.r * 255)}, ${Math.round(colour.g * 255)}, ${Math.round(colour.b * 255)}, ${colour.a})`;
+    }
+
+    // Exact per-line segments for the diagnostic waves, built from the text layout. A Canvas
+    // draws them below the text with a 2px stroke; the syntax highlighter no longer owns them.
+    function rebuildSquiggles(): void {
+        const lines = editor.text.split("\n");
+        const result = [];
+        for (let i = 0; i < lsp.diagnostics.length; i++) {
+            const diagnostic = lsp.diagnostics[i];
+            const colour = root.cssColour(root.severityColour(diagnostic.severity));
+            for (let line = diagnostic.line; line <= diagnostic.endLine; line++) {
+                if (line < 0 || line >= lines.length)
+                    continue;
+                const lineLength = lines[line].length;
+                let from = line === diagnostic.line ? diagnostic.character : 0;
+                let to = line === diagnostic.endLine ? diagnostic.endCharacter : lineLength;
+                if (diagnostic.line === diagnostic.endLine && diagnostic.character === diagnostic.endCharacter)
+                    to = from + 1;
+                from = Math.max(0, Math.min(from, lineLength));
+                to = Math.max(from, Math.min(to, lineLength));
+                if (to <= from)
+                    continue;
+                const startRect = editor.positionToRectangle(root.offsetAt(line, from));
+                const endRect = editor.positionToRectangle(root.offsetAt(line, to - 1));
+                const x1 = startRect.x;
+                const x2 = endRect.x + endRect.width;
+                if (x2 <= x1)
+                    continue;
+                result.push({
+                    x1: x1,
+                    x2: x2,
+                    y: startRect.y + startRect.height - 2,
+                    colour: colour
+                });
+            }
+        }
+        root.squiggles = result;
+    }
+
     function lineCharacterAt(position: int): var {
         const before = editor.text.slice(0, position);
         return {
@@ -420,6 +462,8 @@ PageBase {
         Qt.callLater(() => editor.forceActiveFocus());
     }
 
+    onSquigglesChanged: squiggleCanvas.requestPaint()
+
     onDirtyChanged: {
         if (lsp.status === "ready")
             syncTimer.restart();
@@ -449,10 +493,6 @@ PageBase {
             stringColor: Colours.palette.m3tertiary
             numberColor: Colours.palette.m3error
             commentColor: Colours.palette.m3outline
-            errorColor: Colours.palette.m3error
-            warningColor: Colours.palette.m3tertiary
-            infoColor: Colours.palette.m3secondary
-            diagnostics: lsp.diagnostics
         }
 
         LuaLsp {
@@ -480,6 +520,7 @@ PageBase {
 
             onDiagnosticsChanged: {
                 root.diagnosticTip = "";
+                root.rebuildSquiggles();
                 // The panel takes height away from the editor once the view has been laid out.
                 Qt.callLater(root.ensureCursorVisible);
             }
@@ -679,6 +720,41 @@ PageBase {
                     color: Qt.alpha(Colours.palette.m3primary, 0.05)
                 }
 
+                Canvas {
+                    id: squiggleCanvas
+
+                    x: editor.x
+                    y: editor.y
+                    width: editor.width
+                    height: editor.height
+
+                    onPaint: {
+                        const ctx = getContext("2d");
+                        ctx.clearRect(0, 0, width, height);
+                        ctx.lineWidth = 2;
+                        ctx.lineCap = "round";
+                        ctx.lineJoin = "round";
+                        const amplitude = 1.6;
+                        const period = 6;
+                        for (const squiggle of root.squiggles) {
+                            ctx.strokeStyle = squiggle.colour;
+                            ctx.beginPath();
+                            for (let x = squiggle.x1; x <= squiggle.x2; x += 0.5) {
+                                const y = squiggle.y + Math.sin((x - squiggle.x1) / period * Math.PI * 2) * amplitude;
+                                if (x === squiggle.x1)
+                                    ctx.moveTo(x, y);
+                                else
+                                    ctx.lineTo(x, y);
+                            }
+                            ctx.stroke();
+                        }
+                    }
+
+                    onWidthChanged: requestPaint()
+
+                    onHeightChanged: requestPaint()
+                }
+
                 TextEdit {
                     id: editor
 
@@ -698,7 +774,9 @@ PageBase {
                     onTextChanged: {
                         root.diagnosticTip = "";
                         root.recomputeLineRects();
+                        root.rebuildSquiggles();
                         Qt.callLater(root.recomputeLineRects);
+                        Qt.callLater(root.rebuildSquiggles);
                         if (lsp.status === "ready")
                             syncTimer.restart();
                         if (!root.suppressCompletion) {
@@ -709,9 +787,15 @@ PageBase {
                         }
                     }
 
-                    onContentHeightChanged: root.recomputeLineRects()
+                    onContentHeightChanged: {
+                        root.recomputeLineRects();
+                        root.rebuildSquiggles();
+                    }
 
-                    onFontChanged: root.recomputeLineRects()
+                    onFontChanged: {
+                        root.recomputeLineRects();
+                        root.rebuildSquiggles();
+                    }
 
                     onSelectedTextChanged: {
                         if (editor.selectedText !== "")
