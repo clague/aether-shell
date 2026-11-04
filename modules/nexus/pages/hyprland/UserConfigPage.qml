@@ -149,6 +149,11 @@ PageBase {
     }
 
     function requestCompletion(): void {
+        // Push the current text first: the completion request must be answered against the same
+        // document the caret is in, and the normal sync timer (400 ms) is slower than this one
+        // (250 ms). Without this the server completed the previous keystroke's text.
+        lsp.sync(editor.text);
+
         const before = editor.text.slice(0, editor.cursorPosition);
         const line = before.split("\n").length - 1;
         const character = before.length - before.lastIndexOf("\n") - 1;

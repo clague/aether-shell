@@ -183,10 +183,11 @@ is written there as an override; clearing the key restores the user's `variables
 live `hyprctl eval` pushes stay, but only as an immediate preview — persistence is the config, not
 the running session.
 
-The editor for `hypr-user.lua` (Hyprland → User configuration) ships a stub of Hyprland's Lua API
-at `assets/lua/hyprland-api.lua` and adds its directory to lua-language-server's library path, so
-`hl.` completes, dispatcher calls are checked, and `hl` is not an undefined global even though the
-compositor's API only exists at runtime.
+The editor for `hypr-user.lua` (Hyprland → User configuration) points lua-language-server at
+Hyprland's own generated stub in `/usr/share/hypr/stubs` (via `hl.meta.lua`), so `hl.` completes,
+dispatcher arguments are checked, and `hl` is not an undefined global even though the compositor's
+API only exists at runtime. `assets/lua/hyprland-api.lua` is a smaller fallback for installs that
+lack the generated stub; the language server sees exactly one of the two.
 
 A few options need variables upstream's dotfiles do not define: overview blur, solid-text windows,
 and the animation speed / match-shell pair. `hybrid/hypr/` holds the complete config side — the

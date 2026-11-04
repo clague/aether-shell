@@ -1,8 +1,9 @@
 ---@meta
 
--- Stub of Hyprland's Lua API for lua-language-server. Hyprland never loads this file; the editor
--- adds its directory to the language server's library path so `hl.` completes, calls are checked,
--- and `hl` is not reported as an undefined global.
+-- Fallback stub of Hyprland's Lua API for lua-language-server, used only when the compositor's own
+-- generated stub (/usr/share/hypr/stubs/hl.meta.lua) is not installed. Hyprland never loads this
+-- file; the editor adds its directory to the language server's library path so `hl.` completes,
+-- calls are checked, and `hl` is not reported as an undefined global.
 
 ---@class Hyprland
 hl = {}
@@ -40,8 +41,12 @@ function hl.curve(name, curve) end
 --- Binds a key or mouse button to a dispatcher.
 ---@param bind string|string[] e.g. "SUPER + Q", "mouse:278"
 ---@param dispatcher any
----@param options? { release?: boolean, locked?: boolean, repeating?: boolean, non_consuming?: boolean }
+---@param options? { release?: boolean, locked?: boolean, repeating?: boolean, non_consuming?: boolean, description?: string }
 function hl.bind(bind, dispatcher, options) end
+
+-- Removes a binding made with hl.bind.
+---@param bind string|string[]
+function hl.unbind(bind) end
 
 --- Dispatches immediately.
 ---@param dispatcher any
@@ -67,11 +72,13 @@ function hl.layer_rule(rule) end
 ---@param rule table<string, any>
 function hl.workspace_rule(rule) end
 
+---@param monitor? Monitor Selects the workspace on another monitor.
 ---@return Workspace|nil
-function hl.get_active_workspace() end
+function hl.get_active_workspace(monitor) end
 
+---@param monitor? Monitor
 ---@return Workspace|nil
-function hl.get_active_special_workspace() end
+function hl.get_active_special_workspace(monitor) end
 
 ---@return Monitor|nil
 function hl.get_active_monitor() end
@@ -85,6 +92,8 @@ function hl.get_windows() end
 ---@class Workspace
 ---@field id integer
 ---@field name string
+---@field monitor Monitor
+---@field special boolean
 
 ---@class Monitor
 ---@field name string
@@ -96,6 +105,7 @@ function hl.get_windows() end
 ---@field class string
 ---@field title string
 ---@field tags string[]
+---@field workspace Workspace
 ---@field floating boolean
 ---@field fullscreen integer
 
@@ -104,7 +114,7 @@ function hl.get_windows() end
 hl.dsp = {}
 
 ---@class FocusArgs
----@field workspace? string|integer
+---@field workspace? string|integer|Workspace
 ---@field window? string
 
 ---@param args FocusArgs
@@ -125,7 +135,7 @@ function hl.dsp.no_op() end
 hl.dsp.window = {}
 
 ---@class WindowMoveArgs
----@field workspace? string|integer
+---@field workspace? string|integer|Workspace
 ---@field follow? boolean
 ---@field out_of_group? boolean
 ---@field window? string
