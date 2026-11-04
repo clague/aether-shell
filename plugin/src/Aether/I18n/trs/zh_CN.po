@@ -8585,6 +8585,6 @@ msgid "Apply to Hyprland"
 msgstr "应用到 Hyprland"
 
 #: modules/nexus/pages/hyprland/UserConfigPage.qml
-msgid "Ctrl+S saves · Ctrl+Space completes · Tab indents · the language server shows problems"
-msgstr "Ctrl+S 保存 · Ctrl+空格 补全 · Tab 缩进 · 语言服务器会标出问题"
+msgid "Ctrl+S saves · completion opens as you type · Tab indents · the language server shows problems"
+msgstr "Ctrl+S 保存 · 输入时自动补全 · Tab 缩进 · 语言服务器会标出问题"
 

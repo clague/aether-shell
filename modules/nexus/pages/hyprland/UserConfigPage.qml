@@ -118,6 +118,36 @@ PageBase {
             editor.remove(lineStart, lineStart + 1);
     }
 
+    // Completion follows typing: an identifier character, `.` or `:` opens the popup after a
+    // short pause. Comments and string literals are skipped, where the server has nothing useful
+    // to offer and a popup would only get in the way.
+    function shouldAutoComplete(): bool {
+        if (lsp.status !== "ready")
+            return false;
+
+        const position = editor.cursorPosition;
+        if (position <= 0 || position > editor.text.length)
+            return false;
+
+        const character = editor.text[position - 1];
+        if (!/[A-Za-z0-9_.:]/.test(character))
+            return false;
+
+        const lineStart = editor.text.lastIndexOf("\n", position - 1) + 1;
+        const before = editor.text.slice(lineStart, position);
+        if (before.includes("--"))
+            return false;
+
+        let quotes = 0;
+        for (let i = 0; i < before.length; i++) {
+            if (before[i] === "\\")
+                i++;
+            else if (before[i] === '"' || before[i] === "'")
+                quotes++;
+        }
+        return quotes % 2 === 0;
+    }
+
     function requestCompletion(): void {
         const before = editor.text.slice(0, editor.cursorPosition);
         const line = before.split("\n").length - 1;
@@ -219,6 +249,8 @@ PageBase {
                     root.completionIndex = 0;
                     root.completionOpen = true;
                     root.updateCompletionPosition();
+                } else {
+                    root.completionOpen = false;
                 }
             }
         }
@@ -240,7 +272,7 @@ PageBase {
         Timer {
             id: completionTimer
 
-            interval: 300
+            interval: 250
             onTriggered: root.requestCompletion()
         }
 
@@ -411,7 +443,7 @@ PageBase {
                     onTextChanged: {
                         if (lsp.status === "ready")
                             syncTimer.restart();
-                        if (root.completionOpen)
+                        if (root.shouldAutoComplete())
                             completionTimer.restart();
                     }
 
@@ -623,7 +655,7 @@ PageBase {
 
         StyledText {
             Layout.fillWidth: true
-            text: Tr.tr("Ctrl+S saves · Ctrl+Space completes · Tab indents · the language server shows problems")
+            text: Tr.tr("Ctrl+S saves · completion opens as you type · Tab indents · the language server shows problems")
             color: Qt.alpha(Colours.palette.m3onSurfaceVariant, 0.6)
             font: Tokens.font.label.small
             elide: Text.ElideRight
