@@ -3,6 +3,9 @@
 #include <qtextdocument.h>
 #include <qtextformat.h>
 
+#include <algorithm>
+#include <vector>
+
 namespace aether::shell::editor {
 
 using Qt::StringLiterals::operator""_s;
@@ -96,11 +99,34 @@ constexpr int maxLevel = 20;
 
 class LuaHighlighter::Formats {
 public:
+    struct Diagnostic {
+        int line = 0;
+        int character = 0;
+        int endLine = 0;
+        int endCharacter = 0;
+        int severity = 3;
+    };
+
     QTextCharFormat keyword;
     QTextCharFormat builtin;
     QTextCharFormat string;
     QTextCharFormat number;
     QTextCharFormat comment;
+    QTextCharFormat error;
+    QTextCharFormat warning;
+    QTextCharFormat info;
+    std::vector<Diagnostic> diagnostics;
+
+    [[nodiscard]] const QTextCharFormat& forSeverity(int severity) const {
+        switch (severity) {
+        case 1:
+            return error;
+        case 2:
+            return warning;
+        default:
+            return info;
+        }
+    }
 };
 
 class LuaHighlighter::Highlighter : public QSyntaxHighlighter {
@@ -111,6 +137,7 @@ public:
 
 protected:
     void highlightBlock(const QString& text) override {
+        m_applied.clear();
         int i = 0;
         const int n = text.size();
 
@@ -121,22 +148,22 @@ protected:
             const int end = findLongClose(text, 0, level);
             const int closeLength = level + 2;
             if (end < 0) {
-                setFormat(0, n, m_formats->string);
+                apply(0, n, m_formats->string);
                 setCurrentBlockState(state);
                 return;
             }
-            setFormat(0, end + closeLength, m_formats->string);
+            apply(0, end + closeLength, m_formats->string);
             i = end + closeLength;
         } else if (state >= commentStateBase && state <= commentStateBase + maxLevel) {
             const int level = state - commentStateBase;
             const int end = findLongClose(text, 0, level);
             const int closeLength = level + 2;
             if (end < 0) {
-                setFormat(0, n, m_formats->comment);
+                apply(0, n, m_formats->comment);
                 setCurrentBlockState(state);
                 return;
             }
-            setFormat(0, end + closeLength, m_formats->comment);
+            apply(0, end + closeLength, m_formats->comment);
             i = end + closeLength;
         }
 
@@ -152,15 +179,15 @@ protected:
                     const int end = findLongClose(text, i + 2 + length, level);
                     const int closeLength = level + 2;
                     if (end < 0) {
-                        setFormat(i, n - i, m_formats->comment);
+                        apply(i, n - i, m_formats->comment);
                         setCurrentBlockState(commentStateBase + qMin(level, maxLevel));
                         return;
                     }
-                    setFormat(i, end + closeLength - i, m_formats->comment);
+                    apply(i, end + closeLength - i, m_formats->comment);
                     i = end + closeLength;
                     continue;
                 }
-                setFormat(i, n - i, m_formats->comment);
+                apply(i, n - i, m_formats->comment);
                 return;
             }
 
@@ -171,11 +198,11 @@ protected:
                     const int end = findLongClose(text, i + length, level);
                     const int closeLength = level + 2;
                     if (end < 0) {
-                        setFormat(i, n - i, m_formats->string);
+                        apply(i, n - i, m_formats->string);
                         setCurrentBlockState(stringStateBase + qMin(level, maxLevel));
                         return;
                     }
-                    setFormat(i, end + closeLength - i, m_formats->string);
+                    apply(i, end + closeLength - i, m_formats->string);
                     i = end + closeLength;
                     continue;
                 }
@@ -194,7 +221,7 @@ protected:
                     }
                     ++j;
                 }
-                setFormat(i, qMin(j, n) - i, m_formats->string);
+                apply(i, qMin(j, n) - i, m_formats->string);
                 i = j;
                 continue;
             }
@@ -203,7 +230,7 @@ protected:
                 int j = i;
                 while (j < n && (text[j].isLetterOrNumber() || text[j] == u'.' || text[j] == u'_'))
                     ++j;
-                setFormat(i, j - i, m_formats->number);
+                apply(i, j - i, m_formats->number);
                 i = j;
                 continue;
             }
@@ -214,19 +241,89 @@ protected:
                     ++j;
                 const QString word = text.mid(i, j - i);
                 if (keywords().contains(word))
-                    setFormat(i, j - i, m_formats->keyword);
+                    apply(i, j - i, m_formats->keyword);
                 else if (builtins().contains(word))
-                    setFormat(i, j - i, m_formats->builtin);
+                    apply(i, j - i, m_formats->builtin);
                 i = j;
                 continue;
             }
 
             ++i;
         }
+
+        applyDiagnostics(text);
     }
 
 private:
+    struct AppliedFormat {
+        int start;
+        int end;
+        QTextCharFormat format;
+    };
+
+    void apply(int start, int length, const QTextCharFormat& format) {
+        if (length <= 0 || start < 0)
+            return;
+        setFormat(start, length, format);
+        m_applied.push_back({ start, start + length, format });
+    }
+
+    // Diagnostic ranges get a wave underline. The underline is merged into the format that
+    // already covers that piece of text, so the syntax colour under the squiggle is kept.
+    void applyDiagnostics(const QString& text) {
+        const int block = currentBlock().blockNumber();
+        for (const Formats::Diagnostic& diagnostic : m_formats->diagnostics) {
+            if (block < diagnostic.line || block > diagnostic.endLine)
+                continue;
+
+            int start = block == diagnostic.line ? diagnostic.character : 0;
+            int end = block == diagnostic.endLine ? diagnostic.endCharacter : text.size();
+            if (diagnostic.line == diagnostic.endLine && diagnostic.character == diagnostic.endCharacter)
+                end = start + 1;
+            start = qBound(0, start, text.size());
+            end = qBound(0, end, text.size());
+            if (end <= start)
+                continue;
+
+            applyUnderline(start, end, m_formats->forSeverity(diagnostic.severity));
+        }
+    }
+
+    void applyUnderline(int start, int end, const QTextCharFormat& underline) {
+        std::vector<int> points = { start, end };
+        for (const AppliedFormat& applied : m_applied) {
+            if (applied.end <= start || applied.start >= end)
+                continue;
+            points.push_back(qMax(applied.start, start));
+            points.push_back(qMin(applied.end, end));
+        }
+        std::sort(points.begin(), points.end());
+        points.erase(std::unique(points.begin(), points.end()), points.end());
+
+        for (std::size_t i = 0; i + 1 < points.size(); ++i) {
+            const int from = points[i];
+            const int to = points[i + 1];
+            if (to <= from)
+                continue;
+
+            QTextCharFormat format;
+            for (const AppliedFormat& applied : m_applied) {
+                if (applied.start <= from && applied.end >= to) {
+                    format = applied.format;
+                    break;
+                }
+            }
+            format.setUnderlineStyle(underline.underlineStyle());
+            format.setUnderlineColor(underline.underlineColor());
+            QColor tint = underline.underlineColor();
+            tint.setAlpha(24);
+            format.setBackground(tint);
+            setFormat(from, to - from, format);
+        }
+    }
+
     const Formats* m_formats;
+    std::vector<AppliedFormat> m_applied;
 };
 
 LuaHighlighter::LuaHighlighter(QObject* parent)
@@ -238,6 +335,12 @@ LuaHighlighter::LuaHighlighter(QObject* parent)
     m_formats->number.setForeground(QColor(u"#f78c6c"_s));
     m_formats->comment.setForeground(QColor(u"#7f848e"_s));
     m_formats->comment.setFontItalic(true);
+
+    for (QTextCharFormat* format : { &m_formats->error, &m_formats->warning, &m_formats->info })
+        format->setUnderlineStyle(QTextCharFormat::WaveUnderline);
+    m_formats->error.setUnderlineColor(QColor(u"#f38ba8"_s));
+    m_formats->warning.setUnderlineColor(QColor(u"#e5c07b"_s));
+    m_formats->info.setUnderlineColor(QColor(u"#82aaff"_s));
 }
 
 LuaHighlighter::~LuaHighlighter() = default;
@@ -322,6 +425,71 @@ void LuaHighlighter::setCommentColor(const QColor& colour) {
     if (m_highlighter)
         m_highlighter->rehighlight();
     emit coloursChanged();
+}
+
+QColor LuaHighlighter::errorColor() const {
+    return m_formats->error.underlineColor();
+}
+
+void LuaHighlighter::setErrorColor(const QColor& colour) {
+    if (errorColor() == colour)
+        return;
+    m_formats->error.setUnderlineColor(colour);
+    if (m_highlighter)
+        m_highlighter->rehighlight();
+    emit coloursChanged();
+}
+
+QColor LuaHighlighter::warningColor() const {
+    return m_formats->warning.underlineColor();
+}
+
+void LuaHighlighter::setWarningColor(const QColor& colour) {
+    if (warningColor() == colour)
+        return;
+    m_formats->warning.setUnderlineColor(colour);
+    if (m_highlighter)
+        m_highlighter->rehighlight();
+    emit coloursChanged();
+}
+
+QColor LuaHighlighter::infoColor() const {
+    return m_formats->info.underlineColor();
+}
+
+void LuaHighlighter::setInfoColor(const QColor& colour) {
+    if (infoColor() == colour)
+        return;
+    m_formats->info.setUnderlineColor(colour);
+    if (m_highlighter)
+        m_highlighter->rehighlight();
+    emit coloursChanged();
+}
+
+QVariantList LuaHighlighter::diagnostics() const {
+    return m_diagnostics;
+}
+
+void LuaHighlighter::setDiagnostics(const QVariantList& diagnostics) {
+    if (m_diagnostics == diagnostics)
+        return;
+
+    m_diagnostics = diagnostics;
+    m_formats->diagnostics.clear();
+    for (const QVariant& value : diagnostics) {
+        const QVariantMap map = value.toMap();
+        m_formats->diagnostics.push_back({
+            map.value(u"line"_s).toInt(),
+            map.value(u"character"_s).toInt(),
+            map.value(u"endLine"_s).toInt(),
+            map.value(u"endCharacter"_s).toInt(),
+            map.value(u"severity"_s, 3).toInt(),
+        });
+    }
+
+    if (m_highlighter)
+        m_highlighter->rehighlight();
+    emit diagnosticsChanged();
 }
 
 } // namespace aether::shell::editor

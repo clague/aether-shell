@@ -32,6 +32,10 @@ PageBase {
 
     property string savedText: ""
     property string notice: ""
+    property string diagnosticTip: ""
+    property real diagnosticTipAnchorX: 0
+    property real diagnosticTipAnchorY: 0
+    property real diagnosticsHeight: 96
     property bool completionOpen: false
     property bool suppressCompletion: false
     property int completionIndex: 0
@@ -70,7 +74,7 @@ PageBase {
         const lineStart = root.lineStartAt(position);
         const line = editor.text.slice(lineStart, position);
         const indent = (line.match(/^\s*/) || [""])[0];
-        const trimmed = line.trimEnd();
+        const trimmed = line.replace(/\s+$/, "");
         const opensBlock = /(?:\bthen|\bdo|\bfunction|\brepeat|\belse)\s*$/.test(trimmed) || /[{([]\s*$/.test(trimmed);
         editor.insert(position, "\n" + indent + (opensBlock ? "    " : ""));
     }
@@ -292,6 +296,95 @@ PageBase {
         root.ensureCursorVisible();
     }
 
+    function lineCharacterAt(position: int): var {
+        const before = editor.text.slice(0, position);
+        return {
+            line: before.split("\n").length - 1,
+            character: position - before.lastIndexOf("\n") - 1
+        };
+    }
+
+    function diagnosticContains(diagnostic: var, line: int, character: int): bool {
+        const afterStart = line > diagnostic.line || (line === diagnostic.line && character >= diagnostic.character);
+        const point = diagnostic.line === diagnostic.endLine && diagnostic.character === diagnostic.endCharacter;
+        const beforeEnd = point ? line === diagnostic.endLine && character <= diagnostic.endCharacter : line < diagnostic.endLine || (line === diagnostic.endLine && character < diagnostic.endCharacter);
+        return afterStart && beforeEnd;
+    }
+
+    // Hovering a squiggle/underlined range shows its language-server message next to the pointer.
+    function showDiagnosticTip(x: real, y: real): void {
+        // While text is selected the selection tip wins; a stationary pointer must not clear it
+        // when the view scrolls under it.
+        if (editor.selectionStart !== editor.selectionEnd)
+            return;
+
+        if (root.completionOpen) {
+            root.diagnosticTip = "";
+            return;
+        }
+
+        // positionAt() returns the nearest caret position, which is the cell to the right when
+        // the pointer is in the right half of an underlined character. Check both.
+        const position = editor.positionAt(x, y);
+        const messages = [];
+        for (let i = 0; i < lsp.diagnostics.length; i++) {
+            const diagnostic = lsp.diagnostics[i];
+            let hit = false;
+            for (const candidate of [position, position - 1]) {
+                if (candidate < 0)
+                    continue;
+                const at = root.lineCharacterAt(candidate);
+                if (root.diagnosticContains(diagnostic, at.line, at.character)) {
+                    hit = true;
+                    break;
+                }
+            }
+            if (hit)
+                messages.push(diagnostic.message);
+        }
+        if (messages.length === 0) {
+            root.diagnosticTip = "";
+            return;
+        }
+
+        root.diagnosticTipAnchorX = gutter.width + editor.x + x - flick.contentX;
+        root.diagnosticTipAnchorY = editor.y + y - flick.contentY;
+        root.diagnosticTip = messages.join("\n\n");
+    }
+
+    function diagnosticIntersects(diagnostic: var, startLine: int, startCharacter: int, endLine: int, endCharacter: int): bool {
+        const afterStart = diagnostic.endLine > startLine || (diagnostic.endLine === startLine && diagnostic.endCharacter >= startCharacter);
+        const beforeEnd = diagnostic.line < endLine || (diagnostic.line === endLine && diagnostic.character <= endCharacter);
+        return afterStart && beforeEnd;
+    }
+
+    // Selecting a range that overlaps a problem also shows its message, not just hovering.
+    function showDiagnosticTipForSelection(): void {
+        if (editor.selectionStart === editor.selectionEnd)
+            return;
+
+        const start = Math.min(editor.selectionStart, editor.selectionEnd);
+        const end = Math.max(editor.selectionStart, editor.selectionEnd);
+        const from = root.lineCharacterAt(start);
+        const to = root.lineCharacterAt(end);
+        const messages = [];
+        for (let i = 0; i < lsp.diagnostics.length; i++) {
+            const diagnostic = lsp.diagnostics[i];
+            if (root.diagnosticIntersects(diagnostic, from.line, from.character, to.line, to.character))
+                messages.push(diagnostic.message);
+        }
+
+        if (messages.length === 0) {
+            root.diagnosticTip = "";
+            return;
+        }
+
+        const rect = editor.cursorRectangle;
+        root.diagnosticTipAnchorX = gutter.width + editor.x + rect.x - flick.contentX;
+        root.diagnosticTipAnchorY = editor.y + rect.y + rect.height - flick.contentY;
+        root.diagnosticTip = messages.join("\n\n");
+    }
+
     function severityColour(severity: int): color {
         if (severity === 1)
             return Colours.palette.m3error;
@@ -339,6 +432,10 @@ PageBase {
             stringColor: Colours.palette.m3tertiary
             numberColor: Colours.palette.m3error
             commentColor: Colours.palette.m3outline
+            errorColor: Colours.palette.m3error
+            warningColor: Colours.palette.m3tertiary
+            infoColor: Colours.palette.m3secondary
+            diagnostics: lsp.diagnostics
         }
 
         LuaLsp {
@@ -354,6 +451,7 @@ PageBase {
 
             onCompletionsChanged: {
                 if (completions.length > 0) {
+                    root.diagnosticTip = "";
                     root.completionIndex = 0;
                     root.completionOpen = true;
                     root.updateCompletionPosition();
@@ -362,6 +460,8 @@ PageBase {
                     root.completionOpen = false;
                 }
             }
+
+            onDiagnosticsChanged: root.diagnosticTip = ""
         }
 
         Timer {
@@ -526,6 +626,18 @@ PageBase {
                 contentWidth: editor.contentWidth + 24
                 contentHeight: editor.contentHeight + 20
 
+                onContentHeightChanged: {
+                    if (editor.activeFocus)
+                        root.ensureCursorVisible();
+                }
+
+                // The diagnostics panel appears/grows asynchronously and takes height away from the
+                // editor; without this the last line ends up clipped at the new bottom edge.
+                onHeightChanged: {
+                    if (editor.activeFocus)
+                        root.ensureCursorVisible();
+                }
+
                 StyledScrollBar {
                     anchors.right: parent.right
                     anchors.top: parent.top
@@ -559,6 +671,7 @@ PageBase {
                     focus: true
 
                     onTextChanged: {
+                        root.diagnosticTip = "";
                         if (lsp.status === "ready")
                             syncTimer.restart();
                         if (!root.suppressCompletion) {
@@ -569,10 +682,18 @@ PageBase {
                         }
                     }
 
+                    onSelectedTextChanged: {
+                        if (editor.selectedText !== "")
+                            root.showDiagnosticTipForSelection();
+                    }
+
                     onCursorPositionChanged: {
                         if (root.completionOpen)
                             root.updateCompletionPosition();
                         root.ensureCursorVisible();
+                        // contentHeight can lag one frame behind a new line; scroll again once it
+                        // has grown, otherwise the last line stays half-clipped at the bottom.
+                        Qt.callLater(root.ensureCursorVisible);
                     }
 
                     Keys.onPressed: event => {
@@ -653,6 +774,17 @@ PageBase {
                             event.accepted = true;
                         }
                     }
+
+                    HoverHandler {
+                        id: editorHover
+
+                        onPointChanged: root.showDiagnosticTip(editorHover.point.position.x, editorHover.point.position.y)
+
+                        onHoveredChanged: {
+                            if (!hovered && editor.selectionStart === editor.selectionEnd)
+                                root.diagnosticTip = "";
+                        }
+                    }
                 }
             }
 
@@ -728,13 +860,76 @@ PageBase {
                     }
                 }
             }
+
+            Rectangle {
+                id: diagnosticTipPopup
+
+                readonly property real tipWidth: Math.min(380, Math.max(160, flick.width - 16))
+                readonly property real below: root.diagnosticTipAnchorY + 22
+
+                x: Math.max(8, Math.min(root.diagnosticTipAnchorX + 14, Math.max(8, flick.width - tipWidth)))
+                y: below + height > flick.height ? Math.max(0, root.diagnosticTipAnchorY - height - 12) : below
+                width: tipWidth
+                height: diagnosticTipText.contentHeight + Tokens.padding.medium * 2
+                visible: root.diagnosticTip !== ""
+                z: 11
+                radius: Tokens.rounding.medium
+                color: Colours.palette.m3surfaceContainerHigh
+                border.width: 1
+                border.color: Qt.alpha(Colours.palette.m3outlineVariant, 0.6)
+
+                StyledText {
+                    id: diagnosticTipText
+
+                    x: Tokens.padding.medium
+                    y: Tokens.padding.medium
+                    width: parent.width - Tokens.padding.medium * 2
+                    text: root.diagnosticTip
+                    wrapMode: Text.Wrap
+                    font: Tokens.font.label.small
+                }
+            }
+        }
+
+        Rectangle {
+            id: diagnosticsHandle
+
+            Layout.fillWidth: true
+            Layout.preferredHeight: visible ? 12 : 0
+            visible: lsp.diagnostics.length > 0
+            color: "transparent"
+
+            Rectangle {
+                anchors.centerIn: parent
+                width: 44
+                height: 3
+                radius: 1.5
+                color: Qt.alpha(Colours.palette.m3onSurfaceVariant, 0.55)
+            }
+
+            DragHandler {
+                id: diagnosticsDrag
+
+                target: null
+                cursorShape: Qt.SplitVCursor
+                dragThreshold: 0
+
+                property real startHeight: 0
+
+                onActiveChanged: {
+                    if (active)
+                        startHeight = root.diagnosticsHeight;
+                }
+
+                onTranslationChanged: root.diagnosticsHeight = Math.max(24, Math.min(root.height * 0.55, startHeight - translation.y))
+            }
         }
 
         ListView {
             id: diagnosticsList
 
             Layout.fillWidth: true
-            Layout.preferredHeight: visible ? Math.min(96, contentHeight) : 0
+            Layout.preferredHeight: visible ? root.diagnosticsHeight : 0
             visible: lsp.diagnostics.length > 0
             clip: true
             model: lsp.diagnostics
