@@ -8564,3 +8564,27 @@ msgstr "智能调整大小"
 #: modules/nexus/pages/hyprland
 msgid "Keyboard, mouse, touchpad and gestures"
 msgstr "键盘、鼠标、触摸板与手势"
+#: modules/nexus/pages/hyprland/UserConfigPage.qml
+msgid "Could not write the file"
+msgstr "无法写入文件"
+
+#: modules/nexus/pages/hyprland/UserConfigPage.qml
+msgid "lua-language-server is not installed"
+msgstr "未安装 lua-language-server"
+
+#: modules/nexus/pages/hyprland/UserConfigPage.qml
+msgid "Starting language server…"
+msgstr "正在启动语言服务器…"
+
+#: modules/nexus/pages/hyprland/UserConfigPage.qml
+msgid "Unsaved changes"
+msgstr "有未保存的更改"
+
+#: modules/nexus/pages/hyprland/UserConfigPage.qml
+msgid "Apply to Hyprland"
+msgstr "应用到 Hyprland"
+
+#: modules/nexus/pages/hyprland/UserConfigPage.qml
+msgid "Ctrl+S saves · Ctrl+Space completes · Tab indents · the language server shows problems"
+msgstr "Ctrl+S 保存 · Ctrl+空格 补全 · Tab 缩进 · 语言服务器会标出问题"
+

@@ -3081,3 +3081,28 @@ fourth byte: a decoded ARGB image. `LD_PRELOAD`-ing a malloc shim that records `
 for allocations over a few MB, then dumping the live set on `SIGUSR1`, names the decoder in
 one run. The fixes took the shell from ~1.25GB RSS / 1.63GB peak to ~0.77GB / 1.02GB with the
 same 8K wallpaper, and removed the full-resolution reads from the startup log.
+
+## T70 — A required property on a child fails the whole page push, not the child
+
+Pressing a Nexus row did nothing, the window title stayed on the parent page, and the log said:
+
+```
+QML StackPage at @modules/nexus/PageCompRegistry.qml[155:13]:
+  push: Property flickable was marked as required but not set.
+```
+
+The page itself compiled and linted clean. The culprit was a scrollbar: `StyledScrollBar` declares
+`required property Flickable flickable`, and it had been attached with
+`ScrollBar.vertical: StyledScrollBar {}` to a `TextEdit`. A TextEdit scrolls itself and is not a
+Flickable, so the attached property never set the requirement; the failure only appears when
+StackView instantiates the page.
+
+Two ways out: attach `ScrollBar.vertical` to the surrounding `Flickable` instead, or instantiate the
+bar directly (`StyledScrollBar { flickable: flick }`) inside the Flickable. The second is what the
+editor page does, because its scrollbar should follow the Flickable while the text view keeps its
+own scrolling.
+
+The same trap applies to `lua-language-server`'s `Undefined global` diagnostics: the message uses
+backticks (`Undefined global \`hl\`.`), not quotes, so the client-side filter has to match the
+backticked form. Hyprland injects `hl`/`vars` as globals and the server in this distribution ignores
+the `diagnostics.globals` setting sent over LSP.
