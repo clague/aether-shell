@@ -25,28 +25,35 @@ QVariantMap diagnosticMap(const QJsonObject& diagnostic) {
     const QJsonObject end = range.value(u"end"_s).toObject();
 
     return {
-        {u"line"_s, start.value(u"line"_s).toInt()},
-        {u"character"_s, start.value(u"character"_s).toInt()},
-        {u"endLine"_s, end.value(u"line"_s).toInt()},
-        {u"endCharacter"_s, end.value(u"character"_s).toInt()},
-        {u"severity"_s, diagnostic.value(u"severity"_s).toInt(3)},
-        {u"message"_s, diagnostic.value(u"message"_s).toString()},
-        {u"source"_s, diagnostic.value(u"source"_s).toString()},
+        { u"line"_s, start.value(u"line"_s).toInt() },
+        { u"character"_s, start.value(u"character"_s).toInt() },
+        { u"endLine"_s, end.value(u"line"_s).toInt() },
+        { u"endCharacter"_s, end.value(u"character"_s).toInt() },
+        { u"severity"_s, diagnostic.value(u"severity"_s).toInt(3) },
+        { u"message"_s, diagnostic.value(u"message"_s).toString() },
+        { u"source"_s, diagnostic.value(u"source"_s).toString() },
     };
 }
 
-QJsonObject luaSettings() {
+QJsonArray libraryArray(const QStringList& libraries) {
+    QJsonArray array;
+    for (const QString& library : libraries) {
+        if (!library.isEmpty())
+            array.append(library);
+    }
+    return array;
+}
+
+QJsonObject luaSettings(const QStringList& libraries) {
     return {
         { u"runtime"_s, QJsonObject{ { u"version"_s, u"Lua 5.4"_s } } },
-        { u"workspace"_s,
-            QJsonObject{ { u"library"_s, QJsonArray{ (QDir::homePath() + u"/.config/hypr"_s) } } } },
-        { u"diagnostics"_s,
-            QJsonObject{ { u"globals"_s, QJsonArray{ u"hl"_s, u"vars"_s } } } },
+        { u"workspace"_s, QJsonObject{ { u"library"_s, libraryArray(libraries) } } },
+        { u"diagnostics"_s, QJsonObject{ { u"globals"_s, QJsonArray{ u"hl"_s, u"vars"_s } } } },
     };
 }
 
-QJsonObject wrappedSettings() {
-    return { { u"Lua"_s, luaSettings() } };
+QJsonObject wrappedSettings(const QStringList& libraries) {
+    return { { u"Lua"_s, luaSettings(libraries) } };
 }
 
 } // namespace
@@ -78,6 +85,25 @@ LuaLsp::LuaLsp(QObject* parent)
 
 LuaLsp::~LuaLsp() {
     stop();
+}
+
+QString LuaLsp::libraryPath() const {
+    return m_libraryPath;
+}
+
+void LuaLsp::setLibraryPath(const QString& path) {
+    if (m_libraryPath == path)
+        return;
+    m_libraryPath = path;
+    emit libraryPathChanged();
+}
+
+QStringList LuaLsp::libraries() const {
+    QStringList list;
+    if (!m_libraryPath.isEmpty())
+        list.append(m_libraryPath);
+    list.append(QDir::homePath() + u"/.config/hypr"_s);
+    return list;
 }
 
 QString LuaLsp::filePath() const {
@@ -163,13 +189,12 @@ void LuaLsp::start() {
                         { u"textDocument"_s,
                             QJsonObject{
                                 { u"publishDiagnostics"_s, QJsonObject{} },
-                                { u"completion"_s,
-                                    QJsonObject{ { u"completionItem"_s,
-                                        QJsonObject{ { u"snippetSupport"_s, false } } } } },
+                                { u"completion"_s, QJsonObject{ { u"completionItem"_s,
+                                                       QJsonObject{ { u"snippetSupport"_s, false } } } } },
                             } },
                         { u"workspace"_s, QJsonObject{ { u"configuration"_s, true } } },
                     } },
-                { u"initializationOptions"_s, wrappedSettings() },
+                { u"initializationOptions"_s, wrappedSettings(libraries()) },
             } },
     });
 }
@@ -196,16 +221,15 @@ void LuaLsp::open(const QString& text) {
     if (m_status != u"ready"_s || m_uri.isEmpty())
         return;
 
-    notify(u"textDocument/didOpen"_s,
-        {
-            { u"textDocument"_s,
-                QJsonObject{
-                    { u"uri"_s, m_uri },
-                    { u"languageId"_s, u"lua"_s },
-                    { u"version"_s, m_version },
-                    { u"text"_s, text },
-                } },
-        });
+    notify(u"textDocument/didOpen"_s, {
+                                          { u"textDocument"_s,
+                                              QJsonObject{
+                                                  { u"uri"_s, m_uri },
+                                                  { u"languageId"_s, u"lua"_s },
+                                                  { u"version"_s, m_version },
+                                                  { u"text"_s, text },
+                                              } },
+                                      });
     m_open = true;
 }
 
@@ -301,7 +325,7 @@ void LuaLsp::dispatch(const QJsonObject& message) {
             if (requestId >= 0) {
                 QJsonArray result;
                 for (int i = 0; i < message.value(u"params"_s).toObject().value(u"items"_s).toArray().size(); i++)
-                    result.append(wrappedSettings());
+                    result.append(wrappedSettings(libraries()));
                 send({ { u"jsonrpc"_s, u"2.0"_s }, { u"id"_s, requestId }, { u"result"_s, result } });
             }
             return;
@@ -323,7 +347,7 @@ void LuaLsp::dispatch(const QJsonObject& message) {
         }
         setStatus(u"ready"_s);
         send({ { u"jsonrpc"_s, u"2.0"_s }, { u"method"_s, u"initialized"_s }, { u"params"_s, QJsonObject{} } });
-        notify(u"workspace/didChangeConfiguration"_s, { { u"settings"_s, wrappedSettings() } });
+        notify(u"workspace/didChangeConfiguration"_s, { { u"settings"_s, wrappedSettings(libraries()) } });
         if (!m_text.isEmpty())
             open(m_text);
         return;
@@ -345,9 +369,9 @@ void LuaLsp::parseDiagnostics(const QJsonObject& params) {
         // Hyprland injects these as globals, but lua-language-server insists on seeing them
         // in its own config (which it ignores from us in this build). They are not errors.
         const QString message = diagnostic.value(u"message"_s).toString();
-        if (message.startsWith(u"Undefined global"_s)
-            && (message.contains(u"`hl`"_s) || message.contains(u"`vars`"_s) || message.contains(u"`scheme`"_s)
-                || message.contains(u"'hl'"_s) || message.contains(u"'vars'"_s) || message.contains(u"'scheme'"_s)))
+        if (message.startsWith(u"Undefined global"_s) &&
+            (message.contains(u"`hl`"_s) || message.contains(u"`vars`"_s) || message.contains(u"`scheme`"_s) ||
+                message.contains(u"'hl'"_s) || message.contains(u"'vars'"_s) || message.contains(u"'scheme'"_s)))
             continue;
 
         list.append(diagnosticMap(diagnostic));

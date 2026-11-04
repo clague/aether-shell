@@ -1,8 +1,8 @@
 #pragma once
 
+#include <qjsonarray.h>
 #include <qjsonobject.h>
 #include <qjsonvalue.h>
-#include <qjsonarray.h>
 #include <qobject.h>
 #include <qprocess.h>
 #include <qqmlintegration.h>
@@ -21,6 +21,9 @@ class LuaLsp : public QObject {
     QML_ELEMENT
 
     Q_PROPERTY(QString filePath READ filePath WRITE setFilePath NOTIFY filePathChanged)
+    // Extra directory indexed by the language server, e.g. the Hyprland API stub shipped with
+    // the shell. ~/.config/hypr is always added.
+    Q_PROPERTY(QString libraryPath READ libraryPath WRITE setLibraryPath NOTIFY libraryPathChanged)
     // off | starting | ready | error | unavailable
     Q_PROPERTY(QString status READ status NOTIFY statusChanged)
     Q_PROPERTY(QVariantList diagnostics READ diagnostics NOTIFY diagnosticsChanged)
@@ -32,6 +35,9 @@ public:
 
     [[nodiscard]] QString filePath() const;
     void setFilePath(const QString& path);
+
+    [[nodiscard]] QString libraryPath() const;
+    void setLibraryPath(const QString& path);
 
     [[nodiscard]] QString status() const;
     [[nodiscard]] QVariantList diagnostics() const;
@@ -45,6 +51,7 @@ public:
 
 signals:
     void filePathChanged();
+    void libraryPathChanged();
     void statusChanged();
     void diagnosticsChanged();
     void completionsChanged();
@@ -56,12 +63,14 @@ private:
     void onData();
     void dispatch(const QJsonObject& message);
     void sendInitialized();
+    [[nodiscard]] QStringList libraries() const;
     void parseDiagnostics(const QJsonObject& params);
     void parseCompletion(const QJsonValue& result);
 
     QProcess m_process;
     QString m_filePath;
     QString m_status = QStringLiteral("off");
+    QString m_libraryPath;
     QString m_uri;
     QByteArray m_buffer;
     QString m_text;

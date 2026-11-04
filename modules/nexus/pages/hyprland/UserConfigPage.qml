@@ -63,6 +63,51 @@ PageBase {
         editor.insert(position, "\n" + indent + (opensBlock ? "    " : ""));
     }
 
+    function insertPair(open: string, close: string): void {
+        const start = editor.selectionStart;
+        const end = editor.selectionEnd;
+
+        if (start !== end) {
+            const selected = editor.getText(start, end);
+            editor.remove(start, end);
+            editor.insert(start, open + selected + close);
+            editor.select(start + 1, start + 1 + selected.length);
+            return;
+        }
+
+        const position = editor.cursorPosition;
+        editor.insert(position, open + close);
+        editor.cursorPosition = position + 1;
+    }
+
+    function skipOver(character: string): bool {
+        if (editor.selectionStart === editor.selectionEnd && editor.text[editor.cursorPosition] === character) {
+            editor.cursorPosition += 1;
+            return true;
+        }
+        return false;
+    }
+
+    // Backspace between an empty pair removes both halves.
+    function backspacePair(): bool {
+        const position = editor.cursorPosition;
+        if (editor.selectionStart !== editor.selectionEnd || position <= 0 || position >= editor.text.length)
+            return false;
+
+        const pairs = {
+            ")": "(",
+            "]": "[",
+            "}": "{",
+            "\"": "\"",
+            "'": "'"
+        };
+        if (pairs[editor.text[position]] === editor.text[position - 1]) {
+            editor.remove(position - 1, position + 1);
+            return true;
+        }
+        return false;
+    }
+
     function dedentLine(): void {
         const position = editor.cursorPosition;
         const lineStart = editor.text.lastIndexOf("\n", position - 1) + 1;
@@ -121,7 +166,11 @@ PageBase {
     isSubPage: true
     scrollable: false
 
-    Component.onCompleted: lsp.start()
+    Component.onCompleted: {
+        lsp.start();
+        // The window opens with the settings search focused; the editor should have the caret.
+        Qt.callLater(() => editor.forceActiveFocus());
+    }
 
     onDirtyChanged: {
         if (lsp.status === "ready")
@@ -158,6 +207,7 @@ PageBase {
             id: lsp
 
             filePath: root.filePath
+            libraryPath: Quickshell.shellPath("assets/lua")
 
             onStatusChanged: {
                 if (status === "ready")
@@ -405,6 +455,32 @@ PageBase {
                                 event.accepted = true;
                                 return;
                             }
+                        }
+
+                        if (event.key === Qt.Key_Backspace && root.backspacePair()) {
+                            event.accepted = true;
+                            return;
+                        }
+
+                        const pairs = {
+                            "(": ")",
+                            "[": "]",
+                            "{": "}",
+                            "\"": "\"",
+                            "'": "'"
+                        };
+                        if (pairs[event.text] !== undefined) {
+                            if ((event.text === "\"" || event.text === "'") && root.skipOver(event.text)) {
+                                event.accepted = true;
+                                return;
+                            }
+                            root.insertPair(event.text, pairs[event.text]);
+                            event.accepted = true;
+                            return;
+                        }
+                        if ((event.text === ")" || event.text === "]" || event.text === "}") && root.skipOver(event.text)) {
+                            event.accepted = true;
+                            return;
                         }
 
                         if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {

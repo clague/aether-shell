@@ -1,7 +1,7 @@
 #include "luahighlighter.hpp"
 
-#include <qtextformat.h>
 #include <qtextdocument.h>
+#include <qtextformat.h>
 
 namespace aether::shell::editor {
 
