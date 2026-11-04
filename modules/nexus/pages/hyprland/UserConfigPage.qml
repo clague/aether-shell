@@ -33,29 +33,41 @@ PageBase {
     property string savedText: ""
     property string notice: ""
     property bool completionOpen: false
+    property bool suppressCompletion: false
     property int completionIndex: 0
     property real completionX: 0
     property real completionY: 0
+    readonly property real completionHeight: Math.min(220, Math.max(24, completionList.contentHeight + 8))
 
-    function save(): void {
+    function save(): bool {
         if (!CUtils.writeFile(root.filePath, editor.text)) {
             root.notice = Tr.tr("Could not write the file");
-            return;
+            noticeTimer.restart();
+            return false;
         }
         root.savedText = editor.text;
         root.notice = Tr.tr("Saved");
         noticeTimer.restart();
+        return true;
     }
 
     function revert(): void {
         editor.text = root.savedText;
         editor.cursorPosition = 0;
+        flick.contentX = 0;
+        flick.contentY = 0;
         root.completionOpen = false;
     }
 
     function insertNewline(): void {
+        if (editor.selectionStart !== editor.selectionEnd) {
+            const start = editor.selectionStart;
+            editor.remove(start, editor.selectionEnd);
+            editor.cursorPosition = start;
+        }
+
         const position = editor.cursorPosition;
-        const lineStart = editor.text.lastIndexOf("\n", position - 1) + 1;
+        const lineStart = root.lineStartAt(position);
         const line = editor.text.slice(lineStart, position);
         const indent = (line.match(/^\s*/) || [""])[0];
         const trimmed = line.trimEnd();
@@ -108,14 +120,62 @@ PageBase {
         return false;
     }
 
-    function dedentLine(): void {
-        const position = editor.cursorPosition;
-        const lineStart = editor.text.lastIndexOf("\n", position - 1) + 1;
-        const line = editor.text.slice(lineStart, position);
-        if (line.startsWith("    "))
-            editor.remove(lineStart, lineStart + 4);
-        else if (line.startsWith("\t"))
-            editor.remove(lineStart, lineStart + 1);
+    function lineStartAt(position: int): int {
+        return editor.text.lastIndexOf("\n", position - 1) + 1;
+    }
+
+    function lineEndAt(position: int): int {
+        const end = editor.text.indexOf("\n", position);
+        return end < 0 ? editor.text.length : end;
+    }
+
+    // Tab indents the current line, or every line the selection touches. Shift+Tab removes one
+    // level. The block stays selected, so repeated presses keep working.
+    function changeIndent(dedent: bool): void {
+        const selStart = editor.selectionStart;
+        const selEnd = editor.selectionEnd;
+        const hasSelection = selEnd > selStart;
+        const first = root.lineStartAt(hasSelection ? selStart : editor.cursorPosition);
+        let last = hasSelection ? root.lineStartAt(selEnd) : first;
+        if (hasSelection && selEnd === last && last > first)
+            last = root.lineStartAt(last - 1);
+        const blockEnd = root.lineEndAt(last);
+
+        const lines = editor.text.slice(first, blockEnd).split("\n");
+        const updated = lines.map(line => {
+            if (!dedent)
+                return "    " + line;
+            if (line.startsWith("    "))
+                return line.slice(4);
+            if (line.startsWith("\t"))
+                return line.slice(1);
+            return line;
+        });
+        const replacement = updated.join("\n");
+        const caret = editor.cursorPosition;
+
+        editor.remove(first, blockEnd);
+        editor.insert(first, replacement);
+
+        if (hasSelection)
+            editor.select(first, first + replacement.length);
+        else
+            editor.cursorPosition = Math.max(first, Math.min(first + updated[0].length, caret + updated[0].length - lines[0].length));
+    }
+
+    // True when the caret is in code rather than in a comment or a string literal.
+    function codeAt(position: int): bool {
+        const before = editor.text.slice(root.lineStartAt(position), position);
+        let quotes = 0;
+        for (let i = 0; i < before.length; i++) {
+            if (before[i] === "\\")
+                i++;
+            else if (before[i] === '"' || before[i] === "'")
+                quotes++;
+            else if (before[i] === "-" && before[i + 1] === "-" && quotes % 2 === 0)
+                return false;
+        }
+        return quotes % 2 === 0;
     }
 
     // Completion follows typing: an identifier character, `.` or `:` opens the popup after a
@@ -133,19 +193,7 @@ PageBase {
         if (!/[A-Za-z0-9_.:]/.test(character))
             return false;
 
-        const lineStart = editor.text.lastIndexOf("\n", position - 1) + 1;
-        const before = editor.text.slice(lineStart, position);
-        if (before.includes("--"))
-            return false;
-
-        let quotes = 0;
-        for (let i = 0; i < before.length; i++) {
-            if (before[i] === "\\")
-                i++;
-            else if (before[i] === '"' || before[i] === "'")
-                quotes++;
-        }
-        return quotes % 2 === 0;
+        return root.codeAt(position);
     }
 
     function requestCompletion(): void {
@@ -161,23 +209,77 @@ PageBase {
     }
 
     function updateCompletionPosition(): void {
+        if (flick.height <= 0)
+            return;
+
         const rect = editor.cursorRectangle;
-        root.completionX = Math.max(8, Math.min(gutter.width + editor.x + rect.x - flick.contentX, flick.width - 340));
-        root.completionY = editor.y + rect.y + rect.height - flick.contentY;
+        const height = root.completionHeight;
+        const caretTop = editor.y + rect.y - flick.contentY;
+        const below = caretTop + rect.height + 2;
+        const above = caretTop - height - 2;
+
+        root.completionX = Math.max(8, Math.min(gutter.width + editor.x + rect.x - flick.contentX, Math.max(8, flick.width - 340)));
+        root.completionY = below + height > flick.height && above >= 0 ? above : Math.max(0, Math.min(below, flick.height - height));
+    }
+
+    // Keeps the caret inside the viewport when it moves by keyboard or after a jump (Ctrl+End,
+    // clicking a diagnostic, accepting a completion...). The Flickable does not follow the editor
+    // on its own.
+    function ensureCursorVisible(): void {
+        if (flick.height <= 0 || editor.cursorRectangle.height <= 0)
+            return;
+
+        const margin = root.lineHeight * 2;
+        const rect = editor.cursorRectangle;
+        const top = editor.y + rect.y;
+        const bottom = top + rect.height;
+
+        if (top < flick.contentY + margin)
+            flick.contentY = Math.max(0, top - margin);
+        else if (bottom > flick.contentY + flick.height - margin)
+            flick.contentY = Math.min(Math.max(0, flick.contentHeight - flick.height), bottom - flick.height + margin);
+
+        const left = editor.x + rect.x;
+        const right = left + Math.max(rect.width, 2);
+        if (left < flick.contentX)
+            flick.contentX = Math.max(0, left - 24);
+        else if (right > flick.contentX + flick.width - 24)
+            flick.contentX = Math.min(Math.max(0, flick.contentWidth - flick.width), right - flick.width + 24);
+    }
+
+    function offsetAt(line: int, character: int): int {
+        const lines = editor.text.split("\n");
+        let offset = 0;
+        for (let i = 0; i < line && i < lines.length; i++)
+            offset += lines[i].length + 1;
+        return offset + Math.min(character, (lines[line] ?? "").length);
     }
 
     function acceptCompletion(): void {
         const item = lsp.completions[root.completionIndex];
         root.completionOpen = false;
+        completionTimer.stop();
         if (!item)
             return;
 
         let start = editor.cursorPosition;
-        while (start > 0 && /[A-Za-z0-9_.:]/.test(editor.text[start - 1]))
-            start--;
+        let end = start;
+        if (item.hasRange) {
+            start = root.offsetAt(item.startLine, item.startCharacter);
+            end = Math.min(root.offsetAt(item.endLine, item.endCharacter), editor.text.length);
+        } else {
+            // Only back over the identifier itself: `hl.` must survive, `hl.en` -> `hl.env`.
+            while (start > 0 && /[A-Za-z0-9_]/.test(editor.text[start - 1]))
+                start--;
+        }
 
-        editor.remove(start, editor.cursorPosition);
+        // The insert itself is a text change; asking for completions again would immediately
+        // reopen the popup on the word that was just completed.
+        root.suppressCompletion = true;
+        editor.remove(start, end);
         editor.insert(start, item.insert);
+        editor.cursorPosition = start + item.insert.length;
+        root.suppressCompletion = false;
     }
 
     function jumpTo(line: int, character: int): void {
@@ -187,6 +289,7 @@ PageBase {
             offset += lines[i].length + 1;
         editor.cursorPosition = offset + Math.min(character, (lines[line] ?? "").length);
         editor.forceActiveFocus();
+        root.ensureCursorVisible();
     }
 
     function severityColour(severity: int): color {
@@ -254,6 +357,7 @@ PageBase {
                     root.completionIndex = 0;
                     root.completionOpen = true;
                     root.updateCompletionPosition();
+                    Qt.callLater(root.updateCompletionPosition);
                 } else {
                     root.completionOpen = false;
                 }
@@ -285,6 +389,11 @@ PageBase {
             id: reloadProc
 
             command: ["hyprctl", "reload"]
+
+            onExited: {
+                root.notice = Tr.tr("Applied to Hyprland");
+                noticeTimer.restart();
+            }
         }
 
         RowLayout {
@@ -339,7 +448,11 @@ PageBase {
                 icon: "restart_alt"
                 text: Tr.tr("Apply to Hyprland")
                 type: TextButton.Tonal
-                onClicked: reloadProc.running = true
+                onClicked: {
+                    if (root.dirty && !root.save())
+                        return;
+                    reloadProc.running = true;
+                }
             }
 
             IconTextButton {
@@ -448,13 +561,18 @@ PageBase {
                     onTextChanged: {
                         if (lsp.status === "ready")
                             syncTimer.restart();
-                        if (root.shouldAutoComplete())
-                            completionTimer.restart();
+                        if (!root.suppressCompletion) {
+                            if (root.shouldAutoComplete())
+                                completionTimer.restart();
+                            else if (root.completionOpen)
+                                root.completionOpen = false;
+                        }
                     }
 
                     onCursorPositionChanged: {
                         if (root.completionOpen)
                             root.updateCompletionPosition();
+                        root.ensureCursorVisible();
                     }
 
                     Keys.onPressed: event => {
@@ -506,7 +624,7 @@ PageBase {
                             "\"": "\"",
                             "'": "'"
                         };
-                        if (pairs[event.text] !== undefined) {
+                        if (pairs[event.text] !== undefined && root.codeAt(editor.cursorPosition)) {
                             if ((event.text === "\"" || event.text === "'") && root.skipOver(event.text)) {
                                 event.accepted = true;
                                 return;
@@ -526,12 +644,12 @@ PageBase {
                             return;
                         }
                         if (event.key === Qt.Key_Tab) {
-                            editor.insert(editor.cursorPosition, "    ");
+                            root.changeIndent(false);
                             event.accepted = true;
                             return;
                         }
                         if (event.key === Qt.Key_Backtab) {
-                            root.dedentLine();
+                            root.changeIndent(true);
                             event.accepted = true;
                         }
                     }
@@ -544,7 +662,7 @@ PageBase {
                 x: root.completionX
                 y: root.completionY
                 width: 340
-                height: Math.min(220, completionList.contentHeight + 8)
+                height: root.completionHeight
                 visible: root.completionOpen && lsp.completions.length > 0
                 z: 10
                 radius: Tokens.rounding.medium
@@ -558,6 +676,11 @@ PageBase {
                     clip: true
                     model: lsp.completions
                     currentIndex: root.completionIndex
+
+                    onContentHeightChanged: {
+                        if (root.completionOpen)
+                            root.updateCompletionPosition();
+                    }
 
                     highlight: StyledRect {
                         radius: Tokens.rounding.small

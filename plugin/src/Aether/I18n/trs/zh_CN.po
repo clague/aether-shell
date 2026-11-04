@@ -8569,6 +8569,10 @@ msgid "Could not write the file"
 msgstr "无法写入文件"
 
 #: modules/nexus/pages/hyprland/UserConfigPage.qml
+msgid "Saved"
+msgstr "已保存"
+
+#: modules/nexus/pages/hyprland/UserConfigPage.qml
 msgid "lua-language-server is not installed"
 msgstr "未安装 lua-language-server"
 
@@ -8579,6 +8583,10 @@ msgstr "正在启动语言服务器…"
 #: modules/nexus/pages/hyprland/UserConfigPage.qml
 msgid "Unsaved changes"
 msgstr "有未保存的更改"
+
+#: modules/nexus/pages/hyprland/UserConfigPage.qml
+msgid "Applied to Hyprland"
+msgstr "已应用到 Hyprland"
 
 #: modules/nexus/pages/hyprland/UserConfigPage.qml
 msgid "Apply to Hyprland"

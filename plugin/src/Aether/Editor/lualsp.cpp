@@ -420,11 +420,22 @@ void LuaLsp::parseCompletion(const QJsonValue& result) {
         if (insert.isEmpty())
             insert = item.value(u"label"_s).toString();
 
+        // The range the server wants replaced. Accepting must use it when present (it may cover
+        // more than the caret word), and only fall back to the identifier when it is absent.
+        const QJsonObject range = textEdit.value(u"range"_s).toObject();
+        const QJsonObject rangeStart = range.value(u"start"_s).toObject();
+        const QJsonObject rangeEnd = range.value(u"end"_s).toObject();
+
         list.append(QVariantMap{
             { u"label"_s, item.value(u"label"_s).toString() },
             { u"detail"_s, item.value(u"detail"_s).toString() },
             { u"insert"_s, insert },
             { u"kind"_s, item.value(u"kind"_s).toInt() },
+            { u"hasRange"_s, !range.isEmpty() },
+            { u"startLine"_s, rangeStart.value(u"line"_s).toInt() },
+            { u"startCharacter"_s, rangeStart.value(u"character"_s).toInt() },
+            { u"endLine"_s, rangeEnd.value(u"line"_s).toInt() },
+            { u"endCharacter"_s, rangeEnd.value(u"character"_s).toInt() },
         });
     }
 
