@@ -13,8 +13,10 @@ import qs.daemons
 Singleton {
     id: root
 
-    // Windows that are mostly text, kept fully opaque when "Solid text windows" is on
-    readonly property string solidClasses: "zen|firefox|chromium|google-chrome|brave-browser|code|code-oss|obsidian|org\\.pwmt\\.zathura|org\\.gnome\\.Evince|libreoffice.*"
+    // Windows that are mostly text, kept fully opaque when "Solid text windows" is on. Use the
+    // configured class list (hypr-vars override, then variables.lua) instead of a second copy, so
+    // editing solidTextClasses still affects what the settings toggle applies.
+    readonly property string solidClasses: HyprVars.vars.solidTextClasses ?? HyprVars.defaults.solidTextClasses ?? "zen|firefox|chromium|google-chrome|brave-browser|code|code-oss|obsidian|org\\.pwmt\\.zathura|org\\.gnome\\.Evince|libreoffice.*"
 
     // From variables.lua (a fraction, 0.95 by default)
     property int basePercent: 95
