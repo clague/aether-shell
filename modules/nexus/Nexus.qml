@@ -24,6 +24,15 @@ Item {
 
     readonly property Item focusedItem: root.Window.window ? root.Window.window.activeFocusItem : null
 
+    // Sidebar width. -1 keeps the automatic ratio; dragging the divider stores an explicit width.
+    readonly property real navWidthMin: 200
+    readonly property real navWidthMax: Math.max(navWidthMin, Math.min(Tokens.sizes.nexus.maxNavWidth, Math.round(root.width * 0.6)))
+    property real navWidthOverride: -1
+    readonly property real navWidth: {
+        const auto = Math.max(root.navWidthMin, Math.min(root.navWidthMax, Math.round(root.width / 3)));
+        return root.navWidthOverride < 0 ? auto : Math.max(root.navWidthMin, Math.min(root.navWidthMax, root.navWidthOverride));
+    }
+
     // True while a text input owns the keyboard, so shortcuts for printable characters can stay
     // out of the way. Qt reports the inner input item for text-field controls.
     readonly property bool textInputFocused: {
@@ -217,7 +226,53 @@ Item {
         anchors.margins: Tokens.padding.large
 
         nState: nState
-        width: Math.min(Tokens.sizes.nexus.maxNavWidth, Math.round(root.width / 3))
+        width: root.navWidth
+    }
+
+    // Drag the divider between the navigation pane and the pages. The nav keeps its automatic
+    // ratio until the first drag, then remembers the explicit width for this window.
+    Rectangle {
+        id: navResizeHandle
+
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        x: navPane.x + navPane.width + Tokens.padding.large - width / 2
+        width: 10
+        z: 5
+        color: "transparent"
+
+        Rectangle {
+            anchors.centerIn: parent
+            width: 2
+            height: parent.height - Tokens.padding.large * 2
+            radius: 1
+            color: Colours.palette.m3onSurfaceVariant
+            opacity: navResizeHover.hovered || navResizeDrag.active ? 0.8 : 0.25
+
+            Behavior on opacity {
+                CAnim {}
+            }
+        }
+
+        HoverHandler {
+            id: navResizeHover
+        }
+
+        DragHandler {
+            id: navResizeDrag
+
+            property real startWidth: 0
+
+            target: null
+            cursorShape: Qt.SplitHCursor
+
+            onActiveChanged: {
+                if (active)
+                    startWidth = root.navWidth;
+            }
+
+            onTranslationChanged: root.navWidthOverride = Math.max(root.navWidthMin, Math.min(root.navWidthMax, startWidth + translation.x))
+        }
     }
 
     Pages {
