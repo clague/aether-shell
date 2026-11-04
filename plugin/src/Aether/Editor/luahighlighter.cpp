@@ -316,7 +316,7 @@ private:
             format.setUnderlineStyle(underline.underlineStyle());
             format.setUnderlineColor(underline.underlineColor());
             QColor tint = underline.underlineColor();
-            tint.setAlpha(24);
+            tint.setAlpha(56);
             format.setBackground(tint);
             setFormat(from, to - from, format);
         }
