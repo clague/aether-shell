@@ -2,6 +2,7 @@ pragma Singleton
 
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Aether
 
 // Read/write access to ~/.config/caelestia/hypr-vars.lua, the override table that the Hyprland
@@ -12,7 +13,7 @@ import Aether
 //
 // Only the values the user overrides are written; deleting a key restores the default from
 // ~/.config/hypr/variables.lua.
-QtObject {
+Singleton {
     id: root
 
     property var vars: ({})
@@ -222,4 +223,18 @@ QtObject {
     }
 
     Component.onCompleted: loadVars()
+
+    // The config can change underneath the shell (git pull, hand edit, a new default), so keep
+    // the defaults shown by the settings rows in sync instead of reading them once at startup.
+    FileView {
+        path: root.defaultsPath
+        watchChanges: true
+        onFileChanged: root.loadVars()
+    }
+
+    FileView {
+        path: root.configPath
+        watchChanges: true
+        onFileChanged: root.loadVars()
+    }
 }

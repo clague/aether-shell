@@ -28,9 +28,9 @@ Singleton {
         })
 
     // From variables.lua; the fallbacks match the values it ships with
-    property int baseGapsIn: 7
-    property int baseGapsOut: 13
-    property int baseBorder: 3
+    property int baseGapsIn: 5
+    property int baseGapsOut: 10
+    property int baseBorder: 1
 
     property string preset: "comfortable"
     property int customGapsIn: baseGapsIn
@@ -208,7 +208,7 @@ Singleton {
         onFileChanged: reload()
         onLoaded: {
             const num = key => {
-                const m = text().match(new RegExp(`M\\.${key}\\s*=\\s*(\\d+)`));
+                const m = text().match(new RegExp(`\\b${key}\\s*=\\s*(\\d+)`));
                 return m ? parseInt(m[1]) : -1;
             };
             const a = num("windowGapsIn"), b = num("windowGapsOut"), c = num("windowBorderSize");

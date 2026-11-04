@@ -16,8 +16,8 @@ Singleton {
     // Windows that are mostly text, kept fully opaque when "Solid text windows" is on
     readonly property string solidClasses: "zen|firefox|chromium|google-chrome|brave-browser|code|code-oss|obsidian|org\\.pwmt\\.zathura|org\\.gnome\\.Evince|libreoffice.*"
 
-    // From variables.lua (a fraction, 0.92 by default)
-    property int basePercent: 92
+    // From variables.lua (a fraction, 0.95 by default)
+    property int basePercent: 95
 
     property bool overviewBlur: false
     property int windowPercent: basePercent
@@ -190,7 +190,7 @@ Singleton {
         watchChanges: true
         onFileChanged: reload()
         onLoaded: {
-            const m = text().match(/M\.windowOpacity\s*=\s*([0-9.]+)/);
+            const m = text().match(/\bwindowOpacity\s*=\s*([0-9.]+)/);
             if (m)
                 root.basePercent = Math.round(parseFloat(m[1]) * 100);
             applyLater.restart();
