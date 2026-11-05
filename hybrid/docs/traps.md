@@ -3154,8 +3154,11 @@ from `QPalette`**. Dolphin's places panel asks `KColorScheme`, which prefers the
 `KDE_COLOR_SCHEME_PATH` application property and otherwise falls back to a scheme of its own. Our
 theme set a correct palette and never set that property, so the sidebar drew dark text on a dark
 background while every probe of `QApplication::palette()` — and every pixel of the window
-background — said the colours were right. `KDE_COLOR_SCHEME_PATH` now points at the CLI's
-`qtengine/caelestia.colors`, which is the only copy regenerated on every scheme change.
+background — said the colours were right. `KDE_COLOR_SCHEME_PATH` now points at
+`~/.local/state/caelestia/aether.colors`, which `Colours.qml` regenerates through
+`scripts/aether-colors.py` whenever the scheme loads. The engine only reads it: a platform theme
+is instantiated once per Qt application, and a shared file that every application rewrites at
+startup is the wrong shape even when the bytes end up equal.
 
 Two wrong turns are worth recording. The first was blaming Kvantum: a paired screenshot showed the
 two windows differing, and the palette probe said they could not, so one of the two was measuring

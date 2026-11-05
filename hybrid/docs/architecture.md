@@ -235,7 +235,7 @@ follows — the session's own setting first, the CLI's generated template last:
 | widget style | `appearance.qtStyle` in `shell.json`, then Kvantum if a theme is configured, then the CLI's style, then Fusion |
 | icon theme | `[Icons] Theme` in `kdeglobals`, then the CLI's `iconTheme`, then `Papirus-<mode>` |
 | font | **none** — `font()` returns nullptr, so Qt takes it from fontconfig, which is where the shell's "App fonts" page writes |
-| KDE applications | `qApp->setProperty("KDE_COLOR_SCHEME_PATH", …)` pointing at `~/.local/state/caelestia/aether.colors`, generated from the same `scheme.json` |
+| KDE applications | `qApp->setProperty("KDE_COLOR_SCHEME_PATH", …)` pointing at `~/.local/state/caelestia/aether.colors`, which `scripts/aether-colors.py` writes when the shell applies a scheme |
 
 That last row is not a detail. KDE applications do not paint from `QPalette` — Dolphin's places
 panel asks `KColorScheme`, which prefers the `KDE_COLOR_SCHEME_PATH` application property and
@@ -244,11 +244,14 @@ on a dark background while every probe of `QApplication::palette()` reported the
 which is why the first three attempts at this looked like a Kvantum problem. Measured on the
 sidebar: `#606069` before, `#AFB4BD` after, `#B5BAC3` under KDE.
 
-The file it points at is Aether's own: `~/.local/state/caelestia/aether.colors`, written from
-`scheme.json` on every reload — atomically, and only when the bytes changed, since every Qt
-application runs this at startup and a needless rewrite would wake every KColorScheme watcher on
-the desktop. The CLI's `qtengine/caelestia.colors` is the fallback for a machine that has no
-`scheme.json` yet.
+The file it points at is written by the shell, not by the engine: `Colours.qml` runs
+`scripts/aether-colors.py` whenever `scheme.json` loads, so the file is a copy of the scheme that
+is actually on screen, written once, by the one process that owns the scheme. The engine's job
+stops at reading it — a platform theme runs once per Qt application, and having every application
+rewrite a shared file at startup is the wrong place for that work even when the bytes agree. The
+script writes atomically and only when the content changed, since a needless rewrite would wake
+every KColorScheme watcher on the desktop. The CLI's `qtengine/caelestia.colors` is the fallback
+for a machine where the shell has not run yet.
 
 The icon theme and the font were both wrong at first: they were read from the CLI's
 `qtengine/config.json`, which is generated from a template (`Papirus-Dark`, `Sans Serif 12`) on

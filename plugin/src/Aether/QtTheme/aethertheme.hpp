@@ -57,7 +57,6 @@ private:
     QString m_kvantumConfigPath;
     QString m_kdeglobalsPath;
     QString m_colorSchemePath;
-    QString m_generatedSchemePath;
     QString m_shellConfigPath;
     QFileSystemWatcher* m_watcher = nullptr;
     QTimer* m_debounce = nullptr;

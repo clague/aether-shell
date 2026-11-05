@@ -185,7 +185,24 @@ Singleton {
         path: `${Paths.state}/scheme.json`
         watchChanges: true
         onFileChanged: reload()
-        onLoaded: root.load(text(), false)
+
+        onLoaded: {
+            root.load(text(), false);
+            // KDE applications read their colours from a .colors file named by the Qt platform
+            // theme, not from the palette. The scheme is what owns that file, so it is written
+            // here, when the scheme is applied -- not by whichever Qt application starts first.
+            schemeFileWriter.command = ["python3", Quickshell.shellPath("scripts/aether-colors.py"), path];
+            schemeFileWriter.running = true;
+        }
+    }
+
+    Process {
+        id: schemeFileWriter
+
+        onExited: (code, status) => {
+            if (code !== 0)
+                console.warn(`aether-colors.py failed with ${code}`);
+        }
     }
 
     ImageAnalyser {
