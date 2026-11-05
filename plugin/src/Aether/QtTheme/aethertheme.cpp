@@ -58,6 +58,13 @@ QString shellConfigPath() {
     return QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/caelestia/shell.json"_s;
 }
 
+// The desktop's own icon theme. KDE writes it here and every Plasma tool reads it, so a session
+// that has ever been configured in system settings has the user's real choice -- while the CLI's
+// Qt config only ever holds the Papirus template value it was generated from.
+QString kdeglobalsPath() {
+    return QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/kdeglobals"_s;
+}
+
 QString kvantumConfigPath() {
     return QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/Kvantum/kvantum.kvconfig"_s;
 }
@@ -89,23 +96,6 @@ QString kvantumTheme(const QString& configPath) {
     return QFileInfo::exists(sharedTheme) ? theme : QString();
 }
 
-std::optional<QFont> readFont(const QJsonObject& theme, const QString& key) {
-    const QJsonObject spec = theme.value(key).toObject();
-    const QString family = spec.value(u"family"_s).toString();
-    if (family.isEmpty())
-        return std::nullopt;
-
-    QFont font(family);
-    // -1 means "leave it to fontconfig" in the generated config, which is also QFont's default.
-    const int size = spec.value(u"size"_s).toInt();
-    if (size > 0)
-        font.setPointSize(size);
-    const int weight = spec.value(u"weight"_s).toInt();
-    if (weight > 0)
-        font.setWeight(static_cast<QFont::Weight>(weight));
-    return font;
-}
-
 // Kvantum paints from its own theme file and replaces the application palette in polish(), so
 // pushing ours into a running application afterwards would fight it and win: backgrounds from its
 // SVG, text from ours. While it is the style, the palette belongs to it. Asked of the running style
@@ -124,6 +114,7 @@ AetherTheme::AetherTheme()
     : m_schemePath(stateDir() + u"/scheme.json"_s)
     , m_configPath(configPath())
     , m_kvantumConfigPath(kvantumConfigPath())
+    , m_kdeglobalsPath(kdeglobalsPath())
     , m_shellConfigPath(shellConfigPath()) {
     // Qt reads palette() and font() synchronously, while the application object is still being
     // built, so the first read cannot wait for the event loop.
@@ -155,18 +146,19 @@ void AetherTheme::startWatching() {
     reload();
 }
 
+// Deliberately no opinion: Qt then takes the font from QFontDatabase, which is fontconfig, which
+// is the layer the shell's own "App fonts" page writes. QGenericUnixTheme's answer is a cached
+// default (9 pt) built before the font database is ready, and the CLI's config only ever holds a
+// template value, so both would override the user's real font with something stale.
+const QFont* AetherTheme::font(Font type) const {
+    Q_UNUSED(type)
+    return nullptr;
+}
+
 const QPalette* AetherTheme::palette(Palette type) const {
     if (type == SystemPalette && m_palette)
         return &*m_palette;
     return QGenericUnixTheme::palette(type);
-}
-
-const QFont* AetherTheme::font(Font type) const {
-    if (type == SystemFont && m_font)
-        return &*m_font;
-    if (type == FixedFont && m_fixedFont)
-        return &*m_fixedFont;
-    return QGenericUnixTheme::font(type);
 }
 
 QVariant AetherTheme::themeHint(ThemeHint hint) const {
@@ -210,8 +202,6 @@ void AetherTheme::scheduleReload() {
 void AetherTheme::reload() {
     // Everything below is re-derived from the files on every pass, so deleting a key restores the
     // default instead of leaving the last applied value behind.
-    m_font.reset();
-    m_fixedFont.reset();
     m_styleNames.clear();
     m_configuredIconTheme.clear();
     m_showIconsInMenus = true;
@@ -231,6 +221,12 @@ void AetherTheme::reload() {
     if (config.open(QIODevice::ReadOnly))
         applyConfig(config.readAll());
 
+    // One read of the session's own settings, used for both the icon theme and the fonts.
+    QByteArray kde;
+    QFile kdeglobals(m_kdeglobalsPath);
+    if (kdeglobals.open(QIODevice::ReadOnly))
+        kde = kdeglobals.readAll();
+
     QFile shellConfig(m_shellConfigPath);
     if (shellConfig.open(QIODevice::ReadOnly))
         m_configuredQtStyle = shellQtStyle(shellConfig.readAll());
@@ -239,13 +235,19 @@ void AetherTheme::reload() {
 
     m_styleNames = resolveStyle();
 
-    m_iconTheme = m_configuredIconTheme;
+    // kdeglobals wins: it is the desktop's icon setting, and the CLI's file only ever holds the
+    // Papirus template value it was generated from. Overriding the first with the second is what
+    // made Qt apps show Papirus icons in a session whose icons were something else.
+    m_iconTheme = kdeIconTheme();
+    if (m_iconTheme.isEmpty())
+        m_iconTheme = m_configuredIconTheme;
     if (m_iconTheme.isEmpty())
         m_iconTheme = m_light ? u"Papirus-Light"_s : u"Papirus-Dark"_s;
 
     // Re-added every time: whichever file changed, the rename may have dropped its watch.
     watch(m_schemePath);
     watch(m_configPath);
+    watch(m_kdeglobalsPath);
 
     apply();
 }
@@ -261,14 +263,18 @@ void AetherTheme::applyConfig(const QByteArray& json) {
     if (const QString icon = theme.value(u"iconTheme"_s).toString(); !icon.isEmpty())
         m_configuredIconTheme = icon;
 
-    m_font = readFont(theme, u"font"_s);
-    m_fixedFont = readFont(theme, u"fontFixed"_s);
-
     m_configuredStyle = theme.value(u"style"_s).toString();
 
     const QJsonObject misc = root.value(u"misc"_s).toObject();
     m_showIconsInMenus = misc.value(u"menusHaveIcons"_s).toBool(true);
     m_showShortcutsInMenus = misc.value(u"shortcutsForContextMenus"_s).toBool(true);
+}
+
+QString AetherTheme::kdeIconTheme() const {
+    QFile file(m_kdeglobalsPath);
+    if (!file.open(QIODevice::ReadOnly))
+        return {};
+    return iniValue(file.readAll(), u"Icons"_s, u"Theme"_s);
 }
 
 QStringList AetherTheme::resolveStyle() const {
@@ -314,8 +320,6 @@ void AetherTheme::apply() {
     if (qobject_cast<QApplication*>(QCoreApplication::instance()) != nullptr) {
         if (m_palette && !kvantumIsActive())
             QApplication::setPalette(*m_palette);
-        if (m_font)
-            QApplication::setFont(*m_font);
     }
 
     QWindowSystemInterface::handleThemeChange();

@@ -49,18 +49,18 @@ private:
     void reload();
     void applyConfig(const QByteArray& json);
     void apply();
+    [[nodiscard]] QString kdeIconTheme() const;
     [[nodiscard]] QStringList resolveStyle() const;
 
     QString m_schemePath;
     QString m_configPath;
     QString m_kvantumConfigPath;
+    QString m_kdeglobalsPath;
     QString m_shellConfigPath;
     QFileSystemWatcher* m_watcher = nullptr;
     QTimer* m_debounce = nullptr;
 
     std::optional<QPalette> m_palette;
-    std::optional<QFont> m_font;
-    std::optional<QFont> m_fixedFont;
     QStringList m_styleNames;
     QString m_configuredStyle;
     QString m_configuredQtStyle;

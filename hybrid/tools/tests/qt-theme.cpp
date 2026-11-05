@@ -13,6 +13,7 @@
 #include "Aether/QtTheme/aetherpalette.hpp"
 #include "Aether/QtTheme/aetherstyle.hpp"
 
+using aether::theme::iniValue;
 using aether::theme::kvantumThemeName;
 using aether::theme::schemeFromJson;
 using aether::theme::shellQtStyle;
@@ -76,6 +77,11 @@ int main(int argc, char** argv) {
     check(!schemeFromJson(QByteArray("not json")).has_value(), "garbage is rejected");
     check(!schemeFromJson(QByteArray("{}")).has_value(), "an object without colours is rejected");
     check(!schemeFromJson(QByteArray("{\"colours\":{}}")).has_value(), "colours without a background are rejected");
+
+    // One parser reads both files: kdeglobals is sectioned, kvantum.kvconfig is not.
+    check(iniValue("[Icons]\nTheme=kora\n[General]\nfont=x\n", "Icons", "Theme") == "kora", "section scoping");
+    check(iniValue("[Icons]\nTheme=kora\n", "General", "Theme").isEmpty(), "key from another section");
+    check(iniValue("[General]\nfont=Sans Serif,13\n", "General", "font") == "Sans Serif,13", "value with commas");
 
     // kvantummanager writes [General] and nothing else. QSettings reads a bare [General] as the
     // root, which is why this is parsed by hand -- and why the section must not throw it off.

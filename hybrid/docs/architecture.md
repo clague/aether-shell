@@ -222,9 +222,26 @@ copy, but it is a second package that must be rebuilt after every Qt upgrade, an
 (`~/.config/qtengine/config.json`) would then be the thing that decides the colours. Building it
 in-tree means the theme rebuilds exactly when the shell does, from the same Qt.
 
-What it does: `palette()`, `font()`, `themeHint()` for the icon theme and the widget style, and a
-file watcher that re-applies both when `scheme.json` or the CLI's Qt config is rewritten. What it
-deliberately does not do:
+What it does: `palette()`, `themeHint()` for the icon theme and the widget style, and a file
+watcher that re-applies them when `scheme.json`, `shell.json`, `kdeglobals` or the CLI's Qt config
+is rewritten.
+
+Where each of those comes from matters, and the rule is the same one the rest of the shell
+follows — the session's own setting first, the CLI's generated template last:
+
+| property | source, in order |
+|---|---|
+| palette | `scheme.json` |
+| widget style | `appearance.qtStyle` in `shell.json`, then Kvantum if a theme is configured, then the CLI's style, then Fusion |
+| icon theme | `[Icons] Theme` in `kdeglobals`, then the CLI's `iconTheme`, then `Papirus-<mode>` |
+| font | **none** — `font()` returns nullptr, so Qt takes it from fontconfig, which is where the shell's "App fonts" page writes |
+
+The icon theme and the font were both wrong at first: they were read from the CLI's
+`qtengine/config.json`, which is generated from a template (`Papirus-Dark`, `Sans Serif 12`) on
+every scheme change. That silently replaced a session's `kora` icons and its fontconfig font, and
+looked like "the theme is wrong" while the palette was in fact identical to KDE's.
+
+What it deliberately does not do:
 
 - **No Qt5 leg.** Nothing here is Qt5, and qtengine's Qt5 tree is half its code and needs an
   explicit `QT5_PLUGINDIR`.
