@@ -945,13 +945,6 @@ PageBase {
                         }
                     }
 
-                    TapHandler {
-                        onTapped: {
-                            root.completionOpen = false;
-                            root.diagnosticTip = "";
-                        }
-                    }
-
                     HoverHandler {
                         id: editorHover
 
@@ -963,6 +956,23 @@ PageBase {
                         }
                     }
                 }
+            }
+
+            MouseArea {
+                id: editorPressCatcher
+
+                anchors.fill: parent
+                acceptedButtons: Qt.AllButtons
+
+                // Close popups on press, not release, and let the press reach the TextEdit so
+                // caret placement and drag-selection still work.
+                onPressed: mouse => {
+                    root.completionOpen = false;
+                    root.diagnosticTip = "";
+                    mouse.accepted = false;
+                }
+
+                onWheel: wheel => wheel.accepted = false
             }
 
             Item {
@@ -1061,9 +1071,8 @@ PageBase {
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 anchors.right: parent.right
-                anchors.rightMargin: 4
                 width: 84
-                radius: Tokens.rounding.medium
+                radius: Tokens.rounding.large
                 color: Qt.alpha(Colours.palette.m3surfaceContainerLowest, 0.35)
                 border.width: 1
                 border.color: Qt.alpha(Colours.palette.m3outlineVariant, 0.35)
@@ -1346,6 +1355,12 @@ PageBase {
 
                 MouseArea {
                     anchors.fill: parent
+
+                    onPressed: {
+                        root.completionOpen = false;
+                        root.diagnosticTip = "";
+                    }
+
                     onClicked: root.jumpTo(diagnosticItem.modelData.line, diagnosticItem.modelData.character)
                 }
             }
