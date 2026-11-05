@@ -9236,3 +9236,7 @@ msgstr "留空跟随 fontconfig 等宽字体，当前为 %1"
 #: modules/nexus/pages/LookAndFeelPage.qml
 msgid "Follow fontconfig"
 msgstr "跟随 fontconfig"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Automatic: Kvantum when configured, then the CLI's style when installed, then Fusion. Restart apps to apply"
+msgstr "自动：Kvantum（已配置时）→ CLI 指定的样式（已安装时）→ Fusion；重启应用后生效"

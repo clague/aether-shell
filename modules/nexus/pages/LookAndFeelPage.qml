@@ -87,7 +87,7 @@ PageBase {
             first: !root.qtThemeActive
             Layout.fillWidth: true
             label: Tr.tr("Widget style")
-            subtext: Tr.tr("How Qt apps draw their controls; takes effect when they restart")
+            subtext: Tr.tr("Automatic: Kvantum when configured, then the CLI's style when installed, then Fusion. Restart apps to apply")
             configNode: GlobalConfig.qt
             propertyName: "style"
             menuItems: root.qtStyleItems
