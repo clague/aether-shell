@@ -37,13 +37,13 @@ PageBase {
 
         const kde = CUtils.desktopIconTheme();
         if (kde !== "")
-            return Tr.tr("Following KDE's icon setting in kdeglobals: %1").arg(kde);
+            return Tr.tr("Same as the rest of the desktop: %1").arg(kde);
 
         const cli = CUtils.qtConfigIconTheme();
         if (cli !== "")
-            return Tr.tr("No KDE icon setting on this machine; using the CLI's %1").arg(cli);
+            return Tr.tr("The desktop has no icon theme set, so Aether uses %1").arg(cli);
 
-        return Tr.tr("No KDE icon setting and no CLI value; using Qt's own icons");
+        return Tr.tr("No icon theme found; Qt uses its own");
     }
 
     readonly property var iconThemeValues: [""].concat(CUtils.availableIconThemes())
@@ -51,7 +51,7 @@ PageBase {
             "text": name === "" ? Tr.tr("Follow the desktop") : name
         }))
 
-    readonly property var toolButtonItems: [Tr.tr("Icon only"), Tr.tr("Text only"), Tr.tr("Text beside icon"), Tr.tr("Text under icon")].map(name => qtStyleItem.createObject(root, {
+    readonly property var toolButtonItems: [Tr.tr("Icon only"), Tr.tr("Text only"), Tr.tr("Text beside icon"), Tr.tr("Text below icon")].map(name => qtStyleItem.createObject(root, {
             "text": name
         }))
 
@@ -79,15 +79,15 @@ PageBase {
             Layout.fillWidth: true
             visible: !root.qtThemeActive
             icon: "warning"
-            label: Tr.tr("These settings need Aether's Qt theme")
-            subtext: Tr.tr("Add both lines to ~/.config/caelestia/hypr-user.lua, then log out and back in:\nhl.env(\"QT_QPA_PLATFORMTHEME\", \"aether\")\nhl.env(\"QT_PLUGIN_PATH\", (os.getenv(\"HOME\") or \"\") .. \"/.local/lib/qt6/plugins\")")
+            label: Tr.tr("These settings do nothing yet")
+            subtext: Tr.tr("Aether's Qt theme is not switched on for this session. Add the two lines below to hypr-user.lua, then log out and back in.\nhl.env(\"QT_QPA_PLATFORMTHEME\", \"aether\")\nhl.env(\"QT_PLUGIN_PATH\", (os.getenv(\"HOME\") or \"\") .. \"/.local/lib/qt6/plugins\")")
         }
 
         SelectRow {
             first: !root.qtThemeActive
             Layout.fillWidth: true
             label: Tr.tr("Widget style")
-            subtext: Tr.tr("Automatic: Kvantum when configured, then the CLI's style when installed, then Fusion. Restart apps to apply")
+            subtext: Tr.tr("Automatic uses Kvantum if you have it, otherwise the system default; reopen apps to apply")
             configNode: GlobalConfig.qt
             propertyName: "style"
             menuItems: root.qtStyleItems
@@ -117,18 +117,18 @@ PageBase {
         TextFieldRow {
             Layout.fillWidth: true
             label: Tr.tr("Font family")
-            subtext: Tr.tr("Empty follows fontconfig; now %1").arg(CUtils.systemFont())
+            subtext: Tr.tr("Leave empty to use the system font: %1").arg(CUtils.systemFont())
             configNode: GlobalConfig.qt
             propertyName: "font"
             value: GlobalConfig.qt.font
-            placeholderText: Tr.tr("Follow fontconfig")
+            placeholderText: Tr.tr("Same as the system")
             onEditingFinished: value => GlobalConfig.qt.font = value.trim()
         }
 
         StepperRow {
             Layout.fillWidth: true
             label: Tr.tr("Font size")
-            subtext: Tr.tr("Zero follows the system size")
+            subtext: Tr.tr("0 keeps the size the system picked")
             configNode: GlobalConfig.qt
             propertyName: "fontSize"
             value: GlobalConfig.qt.fontSize
@@ -141,11 +141,11 @@ PageBase {
         TextFieldRow {
             Layout.fillWidth: true
             label: Tr.tr("Monospace family")
-            subtext: Tr.tr("Empty follows fontconfig's monospace; now %1").arg(CUtils.systemFont(true))
+            subtext: Tr.tr("Leave empty to use the system monospace font: %1").arg(CUtils.systemFont(true))
             configNode: GlobalConfig.qt
             propertyName: "fontFixed"
             value: GlobalConfig.qt.fontFixed
-            placeholderText: Tr.tr("Follow fontconfig")
+            placeholderText: Tr.tr("Same as the system")
             onEditingFinished: value => GlobalConfig.qt.fontFixed = value.trim()
         }
 
@@ -153,7 +153,7 @@ PageBase {
             last: true
             Layout.fillWidth: true
             label: Tr.tr("Monospace size")
-            subtext: Tr.tr("Zero follows the system size")
+            subtext: Tr.tr("0 keeps the size the system picked")
             configNode: GlobalConfig.qt
             propertyName: "fontFixedSize"
             value: GlobalConfig.qt.fontFixedSize
@@ -171,15 +171,15 @@ PageBase {
             first: true
             Layout.fillWidth: true
             text: Tr.tr("Icons in menus")
-            subtext: Tr.tr("Show icons beside menu entries")
+            subtext: Tr.tr("Show a small icon next to each menu item")
             checked: GlobalConfig.qt.menusHaveIcons
             onToggled: GlobalConfig.qt.menusHaveIcons = checked
         }
 
         ToggleRow {
             Layout.fillWidth: true
-            text: Tr.tr("Shortcuts in context menus")
-            subtext: Tr.tr("Show the key combination beside the action")
+            text: Tr.tr("Shortcuts in right-click menus")
+            subtext: Tr.tr("Show the key combination next to each action")
             checked: GlobalConfig.qt.shortcutsInContextMenus
             onToggled: GlobalConfig.qt.shortcutsInContextMenus = checked
         }
@@ -187,7 +187,7 @@ PageBase {
         SelectRow {
             Layout.fillWidth: true
             label: Tr.tr("Toolbar buttons")
-            subtext: Tr.tr("How toolbar actions are labelled")
+            subtext: Tr.tr("Whether toolbar actions show text, icons or both")
             configNode: GlobalConfig.qt
             propertyName: "toolButtonStyle"
             menuItems: root.toolButtonItems
@@ -202,7 +202,7 @@ PageBase {
         StepperRow {
             Layout.fillWidth: true
             label: Tr.tr("Wheel scroll lines")
-            subtext: Tr.tr("Rows moved per wheel notch")
+            subtext: Tr.tr("How many lines one wheel notch moves")
             configNode: GlobalConfig.qt
             propertyName: "wheelScrollLines"
             value: GlobalConfig.qt.wheelScrollLines
@@ -215,7 +215,7 @@ PageBase {
         StepperRow {
             Layout.fillWidth: true
             label: Tr.tr("Text cursor blink")
-            subtext: Tr.tr("Milliseconds per blink")
+            subtext: Tr.tr("How often the typing cursor blinks, in milliseconds")
             configNode: GlobalConfig.qt
             propertyName: "cursorFlashTime"
             value: GlobalConfig.qt.cursorFlashTime
@@ -229,7 +229,7 @@ PageBase {
             last: true
             Layout.fillWidth: true
             label: Tr.tr("Double-click interval")
-            subtext: Tr.tr("Milliseconds between two clicks that count as one")
+            subtext: Tr.tr("How slow two clicks can be and still count as a double-click, in milliseconds")
             configNode: GlobalConfig.qt
             propertyName: "doubleClickInterval"
             value: GlobalConfig.qt.doubleClickInterval

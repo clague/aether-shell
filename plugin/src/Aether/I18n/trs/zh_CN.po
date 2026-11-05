@@ -9082,14 +9082,6 @@ msgid "Without these, those apps may run under XWayland"
 msgstr "缺少这些变量时，相关应用可能退回 XWayland"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
-msgid "These settings need Aether's Qt theme"
-msgstr "这些设置需要 Aether 的 Qt 主题"
-
-#: modules/nexus/pages/LookAndFeelPage.qml
-msgid "Add both lines to ~/.config/caelestia/hypr-user.lua, then log out and back in:\nhl.env(\"QT_QPA_PLATFORMTHEME\", \"aether\")\nhl.env(\"QT_PLUGIN_PATH\", (os.getenv(\"HOME\") or \"\") .. \"/.local/lib/qt6/plugins\")"
-msgstr "把这两行加进 ~/.config/caelestia/hypr-user.lua，然后注销重新登录：\nhl.env(\"QT_QPA_PLATFORMTHEME\", \"aether\")\nhl.env(\"QT_PLUGIN_PATH\", (os.getenv(\"HOME\") or \"\") .. \"/.local/lib/qt6/plugins\")"
-
-#: modules/nexus/pages/LookAndFeelPage.qml
 msgid "Icon theme"
 msgstr "图标主题"
 
@@ -9118,10 +9110,6 @@ msgid "Font size"
 msgstr "字号"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
-msgid "Zero follows the system size"
-msgstr "0 表示跟随系统字号"
-
-#: modules/nexus/pages/LookAndFeelPage.qml
 msgid "Monospace family"
 msgstr "等宽字体"
 
@@ -9142,24 +9130,12 @@ msgid "Icons in menus"
 msgstr "菜单图标"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
-msgid "Show icons beside menu entries"
-msgstr "在菜单项旁显示图标"
-
-#: modules/nexus/pages/LookAndFeelPage.qml
 msgid "Shortcuts in context menus"
 msgstr "右键菜单快捷键"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
-msgid "Show the key combination beside the action"
-msgstr "在操作旁显示快捷键"
-
-#: modules/nexus/pages/LookAndFeelPage.qml
 msgid "Toolbar buttons"
 msgstr "工具栏按钮"
-
-#: modules/nexus/pages/LookAndFeelPage.qml
-msgid "How toolbar actions are labelled"
-msgstr "工具栏操作如何标注"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
 msgid "Icon only"
@@ -9174,32 +9150,16 @@ msgid "Text beside icon"
 msgstr "文字在图标旁"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
-msgid "Text under icon"
-msgstr "文字在图标下"
-
-#: modules/nexus/pages/LookAndFeelPage.qml
 msgid "Wheel scroll lines"
 msgstr "滚轮行数"
-
-#: modules/nexus/pages/LookAndFeelPage.qml
-msgid "Rows moved per wheel notch"
-msgstr "每格滚轮滚动的行数"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
 msgid "Text cursor blink"
 msgstr "光标闪烁"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
-msgid "Milliseconds per blink"
-msgstr "每次闪烁的毫秒数"
-
-#: modules/nexus/pages/LookAndFeelPage.qml
 msgid "Double-click interval"
 msgstr "双击间隔"
-
-#: modules/nexus/pages/LookAndFeelPage.qml
-msgid "Milliseconds between two clicks that count as one"
-msgstr "两次点击被视为双击的毫秒间隔"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
 msgid "Following the desktop: %1"
@@ -9214,29 +9174,73 @@ msgid "Using %1"
 msgstr "使用 %1"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
-msgid "Following KDE's icon setting in kdeglobals: %1"
-msgstr "跟随 KDE 的图标设置（kdeglobals）：%1"
+msgid "These settings do nothing yet"
+msgstr "这些设置暂时不会生效"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
-msgid "No KDE icon setting on this machine; using the CLI's %1"
-msgstr "本机没有 KDE 图标设置，使用 CLI 生成的 %1"
+msgid "Aether's Qt theme is not switched on for this session. Add the two lines below to hypr-user.lua, then log out and back in.\nhl.env(\"QT_QPA_PLATFORMTHEME\", \"aether\")\nhl.env(\"QT_PLUGIN_PATH\", (os.getenv(\"HOME\") or \"\") .. \"/.local/lib/qt6/plugins\")"
+msgstr "这次登录没有启用 Aether 的 Qt 主题。把下面两行加进 hypr-user.lua，然后注销重新登录。\nhl.env(\"QT_QPA_PLATFORMTHEME\", \"aether\")\nhl.env(\"QT_PLUGIN_PATH\", (os.getenv(\"HOME\") or \"\") .. \"/.local/lib/qt6/plugins\")"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
-msgid "No KDE icon setting and no CLI value; using Qt's own icons"
-msgstr "既没有 KDE 图标设置也没有 CLI 配置，使用 Qt 自带的图标"
+msgid "Automatic uses Kvantum if you have it, otherwise the system default; reopen apps to apply"
+msgstr "自动：装了 Kvantum 就用它，否则用系统默认；重新打开应用后生效"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
-msgid "Empty follows fontconfig; now %1"
-msgstr "留空跟随 fontconfig，当前为 %1"
+msgid "Same as the rest of the desktop: %1"
+msgstr "跟随桌面：%1"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
-msgid "Empty follows fontconfig's monospace; now %1"
-msgstr "留空跟随 fontconfig 等宽字体，当前为 %1"
+msgid "The desktop has no icon theme set, so Aether uses %1"
+msgstr "桌面没有设置图标主题，Aether 使用 %1"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
-msgid "Follow fontconfig"
-msgstr "跟随 fontconfig"
+msgid "No icon theme found; Qt uses its own"
+msgstr "找不到可用的图标主题，使用 Qt 自带的"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
-msgid "Automatic: Kvantum when configured, then the CLI's style when installed, then Fusion. Restart apps to apply"
-msgstr "自动：Kvantum（已配置时）→ CLI 指定的样式（已安装时）→ Fusion；重启应用后生效"
+msgid "Leave empty to use the system font: %1"
+msgstr "留空则用系统字体：%1"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Same as the system"
+msgstr "与系统相同"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Leave empty to use the system monospace font: %1"
+msgstr "留空则用系统的等宽字体：%1"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "0 keeps the size the system picked"
+msgstr "0 表示沿用系统字号"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Show a small icon next to each menu item"
+msgstr "在每个菜单项前显示小图标"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Shortcuts in right-click menus"
+msgstr "右键菜单显示快捷键"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Show the key combination next to each action"
+msgstr "在每个操作旁显示快捷键"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Whether toolbar actions show text, icons or both"
+msgstr "工具栏按钮显示文字、图标，还是两者"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "How many lines one wheel notch moves"
+msgstr "滚轮每格移动多少行"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "How often the typing cursor blinks, in milliseconds"
+msgstr "输入框光标闪烁的间隔（毫秒）"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "How slow two clicks can be and still count as a double-click, in milliseconds"
+msgstr "两次点击间隔多慢仍算双击（毫秒）"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Text below icon"
+msgstr "文字在图标下"
