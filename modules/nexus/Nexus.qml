@@ -290,10 +290,28 @@ Item {
 
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        x: navPane.x + navPane.width + Tokens.padding.large - width / 2
-        width: 10
+        // The whole gap between the nav and the page content drags: a 10px strip floating in the
+        // middle of it was impossible to find once the old pill stopped marking it.
+        x: navPane.x + navPane.width - 4
+        width: Math.max(16, pages.x - x)
         z: 5
         color: "transparent"
+
+        // A line only while the divider is hovered or dragged. It marks the edge without looking
+        // like a scrollbar, which is what the old always-on pill was mistaken for.
+        Rectangle {
+            anchors.right: parent.right
+            anchors.rightMargin: parent.width - 4
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            width: 1
+            color: Colours.palette.m3primary
+            opacity: navResizeHover.hovered || navResizeDrag.active ? 0.6 : 0
+
+            Behavior on opacity {
+                CAnim {}
+            }
+        }
 
         HoverHandler {
             id: navResizeHover
