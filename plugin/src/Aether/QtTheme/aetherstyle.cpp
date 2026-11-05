@@ -1,5 +1,8 @@
 #include "aetherstyle.hpp"
 
+#include <qjsondocument.h>
+#include <qjsonobject.h>
+#include <qjsonvalue.h>
 #include <qlist.h>
 #include <qstringview.h>
 
@@ -27,6 +30,15 @@ QString kvantumThemeName(const QByteArray& ini) {
     }
 
     return {};
+}
+
+QString shellQtStyle(const QByteArray& json) {
+    const QJsonDocument document = QJsonDocument::fromJson(json);
+    if (!document.isObject())
+        return {};
+
+    const QJsonValue value = document.object().value(u"appearance"_s).toObject().value(u"qtStyle"_s);
+    return value.isString() ? value.toString() : QString();
 }
 
 } // namespace aether::theme

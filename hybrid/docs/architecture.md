@@ -255,8 +255,22 @@ change — and then stops pushing the palette, because the palette is Kvantum's.
 feature: widgets keep the shape the user picked, and the engine does not fight it. Qt Quick
 applications create no `QStyle`, so the shell and its surfaces stay on the scheme either way.
 
+The choice itself is a setting, not an environment variable: `appearance.qtStyle` in
+`~/.config/caelestia/shell.json`, exposed as **Look & feel → Qt applications → Widget style**, with
+`Automatic` as the first entry and every style Qt can create after it. It cannot live where qt6ct
+and qtengine keep theirs — the caelestia CLI regenerates `~/.config/qtengine/config.json` from a
+template on every scheme change (`utils/theme.py: apply_qt`), so a value written there survives only
+until the next colour switch. Aether's own config is the first file in the stack that a person
+owns.
+
+The list of styles comes from `CUtils::availableQtStyles()`, which reads the metadata of the style
+plugins rather than calling `QStyleFactory`: that class is in QtWidgets, and linking QtWidgets into
+the shell to enumerate names would pull the whole widget stack into a QtQuick process.
+
 The hint is only a hint: `QT_STYLE_OVERRIDE` still wins, and when it does, palette ownership follows
-the style that actually loaded rather than the name the engine asked for.
+the style that actually loaded rather than the name the engine asked for. A configured style that is
+not installed keeps its value and falls through to the automatic chain, so uninstalling one does not
+silently rewrite the setting.
 
 Installation is two paths because the theme has to be visible to processes the shell never
 starts: `make install` puts it in `${prefix}/lib/qt6/plugins/platformthemes`, and

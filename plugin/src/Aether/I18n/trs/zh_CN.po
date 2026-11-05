@@ -8940,3 +8940,19 @@ msgstr "剪贴板历史"
 #: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
 msgid "Emoji picker"
 msgstr "Emoji 选择器"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Qt applications"
+msgstr "Qt 应用"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Widget style"
+msgstr "控件样式"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Automatic"
+msgstr "自动"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "How Qt apps draw their controls; takes effect when they restart"
+msgstr "Qt 应用绘制控件的方式，重启应用后生效"

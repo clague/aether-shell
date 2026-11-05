@@ -15,6 +15,7 @@
 
 using aether::theme::kvantumThemeName;
 using aether::theme::schemeFromJson;
+using aether::theme::shellQtStyle;
 
 namespace {
 
@@ -86,6 +87,15 @@ int main(int argc, char** argv) {
     check(kvantumThemeName("[General]\ntheme=First\ntheme=Second\n") == "First", "the first theme wins");
     check(kvantumThemeName("[General]\ncolors=#fff\n").isEmpty(), "no theme key");
     check(kvantumThemeName(QByteArray()).isEmpty(), "empty file");
+
+    // The shell's own config decides the style when it says something other than "auto"; that key
+    // has to be readable straight out of shell.json, which the CLI never rewrites.
+    check(shellQtStyle(R"({"appearance":{"qtStyle":"kvantum"}})") == "kvantum", "style from shell.json");
+    check(shellQtStyle(R"({"appearance":{"qtStyle":"auto"}})") == "auto", "auto is passed through");
+    check(shellQtStyle(R"({"appearance":{}})").isEmpty(), "missing key");
+    check(shellQtStyle(R"({"general":{"qtStyle":"fusion"}})").isEmpty(), "key in the wrong node");
+    check(shellQtStyle(R"({"appearance":{"qtStyle":5}})").isEmpty(), "non-string value");
+    check(shellQtStyle("not json").isEmpty(), "garbage shell config");
 
     if (failures == 0)
         std::printf("PASS: 0 failure(s)\n");

@@ -74,15 +74,23 @@ theme, which is worse than either.
 Qt Quick applications create no `QStyle` and keep the Aether palette, so the shell and its
 surfaces stay on the scheme either way.
 
-Style precedence, first match wins:
+The style is a setting, not an environment variable: **Look & feel → Qt applications → Widget
+style**, stored as `appearance.qtStyle` in `~/.config/caelestia/shell.json`. The list is every style
+Qt can create on the machine, plus **Automatic**.
 
-1. `QT_STYLE_OVERRIDE` — Qt applies it last, and the engine then leaves the palette to you.
-2. Kvantum, when `~/.config/Kvantum/kvantum.kvconfig` names a theme that resolves.
-3. The style named in the CLI's `~/.config/qtengine/config.json`, when that style is installed.
-4. Fusion, via the default Qt behaviour.
+Resolution order:
 
-To stay on Aether's colours with Kvantum installed, set `QT_STYLE_OVERRIDE=fusion` in
-`hypr-user.lua`; to pin Kvantum on a machine that also has Darkly, set `QT_STYLE_OVERRIDE=kvantum`.
+1. `QT_STYLE_OVERRIDE`, if set — Qt applies it after any platform theme, and palette ownership
+   follows whatever actually loaded.
+2. `appearance.qtStyle`, when it names an installed style.
+3. Kvantum, when `~/.config/Kvantum/kvantum.kvconfig` names a theme that resolves.
+4. The style in the CLI's `~/.config/qtengine/config.json`, when that style is installed.
+5. Fusion, via the default Qt behaviour.
+
+A value that names a style this machine does not have keeps its value and falls through to the
+automatic choice, so uninstalling a style for an afternoon does not rewrite the setting. The
+setting cannot live in the CLI's config file: that file is regenerated from a template on every
+scheme change, so a choice written there survives only until the next one.
 
 ## Installation
 

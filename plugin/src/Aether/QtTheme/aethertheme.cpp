@@ -10,6 +10,7 @@
 #include <qjsondocument.h>
 #include <qjsonobject.h>
 #include <qjsonvalue.h>
+#include <qlibraryinfo.h>
 #include <qloggingcategory.h>
 #include <qpa/qwindowsysteminterface.h>
 #include <qstandardpaths.h>
@@ -50,6 +51,13 @@ QString configPath() {
 // kvantummanager writes this. Its [General] theme is the only signal in the tree that a person
 // chose a widget style by hand -- the style named in the CLI's config is regenerated from a
 // template on every scheme change, so it is a default, not a preference.
+// The shell's own settings. This is the only place a style choice can live: the CLI regenerates
+// ~/.config/qtengine/config.json from a template on every scheme change, so a value written there
+// is gone by the next theme switch.
+QString shellConfigPath() {
+    return QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/caelestia/shell.json"_s;
+}
+
 QString kvantumConfigPath() {
     return QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/Kvantum/kvantum.kvconfig"_s;
 }
@@ -115,7 +123,8 @@ bool kvantumIsActive() {
 AetherTheme::AetherTheme()
     : m_schemePath(stateDir() + u"/scheme.json"_s)
     , m_configPath(configPath())
-    , m_kvantumConfigPath(kvantumConfigPath()) {
+    , m_kvantumConfigPath(kvantumConfigPath())
+    , m_shellConfigPath(shellConfigPath()) {
     // Qt reads palette() and font() synchronously, while the application object is still being
     // built, so the first read cannot wait for the event loop.
     reload();
@@ -222,6 +231,12 @@ void AetherTheme::reload() {
     if (config.open(QIODevice::ReadOnly))
         applyConfig(config.readAll());
 
+    QFile shellConfig(m_shellConfigPath);
+    if (shellConfig.open(QIODevice::ReadOnly))
+        m_configuredQtStyle = shellQtStyle(shellConfig.readAll());
+    else
+        m_configuredQtStyle.clear();
+
     m_styleNames = resolveStyle();
 
     m_iconTheme = m_configuredIconTheme;
@@ -260,6 +275,16 @@ QStringList AetherTheme::resolveStyle() const {
     // An override is the user speaking last, and Qt applies it after this hint anyway.
     if (!qEnvironmentVariableIsEmpty("QT_STYLE_OVERRIDE"))
         return {};
+
+    // An explicit choice beats every guess below. A style that is not installed keeps its value in
+    // the config and falls through to the automatic chain, so uninstalling Darkly for an afternoon
+    // does not silently rewrite the setting.
+    if (!m_configuredQtStyle.isEmpty() && m_configuredQtStyle.compare(u"auto"_s, Qt::CaseInsensitive) != 0) {
+        if (QStyleFactory::keys().contains(m_configuredQtStyle, Qt::CaseInsensitive))
+            return { m_configuredQtStyle };
+        qCWarning(lcTheme) << "Configured Qt style" << m_configuredQtStyle
+                           << "is not installed; falling back to the automatic choice";
+    }
 
     // Kvantum is the one style that brings a palette of its own, so it is only chosen when the user
     // has actually configured it: without a theme it paints with built-in placeholder colours, and

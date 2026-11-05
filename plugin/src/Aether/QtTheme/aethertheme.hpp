@@ -54,6 +54,7 @@ private:
     QString m_schemePath;
     QString m_configPath;
     QString m_kvantumConfigPath;
+    QString m_shellConfigPath;
     QFileSystemWatcher* m_watcher = nullptr;
     QTimer* m_debounce = nullptr;
 
@@ -62,6 +63,7 @@ private:
     std::optional<QFont> m_fixedFont;
     QStringList m_styleNames;
     QString m_configuredStyle;
+    QString m_configuredQtStyle;
     QString m_iconTheme;
     QString m_configuredIconTheme;
     bool m_light = true;

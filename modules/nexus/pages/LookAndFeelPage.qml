@@ -2,9 +2,11 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
+import Aether
 import Aether.Config
 import Aether.I18n
 import qs.components
+import qs.components.controls
 import qs.components.filedialog
 import qs.services
 import qs.modules.nexus.common
@@ -14,6 +16,15 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
+    // What Qt applications draw their controls with. "auto" is the first entry and means the
+    // platform theme decides (Kvantum when configured, then the style the CLI asks for, then
+    // Fusion); the rest is whatever Qt can create on this machine. A style named in the config
+    // but missing here keeps its value -- it is skipped at runtime instead of being rewritten.
+    readonly property var qtStyleValues: ["auto"].concat(CUtils.availableQtStyles())
+    readonly property var qtStyleItems: qtStyleValues.map(name => qtStyleItem.createObject(root, {
+            "text": name === "auto" ? Tr.tr("Automatic") : name
+        }))
+
     title: Tr.tr("Look & feel")
 
     ColumnLayout {
@@ -21,6 +32,12 @@ PageBase {
         anchors.top: parent?.top
         width: root.cappedWidth
         spacing: Tokens.spacing.extraSmall / 2
+
+        Component {
+            id: qtStyleItem
+
+            MenuItem {}
+        }
 
         SectionHeader {
             text: Tr.tr("Shell appearance")
@@ -293,6 +310,27 @@ PageBase {
                     interval: 4000
                     onTriggered: fontItem.armed = false
                 }
+            }
+        }
+
+        SectionHeader {
+            text: Tr.tr("Qt applications")
+        }
+
+        SelectRow {
+            first: true
+            last: true
+            Layout.fillWidth: true
+            label: Tr.tr("Widget style")
+            subtext: Tr.tr("How Qt apps draw their controls; takes effect when they restart")
+            configNode: GlobalConfig.appearance
+            propertyName: "qtStyle"
+            menuItems: root.qtStyleItems
+            active: root.qtStyleItems[Math.max(0, root.qtStyleValues.indexOf(GlobalConfig.appearance.qtStyle))] ?? null
+            onSelected: item => {
+                const idx = root.qtStyleItems.indexOf(item);
+                if (idx !== -1)
+                    GlobalConfig.appearance.qtStyle = root.qtStyleValues[idx];
             }
         }
 

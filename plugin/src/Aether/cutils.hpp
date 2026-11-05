@@ -4,6 +4,7 @@
 #include <qobject.h>
 #include <qqmlintegration.h>
 #include <qquickitem.h>
+#include <qstringlist.h>
 #include <qvariant.h>
 
 namespace aether::shell {
@@ -41,6 +42,10 @@ public:
     Q_INVOKABLE static QQuickItem* findChild(QQuickItem* root, const QString& name);
     Q_INVOKABLE static QList<QQuickItem*> findChildren(QQuickItem* root, const QString& name);
     Q_INVOKABLE static QList<QQuickItem*> findChildrenMatching(QQuickItem* root, const QString& pattern);
+
+    // The QStyle keys Qt can create on this machine, for the settings UI. Built without
+    // QStyleFactory, which lives in QtWidgets and is not linked here.
+    Q_INVOKABLE static QStringList availableQtStyles();
 
     [[nodiscard]] static QString version();
     [[nodiscard]] static QString qtVersion();

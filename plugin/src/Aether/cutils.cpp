@@ -4,15 +4,23 @@
 #include <qdir.h>
 #include <qfile.h>
 #include <qfileinfo.h>
+#include <qjsonarray.h>
+#include <qjsonobject.h>
+#include <qjsonvalue.h>
+#include <qlibraryinfo.h>
 #include <qloggingcategory.h>
 #include <qmetaobject.h>
+#include <qpluginloader.h>
 #include <qqmlengine.h>
 #include <qquickitemgrabresult.h>
 #include <qquickwindow.h>
 #include <qregularexpression.h>
 #include <qstandardpaths.h>
 #include <qtconcurrentrun.h>
+#include <qtenvironmentvariables.h>
 #include <qtextstream.h>
+
+#include <utility>
 
 #include "util/metaenum.hpp"
 
@@ -23,6 +31,8 @@ Q_LOGGING_CATEGORY(lcCUtils, "aether.cutils", QtInfoMsg)
 } // namespace
 
 namespace aether::shell {
+
+using Qt::StringLiterals::operator""_s;
 
 void CUtils::dependency(const QVariant& value) {
     Q_UNUSED(value);
@@ -287,6 +297,38 @@ QList<QQuickItem*> CUtils::findChildrenMatching(QQuickItem* root, const QString&
 
 QString CUtils::version() {
     return QStringLiteral(AETHER_VERSION);
+}
+
+QStringList CUtils::availableQtStyles() {
+    // Fusion and Windows are built into QtWidgets and have no plugin file; everything else is a
+    // plugin whose metadata carries the keys Qt matches against. Reading that metadata is what
+    // QStyleFactory does, and it saves linking QtWidgets into the shell just to list names.
+    QStringList styles{ u"Fusion"_s, u"Windows"_s };
+
+    QStringList dirs{ QLibraryInfo::path(QLibraryInfo::PluginsPath) + u"/styles"_s };
+    for (const QString& root : qEnvironmentVariable("QT_PLUGIN_PATH").split(u':', Qt::SkipEmptyParts))
+        dirs << root + u"/styles"_s;
+
+    for (const QString& dir : std::as_const(dirs)) {
+        const QDir directory(dir);
+        for (const QString& file : directory.entryList({ u"*.so"_s }, QDir::Files)) {
+            const QPluginLoader loader(directory.filePath(file));
+            const QJsonArray keys = loader.metaData().value(u"MetaData"_s).toObject().value(u"Keys"_s).toArray();
+            for (const QJsonValueConstRef key : keys) {
+                if (const QString name = key.toString(); !name.isEmpty())
+                    styles << name;
+            }
+        }
+    }
+
+    // Two plugins can advertise the same key, and Qt matches style names case-insensitively.
+    styles.sort(Qt::CaseInsensitive);
+    for (qsizetype i = styles.size() - 1; i > 0; --i) {
+        if (styles[i].compare(styles[i - 1], Qt::CaseInsensitive) == 0)
+            styles.removeAt(i);
+    }
+
+    return styles;
 }
 
 QString CUtils::qtVersion() {

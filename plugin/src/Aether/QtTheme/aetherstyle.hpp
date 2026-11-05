@@ -13,4 +13,9 @@ namespace aether::theme {
 // so reading it directly is both smaller and predictable.
 [[nodiscard]] QString kvantumThemeName(const QByteArray& ini);
 
+// The style named in the shell's own config (appearance.qtStyle in ~/.config/caelestia/shell.json).
+// Empty when unset, which is not the same as "auto": both fall back to the automatic chain, but the
+// caller distinguishes them in a warning.
+[[nodiscard]] QString shellQtStyle(const QByteArray& json);
+
 } // namespace aether::theme
