@@ -235,6 +235,9 @@ PageBase {
         if (flick.height <= 0 || editor.cursorRectangle.height <= 0)
             return;
 
+        scrollXAnimation.stop();
+        scrollYAnimation.stop();
+
         const margin = root.lineHeight * 2;
         const rect = editor.cursorRectangle;
         const top = editor.y + rect.y;
@@ -454,6 +457,20 @@ PageBase {
         root.diagnosticTip = "";
     }
 
+    function animateScrollX(target: real): void {
+        scrollXAnimation.stop();
+        scrollXAnimation.from = flick.contentX;
+        scrollXAnimation.to = Math.max(0, Math.min(target, Math.max(0, flick.contentWidth - flick.width)));
+        scrollXAnimation.start();
+    }
+
+    function animateScrollY(target: real): void {
+        scrollYAnimation.stop();
+        scrollYAnimation.from = flick.contentY;
+        scrollYAnimation.to = Math.max(0, Math.min(target, Math.max(0, flick.contentHeight - flick.height)));
+        scrollYAnimation.start();
+    }
+
     function severityColour(severity: int): color {
         if (severity === 1)
             return Colours.palette.m3error;
@@ -637,6 +654,24 @@ PageBase {
         Item {
             Layout.fillWidth: true
             Layout.fillHeight: true
+
+            NumberAnimation {
+                id: scrollXAnimation
+
+                target: flick
+                property: "contentX"
+                duration: 140
+                easing.type: Easing.OutCubic
+            }
+
+            NumberAnimation {
+                id: scrollYAnimation
+
+                target: flick
+                property: "contentY"
+                duration: 140
+                easing.type: Easing.OutCubic
+            }
 
             Rectangle {
                 anchors.fill: parent
@@ -922,10 +957,10 @@ PageBase {
                 height: 8
                 visible: flick.contentWidth > flick.width
 
-                function scrollTo(x: real): void {
+                function trackScroll(x: real): void {
                     const travel = Math.max(1, width - horizontalThumb.width);
                     const ratio = Math.max(0, Math.min(1, (x - horizontalThumb.width / 2) / travel));
-                    flick.contentX = ratio * Math.max(0, flick.contentWidth - flick.width);
+                    root.animateScrollX(ratio * Math.max(0, flick.contentWidth - flick.width));
                 }
 
                 Rectangle {
@@ -947,15 +982,38 @@ PageBase {
                 }
 
                 MouseArea {
+                    id: horizontalScrollArea
+
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
 
-                    onPressed: mouse => horizontalScrollBar.scrollTo(mouse.x)
+                    property real pressX: 0
+                    property real pressContentX: 0
+                    property bool draggingThumb: false
+
+                    onPressed: mouse => {
+                        scrollXAnimation.stop();
+                        const thumb = horizontalThumb;
+                        if (mouse.x >= thumb.x && mouse.x <= thumb.x + thumb.width) {
+                            draggingThumb = true;
+                            pressX = mouse.x;
+                            pressContentX = flick.contentX;
+                        } else {
+                            draggingThumb = false;
+                            horizontalScrollBar.trackScroll(mouse.x);
+                        }
+                    }
 
                     onPositionChanged: mouse => {
-                        if (pressed)
-                            horizontalScrollBar.scrollTo(mouse.x);
+                        if (!pressed || !draggingThumb)
+                            return;
+                        const travel = Math.max(1, width - horizontalThumb.width);
+                        const max = Math.max(0, flick.contentWidth - flick.width);
+                        const delta = mouse.x - pressX;
+                        flick.contentX = Math.max(0, Math.min(pressContentX + delta / travel * max, max));
                     }
+
+                    onReleased: draggingThumb = false
                 }
             }
 
@@ -975,10 +1033,10 @@ PageBase {
 
                 readonly property real mapHeight: Math.min(height - 8, minimapText.contentHeight)
 
-                function scrollFromMinimap(y: real): void {
-                    const map = Math.max(1, minimap.mapHeight);
-                    const ratio = Math.max(0, Math.min(1, (y - 4) / map));
-                    flick.contentY = ratio * Math.max(0, flick.contentHeight - flick.height);
+                function trackScroll(y: real): void {
+                    const travel = Math.max(1, mapHeight - minimapViewport.height);
+                    const ratio = Math.max(0, Math.min(1, (y - 4 - minimapViewport.height / 2) / travel));
+                    root.animateScrollY(ratio * Math.max(0, flick.contentHeight - flick.height));
                 }
 
                 Text {
@@ -1011,15 +1069,38 @@ PageBase {
                 }
 
                 MouseArea {
+                    id: minimapScrollArea
+
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
 
-                    onPressed: mouse => minimap.scrollFromMinimap(mouse.y)
+                    property real pressY: 0
+                    property real pressContentY: 0
+                    property bool draggingBox: false
+
+                    onPressed: mouse => {
+                        scrollYAnimation.stop();
+                        const box = minimapViewport;
+                        if (mouse.y >= box.y && mouse.y <= box.y + box.height) {
+                            draggingBox = true;
+                            pressY = mouse.y;
+                            pressContentY = flick.contentY;
+                        } else {
+                            draggingBox = false;
+                            minimap.trackScroll(mouse.y);
+                        }
+                    }
 
                     onPositionChanged: mouse => {
-                        if (pressed)
-                            minimap.scrollFromMinimap(mouse.y);
+                        if (!pressed || !draggingBox)
+                            return;
+                        const travel = Math.max(1, minimap.mapHeight - minimapViewport.height);
+                        const max = Math.max(0, flick.contentHeight - flick.height);
+                        const delta = mouse.y - pressY;
+                        flick.contentY = Math.max(0, Math.min(pressContentY + delta / travel * max, max));
                     }
+
+                    onReleased: draggingBox = false
                 }
             }
 
