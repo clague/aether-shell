@@ -5,7 +5,7 @@
 #include <qfile.h>
 #include <qfileinfo.h>
 #include <qfilesystemwatcher.h>
-#include <qfontdatabase.h>
+#include <qfontinfo.h>
 #include <qicon.h>
 #include <qiodevice.h>
 #include <qjsondocument.h>
@@ -190,7 +190,20 @@ void AetherTheme::startWatching() {
 // default (9 pt) built before the font database is ready, and the CLI's config only ever holds a
 // template value, so both would override the user's real font with something stale.
 const QFont* AetherTheme::font(Font type) const {
-    Q_UNUSED(type)
+    if (type == SystemFont)
+        return m_font ? &*m_font : nullptr;
+
+    if (type == FixedFont) {
+        if (m_fixedFont)
+            return &*m_fixedFont;
+
+        // nullptr here does not mean "ask fontconfig": Qt falls back to the general font, so code
+        // and terminals would be drawn in the proportional face. The generic name is resolved
+        // through fontconfig when it is used.
+        static const QFont monospace(QStringLiteral("monospace"));
+        return &monospace;
+    }
+
     return nullptr;
 }
 
@@ -288,13 +301,16 @@ void AetherTheme::reload() {
 
     // A size of 0 means "keep the size the system picked", not a number of our own: the family
     // and the size are independent choices.
-    const auto fontFor = [](const QString& family, int size, QFontDatabase::SystemFont kind) {
+    const auto fontFor = [](const QString& family, int size) {
         if (family.isEmpty())
             return std::optional<QFont>();
-        return std::optional<QFont>(QFont(family, size > 0 ? size : QFontDatabase::systemFont(kind).pointSize()));
+        // 0 keeps the size fontconfig gives that family; SystemFont() would answer with the
+        // general font's size, which is not what a monospace family asks for.
+        const int resolved = size > 0 ? size : QFontInfo(QFont(family)).pointSize();
+        return std::optional<QFont>(QFont(family, resolved));
     };
-    m_font = fontFor(m_settings.font, m_settings.fontSize, QFontDatabase::GeneralFont);
-    m_fixedFont = fontFor(m_settings.fontFixed, m_settings.fontFixedSize, QFontDatabase::FixedFont);
+    m_font = fontFor(m_settings.font, m_settings.fontSize);
+    m_fixedFont = fontFor(m_settings.fontFixed, m_settings.fontFixedSize);
 
     m_styleNames = resolveStyle();
 

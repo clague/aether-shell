@@ -8737,8 +8737,8 @@ msgid "Leave empty for fontconfig's sans-serif font: %1"
 msgstr "留空时使用 fontconfig 的无衬线字体：%1"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
-msgid "Leave empty for fontconfig's monospace font"
-msgstr "留空时使用 fontconfig 的等宽字体"
+msgid "Leave empty for fontconfig's monospace font: %1"
+msgstr "留空时使用 fontconfig 的等宽字体：%1"
 
 #: modules/nexus/pages/LookAndFeelPage.qml
 msgid "0 uses the size fontconfig picks: %1"

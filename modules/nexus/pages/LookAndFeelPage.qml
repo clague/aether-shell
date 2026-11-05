@@ -141,7 +141,7 @@ PageBase {
         TextFieldRow {
             Layout.fillWidth: true
             label: Tr.tr("Monospace family")
-            subtext: Tr.tr("Leave empty for fontconfig's monospace font")
+            subtext: Tr.tr("Leave empty for fontconfig's monospace font: %1").arg(CUtils.systemFont(true))
             configNode: GlobalConfig.qt
             propertyName: "fontFixed"
             value: GlobalConfig.qt.fontFixed

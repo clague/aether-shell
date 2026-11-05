@@ -4,7 +4,7 @@
 #include <qdir.h>
 #include <qfile.h>
 #include <qfileinfo.h>
-#include <qfontdatabase.h>
+#include <qfontinfo.h>
 #include <qjsonarray.h>
 #include <qjsondocument.h>
 #include <qjsonobject.h>
@@ -375,11 +375,13 @@ QString CUtils::qtConfigIconTheme() {
 }
 
 QString CUtils::systemFont(bool fixed) {
-    return QFontDatabase::systemFont(fixed ? QFontDatabase::FixedFont : QFontDatabase::GeneralFont).family();
+    // QFontDatabase::systemFont(FixedFont) answers with the general font when the platform theme
+    // has no opinion, so it cannot describe fontconfig's monospace. A generic family name can.
+    return QFontInfo(QFont(fixed ? QStringLiteral("monospace") : QStringLiteral("sans-serif"))).family();
 }
 
 int CUtils::systemFontSize(bool fixed) {
-    return QFontDatabase::systemFont(fixed ? QFontDatabase::FixedFont : QFontDatabase::GeneralFont).pointSize();
+    return QFontInfo(QFont(fixed ? QStringLiteral("monospace") : QStringLiteral("sans-serif"))).pointSize();
 }
 
 QString CUtils::qtVersion() {
