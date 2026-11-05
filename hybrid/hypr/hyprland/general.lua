@@ -2,7 +2,7 @@ local vars = require("variables")
 
 hl.config({
     general = {
-        layout          = "dwindle",
+        layout          = vars.layout,
 
         allow_tearing   = vars.allowTearing, -- Allows `immediate` window rule to work
         resize_on_border = vars.resizeOnBorder,
@@ -25,11 +25,11 @@ hl.config({
     },
 
     scrolling = {
-        fullscreen_on_one_column = true,
-        focus_fit_method         = 1,
-        column_width             = 0.5,
-        follow_focus             = true,
-        follow_min_visible       = 0.0,
-        explicit_column_widths   = "0.35, 0.5, 0.65, 1.0",
+        fullscreen_on_one_column = vars.scrollingFullscreenOnOneColumn,
+        focus_fit_method         = vars.scrollingFocusFitMethod,
+        column_width             = vars.scrollingColumnWidth,
+        follow_focus             = vars.scrollingFollowFocus,
+        follow_min_visible       = vars.scrollingFollowMinVisible,
+        explicit_column_widths   = vars.scrollingExplicitColumnWidths,
     },
 })

@@ -59,6 +59,12 @@ PageBase {
             }
         }
 
+        HyprStringRow {
+            label: Tr.tr("Solid text window classes")
+            subtext: Tr.tr("Regular expression matched against window classes")
+            varKey: "solidTextClasses"
+        }
+
         RowButton {
             last: true
             icon: "restart_alt"
@@ -184,8 +190,84 @@ PageBase {
         }
 
         HyprStringRow {
+            last: true
             label: Tr.tr("Inactive window border colour")
             varKey: "inactiveWindowBorderColour"
+        }
+
+        SectionHeader {
+            text: Tr.tr("Window groups")
+        }
+
+        HyprStringRow {
+            first: true
+            label: Tr.tr("Group bar font")
+            varKey: "groupbarFontFamily"
+        }
+        HyprIntRow {
+            label: Tr.tr("Group bar font size")
+            varKey: "groupbarFontSize"
+            from: 6
+            to: 32
+        }
+        HyprBoolRow {
+            text: Tr.tr("Group bar gradients")
+            varKey: "groupbarGradients"
+        }
+        HyprBoolRow {
+            text: Tr.tr("Gradient on the edges only")
+            varKey: "groupbarGradientRoundOnlyEdges"
+        }
+        HyprIntRow {
+            label: Tr.tr("Gradient rounding")
+            varKey: "groupbarGradientRounding"
+            from: 0
+            to: 20
+        }
+        HyprIntRow {
+            label: Tr.tr("Group bar height")
+            varKey: "groupbarHeight"
+            from: 0
+            to: 60
+        }
+        HyprIntRow {
+            label: Tr.tr("Indicator height")
+            varKey: "groupbarIndicatorHeight"
+            from: 0
+            to: 20
+        }
+        HyprIntRow {
+            label: Tr.tr("Group bar gap in")
+            varKey: "groupbarGapsIn"
+            from: 0
+            to: 20
+        }
+        HyprIntRow {
+            label: Tr.tr("Group bar gap out")
+            varKey: "groupbarGapsOut"
+            from: 0
+            to: 20
+        }
+        HyprStringRow {
+            label: Tr.tr("Group bar text colour")
+            varKey: "groupbarTextColour"
+        }
+        HyprStringRow {
+            label: Tr.tr("Group bar active colour")
+            varKey: "groupbarActiveColour"
+        }
+        HyprStringRow {
+            label: Tr.tr("Group bar inactive colour")
+            varKey: "groupbarInactiveColour"
+        }
+        HyprStringRow {
+            label: Tr.tr("Group bar locked active colour")
+            varKey: "groupbarLockedActiveColour"
+        }
+        HyprStringRow {
+            last: true
+            label: Tr.tr("Group bar locked inactive colour")
+            varKey: "groupbarLockedInactiveColour"
         }
 
         SectionHeader {

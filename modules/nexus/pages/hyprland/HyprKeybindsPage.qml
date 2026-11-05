@@ -92,7 +92,42 @@ PageBase {
             kbClearNotifs: Tr.tr("Clear notifications"),
             kbShowPanels: Tr.tr("Show panels"),
             kbLock: Tr.tr("Lock screen"),
-            kbRestoreLock: Tr.tr("Restore lock screen")
+            kbRestoreLock: Tr.tr("Restore lock screen"),
+            kbMoveWinToWsSilent: Tr.tr("Move window to workspace silently"),
+            kbMoveWinToWsSpecial: Tr.tr("Move window to special workspace"),
+            kbMoveWinFromWsSpecial: Tr.tr("Move window from special workspace"),
+            kbMoveWinToWsNext: Tr.tr("Move window to next workspace"),
+            kbMoveWinToWsPrev: Tr.tr("Move window to previous workspace"),
+            kbNextWsGroup: Tr.tr("Next workspace group"),
+            kbPrevWsGroup: Tr.tr("Previous workspace group"),
+            kbWindowCycleNext: Tr.tr("Cycle next window"),
+            kbWindowCyclePrev: Tr.tr("Cycle previous window"),
+            kbGroupLockActive: Tr.tr("Lock active group"),
+            kbWindowDecreaseWidth: Tr.tr("Decrease window width"),
+            kbWindowIncreaseWidth: Tr.tr("Increase window width"),
+            kbWindowDecreaseHeight: Tr.tr("Decrease window height"),
+            kbWindowIncreaseHeight: Tr.tr("Increase window height"),
+            kbCenterWindow: Tr.tr("Center window"),
+            kbNormalizeWindow: Tr.tr("Normalize window"),
+            kbAudioSettings: Tr.tr("Audio settings"),
+            kbLauncher: Tr.tr("Launcher"),
+            kbSleep: Tr.tr("Sleep"),
+            kbScreenshot: Tr.tr("Screenshot"),
+            kbScreenshotFreeze: Tr.tr("Freeze screenshot"),
+            kbScreenshotRegion: Tr.tr("Region screenshot"),
+            kbRecord: Tr.tr("Record screen"),
+            kbRecordSound: Tr.tr("Record with sound"),
+            kbRecordRegion: Tr.tr("Record region"),
+            kbColorPicker: Tr.tr("Colour picker"),
+            kbMediaToggle: Tr.tr("Play/pause media"),
+            kbMediaNext: Tr.tr("Next track"),
+            kbMediaPrev: Tr.tr("Previous track"),
+            kbMediaStop: Tr.tr("Stop media"),
+            kbVolumeMute: Tr.tr("Mute audio"),
+            kbClipboard: Tr.tr("Clipboard history"),
+            kbClipboardDel: Tr.tr("Delete clipboard entry"),
+            kbClipboardPasteLatest: Tr.tr("Paste latest clipboard"),
+            kbEmoji: Tr.tr("Emoji picker")
         })
 
     // "kbToggleGroup" -> "toggle group" fallback for keys a user added by hand
@@ -459,6 +494,26 @@ PageBase {
             varKey: "kbMoveWinToWsGroup"
         }
         KeybindRow {
+            label: root.keyLabel("kbMoveWinToWsSilent")
+            varKey: "kbMoveWinToWsSilent"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbMoveWinToWsSpecial")
+            varKey: "kbMoveWinToWsSpecial"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbMoveWinFromWsSpecial")
+            varKey: "kbMoveWinFromWsSpecial"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbMoveWinToWsNext")
+            varKey: "kbMoveWinToWsNext"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbMoveWinToWsPrev")
+            varKey: "kbMoveWinToWsPrev"
+        }
+        KeybindRow {
             label: root.keyLabel("kbGoToWs")
             varKey: "kbGoToWs"
         }
@@ -471,9 +526,17 @@ PageBase {
             varKey: "kbNextWs"
         }
         KeybindRow {
-            last: true
             label: root.keyLabel("kbPrevWs")
             varKey: "kbPrevWs"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbNextWsGroup")
+            varKey: "kbNextWsGroup"
+        }
+        KeybindRow {
+            last: true
+            label: root.keyLabel("kbPrevWsGroup")
+            varKey: "kbPrevWsGroup"
         }
 
         SectionHeader {
@@ -490,13 +553,25 @@ PageBase {
             varKey: "kbWindowGroupCyclePrev"
         }
         KeybindRow {
+            label: root.keyLabel("kbWindowCycleNext")
+            varKey: "kbWindowCycleNext"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbWindowCyclePrev")
+            varKey: "kbWindowCyclePrev"
+        }
+        KeybindRow {
             label: root.keyLabel("kbUngroup")
             varKey: "kbUngroup"
         }
         KeybindRow {
-            last: true
             label: root.keyLabel("kbToggleGroup")
             varKey: "kbToggleGroup"
+        }
+        KeybindRow {
+            last: true
+            label: root.keyLabel("kbGroupLockActive")
+            varKey: "kbGroupLockActive"
         }
 
         SectionHeader {
@@ -505,6 +580,30 @@ PageBase {
 
         KeybindRow {
             first: true
+            label: root.keyLabel("kbWindowDecreaseWidth")
+            varKey: "kbWindowDecreaseWidth"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbWindowIncreaseWidth")
+            varKey: "kbWindowIncreaseWidth"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbWindowDecreaseHeight")
+            varKey: "kbWindowDecreaseHeight"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbWindowIncreaseHeight")
+            varKey: "kbWindowIncreaseHeight"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbCenterWindow")
+            varKey: "kbCenterWindow"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbNormalizeWindow")
+            varKey: "kbNormalizeWindow"
+        }
+        KeybindRow {
             label: root.keyLabel("kbMoveWindow")
             varKey: "kbMoveWindow"
         }
@@ -583,9 +682,102 @@ PageBase {
             varKey: "kbEditor"
         }
         KeybindRow {
-            last: true
             label: root.keyLabel("kbFileExplorer")
             varKey: "kbFileExplorer"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbAudioSettings")
+            varKey: "kbAudioSettings"
+        }
+        KeybindRow {
+            last: true
+            label: root.keyLabel("kbLauncher")
+            varKey: "kbLauncher"
+        }
+
+        SectionHeader {
+            text: Tr.tr("Utilities")
+        }
+
+        KeybindRow {
+            first: true
+            label: root.keyLabel("kbScreenshot")
+            varKey: "kbScreenshot"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbScreenshotFreeze")
+            varKey: "kbScreenshotFreeze"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbScreenshotRegion")
+            varKey: "kbScreenshotRegion"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbRecord")
+            varKey: "kbRecord"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbRecordSound")
+            varKey: "kbRecordSound"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbRecordRegion")
+            varKey: "kbRecordRegion"
+        }
+        KeybindRow {
+            last: true
+            label: root.keyLabel("kbColorPicker")
+            varKey: "kbColorPicker"
+        }
+
+        SectionHeader {
+            text: Tr.tr("Media")
+        }
+
+        KeybindRow {
+            first: true
+            label: root.keyLabel("kbMediaToggle")
+            varKey: "kbMediaToggle"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbMediaNext")
+            varKey: "kbMediaNext"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbMediaPrev")
+            varKey: "kbMediaPrev"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbMediaStop")
+            varKey: "kbMediaStop"
+        }
+        KeybindRow {
+            last: true
+            label: root.keyLabel("kbVolumeMute")
+            varKey: "kbVolumeMute"
+        }
+
+        SectionHeader {
+            text: Tr.tr("Clipboard")
+        }
+
+        KeybindRow {
+            first: true
+            label: root.keyLabel("kbClipboard")
+            varKey: "kbClipboard"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbClipboardDel")
+            varKey: "kbClipboardDel"
+        }
+        KeybindRow {
+            label: root.keyLabel("kbClipboardPasteLatest")
+            varKey: "kbClipboardPasteLatest"
+        }
+        KeybindRow {
+            last: true
+            label: root.keyLabel("kbEmoji")
+            varKey: "kbEmoji"
         }
 
         SectionHeader {
@@ -614,9 +806,13 @@ PageBase {
             varKey: "kbLock"
         }
         KeybindRow {
-            last: true
             label: root.keyLabel("kbRestoreLock")
             varKey: "kbRestoreLock"
+        }
+        KeybindRow {
+            last: true
+            label: root.keyLabel("kbSleep")
+            varKey: "kbSleep"
         }
 
         Item {

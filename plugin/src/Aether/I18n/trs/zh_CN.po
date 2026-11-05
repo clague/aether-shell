@@ -7714,14 +7714,8 @@ msgstr "配置 Shell"
 #~ msgid "Overview"
 #~ msgstr "概览"
 
-#~ msgid "Clipboard history"
-#~ msgstr "剪贴板历史"
-
 #~ msgid "Search and paste from the launcher"
 #~ msgstr "从启动器搜索并粘贴"
-
-#~ msgid "Emoji picker"
-#~ msgstr "Emoji 选择器"
 
 #~ msgid "Search emoji from the launcher"
 #~ msgstr "从启动器搜索 Emoji"
@@ -8642,3 +8636,307 @@ msgstr "保存"
 msgid "Variant"
 msgstr "变体"
 
+#. Hybrid shell additions
+
+#: modules/nexus/pages/hyprland
+msgid "-1 off, 0 default, 1 anime, 2 pixel"
+msgstr "-1 关闭，0 默认，1 动漫，2 像素"
+
+#: modules/nexus/pages/hyprland
+msgid "0 off, 1 fullscreen only, 2 always"
+msgstr "0 关闭，1 仅全屏，2 始终"
+
+#: modules/nexus/pages/hyprland
+msgid "Allow restoring the session lock"
+msgstr "允许恢复会话锁屏"
+
+#: modules/nexus/pages/hyprland
+msgid "Audio settings"
+msgstr "音频设置"
+
+
+#: modules/nexus/pages/hyprland
+msgid "Center window"
+msgstr "居中窗口"
+
+
+#: modules/nexus/pages/hyprland
+msgid "Close special workspace when empty"
+msgstr "特殊工作区为空时自动关闭"
+
+#: modules/nexus/pages/hyprland
+msgid "Colour picker"
+msgstr "取色器"
+
+#: modules/nexus/pages/hyprland
+msgid "Column width"
+msgstr "列宽"
+
+#: modules/nexus/pages/hyprland
+msgid "Comma-separated widths, for example 0.35, 0.5, 0.65, 1.0"
+msgstr "逗号分隔的宽度，例如 0.35, 0.5, 0.65, 1.0"
+
+#: modules/nexus/pages/hyprland
+msgid "Cycle next window"
+msgstr "切换到下一个窗口"
+
+#: modules/nexus/pages/hyprland
+msgid "Cycle previous window"
+msgstr "切换到上一个窗口"
+
+#: modules/nexus/pages/hyprland
+msgid "Decrease window height"
+msgstr "减小窗口高度"
+
+#: modules/nexus/pages/hyprland
+msgid "Decrease window width"
+msgstr "减小窗口宽度"
+
+#: modules/nexus/pages/hyprland
+msgid "Degrees of tolerance before the swipe direction is locked"
+msgstr "锁定滑动方向前的容差角度"
+
+#: modules/nexus/pages/hyprland
+msgid "Delete clipboard entry"
+msgstr "删除剪贴板条目"
+
+#: modules/nexus/pages/hyprland
+msgid "Direction lock threshold"
+msgstr "方向锁定阈值"
+
+#: modules/nexus/pages/hyprland
+msgid "Dwindle"
+msgstr "Dwindle"
+
+#: modules/nexus/pages/hyprland
+msgid "Dwindle, master or scrolling"
+msgstr "Dwindle、Master 或 Scrolling"
+
+
+#: modules/nexus/pages/hyprland
+msgid "Explicit column widths"
+msgstr "显式列宽"
+
+#: modules/nexus/pages/hyprland
+msgid "Focus fit method"
+msgstr "焦点适配方式"
+
+#: modules/nexus/pages/hyprland
+msgid "Focus under fullscreen"
+msgstr "全屏下的焦点行为"
+
+#: modules/nexus/pages/hyprland
+msgid "Focus window on close"
+msgstr "关闭窗口时聚焦"
+
+#: modules/nexus/pages/hyprland
+msgid "Follow focus"
+msgstr "跟随焦点"
+
+#: modules/nexus/pages/hyprland
+msgid "Force the default wallpaper"
+msgstr "强制使用默认壁纸"
+
+#: modules/nexus/pages/hyprland
+msgid "Freeze screenshot"
+msgstr "冻结截图"
+
+#: modules/nexus/pages/hyprland
+msgid "Fullscreen on one column"
+msgstr "单列全屏"
+
+#: modules/nexus/pages/hyprland
+msgid "Gradient on the edges only"
+msgstr "仅在边缘显示渐变"
+
+#: modules/nexus/pages/hyprland
+msgid "Gradient rounding"
+msgstr "渐变圆角"
+
+#: modules/nexus/pages/hyprland
+msgid "Group bar active colour"
+msgstr "窗口组栏激活颜色"
+
+#: modules/nexus/pages/hyprland
+msgid "Group bar font"
+msgstr "窗口组栏字体"
+
+#: modules/nexus/pages/hyprland
+msgid "Group bar font size"
+msgstr "窗口组栏字体大小"
+
+#: modules/nexus/pages/hyprland
+msgid "Group bar gap in"
+msgstr "窗口组栏内间距"
+
+#: modules/nexus/pages/hyprland
+msgid "Group bar gap out"
+msgstr "窗口组栏外间距"
+
+#: modules/nexus/pages/hyprland
+msgid "Group bar gradients"
+msgstr "窗口组栏渐变"
+
+#: modules/nexus/pages/hyprland
+msgid "Group bar height"
+msgstr "窗口组栏高度"
+
+#: modules/nexus/pages/hyprland
+msgid "Group bar inactive colour"
+msgstr "窗口组栏非激活颜色"
+
+#: modules/nexus/pages/hyprland
+msgid "Group bar locked active colour"
+msgstr "窗口组栏锁定激活颜色"
+
+#: modules/nexus/pages/hyprland
+msgid "Group bar locked inactive colour"
+msgstr "窗口组栏锁定非激活颜色"
+
+#: modules/nexus/pages/hyprland
+msgid "Group bar text colour"
+msgstr "窗口组栏文字颜色"
+
+#: modules/nexus/pages/hyprland
+msgid "Increase window height"
+msgstr "增大窗口高度"
+
+#: modules/nexus/pages/hyprland
+msgid "Increase window width"
+msgstr "增大窗口宽度"
+
+#: modules/nexus/pages/hyprland
+msgid "Indicator height"
+msgstr "指示器高度"
+
+#: modules/nexus/pages/hyprland
+msgid "Lock active group"
+msgstr "锁定活动组"
+
+#: modules/nexus/pages/hyprland
+msgid "Master"
+msgstr "Master"
+
+#: modules/nexus/pages/hyprland
+msgid "Minimum visible"
+msgstr "最小可见比例"
+
+#: modules/nexus/pages/hyprland
+msgid "Move window from special workspace"
+msgstr "将窗口移出特殊工作区"
+
+#: modules/nexus/pages/hyprland
+msgid "Move window to next workspace"
+msgstr "将窗口移到下一个工作区"
+
+#: modules/nexus/pages/hyprland
+msgid "Move window to previous workspace"
+msgstr "将窗口移到上一个工作区"
+
+#: modules/nexus/pages/hyprland
+msgid "Move window to special workspace"
+msgstr "将窗口移到特殊工作区"
+
+#: modules/nexus/pages/hyprland
+msgid "Move window to workspace silently"
+msgstr "静默将窗口移到工作区"
+
+#: modules/nexus/pages/hyprland
+msgid "Mute audio"
+msgstr "静音"
+
+#: modules/nexus/pages/hyprland
+msgid "Next track"
+msgstr "下一曲"
+
+#: modules/nexus/pages/hyprland
+msgid "Next workspace group"
+msgstr "下一个工作区组"
+
+#: modules/nexus/pages/hyprland
+msgid "Normalize window"
+msgstr "还原窗口"
+
+#: modules/nexus/pages/hyprland
+msgid "Open special workspaces also close through the normal toggle"
+msgstr "打开的特殊工作区也可通过普通切换关闭"
+
+#: modules/nexus/pages/hyprland
+msgid "Paste latest clipboard"
+msgstr "粘贴最新剪贴板内容"
+
+#: modules/nexus/pages/hyprland
+msgid "Play/pause media"
+msgstr "播放/暂停媒体"
+
+#: modules/nexus/pages/hyprland
+msgid "Previous track"
+msgstr "上一曲"
+
+#: modules/nexus/pages/hyprland
+msgid "Previous workspace group"
+msgstr "上一个工作区组"
+
+#: modules/nexus/pages/hyprland
+msgid "Record screen"
+msgstr "录制屏幕"
+
+#: modules/nexus/pages/hyprland
+msgid "Record with sound"
+msgstr "录制屏幕（含声音）"
+
+#: modules/nexus/pages/hyprland
+msgid "Region screenshot"
+msgstr "区域截图"
+
+#: modules/nexus/pages/hyprland
+msgid "Regular expression matched against window classes"
+msgstr "与窗口 class 匹配的正则表达式"
+
+#: modules/nexus/pages/hyprland
+msgid "Screenshot"
+msgstr "截图"
+
+#: modules/nexus/pages/hyprland
+msgid "Scrolling"
+msgstr "Scrolling"
+
+#: modules/nexus/pages/hyprland
+msgid "Scrolling layout"
+msgstr "Scrolling 布局"
+
+#: modules/nexus/pages/hyprland
+msgid "Solid text window classes"
+msgstr "纯文本窗口 class 列表"
+
+#: modules/nexus/pages/hyprland
+msgid "Stop media"
+msgstr "停止媒体"
+
+#: modules/nexus/pages/hyprland
+msgid "Upper limit used by the volume keybinds"
+msgstr "音量快捷键使用的上限"
+
+#: modules/nexus/pages/hyprland
+msgid "Volume maximum"
+msgstr "音量上限"
+
+#: modules/nexus/pages/hyprland
+msgid "Window groups"
+msgstr "窗口组"
+
+#: modules/nexus/pages/hyprland
+msgid "Window layout"
+msgstr "窗口布局"
+
+#: modules/nexus/common/HyprStringRow.qml
+msgid "From theme"
+msgstr "跟随主题"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Clipboard history"
+msgstr "剪贴板历史"
+
+#: modules/nexus/pages/hyprland/HyprKeybindsPage.qml
+msgid "Emoji picker"
+msgstr "Emoji 选择器"

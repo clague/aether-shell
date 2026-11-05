@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Aether.Config
+import Aether.I18n
 import qs.components
 import qs.components.controls
 import qs.services
@@ -16,6 +17,17 @@ ConnectedRect {
     property string label
     property string subtext
     property string varKey
+
+    // Scheme-derived defaults are Lua expressions such as `rgba(" .. scheme.primary .. "e6)`.
+    // Showing that verbatim in the empty field is noise; the row is an override, so say where
+    // the value comes from instead.
+    readonly property string defaultText: {
+        const value = HyprVars.defaults[root.varKey];
+        if (value === undefined)
+            return "";
+        const text = String(value);
+        return text.includes("scheme.") || text.includes("..") ? Tr.tr("From theme") : text;
+    }
 
     Layout.fillWidth: true
     implicitHeight: contentRow.implicitHeight + Tokens.padding.medium * 2
@@ -70,7 +82,7 @@ ConnectedRect {
             Layout.preferredWidth: 350
             Layout.alignment: Qt.AlignVCenter
             text: HyprVars.vars[root.varKey] !== undefined ? String(HyprVars.vars[root.varKey]) : ""
-            placeholderText: HyprVars.defaults[root.varKey] !== undefined ? String(HyprVars.defaults[root.varKey]) : ""
+            placeholderText: root.defaultText
             onEditingFinished: {
                 if (text === "")
                     HyprVars.deleteVar(root.varKey);

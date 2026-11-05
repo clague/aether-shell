@@ -177,6 +177,14 @@ PageBase {
             varKey: "workspaceSwipeDirLock"
         }
 
+        HyprIntRow {
+            label: Tr.tr("Direction lock threshold")
+            subtext: Tr.tr("Degrees of tolerance before the swipe direction is locked")
+            varKey: "workspaceSwipeDirLockThreshold"
+            from: 0
+            to: 45
+        }
+
         HyprBoolRow {
             last: true
             text: Tr.tr("Swipe at the edge opens a new workspace")

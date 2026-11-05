@@ -26,6 +26,53 @@ PageBase {
 
         SectionHeader {
             first: true
+            text: Tr.tr("Layout")
+        }
+
+        SelectRow {
+            id: layoutRow
+
+            first: true
+            label: Tr.tr("Window layout")
+            subtext: Tr.tr("Dwindle, master or scrolling")
+            fallbackText: HyprVars.vars.layout ?? HyprVars.defaults.layout ?? "dwindle"
+            menuItems: layoutItems.instances
+            onSelected: item => HyprVars.saveVar("layout", item.value)
+
+            Binding {
+                target: layoutRow
+                property: "active"
+                value: layoutItems.instances.find(i => i.value === (HyprVars.vars.layout ?? HyprVars.defaults.layout)) ?? null
+            }
+
+            Variants {
+                id: layoutItems
+
+                model: [
+                    {
+                        id: "dwindle",
+                        name: Tr.tr("Dwindle")
+                    },
+                    {
+                        id: "master",
+                        name: Tr.tr("Master")
+                    },
+                    {
+                        id: "scrolling",
+                        name: Tr.tr("Scrolling")
+                    }
+                ]
+
+                MenuItem {
+                    required property var modelData
+
+                    text: modelData.name
+                    value: modelData.id
+                }
+            }
+        }
+
+        SectionHeader {
             text: Tr.tr("Gaps & borders")
         }
 
@@ -147,9 +194,24 @@ PageBase {
         }
 
         HyprBoolRow {
-            last: true
             text: Tr.tr("Resize windows on the border")
             varKey: "resizeOnBorder"
+        }
+        HyprBoolRow {
+            text: Tr.tr("Focus window on close")
+            varKey: "focusOnClose"
+        }
+        HyprIntRow {
+            label: Tr.tr("Focus under fullscreen")
+            subtext: Tr.tr("0 off, 1 fullscreen only, 2 always")
+            varKey: "onFocusUnderFullscreen"
+            from: 0
+            to: 2
+        }
+        HyprBoolRow {
+            last: true
+            text: Tr.tr("Allow restoring the session lock")
+            varKey: "allowSessionLockRestore"
         }
 
         SectionHeader {
@@ -171,6 +233,46 @@ PageBase {
             last: true
             text: Tr.tr("Smart resizing")
             varKey: "smartResizing"
+        }
+
+        SectionHeader {
+            text: Tr.tr("Scrolling layout")
+        }
+
+        HyprBoolRow {
+            first: true
+            text: Tr.tr("Fullscreen on one column")
+            varKey: "scrollingFullscreenOnOneColumn"
+        }
+        HyprIntRow {
+            label: Tr.tr("Focus fit method")
+            varKey: "scrollingFocusFitMethod"
+            from: 0
+            to: 3
+        }
+        HyprSliderRow {
+            label: Tr.tr("Column width")
+            varKey: "scrollingColumnWidth"
+            from: 0.1
+            to: 1
+            step: 0.05
+        }
+        HyprBoolRow {
+            text: Tr.tr("Follow focus")
+            varKey: "scrollingFollowFocus"
+        }
+        HyprSliderRow {
+            label: Tr.tr("Minimum visible")
+            varKey: "scrollingFollowMinVisible"
+            from: 0
+            to: 1
+            step: 0.05
+        }
+        HyprStringRow {
+            last: true
+            label: Tr.tr("Explicit column widths")
+            subtext: Tr.tr("Comma-separated widths, for example 0.35, 0.5, 0.65, 1.0")
+            varKey: "scrollingExplicitColumnWidths"
         }
 
         SectionHeader {

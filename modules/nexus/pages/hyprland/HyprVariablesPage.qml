@@ -70,6 +70,13 @@ PageBase {
             from: 1
             to: 100
         }
+        HyprIntRow {
+            label: Tr.tr("Volume maximum")
+            subtext: Tr.tr("Upper limit used by the volume keybinds")
+            varKey: "volumeMax"
+            from: 1
+            to: 150
+        }
         HyprStringRow {
             label: Tr.tr("Cursor theme")
             varKey: "cursorTheme"
@@ -105,6 +112,18 @@ PageBase {
         HyprBoolRow {
             text: Tr.tr("Focus windows on activate")
             varKey: "focusOnActivate"
+        }
+        HyprBoolRow {
+            text: Tr.tr("Close special workspace when empty")
+            subtext: Tr.tr("Open special workspaces also close through the normal toggle")
+            varKey: "specialWsCloseAny"
+        }
+        HyprIntRow {
+            label: Tr.tr("Force the default wallpaper")
+            subtext: Tr.tr("-1 off, 0 default, 1 anime, 2 pixel")
+            varKey: "forceDefaultWallpaper"
+            from: -1
+            to: 2
         }
         HyprBoolRow {
             text: Tr.tr("Middle click paste")

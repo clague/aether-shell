@@ -7,7 +7,7 @@ hl.config({
         workspace_swipe_cancel_ratio             = vars.workspaceSwipeCancelRatio,
         workspace_swipe_min_speed_to_force       = vars.workspaceSwipeMinSpeed,
         workspace_swipe_direction_lock           = vars.workspaceSwipeDirLock,
-        workspace_swipe_direction_lock_threshold = 10,
+        workspace_swipe_direction_lock_threshold = vars.workspaceSwipeDirLockThreshold,
         workspace_swipe_create_new               = vars.workspaceSwipeCreateNew,
     },
 })

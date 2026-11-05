@@ -43,7 +43,11 @@ Singleton {
         },
         {
             cat: "Gestures",
-            keys: ["gestureFingers", "workspaceSwipeFingers", "gestureFingersMore", "workspaceSwipeDistance", "workspaceSwipeCancelRatio", "workspaceSwipeMinSpeed", "workspaceSwipeDirLock", "workspaceSwipeCreateNew"]
+            keys: ["gestureFingers", "workspaceSwipeFingers", "gestureFingersMore", "workspaceSwipeDistance", "workspaceSwipeCancelRatio", "workspaceSwipeMinSpeed", "workspaceSwipeDirLock", "workspaceSwipeDirLockThreshold", "workspaceSwipeCreateNew"]
+        },
+        {
+            cat: "Layout",
+            keys: ["layout", "scrollingFullscreenOnOneColumn", "scrollingFocusFitMethod", "scrollingColumnWidth", "scrollingFollowFocus", "scrollingFollowMinVisible", "scrollingExplicitColumnWidths"]
         },
         {
             cat: "Blur",
@@ -59,7 +63,7 @@ Singleton {
         },
         {
             cat: "Window behaviour",
-            keys: ["allowTearing", "resizeOnBorder", "preserveSplit", "smartSplit", "smartResizing"]
+            keys: ["allowTearing", "resizeOnBorder", "focusOnClose", "onFocusUnderFullscreen", "allowSessionLockRestore", "preserveSplit", "smartSplit", "smartResizing"]
         },
         {
             cat: "Window styling",
@@ -70,12 +74,16 @@ Singleton {
             keys: ["overviewBlur", "solidTextWindows", "solidTextClasses"]
         },
         {
+            cat: "Window groups",
+            keys: ["groupbarFontFamily", "groupbarFontSize", "groupbarGradients", "groupbarGradientRoundOnlyEdges", "groupbarGradientRounding", "groupbarHeight", "groupbarIndicatorHeight", "groupbarGapsIn", "groupbarGapsOut", "groupbarTextColour", "groupbarActiveColour", "groupbarInactiveColour", "groupbarLockedActiveColour", "groupbarLockedInactiveColour"]
+        },
+        {
             cat: "Motion",
             keys: ["animSpeed", "animMatchShell", "animSpatialCurve", "animEffectsCurve", "animSpatialSpeed", "animEffectsSpeed"]
         },
         {
             cat: "Misc",
-            keys: ["volumeStep", "cursorTheme", "cursorSize", "sleepGestureCmd", "vrr", "disableHyprlandLogo", "focusOnActivate", "middleClickPaste", "sessionLockXray", "mouseMoveEnablesDpms", "keyPressEnablesDpms", "animateManualResizes", "animateMouseWindowdragging"]
+            keys: ["volumeStep", "volumeMax", "specialWsCloseAny", "forceDefaultWallpaper", "cursorTheme", "cursorSize", "sleepGestureCmd", "vrr", "disableHyprlandLogo", "focusOnActivate", "middleClickPaste", "sessionLockXray", "mouseMoveEnablesDpms", "keyPressEnablesDpms", "animateManualResizes", "animateMouseWindowdragging"]
         }
     ]
 

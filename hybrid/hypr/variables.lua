@@ -40,6 +40,7 @@ return {
     workspaceSwipeCancelRatio  = 0.15,
     workspaceSwipeMinSpeed     = 5,
     workspaceSwipeDirLock      = true,
+    workspaceSwipeDirLockThreshold = 10,
     workspaceSwipeCreateNew    = true,
 
     -- Blur
@@ -56,6 +57,20 @@ return {
     shadowRange                = 15,
     shadowRenderPower          = 4,
     shadowColour               = "rgba(" .. scheme.inversePrimary .. "10)",
+
+    -- Layout
+    layout                     = "dwindle",
+    scrollingFullscreenOnOneColumn = true,
+    scrollingFocusFitMethod    = 1,
+    scrollingColumnWidth       = 0.5,
+    scrollingFollowFocus       = true,
+    scrollingFollowMinVisible  = 0.0,
+    scrollingExplicitColumnWidths = "0.35, 0.5, 0.65, 1.0",
+
+    -- Window behaviour
+    focusOnClose               = false,
+    onFocusUnderFullscreen     = 2,
+    allowSessionLockRestore    = true,
 
     -- Gaps
     workspaceGaps              = 20,
@@ -82,6 +97,22 @@ return {
     dimInactive                = false,
     dimStrength                = 0.2,
 
+    -- Window groups
+    groupbarFontFamily          = "JetBrains Mono NF",
+    groupbarFontSize            = 15,
+    groupbarGradients           = true,
+    groupbarGradientRoundOnlyEdges = false,
+    groupbarGradientRounding    = 5,
+    groupbarHeight              = 25,
+    groupbarIndicatorHeight     = 0,
+    groupbarGapsIn              = 3,
+    groupbarGapsOut             = 3,
+    groupbarTextColour          = "rgb(" .. scheme.onPrimary .. ")",
+    groupbarActiveColour        = "rgba(" .. scheme.primary .. "d4)",
+    groupbarInactiveColour      = "rgba(" .. scheme.outline .. "d4)",
+    groupbarLockedActiveColour  = "rgba(" .. scheme.primary .. "d4)",
+    groupbarLockedInactiveColour = "rgba(" .. scheme.secondary .. "d4)",
+
     -- Glass (written by the shell from Settings)
     overviewBlur               = false,
     solidTextWindows           = false,
@@ -98,6 +129,7 @@ return {
     -- Misc
     volumeStep                 = 10,
     volumeMax                  = 100,
+    forceDefaultWallpaper      = 0,
     cursorTheme                = "sweet-cursors",
     cursorSize                 = 24,
     sleepGestureCmd            = "systemctl suspend-then-hibernate",

@@ -7,10 +7,10 @@ hl.config({
         animate_mouse_windowdragging = vars.animateMouseWindowdragging,
 
         disable_hyprland_logo        = vars.disableHyprlandLogo,
-        force_default_wallpaper      = 0,
+        force_default_wallpaper      = vars.forceDefaultWallpaper,
 
-        on_focus_under_fullscreen    = 2,
-        allow_session_lock_restore   = true,
+        on_focus_under_fullscreen    = vars.onFocusUnderFullscreen,
+        allow_session_lock_restore   = vars.allowSessionLockRestore,
         middle_click_paste           = vars.middleClickPaste,
         focus_on_activate            = vars.focusOnActivate,
         session_lock_xray            = vars.sessionLockXray,

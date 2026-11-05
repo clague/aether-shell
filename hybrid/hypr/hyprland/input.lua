@@ -8,7 +8,7 @@ hl.config({
         numlock_by_default      = vars.numlockByDefault,
         repeat_delay            = vars.repeatDelay,
         repeat_rate             = vars.repeatRate,
-        focus_on_close          = 1,
+        focus_on_close          = vars.focusOnClose,
 
         follow_mouse            = vars.followMouse,
         sensitivity             = vars.sensitivity,

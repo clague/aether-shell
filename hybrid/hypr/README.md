@@ -71,15 +71,19 @@ development checkout; drop it when installing a packaged shell.
 | Hyprland → Spacing & animations | gaps preset / sliders | `windowGapsIn`, `windowGapsOut`, `windowBorderSize` | `services/Density.qml` |
 | Hyprland → Spacing & animations | animation speed / match shell | `animSpeed`, `animMatchShell`, `animSpatialCurve`, `animEffectsCurve`, `animSpatialSpeed`, `animEffectsSpeed` | `services/Motion.qml` |
 | Hyprland → Variables | apps, touchpad, misc | the same names as `variables.lua` | `Hypr*Row` via `services/HyprVars.qml` |
+| Hyprland → Window effects | window groups | `groupbar*` | `Hypr*Row` via `services/HyprVars.qml` |
+| Hyprland → Spacing & animations | layout and scrolling | `layout`, `scrolling*` | `Hypr*Row` via `services/HyprVars.qml` |
+| Hyprland → Spacing & animations | window behaviour | `focusOnClose`, `onFocusUnderFullscreen`, `allowSessionLockRestore` | `Hypr*Row` via `services/HyprVars.qml` |
+| Hyprland → Input | swipe direction threshold | `workspaceSwipeDirLockThreshold` | `Hypr*Row` via `services/HyprVars.qml` |
 | Hyprland → Keybinds | every bind | `kb*` | `pages/hyprland/HyprKeybindsPage.qml` |
 
 `services/Glass.qml`, `services/Motion.qml` and `services/Density.qml` also push their values to
 the running compositor (`hyprctl eval` / live options), so a slider has an immediate effect even
 before a reload. Persistence is the config side above; the live push is only the preview.
 
-`solidTextClasses` is a regex maintained by `Glass.solidClasses`. The shell writes it whenever the
-toggle changes, so the value in `variables.lua` is just the default for a machine where the shell has
-not written that key yet.
+`solidTextClasses` is a regex. It is editable in the Glass section and defaults to
+`Glass.solidClasses`; the shell writes the value whenever the toggle changes, so the value in
+`variables.lua` is just the default for a machine where the shell has not written that key yet.
 
 ## Mouse back/forward in the settings window
 
