@@ -2,6 +2,8 @@
 
 #include <qloggingcategory.h>
 
+#include "filepaths.hpp"
+
 namespace {
 
 Q_LOGGING_CATEGORY(lcQuickShareConn, "aether.quickshare.connection", QtInfoMsg)
@@ -813,7 +815,9 @@ void QuickShareConnection::handleIncomingFileChunk(const QByteArray& chunkBody, 
     if ((static_cast<unsigned>(flags) & 0x1u) != 1)
         return;
 
-    const QString savePath = QDir::homePath() + u"/Downloads/"_s + m_incomingFileName;
+    // Never overwrite what is already in Downloads: a second file of the same name is common
+    // enough (two photos called IMG_0001.jpg) and the old code truncated it without a word.
+    const QString savePath = uniquePath(QDir::homePath() + u"/Downloads"_s, m_incomingFileName);
     QFile file(savePath);
     if (file.open(QIODevice::WriteOnly)) {
         file.write(m_fileBuffer);

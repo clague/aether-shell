@@ -57,6 +57,10 @@ MouseArea {
         });
     }
 
+    // Screenshots are handed to other processes, but they belong to this session: a fixed name in
+    // /tmp is shared with every local user and survives the logout it was made in.
+    readonly property string tmpDir: `${Quickshell.env("XDG_RUNTIME_DIR") || "/tmp"}/caelestia`
+
     function checkClientRects(x: real, y: real): void {
         for (const client of clients) {
             if (!client)
@@ -85,10 +89,11 @@ MouseArea {
 
     function save(): void {
         const isSearch = root.loader.searchMode;
-        const tmpfile = isSearch ? Qt.resolvedUrl("/tmp/aether-search.png") : Qt.resolvedUrl(`/tmp/aether-picker-${Quickshell.processId}-${Date.now()}.png`);
+        CUtils.mkdirp(root.tmpDir);
+        const tmpfile = isSearch ? Qt.resolvedUrl(`${root.tmpDir}/search.png`) : Qt.resolvedUrl(`${root.tmpDir}/picker-${Quickshell.processId}-${Date.now()}.png`);
         CUtils.saveItem(screencopy, tmpfile, Qt.rect(Math.ceil(rsx), Math.ceil(rsy), Math.floor(sw), Math.floor(sh)), path => {
             if (isSearch) {
-                Quickshell.execDetached(["touch", "/tmp/aether-search.done"]);
+                // Search mode only captures; whatever consumes the file does so itself.
             } else if (root.loader.clipboardOnly) {
                 // The caelestia CLI has no --file/--copy flags in the version this shell
                 // supports; copy the captured region directly instead.

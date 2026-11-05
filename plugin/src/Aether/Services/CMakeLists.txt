@@ -18,6 +18,7 @@ set_source_files_properties(${PROTO_SRCS} PROPERTIES COMPILE_OPTIONS "-w")
 qml_module(aether-services
     URI Aether.Services
     SOURCES
+        filepaths.cpp
         service.cpp
         serviceref.cpp
         beattracker.cpp
