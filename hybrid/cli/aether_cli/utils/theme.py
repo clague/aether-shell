@@ -9,7 +9,7 @@ import time
 from pathlib import Path
 
 from aether_cli.utils.colour import get_dynamic_colours
-from aether_cli.utils.io import error, failures, log_exception, reset_failures
+from aether_cli.utils.io import error, failures, log_exception, reset_failures, warn
 from aether_cli.utils.paths import (
     atomic_write,
     atomic_write_user,
@@ -343,7 +343,7 @@ def apply_chromium(colours: dict[str, str]) -> None:
         if not policy_dir.is_dir():
             subprocess.run(["sudo", "-n", "mkdir", "-p", str(policy_dir)], stderr=subprocess.DEVNULL)
         if not policy_dir.is_dir():
-            print(f"Unable to create {policy_dir} directory")
+            warn(f"Unable to create {policy_dir} directory")
             continue
 
         # Use tee instead of atomic_write cause we need sudo

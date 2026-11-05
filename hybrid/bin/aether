@@ -16,6 +16,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "cli"))
 
+from aether_cli.utils.io import fatal  # noqa: E402
 from aether_cli.utils.paths import shell_root  # noqa: E402
 
 
@@ -29,12 +30,23 @@ def version() -> str:
         ).stdout.strip()
     except OSError:
         describe = ""
-    return describe or "unknown"
+
+    if describe:
+        return describe
+
+    # An installed tree has no .git; CMake writes the version next to the package.
+    try:
+        return (shell_root / "hybrid" / "version").read_text().strip() or "unknown"
+    except OSError:
+        return "unknown"
 
 
 def main() -> None:
     # Keybind path: do not import the parser and every subcommand just to forward a call.
     if len(sys.argv) > 1 and sys.argv[1] == "ipc":
+        if any(arg in ("-h", "--help") for arg in sys.argv[2:]):
+            print("usage: aether ipc TARGET FUNCTION [ARGS...]")
+            return
         subprocess.run(["qs", "-p", str(shell_root), "ipc", "call", *sys.argv[2:]])
         return
 
@@ -52,7 +64,11 @@ def main() -> None:
         return
 
     command = args.cls(args)
-    command.run()
+    try:
+        command.run()
+    except (ValueError, OSError) as e:
+        # Bad user input and missing helper binaries are one-line errors, not tracebacks.
+        fatal(str(e))
 
 
 if __name__ == "__main__":

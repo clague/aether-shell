@@ -84,6 +84,25 @@ check "preview reports the requested variant" vibrant \
 "$AETHER" scheme set -v vibrant
 check "set applies the variant" vibrant "$("$AETHER" scheme get -v)"
 
+if "$AETHER" wallpaper -f /nope >"$work/badwall.out" 2>&1; then
+    echo "FAIL: an invalid wallpaper path was accepted" >&2
+    exit 1
+fi
+grep -q "not a valid image or video" "$work/badwall.out"
+if grep -q "Traceback" "$work/badwall.out"; then echo "FAIL: traceback for a bad wallpaper" >&2; exit 1; fi
+checks=$((checks + 2))
+
+if "$AETHER" scheme set -n dynamic >"$work/nodyn.out" 2>&1; then
+    echo "FAIL: dynamic scheme accepted without a wallpaper" >&2
+    exit 1
+fi
+grep -q "No wallpaper set" "$work/nodyn.out"
+if grep -q "Traceback" "$work/nodyn.out"; then echo "FAIL: traceback for dynamic without wallpaper" >&2; exit 1; fi
+checks=$((checks + 2))
+
+"$AETHER" ipc --help | grep -q "usage: aether ipc"
+checks=$((checks + 1))
+
 "$AETHER" wallpaper -f "$WALL" -N
 check "wallpaper path is written" "$WALL" "$(cat "$XDG_STATE_HOME/caelestia/wallpaper/path.txt")"
 check "current symlink resolves to the file" "$WALL" "$(readlink -f "$XDG_STATE_HOME/caelestia/wallpaper/current")"

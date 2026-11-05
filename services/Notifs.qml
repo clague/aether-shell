@@ -18,6 +18,8 @@ Singleton {
 
     property list<NotifData> list: []
     readonly property bool dnd: PersistentState.doNotDisturb
+    // The state file and its images otherwise grow for the life of the install.
+    readonly property int maxStored: 200
 
     readonly property list<NotifData> notClosed: list.filter(n => !n.closed)
     readonly property list<NotifData> popups: list.filter(n => n.popup)
@@ -91,7 +93,7 @@ Singleton {
         id: saveTimer
 
         interval: 1000
-        onTriggered: storage.setText(JSON.stringify(root.notClosed.map(n => ({
+        onTriggered: storage.setText(JSON.stringify(root.notClosed.slice(0, root.maxStored).map(n => ({
                     time: n.time,
                     id: n.id,
                     summary: n.summary,
@@ -137,6 +139,8 @@ Singleton {
 
         printErrors: false
         path: `${Paths.state}/notifs.json`
+        // Notification bodies can be private; the default 0644 exposes them to local users.
+        onSaved: Quickshell.execDetached(["chmod", "600", path])
         onLoaded: {
             let data = [];
             try {
@@ -148,7 +152,7 @@ Singleton {
                 data = [];
             }
             if (Array.isArray(data)) {
-                for (const notif of data) {
+                for (const notif of data.slice(0, root.maxStored)) {
                     if (!notif)
                         continue;
                     const properties = Object.assign({}, notif);
@@ -163,6 +167,7 @@ Singleton {
                 root.list.sort((a, b) => (b?.time ?? 0) - (a?.time ?? 0));
             }
             root.loaded = true;
+            pruneImages.running = true;
         }
         onLoadFailed: err => {
             if (err === FileViewError.FileNotFound) {
@@ -220,9 +225,12 @@ Singleton {
         NotifData {}
     }
 
-    // Notification images are cached per (app, summary, id) and never removed otherwise.
+    // Delete cache images the persisted history no longer names. Only files older than an hour
+    // are considered, so an image cached for a notification that is still being saved survives.
     Process {
-        running: true
-        command: ["sh", "-c", 'find "$1" -type f ! -newermt "-7 days" -delete 2>/dev/null', "sh", Paths.notifimagecache]
+        id: pruneImages
+
+        running: false
+        command: ["sh", "-c", 'find "$1" -type f ! -newermt "-1 hour" 2>/dev/null | while IFS= read -r f; do grep -qF -- "$f" "$2" || rm -f -- "$f"; done', "sh", Paths.notifimagecache, `${Paths.state}/notifs.json`]
     }
 }

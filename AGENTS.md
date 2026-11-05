@@ -19,7 +19,7 @@ on top of upstream **Caelestia**. One shell, one config, one CLI — features to
 | 4 | OP's dock behind `hybrid.variants.dock` | done, and verified on hardware |
 | 5 | OP overview, hotspot/BtAgent/Nmcli, GPU detection, themes | done |
 | 6 | single CLI (D6) | done -- in-tree at `hybrid/bin/aether`; the separate repo is no longer used (D6 superseded) |
-| 7 | the real variants | 3 of 6 wired: `audioPopout`, `overview`, `dock` |
+| 7 | the real variants | 3 wired: `audioPopout`, `overview`, `dock` |
 | 8 | OP's pattern lock | satisfied by omission -- it is not in the tree (D10) |
 
 Phase 6 was not cosmetic. Every CLI subcommand ran `qs -c caelestia`, which resolves a config

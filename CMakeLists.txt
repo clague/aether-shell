@@ -218,6 +218,17 @@ if("shell" IN_LIST ENABLE_MODULES)
     # directly, so it has to stay executable.
     install(PROGRAMS hybrid/bin/aether DESTINATION "${INSTALL_QSCONFDIR}/hybrid/bin")
 
+    # execs.lua and the keybinds call `aether` by name. Install a wrapper, not a copy: the
+    # script finds its package relative to its own file.
+    get_filename_component(AETHER_QSCONFDIR_ABS "${INSTALL_QSCONFDIR}" ABSOLUTE BASE_DIR "${CMAKE_INSTALL_PREFIX}")
+    file(WRITE "${CMAKE_BINARY_DIR}/aether-wrapper"
+        "#!/bin/sh\nexec python3 \"${AETHER_QSCONFDIR_ABS}/hybrid/bin/aether\" \"$@\"\n")
+    install(PROGRAMS "${CMAKE_BINARY_DIR}/aether-wrapper" DESTINATION "${CMAKE_INSTALL_BINDIR}" RENAME aether)
+
+    # An installed tree has no .git, so `aether --version` reads this instead of describing.
+    file(WRITE "${CMAKE_BINARY_DIR}/aether-version" "${VERSION}\n")
+    install(FILES "${CMAKE_BINARY_DIR}/aether-version" DESTINATION "${INSTALL_QSCONFDIR}/hybrid" RENAME version)
+
     # Runtime helpers (bt-agent, app-fonts, doctor, display-draft, wifi-connect,
     # startup-shell) are resolved through Quickshell.shellPath("scripts/..."), so an
     # installed shell without them fails every one of those features. A directory install

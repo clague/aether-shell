@@ -772,7 +772,10 @@ void QuickShareConnection::handleSharingFrame(const sharing::nearby::Frame& fram
         const auto& intro = frame.v1().introduction();
         if (intro.file_metadata_size() > 0) {
             const auto& fileMeta = intro.file_metadata(0);
-            m_incomingFileName = QString::fromStdString(fileMeta.name());
+            // Only the last component: the rest of the path is chosen here, not by the peer.
+            m_incomingFileName = QFileInfo(QString::fromStdString(fileMeta.name())).fileName();
+            if (m_incomingFileName.isEmpty())
+                m_incomingFileName = u"download"_s;
             m_incomingFileSize = fileMeta.size();
             emit transferRequested(m_incomingFileName, m_incomingFileSize);
         }
@@ -808,6 +811,11 @@ void QuickShareConnection::cancelIncomingFile() {
         m_incomingFile->cancelWriting();
         m_incomingFile = nullptr;
     }
+    if (m_incomingReserved) {
+        QFile::remove(m_incomingSavePath);
+        m_incomingReserved = false;
+        m_incomingSavePath.clear();
+    }
     m_incomingBytes = 0;
     m_fileTransferActive = false;
 }
@@ -827,10 +835,37 @@ void QuickShareConnection::handleIncomingFileChunk(const QByteArray& chunkBody, 
             return;
         }
 
-        const QString savePath = uniquePath(QDir::homePath() + u"/Downloads"_s, m_incomingFileName);
-        m_incomingFile = std::make_unique<QSaveFile>(savePath);
+        const QString downloads = QDir::homePath() + u"/Downloads"_s;
+        if (!QDir().mkpath(downloads)) {
+            qCWarning(lcQuickShareConn) << "Failed to create" << downloads;
+            cancelIncomingFile();
+            emit transferFinished(false);
+            return;
+        }
+
+        // QSaveFile does not offer create-new, so reserve the name with QFile::NewOnly. Two
+        // simultaneous transfers with the same peer name then get different files instead of
+        // one replacing the other at commit time.
+        bool reserved = false;
+        for (int attempt = 0; attempt < 100 && !reserved; ++attempt) {
+            m_incomingSavePath = uniquePath(downloads, m_incomingFileName);
+            QFile guard(m_incomingSavePath);
+            if (guard.open(QIODevice::WriteOnly | QIODevice::NewOnly)) {
+                guard.close();
+                reserved = true;
+            }
+        }
+        if (!reserved) {
+            qCWarning(lcQuickShareConn) << "Failed to reserve a name in" << downloads;
+            cancelIncomingFile();
+            emit transferFinished(false);
+            return;
+        }
+        m_incomingReserved = true;
+
+        m_incomingFile = std::make_unique<QSaveFile>(m_incomingSavePath);
         if (!m_incomingFile->open(QIODevice::WriteOnly)) {
-            qCWarning(lcQuickShareConn) << "Failed to open" << savePath;
+            qCWarning(lcQuickShareConn) << "Failed to open" << m_incomingSavePath;
             cancelIncomingFile();
             emit transferFinished(false);
             return;
@@ -858,8 +893,14 @@ void QuickShareConnection::handleIncomingFileChunk(const QByteArray& chunkBody, 
 
     const bool saved = m_incomingFile->commit();
     if (!saved)
-        qCWarning(lcQuickShareConn) << "Failed to commit incoming file" << m_incomingFile->fileName();
+        qCWarning(lcQuickShareConn) << "Failed to commit incoming file" << m_incomingSavePath;
     m_incomingFile = nullptr;
+    if (saved) {
+        m_incomingReserved = false;
+        m_incomingSavePath.clear();
+    } else {
+        cancelIncomingFile();
+    }
     m_incomingBytes = 0;
     m_fileTransferActive = false;
     emit transferFinished(saved);

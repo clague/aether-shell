@@ -89,6 +89,8 @@ private:
     QMap<qint64, qint64> m_payloadTotalSizes;
 
     std::unique_ptr<QSaveFile> m_incomingFile;
+    QString m_incomingSavePath;
+    bool m_incomingReserved = false;
     qint64 m_incomingBytes = 0;
     bool m_fileTransferActive = false;
 };

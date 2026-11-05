@@ -69,6 +69,6 @@ QtObject {
         // The delegate asks once when it is built; a file already decoded by an earlier open
         // is reused instead of spawning cliphist again.
         const imgPath = getImagePath(id);
-        Quickshell.execDetached(["sh", "-c", 'test -f "$1" || { mkdir -p "$2" && cliphist decode "$3" > "$1"; }', "sh", imgPath, imageCacheDir, String(id)]);
+        Quickshell.execDetached(["sh", "-c", 'if [ ! -f "$1" ]; then mkdir -p "$2"; if cliphist decode "$3" > "$1.tmp"; then mv -f "$1.tmp" "$1"; else rm -f "$1.tmp"; fi; fi', "sh", imgPath, imageCacheDir, String(id)]);
     }
 }

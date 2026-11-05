@@ -39,6 +39,10 @@ int main() {
     const QString dir = directory.path();
     check(uniquePath(dir, "photo.jpg") == dir + "/photo.jpg", "a free name is used unchanged");
 
+    // The name comes from a peer: it must not be able to leave the directory.
+    check(uniquePath(dir, "../../photo.jpg") == dir + "/photo.jpg", "parent components are stripped");
+    check(uniquePath(dir, "/etc/photo.jpg") == dir + "/photo.jpg", "absolute names are stripped");
+
     touch(dir + "/photo.jpg");
     check(uniquePath(dir, "photo.jpg") == dir + "/photo (1).jpg", "first collision gets (1)");
 

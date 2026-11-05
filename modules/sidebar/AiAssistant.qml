@@ -642,7 +642,8 @@ Item {
             chatStore.setText(JSON.stringify({
                 "version": 2,
                 "lastChatId": currentChatId || lastChatId,
-                "chats": allChatSessions
+                // Keep the most recently used sessions; the history was unbounded.
+                "chats": allChatSessions.slice().sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0)).slice(0, 100)
             }));
     }
 
@@ -1599,6 +1600,9 @@ Item {
         preload: true
 
         printErrors: false
+
+        // Chat text can be private; the default 0644 exposes it to local users.
+        onSaved: Quickshell.execDetached(["chmod", "600", root.storePath])
 
         onLoaded: {
             var data = [];

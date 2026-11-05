@@ -136,6 +136,11 @@ SettingsFile::LoadResult SettingsFile::load(bool reportErrors) {
         return LoadResult::Error;
     }
 
+    // Files created before the save-time fix keep their old mode; settings can hold secrets.
+    const auto wanted = QFileDevice::ReadOwner | QFileDevice::WriteOwner;
+    if (file.permissions() != wanted)
+        QFile::setPermissions(m_path, wanted);
+
     const auto data = file.readAll();
     file.close();
 

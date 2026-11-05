@@ -59,6 +59,7 @@
       slurp
       libnotify
       procps
+      gpu-screen-recorder
     ]
     ++ extraRuntimeDeps;
 
