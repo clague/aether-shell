@@ -7,6 +7,7 @@ import Aether.Config
 import qs.components
 import qs.components.controls
 import qs.services
+import qs.utils
 import qs.modules.nexus
 import qs.modules.nexus.common
 import qs.modules.nexus.pages.bluetooth
@@ -28,6 +29,7 @@ Item {
     readonly property real navWidthMin: 200
     readonly property real navWidthMax: Math.max(navWidthMin, Math.min(Tokens.sizes.nexus.maxNavWidth, Math.round(root.width * 0.6)))
     property real navWidthOverride: -1
+    readonly property string navStatePath: `${Paths.state}/nexus-nav.json`
     readonly property real navWidth: {
         const auto = Math.max(root.navWidthMin, Math.min(root.navWidthMax, Math.round(root.width / 3)));
         return root.navWidthOverride < 0 ? auto : Math.max(root.navWidthMin, Math.min(root.navWidthMax, root.navWidthOverride));
@@ -41,6 +43,27 @@ Item {
     }
 
     signal close
+
+    function loadNavWidth(): void {
+        const content = CUtils.readFile(root.navStatePath);
+        if (!content)
+            return;
+        try {
+            const data = JSON.parse(content);
+            if (typeof data.navWidth === "number")
+                root.navWidthOverride = data.navWidth;
+        } catch (e) {
+            console.warn("[nexus] could not read the saved nav width:", e);
+        }
+    }
+
+    function saveNavWidth(): void {
+        if (root.navWidthOverride <= 0)
+            return;
+        CUtils.writeFile(root.navStatePath, JSON.stringify({
+            navWidth: Math.round(root.navWidthOverride)
+        }));
+    }
 
     function isInside(item: Item, container: Item): bool {
         let node = item;
@@ -82,11 +105,13 @@ Item {
     }
 
     Component.onCompleted: {
+        root.loadNavWidth();
         if (Window.active && !Window.activeFocusItem)
             root.forceActiveFocus(Qt.TabFocusReason);
     }
 
     Component.onDestruction: {
+        root.saveNavWidth();
         if (NexusTarget.state === nState)
             NexusTarget.state = null;
     }
@@ -271,6 +296,8 @@ Item {
             onActiveChanged: {
                 if (active)
                     startWidth = root.navWidth;
+                else
+                    root.saveNavWidth();
             }
 
             onTranslationChanged: root.navWidthOverride = Math.max(root.navWidthMin, Math.min(root.navWidthMax, startWidth + translation.x))
