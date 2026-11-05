@@ -963,8 +963,10 @@ PageBase {
                     return ratio * Math.max(0, flick.contentWidth - flick.width);
                 }
 
-                function trackScroll(x: real): void {
-                    root.animateScrollX(contentForThumbCenter(x));
+                function trackScroll(x: real): real {
+                    const target = contentForThumbCenter(x);
+                    root.animateScrollX(target);
+                    return target;
                 }
 
                 Rectangle {
@@ -1004,7 +1006,8 @@ PageBase {
                             pressContentX = flick.contentX;
                         } else {
                             draggingThumb = false;
-                            horizontalScrollBar.trackScroll(mouse.x);
+                            pressX = mouse.x;
+                            pressContentX = horizontalScrollBar.trackScroll(mouse.x);
                         }
                     }
 
@@ -1014,15 +1017,18 @@ PageBase {
 
                         // A press on the empty track starts the animated jump, but moving before
                         // releasing switches to dragging: the thumb follows the pointer.
-                        if (!draggingThumb) {
-                            scrollXAnimation.stop();
-                            flick.contentX = horizontalScrollBar.contentForThumbCenter(mouse.x);
-                            return;
-                        }
-
                         const travel = Math.max(1, width - horizontalThumb.width);
                         const max = Math.max(0, flick.contentWidth - flick.width);
                         const delta = mouse.x - pressX;
+
+                        if (!draggingThumb) {
+                            // Track press: the click anchored at the (clamped) target; any
+                            // movement from the click point scrolls immediately, even at edges.
+                            scrollXAnimation.stop();
+                            flick.contentX = Math.max(0, Math.min(pressContentX + delta / travel * max, max));
+                            return;
+                        }
+
                         flick.contentX = Math.max(0, Math.min(pressContentX + delta / travel * max, max));
                     }
 
@@ -1052,8 +1058,10 @@ PageBase {
                     return ratio * Math.max(0, flick.contentHeight - flick.height);
                 }
 
-                function trackScroll(y: real): void {
-                    root.animateScrollY(contentForBoxCenter(y));
+                function trackScroll(y: real): real {
+                    const target = contentForBoxCenter(y);
+                    root.animateScrollY(target);
+                    return target;
                 }
 
                 Text {
@@ -1104,7 +1112,8 @@ PageBase {
                             pressContentY = flick.contentY;
                         } else {
                             draggingBox = false;
-                            minimap.trackScroll(mouse.y);
+                            pressY = mouse.y;
+                            pressContentY = minimap.trackScroll(mouse.y);
                         }
                     }
 
@@ -1114,15 +1123,18 @@ PageBase {
 
                         // A press outside the viewport box starts the animated jump; moving
                         // before releasing drags the box to the pointer instead.
-                        if (!draggingBox) {
-                            scrollYAnimation.stop();
-                            flick.contentY = minimap.contentForBoxCenter(mouse.y);
-                            return;
-                        }
-
                         const travel = Math.max(1, minimap.mapHeight - minimapViewport.height);
                         const max = Math.max(0, flick.contentHeight - flick.height);
                         const delta = mouse.y - pressY;
+
+                        if (!draggingBox) {
+                            // Track press: anchored at the clamped target; movement from the
+                            // click scrolls immediately, without crossing the box centre.
+                            scrollYAnimation.stop();
+                            flick.contentY = Math.max(0, Math.min(pressContentY + delta / travel * max, max));
+                            return;
+                        }
+
                         flick.contentY = Math.max(0, Math.min(pressContentY + delta / travel * max, max));
                     }
 
