@@ -914,52 +914,6 @@ PageBase {
             }
 
             Item {
-                id: verticalScrollBar
-
-                anchors.top: flick.top
-                anchors.bottom: flick.bottom
-                anchors.right: flick.right
-                width: 8
-                visible: flick.contentHeight > flick.height
-
-                function scrollTo(y: real): void {
-                    const travel = Math.max(1, height - verticalThumb.height);
-                    const ratio = Math.max(0, Math.min(1, (y - verticalThumb.height / 2) / travel));
-                    flick.contentY = ratio * Math.max(0, flick.contentHeight - flick.height);
-                }
-
-                Rectangle {
-                    anchors.fill: parent
-                    radius: 4
-                    color: Qt.alpha(Colours.palette.m3onSurfaceVariant, 0.08)
-                }
-
-                Rectangle {
-                    id: verticalThumb
-
-                    readonly property real ratio: flick.contentHeight > flick.height ? flick.height / flick.contentHeight : 1
-
-                    width: parent.width
-                    height: Math.max(24, parent.height * ratio)
-                    y: (parent.height - height) * (flick.contentY / Math.max(1, flick.contentHeight - flick.height))
-                    radius: 4
-                    color: Qt.alpha(Colours.palette.m3secondary, 0.7)
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-
-                    onPressed: mouse => verticalScrollBar.scrollTo(mouse.y)
-
-                    onPositionChanged: mouse => {
-                        if (pressed)
-                            verticalScrollBar.scrollTo(mouse.y);
-                    }
-                }
-            }
-
-            Item {
                 id: horizontalScrollBar
 
                 anchors.left: flick.left
