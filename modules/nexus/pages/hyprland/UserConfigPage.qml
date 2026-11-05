@@ -480,7 +480,22 @@ PageBase {
         return wheel.angleDelta.y !== 0 ? wheel.angleDelta.y / 120 * 72 : wheel.pixelDelta.y;
     }
 
-    function scrollEditorBy(pixels: real, horizontal: bool): void {
+    function scrollEditorBy(pixels: real, horizontal: bool, smooth: bool): void {
+        if (smooth) {
+            // A clicky wheel scrolls three lines at once; ease there like the scrollbar does.
+            // When another notch arrives mid-animation, add it to the pending target so fast
+            // wheeling keeps its speed instead of restarting from the current position.
+            if (horizontal)
+                root.animateScrollX((scrollXAnimation.running ? scrollXAnimation.to : flick.contentX) - pixels);
+            else
+                root.animateScrollY((scrollYAnimation.running ? scrollYAnimation.to : flick.contentY) - pixels);
+            return;
+        }
+
+        // Pixel deltas come in a continuous stream from a touchpad; applying them immediately
+        // (instead of starting an animation per event) is what keeps that scrolling smooth.
+        scrollXAnimation.stop();
+        scrollYAnimation.stop();
         if (horizontal) {
             const maxX = Math.max(0, flick.contentWidth - flick.width);
             flick.contentX = Math.max(0, Math.min(flick.contentX - pixels, maxX));
@@ -1198,9 +1213,7 @@ PageBase {
                         wheel.accepted = false;
                         return;
                     }
-                    scrollXAnimation.stop();
-                    scrollYAnimation.stop();
-                    root.scrollEditorBy(delta, (wheel.modifiers & Qt.ShiftModifier) !== 0);
+                    root.scrollEditorBy(delta, (wheel.modifiers & Qt.ShiftModifier) !== 0, wheel.angleDelta.y !== 0);
                     wheel.accepted = true;
                 }
             }
@@ -1223,9 +1236,7 @@ PageBase {
                         wheel.accepted = false;
                         return;
                     }
-                    scrollXAnimation.stop();
-                    scrollYAnimation.stop();
-                    root.scrollEditorBy(delta, (wheel.modifiers & Qt.ShiftModifier) !== 0);
+                    root.scrollEditorBy(delta, (wheel.modifiers & Qt.ShiftModifier) !== 0, wheel.angleDelta.y !== 0);
                     wheel.accepted = true;
                 }
             }
