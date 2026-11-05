@@ -8,12 +8,12 @@ hl.env("XCURSOR_THEME", vars.cursorTheme)
 hl.env("XCURSOR_SIZE", vars.cursorSize)
 
 -- Toolkit backends
--- The shell runs from the checkout at ~/.config/quickshell/caelestia (a symlink), so its
--- QML plugin has to come from that checkout's build directory rather than the installed one.
-hl.env("QML2_IMPORT_PATH", (os.getenv("HOME") or "") .. "/Repositries/caelestia-hybrid/build/qml")
+-- QML2_IMPORT_PATH is deliberately not set here: the `caelestia` launcher points it at the
+-- checkout's build/qml. A hardcoded path in the compositor config only helps one machine and
+-- breaks every other checkout.
 hl.env("GDK_BACKEND", "wayland,x11")
 hl.env("QT_QPA_PLATFORM", "wayland;xcb")
-hl.env("SDL_VIDEODRIVER", "wayland,x11,windows")
+hl.env("SDL_VIDEODRIVER", "wayland,x11")
 hl.env("CLUTTER_BACKEND", "wayland")
 hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 

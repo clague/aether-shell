@@ -83,7 +83,6 @@ tagged_rule(float_tag, {
     "wev",                                -- Input detector
     "org.gnome.FileRoller|file-roller",   -- Archive manager
     "blueman-manager",                    -- Bluetooth GUI
-    "com.github.GradienceTeam.Gradience", -- GTK themer (deprecated)
     "feh|imv|swappy",                     -- Image viewers
     "org.quickshell",                     -- Quickshell
 }, "class")
