@@ -63,6 +63,9 @@ public:
     // `fixed` asks for fontconfig's monospace font instead of its UI font.
     Q_INVOKABLE static QString systemFont(bool fixed = false);
 
+    // The point size fontconfig picks, so "0" on the settings page can say what it means.
+    Q_INVOKABLE static int systemFontSize(bool fixed = false);
+
     [[nodiscard]] static QString version();
     [[nodiscard]] static QString qtVersion();
     Q_INVOKABLE static bool mkdirp(const QString& path);

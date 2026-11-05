@@ -375,8 +375,11 @@ QString CUtils::qtConfigIconTheme() {
 }
 
 QString CUtils::systemFont(bool fixed) {
-    const QFont font = QFontDatabase::systemFont(fixed ? QFontDatabase::FixedFont : QFontDatabase::GeneralFont);
-    return font.pointSize() > 0 ? QStringLiteral("%1 %2").arg(font.family()).arg(font.pointSize()) : font.family();
+    return QFontDatabase::systemFont(fixed ? QFontDatabase::FixedFont : QFontDatabase::GeneralFont).family();
+}
+
+int CUtils::systemFontSize(bool fixed) {
+    return QFontDatabase::systemFont(fixed ? QFontDatabase::FixedFont : QFontDatabase::GeneralFont).pointSize();
 }
 
 QString CUtils::qtVersion() {

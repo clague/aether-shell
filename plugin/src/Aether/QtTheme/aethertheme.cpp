@@ -5,6 +5,7 @@
 #include <qfile.h>
 #include <qfileinfo.h>
 #include <qfilesystemwatcher.h>
+#include <qfontdatabase.h>
 #include <qicon.h>
 #include <qiodevice.h>
 #include <qjsondocument.h>
@@ -285,14 +286,15 @@ void AetherTheme::reload() {
     m_hasShellSettings = shellConfig.open(QIODevice::ReadOnly);
     m_settings = m_hasShellSettings ? qtSettingsFromJson(shellConfig.readAll()) : QtSettings();
 
-    if (m_settings.font.isEmpty())
-        m_font.reset();
-    else
-        m_font = QFont(m_settings.font, m_settings.fontSize > 0 ? m_settings.fontSize : 11);
-    if (m_settings.fontFixed.isEmpty())
-        m_fixedFont.reset();
-    else
-        m_fixedFont = QFont(m_settings.fontFixed, m_settings.fontFixedSize > 0 ? m_settings.fontFixedSize : 11);
+    // A size of 0 means "keep the size the system picked", not a number of our own: the family
+    // and the size are independent choices.
+    const auto fontFor = [](const QString& family, int size, QFontDatabase::SystemFont kind) {
+        if (family.isEmpty())
+            return std::optional<QFont>();
+        return std::optional<QFont>(QFont(family, size > 0 ? size : QFontDatabase::systemFont(kind).pointSize()));
+    };
+    m_font = fontFor(m_settings.font, m_settings.fontSize, QFontDatabase::GeneralFont);
+    m_fixedFont = fontFor(m_settings.fontFixed, m_settings.fontFixedSize, QFontDatabase::FixedFont);
 
     m_styleNames = resolveStyle();
 
