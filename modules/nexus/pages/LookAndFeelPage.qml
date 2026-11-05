@@ -40,6 +40,42 @@ PageBase {
         }
 
         SectionHeader {
+            text: Tr.tr("Qt applications")
+        }
+
+        SelectRow {
+            first: true
+            last: true
+            Layout.fillWidth: true
+            label: Tr.tr("Widget style")
+            subtext: Tr.tr("How Qt apps draw their controls; takes effect when they restart")
+            configNode: GlobalConfig.appearance
+            propertyName: "qtStyle"
+            menuItems: root.qtStyleItems
+            active: root.qtStyleItems[Math.max(0, root.qtStyleValues.indexOf(GlobalConfig.appearance.qtStyle))] ?? null
+            onSelected: item => {
+                const idx = root.qtStyleItems.indexOf(item);
+                if (idx !== -1)
+                    GlobalConfig.appearance.qtStyle = root.qtStyleValues[idx];
+            }
+        }
+
+        SectionHeader {
+            text: Tr.tr("Colours")
+        }
+
+        // Colours keep living next to the wallpaper that seeds them; this is the link the other
+        // half of the category needs, so nobody has to guess which page owns the scheme.
+        NavRow {
+            first: true
+            last: true
+            icon: "palette"
+            text: Tr.tr("Colour scheme")
+            subtext: Tr.tr("Dynamic or static colours, and the mode")
+            onClicked: root.nState.openPageByKey("wallpaper", 3)
+        }
+
+        SectionHeader {
             text: Tr.tr("Shell appearance")
         }
 
@@ -310,27 +346,6 @@ PageBase {
                     interval: 4000
                     onTriggered: fontItem.armed = false
                 }
-            }
-        }
-
-        SectionHeader {
-            text: Tr.tr("Qt applications")
-        }
-
-        SelectRow {
-            first: true
-            last: true
-            Layout.fillWidth: true
-            label: Tr.tr("Widget style")
-            subtext: Tr.tr("How Qt apps draw their controls; takes effect when they restart")
-            configNode: GlobalConfig.appearance
-            propertyName: "qtStyle"
-            menuItems: root.qtStyleItems
-            active: root.qtStyleItems[Math.max(0, root.qtStyleValues.indexOf(GlobalConfig.appearance.qtStyle))] ?? null
-            onSelected: item => {
-                const idx = root.qtStyleItems.indexOf(item);
-                if (idx !== -1)
-                    GlobalConfig.appearance.qtStyle = root.qtStyleValues[idx];
             }
         }
 

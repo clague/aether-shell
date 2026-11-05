@@ -278,5 +278,20 @@ PageBase {
                 root.targetConfig.utilities.toasts.nowPlaying = checked;
             }
         }
+
+        SectionHeader {
+            text: Tr.tr("Per-app silencing")
+        }
+
+        // Silencing is stored with the notification sounds it mutes, which is why it lives on the
+        // Audio page; the notification page is where someone looks for it.
+        NavRow {
+            first: true
+            last: true
+            icon: "volume_off"
+            text: Tr.tr("Notification silencing")
+            subtext: Tr.tr("Mute notification sounds for individual apps")
+            onClicked: root.nState.openPageByKey("audio", 0, "Notification silencing")
+        }
     }
 }

@@ -52,12 +52,14 @@ QtObject {
 
     // Opens a page (and sub-page) found through search; for a row, its label is
     // highlighted once the page has loaded.
-    // Open a top-level page by its stable key (see PageRegistry), optionally pushing one of
-    // its sub-pages. Used by cross-links such as Apps -> Hyprland keybind apps.
-    function openPageByKey(key: string, sub = 0): void {
+    // Open a top-level page by its stable key (see PageRegistry), optionally pushing one of its
+    // sub-pages, and optionally scrolling to and flashing one of its rows. Cross-links use this:
+    // a setting lives where the code that owns it lives, and everywhere else that a user would
+    // look for it gets a link instead of a second copy.
+    function openPageByKey(key: string, sub = 0, row = ""): void {
         for (let i = 0; i < PageRegistry.pages.length; i++) {
             if (PageRegistry.pages[i].key === key) {
-                openSearchResult(i, sub, "", false);
+                openSearchResult(i, sub, row, row !== "");
                 return;
             }
         }

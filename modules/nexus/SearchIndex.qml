@@ -318,6 +318,16 @@ QtObject {
             kw: []
         },
         {
+            kind: "row",
+            page: 0,
+            sub: 7,
+            label: Tr.tr("Taskbar clock"),
+            subtext: Tr.tr("Date, icon and background of the bar clock"),
+            section: Tr.tr("Taskbar"),
+            subTitle: Tr.tr("Desktop clock"),
+            kw: []
+        },
+        {
             kind: "page",
             page: 0,
             sub: 8,
@@ -454,6 +464,16 @@ QtObject {
             label: Tr.tr("Shadow blur"),
             subtext: "",
             section: Tr.tr("Shadow"),
+            subTitle: Tr.tr("Desktop lyrics"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 0,
+            sub: 8,
+            label: Tr.tr("Lyrics backend"),
+            subtext: Tr.tr("Which service supplies the synced lyrics, and the default player"),
+            section: Tr.tr("Source"),
             subTitle: Tr.tr("Desktop lyrics"),
             kw: []
         },
@@ -601,6 +621,26 @@ QtObject {
             kind: "row",
             page: 1,
             sub: 0,
+            label: Tr.tr("Widget style"),
+            subtext: Tr.tr("How Qt apps draw their controls; takes effect when they restart"),
+            section: Tr.tr("Qt applications"),
+            subTitle: Tr.tr("Look & feel"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 1,
+            sub: 0,
+            label: Tr.tr("Colour scheme"),
+            subtext: Tr.tr("Dynamic or static colours, and the mode"),
+            section: Tr.tr("Colours"),
+            subTitle: Tr.tr("Look & feel"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 1,
+            sub: 0,
             label: Tr.tr("Bezel mode (Pitch black)"),
             subtext: Tr.tr("Make the shell pitch black to blend with display bezels"),
             section: Tr.tr("Shell appearance"),
@@ -694,16 +734,6 @@ QtObject {
             label: Tr.tr("Also use them in the shell"),
             subtext: Tr.tr("The bar, panels and Nexus too. Icons keep their own font"),
             section: Tr.tr("App fonts"),
-            subTitle: Tr.tr("Look & feel"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 1,
-            sub: 0,
-            label: Tr.tr("Widget style"),
-            subtext: Tr.tr("How Qt apps draw their controls; takes effect when they restart"),
-            section: Tr.tr("Qt applications"),
             subTitle: Tr.tr("Look & feel"),
             kw: []
         },
@@ -2024,6 +2054,16 @@ QtObject {
             label: Tr.tr("Show seconds"),
             subtext: "",
             section: "",
+            subTitle: Tr.tr("Clock"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 2,
+            sub: 14,
+            label: Tr.tr("Desktop clock"),
+            subtext: Tr.tr("The free-floating clock on the wallpaper"),
+            section: Tr.tr("On the desktop"),
             subTitle: Tr.tr("Clock"),
             kw: []
         },
@@ -3404,6 +3444,16 @@ QtObject {
             label: Tr.tr("Now playing"),
             subtext: "",
             section: Tr.tr("Toast events"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Notification silencing"),
+            subtext: Tr.tr("Mute notification sounds for individual apps"),
+            section: Tr.tr("Per-app silencing"),
             subTitle: Tr.tr("Notifications"),
             kw: []
         },

@@ -202,5 +202,18 @@ PageBase {
             }
             enabled: root.targetConfig.background.desktopClock.shadow.enabled
         }
+
+        SectionHeader {
+            text: Tr.tr("Taskbar")
+        }
+
+        NavRow {
+            first: true
+            last: true
+            icon: "schedule"
+            text: Tr.tr("Taskbar clock")
+            subtext: Tr.tr("Date, icon and background of the bar clock")
+            onClicked: root.nState.openPageByKey("panels", 14)
+        }
     }
 }

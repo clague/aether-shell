@@ -244,5 +244,20 @@ PageBase {
             }
             enabled: root.targetConfig.background.desktopLyrics.shadow.enabled
         }
+
+        SectionHeader {
+            text: Tr.tr("Source")
+        }
+
+        // The backend is a service, so it stays on the Services page; the panel that shows the
+        // lyrics is the place people look for it.
+        NavRow {
+            first: true
+            last: true
+            icon: "music_note"
+            text: Tr.tr("Lyrics backend")
+            subtext: Tr.tr("Which service supplies the synced lyrics, and the default player")
+            onClicked: root.nState.openPageByKey("services", 0, "Lyrics backend")
+        }
     }
 }

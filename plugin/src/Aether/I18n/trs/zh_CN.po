@@ -8980,3 +8980,43 @@ msgstr "轮询间隔、集成与媒体后端"
 #: modules/nexus/PageRegistry.qml
 msgid "Desktop"
 msgstr "桌面"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Colour scheme"
+msgstr "颜色方案"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Dynamic or static colours, and the mode"
+msgstr "动态或静态配色，以及明暗模式"
+
+#: modules/nexus/pages/background/DesktopLyricsPage.qml
+msgid "Source"
+msgstr "来源"
+
+#: modules/nexus/pages/background/DesktopLyricsPage.qml
+msgid "Which service supplies the synced lyrics, and the default player"
+msgstr "同步歌词来自哪个服务，以及默认播放器"
+
+#: modules/nexus/pages/services/NotificationsPage.qml
+msgid "Per-app silencing"
+msgstr "按应用静音"
+
+#: modules/nexus/pages/services/NotificationsPage.qml
+msgid "Mute notification sounds for individual apps"
+msgstr "为单个应用关闭通知声音"
+
+#: modules/nexus/pages/panels/taskbar/BarClock.qml
+msgid "On the desktop"
+msgstr "桌面"
+
+#: modules/nexus/pages/panels/taskbar/BarClock.qml
+msgid "The free-floating clock on the wallpaper"
+msgstr "壁纸上独立悬浮的时钟"
+
+#: modules/nexus/pages/background/DesktopClockPage.qml
+msgid "Taskbar clock"
+msgstr "任务栏时钟"
+
+#: modules/nexus/pages/background/DesktopClockPage.qml
+msgid "Date, icon and background of the bar clock"
+msgstr "任务栏时钟的日期、图标与背景"

@@ -18,7 +18,8 @@ QtObject {
             icon: "palette",
             description: Tr.tr("Wallpaper, colours, themes and desktop elements"),
             category: "appearance",
-            mode: "appearance"
+            mode: "appearance",
+            key: "wallpaper"
         },
         {
             label: Tr.tr("Look & feel"),
@@ -32,7 +33,8 @@ QtObject {
             label: Tr.tr("Panels"),
             icon: "dock_to_bottom",
             description: Tr.tr("Dashboard, taskbar, launcher, sidebar"),
-            category: "desktop"
+            category: "desktop",
+            key: "panels"
         },
         {
             label: Tr.tr("Apps"),
@@ -62,7 +64,8 @@ QtObject {
             icon: "volume_up",
             description: Tr.tr("Outputs, app volumes and sound effects"),
             category: "devices",
-            mode: "audio"
+            mode: "audio",
+            key: "audio"
         },
         {
             label: Tr.tr("Connected devices"),
@@ -115,7 +118,8 @@ QtObject {
             label: Tr.tr("Services"),
             icon: "build",
             description: Tr.tr("Poll intervals, integrations, media backend"),
-            category: "system"
+            category: "system",
+            key: "services"
         },
         {
             label: Tr.tr("Shell Tokens"),
