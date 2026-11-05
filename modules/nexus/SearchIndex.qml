@@ -612,7 +612,7 @@ QtObject {
             page: 1,
             sub: 0,
             label: Tr.tr("Look & feel"),
-            subtext: Tr.tr("Shell appearance and app fonts"),
+            subtext: Tr.tr("Shell appearance, fonts and Qt applications"),
             section: "",
             subTitle: "",
             kw: []
@@ -621,7 +621,7 @@ QtObject {
             kind: "row",
             page: 1,
             sub: 0,
-            label: Tr.tr("These settings need Aether's Qt theme"),
+            label: Tr.tr("These settings are not active"),
             subtext: "",
             section: Tr.tr("Qt applications"),
             subTitle: Tr.tr("Look & feel"),
@@ -632,7 +632,7 @@ QtObject {
             page: 1,
             sub: 0,
             label: Tr.tr("Widget style"),
-            subtext: Tr.tr("How Qt apps draw their controls; takes effect when they restart"),
+            subtext: Tr.tr("Auto: Kvantum when it is configured, otherwise Qt's own default (Fusion)"),
             section: Tr.tr("Qt applications"),
             subTitle: Tr.tr("Look & feel"),
             kw: []
@@ -642,7 +642,7 @@ QtObject {
             page: 1,
             sub: 0,
             label: Tr.tr("Icon theme"),
-            subtext: Tr.tr("Follow the desktop's own icon setting, or name one here"),
+            subtext: "",
             section: Tr.tr("Qt applications"),
             subTitle: Tr.tr("Look & feel"),
             kw: []
@@ -651,8 +651,8 @@ QtObject {
             kind: "row",
             page: 1,
             sub: 0,
-            label: Tr.tr("Font family"),
-            subtext: Tr.tr("Empty uses fontconfig, which is what App fonts writes"),
+            label: Tr.tr("Sans-serif font"),
+            subtext: "",
             section: Tr.tr("Qt applications"),
             subTitle: Tr.tr("Look & feel"),
             kw: []
@@ -661,8 +661,8 @@ QtObject {
             kind: "row",
             page: 1,
             sub: 0,
-            label: Tr.tr("Font size"),
-            subtext: Tr.tr("Zero follows the system size"),
+            label: Tr.tr("Sans-serif size"),
+            subtext: "",
             section: Tr.tr("Qt applications"),
             subTitle: Tr.tr("Look & feel"),
             kw: []
@@ -672,7 +672,7 @@ QtObject {
             page: 1,
             sub: 0,
             label: Tr.tr("Monospace family"),
-            subtext: Tr.tr("Empty uses fontconfig's monospace"),
+            subtext: "",
             section: Tr.tr("Qt applications"),
             subTitle: Tr.tr("Look & feel"),
             kw: []
@@ -682,7 +682,17 @@ QtObject {
             page: 1,
             sub: 0,
             label: Tr.tr("Monospace size"),
-            subtext: Tr.tr("Zero follows the system size"),
+            subtext: "",
+            section: Tr.tr("Qt applications"),
+            subTitle: Tr.tr("Look & feel"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 1,
+            sub: 0,
+            label: Tr.tr("Applies to applications when they are next started"),
+            subtext: "",
             section: Tr.tr("Qt applications"),
             subTitle: Tr.tr("Look & feel"),
             kw: []
@@ -692,7 +702,7 @@ QtObject {
             page: 1,
             sub: 0,
             label: Tr.tr("Icons in menus"),
-            subtext: Tr.tr("Show icons beside menu entries"),
+            subtext: Tr.tr("Show an icon before each menu item"),
             section: Tr.tr("Qt behaviour"),
             subTitle: Tr.tr("Look & feel"),
             kw: []
@@ -702,7 +712,7 @@ QtObject {
             page: 1,
             sub: 0,
             label: Tr.tr("Shortcuts in context menus"),
-            subtext: Tr.tr("Show the key combination beside the action"),
+            subtext: Tr.tr("Show the shortcut after each menu item"),
             section: Tr.tr("Qt behaviour"),
             subTitle: Tr.tr("Look & feel"),
             kw: []
@@ -712,7 +722,7 @@ QtObject {
             page: 1,
             sub: 0,
             label: Tr.tr("Toolbar buttons"),
-            subtext: Tr.tr("How toolbar actions are labelled"),
+            subtext: Tr.tr("How toolbar buttons are labelled"),
             section: Tr.tr("Qt behaviour"),
             subTitle: Tr.tr("Look & feel"),
             kw: []
@@ -722,7 +732,7 @@ QtObject {
             page: 1,
             sub: 0,
             label: Tr.tr("Wheel scroll lines"),
-            subtext: Tr.tr("Rows moved per wheel notch"),
+            subtext: Tr.tr("Lines moved per wheel notch"),
             section: Tr.tr("Qt behaviour"),
             subTitle: Tr.tr("Look & feel"),
             kw: []
@@ -731,8 +741,8 @@ QtObject {
             kind: "row",
             page: 1,
             sub: 0,
-            label: Tr.tr("Text cursor blink"),
-            subtext: Tr.tr("Milliseconds per blink"),
+            label: Tr.tr("Cursor blink"),
+            subtext: Tr.tr("Blink interval in milliseconds"),
             section: Tr.tr("Qt behaviour"),
             subTitle: Tr.tr("Look & feel"),
             kw: []
@@ -742,7 +752,7 @@ QtObject {
             page: 1,
             sub: 0,
             label: Tr.tr("Double-click interval"),
-            subtext: Tr.tr("Milliseconds between two clicks that count as one"),
+            subtext: Tr.tr("Longest gap that still counts as a double-click, in milliseconds"),
             section: Tr.tr("Qt behaviour"),
             subTitle: Tr.tr("Look & feel"),
             kw: []
@@ -3222,7 +3232,7 @@ QtObject {
             page: 12,
             sub: 0,
             label: Tr.tr("Doctor"),
-            subtext: Tr.tr("Check Wi-Fi, Bluetooth, audio, displays and services"),
+            subtext: Tr.tr("Check Wi-Fi, Bluetooth, audio, displays and the session environment"),
             section: "",
             subTitle: "",
             kw: []

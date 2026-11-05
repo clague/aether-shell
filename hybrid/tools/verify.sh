@@ -94,6 +94,10 @@ step "dead config";   ./hybrid/tools/dead-config.py       | tail -1; ./hybrid/to
 step "singleton self-test"
 ./hybrid/tools/singleton-members.py --self-test | tail -1; ./hybrid/tools/singleton-members.py --self-test >/dev/null || fail=1
 step "singletons";    ./hybrid/tools/singleton-members.py | tail -1; ./hybrid/tools/singleton-members.py >/dev/null || fail=1
+step "i18n self-test"
+./hybrid/tools/i18n-check.py --self-test | tail -1; ./hybrid/tools/i18n-check.py --self-test >/dev/null || fail=1
+# A string with no catalog entry renders as English in a Chinese UI and nothing else notices.
+step "i18n";          ./hybrid/tools/i18n-check.py | tail -1; ./hybrid/tools/i18n-check.py >/dev/null || fail=1
 step "subpage index self-test"
 ./hybrid/tools/subpage-index.py --self-test | tail -1; ./hybrid/tools/subpage-index.py --self-test >/dev/null || fail=1
 # A row that opens the wrong sub-page compiles, lints and renders; only this compares the

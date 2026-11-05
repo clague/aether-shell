@@ -24,7 +24,7 @@ QtObject {
         {
             label: Tr.tr("Look & feel"),
             icon: "tune",
-            description: Tr.tr("Shell appearance and app fonts"),
+            description: Tr.tr("Shell appearance, fonts and Qt applications"),
             category: "appearance"
         },
 
@@ -105,7 +105,7 @@ QtObject {
         {
             label: Tr.tr("Doctor"),
             icon: "health_and_safety",
-            description: Tr.tr("Check Wi-Fi, Bluetooth, audio, displays and services"),
+            description: Tr.tr("Check Wi-Fi, Bluetooth, audio, displays and the session environment"),
             category: "system"
         },
         {
