@@ -1364,8 +1364,8 @@ msgid "Check the laptop's airplane-mode key or switch"
 msgstr "检查笔记本的飞行模式按键或开关"
 
 #: modules/nexus/common/DoctorText.qml
-msgid "It starts with the shell; restart the shell to bring it back"
-msgstr "它随 Shell 启动；重启 Shell 即可恢复"
+msgid "It runs while the settings window is open; reopen settings to restart it"
+msgstr "它只在设置窗口打开时运行；重新打开设置即可重启"
 
 #: modules/nexus/common/DoctorText.qml
 msgid "Log out and back in, or kill the extra quickshell processes"
