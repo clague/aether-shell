@@ -957,10 +957,14 @@ PageBase {
                 height: 8
                 visible: flick.contentWidth > flick.width
 
-                function trackScroll(x: real): void {
+                function contentForThumbCenter(x: real): real {
                     const travel = Math.max(1, width - horizontalThumb.width);
                     const ratio = Math.max(0, Math.min(1, (x - horizontalThumb.width / 2) / travel));
-                    root.animateScrollX(ratio * Math.max(0, flick.contentWidth - flick.width));
+                    return ratio * Math.max(0, flick.contentWidth - flick.width);
+                }
+
+                function trackScroll(x: real): void {
+                    root.animateScrollX(contentForThumbCenter(x));
                 }
 
                 Rectangle {
@@ -1005,8 +1009,17 @@ PageBase {
                     }
 
                     onPositionChanged: mouse => {
-                        if (!pressed || !draggingThumb)
+                        if (!pressed)
                             return;
+
+                        // A press on the empty track starts the animated jump, but moving before
+                        // releasing switches to dragging: the thumb follows the pointer.
+                        if (!draggingThumb) {
+                            scrollXAnimation.stop();
+                            flick.contentX = horizontalScrollBar.contentForThumbCenter(mouse.x);
+                            return;
+                        }
+
                         const travel = Math.max(1, width - horizontalThumb.width);
                         const max = Math.max(0, flick.contentWidth - flick.width);
                         const delta = mouse.x - pressX;
@@ -1033,10 +1046,14 @@ PageBase {
 
                 readonly property real mapHeight: Math.min(height - 8, minimapText.contentHeight)
 
-                function trackScroll(y: real): void {
+                function contentForBoxCenter(y: real): real {
                     const travel = Math.max(1, mapHeight - minimapViewport.height);
                     const ratio = Math.max(0, Math.min(1, (y - 4 - minimapViewport.height / 2) / travel));
-                    root.animateScrollY(ratio * Math.max(0, flick.contentHeight - flick.height));
+                    return ratio * Math.max(0, flick.contentHeight - flick.height);
+                }
+
+                function trackScroll(y: real): void {
+                    root.animateScrollY(contentForBoxCenter(y));
                 }
 
                 Text {
@@ -1092,8 +1109,17 @@ PageBase {
                     }
 
                     onPositionChanged: mouse => {
-                        if (!pressed || !draggingBox)
+                        if (!pressed)
                             return;
+
+                        // A press outside the viewport box starts the animated jump; moving
+                        // before releasing drags the box to the pointer instead.
+                        if (!draggingBox) {
+                            scrollYAnimation.stop();
+                            flick.contentY = minimap.contentForBoxCenter(mouse.y);
+                            return;
+                        }
+
                         const travel = Math.max(1, minimap.mapHeight - minimapViewport.height);
                         const max = Math.max(0, flick.contentHeight - flick.height);
                         const delta = mouse.y - pressY;
