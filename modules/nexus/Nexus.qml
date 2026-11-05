@@ -295,21 +295,6 @@ Item {
         z: 5
         color: "transparent"
 
-        // A short pill instead of a full-height rule: it only appears while the divider is
-        // hovered or dragged and matches the diagnostics handle's language.
-        Rectangle {
-            anchors.centerIn: parent
-            width: 4
-            height: 56
-            radius: 2
-            color: Colours.palette.m3onSurfaceVariant
-            opacity: navResizeHover.hovered || navResizeDrag.active ? 0.55 : 0.15
-
-            Behavior on opacity {
-                CAnim {}
-            }
-        }
-
         HoverHandler {
             id: navResizeHover
         }

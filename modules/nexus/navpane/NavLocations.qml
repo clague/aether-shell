@@ -1,11 +1,13 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Window
 import Aether.Config
 import qs.components
 import qs.components.containers
+import qs.components.controls
 import qs.services
 import qs.modules.nexus
 
@@ -58,6 +60,15 @@ VerticalFadeFlickable {
     topMargin: Tokens.padding.large
     bottomMargin: Tokens.padding.large
     contentHeight: content.implicitHeight
+
+    // The list scrolls but had no indicator; the only vertical bar in this area was the divider
+    // handle for resizing the pane, which reads as a scrollbar that does not scroll.
+    ScrollBar.vertical: StyledScrollBar {
+        // Always visible: the pill this replaced was a permanent cue, and a bar that only appears
+        // while scrolling would leave nothing to say the list continues below.
+        policy: ScrollBar.AlwaysOn
+        flickable: root
+    }
 
     onFocusedItemChanged: Qt.callLater(root.revealFocus)
 
