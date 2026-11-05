@@ -29,6 +29,9 @@ namespace {
 // file: 34MB for an 8K wallpaper, and cachePathFor is called more than once per request.
 // Size and mtime identify a version just as well and cost a stat.
 QString sha256sum(const QString& path) {
+    // The cache is keyed by arbitrary source paths, so bound it rather than letting every
+    // wallpaper, thumbnail and clipboard image stay hashed for the life of the process.
+    constexpr int k_maxCachedHashes = 256;
     static QMutex s_cacheMutex;
     static QHash<QString, QString> s_stamps;
     static QHash<QString, QString> s_hashes;
@@ -38,8 +41,10 @@ QString sha256sum(const QString& path) {
 
     {
         const QMutexLocker locker(&s_cacheMutex);
-        if (s_stamps.value(path) == stamp && s_hashes.contains(path))
-            return s_hashes.value(path);
+        if (s_stamps.value(path) == stamp) {
+            if (const auto it = s_hashes.constFind(path); it != s_hashes.constEnd())
+                return it.value();
+        }
     }
 
     QFile file(path);
@@ -55,6 +60,13 @@ QString sha256sum(const QString& path) {
     const QString result = QString::fromLatin1(hash.result().toHex());
     {
         const QMutexLocker locker(&s_cacheMutex);
+        if (s_hashes.size() >= k_maxCachedHashes && !s_stamps.contains(path)) {
+            // Any entry will do: this is a cache, not a correctness store. Evicting the first
+            // iterator keeps the cost O(1) instead of tracking an LRU on every lookup.
+            const auto victim = s_stamps.begin();
+            s_hashes.remove(victim.key());
+            s_stamps.erase(victim);
+        }
         s_stamps.insert(path, stamp);
         s_hashes.insert(path, result);
     }

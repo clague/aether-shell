@@ -829,12 +829,19 @@ void QuickShareConnection::handleIncomingFileChunk(const QByteArray& chunkBody, 
 
 void QuickShareConnection::onDisconnected() {
     m_state = Disconnected;
+    m_payloadBuffers.clear();
+    m_payloadTotalSizes.clear();
     emit stateChanged(m_state);
 }
 
 void QuickShareConnection::onError(QAbstractSocket::SocketError socketError) {
     Q_UNUSED(socketError);
     qWarning() << u"QuickShareConnection error:"_s << m_socket->errorString();
+    // A failed transfer never reaches the completion branch that drops these; the connection
+    // object may stay alive for the service's teardown delay.
+    m_payloadBuffers.clear();
+    m_payloadTotalSizes.clear();
+    m_fileBuffer.clear();
     emit transferFinished(false);
 }
 
