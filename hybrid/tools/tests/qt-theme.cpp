@@ -15,8 +15,8 @@
 
 using aether::theme::iniValue;
 using aether::theme::kvantumThemeName;
+using aether::theme::qtSettingsFromJson;
 using aether::theme::schemeFromJson;
-using aether::theme::shellQtStyle;
 
 namespace {
 
@@ -94,14 +94,24 @@ int main(int argc, char** argv) {
     check(kvantumThemeName("[General]\ncolors=#fff\n").isEmpty(), "no theme key");
     check(kvantumThemeName(QByteArray()).isEmpty(), "empty file");
 
-    // The shell's own config decides the style when it says something other than "auto"; that key
-    // has to be readable straight out of shell.json, which the CLI never rewrites.
-    check(shellQtStyle(R"({"appearance":{"qtStyle":"kvantum"}})") == "kvantum", "style from shell.json");
-    check(shellQtStyle(R"({"appearance":{"qtStyle":"auto"}})") == "auto", "auto is passed through");
-    check(shellQtStyle(R"({"appearance":{}})").isEmpty(), "missing key");
-    check(shellQtStyle(R"({"general":{"qtStyle":"fusion"}})").isEmpty(), "key in the wrong node");
-    check(shellQtStyle(R"({"appearance":{"qtStyle":5}})").isEmpty(), "non-string value");
-    check(shellQtStyle("not json").isEmpty(), "garbage shell config");
+    // The shell's own config decides all of this; it has to be readable straight out of
+    // shell.json, which the CLI never rewrites.
+    const auto defaults = qtSettingsFromJson("{}");
+    check(defaults.style == "auto", "unset style means automatic");
+    check(defaults.menusHaveIcons && defaults.shortcutsInContextMenus, "menu defaults keep both extras");
+    check(defaults.wheelScrollLines == 3 && defaults.cursorFlashTime == 1000, "input defaults");
+
+    const auto configured = qtSettingsFromJson(R"({"qt":{"style":"kvantum","iconTheme":"Papirus-Dark",)"
+                                               R"("font":"Noto Sans","fontSize":13,"menusHaveIcons":false,)"
+                                               R"("wheelScrollLines":5,"cursorFlashTime":600}})");
+    check(configured.style == "kvantum", "style from shell.json");
+    check(configured.iconTheme == "Papirus-Dark", "icon theme from shell.json");
+    check(configured.font == "Noto Sans" && configured.fontSize == 13, "font and size");
+    check(!configured.menusHaveIcons, "a boolean can be turned off");
+    check(configured.wheelScrollLines == 5 && configured.cursorFlashTime == 600, "numbers survive");
+
+    check(qtSettingsFromJson(R"({"qt":{"style":5}})").style == "auto", "wrong type falls back");
+    check(qtSettingsFromJson("not json").style == "auto", "garbage shell config");
 
     if (failures == 0)
         std::printf("PASS: 0 failure(s)\n");

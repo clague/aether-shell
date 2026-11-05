@@ -621,9 +621,129 @@ QtObject {
             kind: "row",
             page: 1,
             sub: 0,
+            label: Tr.tr("These settings need Aether's Qt theme"),
+            subtext: "",
+            section: Tr.tr("Qt applications"),
+            subTitle: Tr.tr("Look & feel"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 1,
+            sub: 0,
             label: Tr.tr("Widget style"),
             subtext: Tr.tr("How Qt apps draw their controls; takes effect when they restart"),
             section: Tr.tr("Qt applications"),
+            subTitle: Tr.tr("Look & feel"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 1,
+            sub: 0,
+            label: Tr.tr("Icon theme"),
+            subtext: Tr.tr("Follow the desktop's own icon setting, or name one here"),
+            section: Tr.tr("Qt applications"),
+            subTitle: Tr.tr("Look & feel"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 1,
+            sub: 0,
+            label: Tr.tr("Font family"),
+            subtext: Tr.tr("Empty uses fontconfig, which is what App fonts writes"),
+            section: Tr.tr("Qt applications"),
+            subTitle: Tr.tr("Look & feel"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 1,
+            sub: 0,
+            label: Tr.tr("Font size"),
+            subtext: Tr.tr("Zero follows the system size"),
+            section: Tr.tr("Qt applications"),
+            subTitle: Tr.tr("Look & feel"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 1,
+            sub: 0,
+            label: Tr.tr("Monospace family"),
+            subtext: Tr.tr("Empty uses fontconfig's monospace"),
+            section: Tr.tr("Qt applications"),
+            subTitle: Tr.tr("Look & feel"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 1,
+            sub: 0,
+            label: Tr.tr("Monospace size"),
+            subtext: Tr.tr("Zero follows the system size"),
+            section: Tr.tr("Qt applications"),
+            subTitle: Tr.tr("Look & feel"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 1,
+            sub: 0,
+            label: Tr.tr("Icons in menus"),
+            subtext: Tr.tr("Show icons beside menu entries"),
+            section: Tr.tr("Qt behaviour"),
+            subTitle: Tr.tr("Look & feel"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 1,
+            sub: 0,
+            label: Tr.tr("Shortcuts in context menus"),
+            subtext: Tr.tr("Show the key combination beside the action"),
+            section: Tr.tr("Qt behaviour"),
+            subTitle: Tr.tr("Look & feel"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 1,
+            sub: 0,
+            label: Tr.tr("Toolbar buttons"),
+            subtext: Tr.tr("How toolbar actions are labelled"),
+            section: Tr.tr("Qt behaviour"),
+            subTitle: Tr.tr("Look & feel"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 1,
+            sub: 0,
+            label: Tr.tr("Wheel scroll lines"),
+            subtext: Tr.tr("Rows moved per wheel notch"),
+            section: Tr.tr("Qt behaviour"),
+            subTitle: Tr.tr("Look & feel"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 1,
+            sub: 0,
+            label: Tr.tr("Text cursor blink"),
+            subtext: Tr.tr("Milliseconds per blink"),
+            section: Tr.tr("Qt behaviour"),
+            subTitle: Tr.tr("Look & feel"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 1,
+            sub: 0,
+            label: Tr.tr("Double-click interval"),
+            subtext: Tr.tr("Milliseconds between two clicks that count as one"),
+            section: Tr.tr("Qt behaviour"),
             subTitle: Tr.tr("Look & feel"),
             kw: []
         },

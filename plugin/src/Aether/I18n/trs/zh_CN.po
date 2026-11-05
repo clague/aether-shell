@@ -9080,3 +9080,123 @@ msgstr "把 XCURSOR_THEME 指向 ~/.icons 或 ~/.local/share/icons 里已有的�
 #: modules/nexus/common/DoctorText.qml
 msgid "Without these, those apps may run under XWayland"
 msgstr "缺少这些变量时，相关应用可能退回 XWayland"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "These settings need Aether's Qt theme"
+msgstr "这些设置需要 Aether 的 Qt 主题"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Add both lines to ~/.config/caelestia/hypr-user.lua, then log out and back in:\nhl.env(\"QT_QPA_PLATFORMTHEME\", \"aether\")\nhl.env(\"QT_PLUGIN_PATH\", (os.getenv(\"HOME\") or \"\") .. \"/.local/lib/qt6/plugins\")"
+msgstr "把这两行加进 ~/.config/caelestia/hypr-user.lua，然后注销重新登录：\nhl.env(\"QT_QPA_PLATFORMTHEME\", \"aether\")\nhl.env(\"QT_PLUGIN_PATH\", (os.getenv(\"HOME\") or \"\") .. \"/.local/lib/qt6/plugins\")"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Icon theme"
+msgstr "图标主题"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Follow the desktop's own icon setting, or name one here"
+msgstr "跟随桌面自己的图标设置，或在此指定一个"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Follow the desktop"
+msgstr "跟随桌面"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Follow the system"
+msgstr "跟随系统"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Font family"
+msgstr "字体"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Empty uses fontconfig, which is what App fonts writes"
+msgstr "留空则使用 fontconfig，即「应用字体」写入的设置"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Font size"
+msgstr "字号"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Zero follows the system size"
+msgstr "0 表示跟随系统字号"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Monospace family"
+msgstr "等宽字体"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Empty uses fontconfig's monospace"
+msgstr "留空则使用 fontconfig 的等宽字体"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Monospace size"
+msgstr "等宽字号"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Qt behaviour"
+msgstr "Qt 行为"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Icons in menus"
+msgstr "菜单图标"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Show icons beside menu entries"
+msgstr "在菜单项旁显示图标"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Shortcuts in context menus"
+msgstr "右键菜单快捷键"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Show the key combination beside the action"
+msgstr "在操作旁显示快捷键"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Toolbar buttons"
+msgstr "工具栏按钮"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "How toolbar actions are labelled"
+msgstr "工具栏操作如何标注"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Icon only"
+msgstr "仅图标"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Text only"
+msgstr "仅文字"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Text beside icon"
+msgstr "文字在图标旁"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Text under icon"
+msgstr "文字在图标下"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Wheel scroll lines"
+msgstr "滚轮行数"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Rows moved per wheel notch"
+msgstr "每格滚轮滚动的行数"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Text cursor blink"
+msgstr "光标闪烁"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Milliseconds per blink"
+msgstr "每次闪烁的毫秒数"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Double-click interval"
+msgstr "双击间隔"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Milliseconds between two clicks that count as one"
+msgstr "两次点击被视为双击的毫秒间隔"

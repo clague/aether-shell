@@ -45,13 +45,42 @@ QString kvantumThemeName(const QByteArray& ini) {
     return scoped.isEmpty() ? iniValue(ini, QString(), u"theme"_s) : scoped;
 }
 
-QString shellQtStyle(const QByteArray& json) {
+QtSettings qtSettingsFromJson(const QByteArray& json) {
+    QtSettings settings;
     const QJsonDocument document = QJsonDocument::fromJson(json);
     if (!document.isObject())
-        return {};
+        return settings;
 
-    const QJsonValue value = document.object().value(u"appearance"_s).toObject().value(u"qtStyle"_s);
-    return value.isString() ? value.toString() : QString();
+    const QJsonObject qt = document.object().value(u"qt"_s).toObject();
+    if (qt.isEmpty())
+        return settings;
+
+    const auto text = [&qt](const QString& key, const QString& fallback) {
+        const QJsonValue value = qt.value(key);
+        return value.isString() ? value.toString() : fallback;
+    };
+    const auto number = [&qt](const QString& key, int fallback) {
+        const QJsonValue value = qt.value(key);
+        return value.isDouble() ? value.toInt() : fallback;
+    };
+    const auto flag = [&qt](const QString& key, bool fallback) {
+        const QJsonValue value = qt.value(key);
+        return value.isBool() ? value.toBool() : fallback;
+    };
+
+    settings.style = text(u"style"_s, settings.style);
+    settings.iconTheme = text(u"iconTheme"_s, settings.iconTheme);
+    settings.font = text(u"font"_s, settings.font);
+    settings.fontSize = number(u"fontSize"_s, settings.fontSize);
+    settings.fontFixed = text(u"fontFixed"_s, settings.fontFixed);
+    settings.fontFixedSize = number(u"fontFixedSize"_s, settings.fontFixedSize);
+    settings.menusHaveIcons = flag(u"menusHaveIcons"_s, settings.menusHaveIcons);
+    settings.shortcutsInContextMenus = flag(u"shortcutsInContextMenus"_s, settings.shortcutsInContextMenus);
+    settings.toolButtonStyle = number(u"toolButtonStyle"_s, settings.toolButtonStyle);
+    settings.wheelScrollLines = number(u"wheelScrollLines"_s, settings.wheelScrollLines);
+    settings.cursorFlashTime = number(u"cursorFlashTime"_s, settings.cursorFlashTime);
+    settings.doubleClickInterval = number(u"doubleClickInterval"_s, settings.doubleClickInterval);
+    return settings;
 }
 
 } // namespace aether::theme

@@ -282,12 +282,6 @@ class AppearanceConfig : public settings::ObjectNode {
     CONFIG_SUBOBJECT(AppearanceTransparency, transparency)
     CONFIG_GLOBAL_PROPERTY(bool, pitchBlack, false)
     CONFIG_GLOBAL_PROPERTY(bool, islands, false)
-
-    // Which QStyle Qt applications use. "auto" lets the platform theme pick (Kvantum when it is
-    // configured, then the style the CLI asks for, then Fusion); any other value names a style.
-    // It cannot live in ~/.config/qtengine/config.json: the CLI rewrites that from a template on
-    // every scheme change, so a choice stored there survives only until the next colour switch.
-    CONFIG_PROPERTY(QString, qtStyle, u"auto"_s)
 };
 
 } // namespace aether::shell::config

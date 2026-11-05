@@ -21,6 +21,7 @@
 #include "nexusconfig.hpp"
 #include "notifsconfig.hpp"
 #include "osdconfig.hpp"
+#include "qtconfig.hpp"
 #include "serviceconfig.hpp"
 #include "sessionconfig.hpp"
 #include "shimejiconfig.hpp"
@@ -56,6 +57,7 @@ class ConfigRoot : public settings::RootNode {
     CONFIG_SUBOBJECT(ShimejiConfig, shimeji)
     CONFIG_SUBOBJECT(AudioConfig, audio)
     CONFIG_SUBOBJECT(AiConfig, ai)
+    CONFIG_SUBOBJECT(QtConfig, qt)
 
     // The hybrid feature system (D3). Global: flags do not vary per monitor.
     CONFIG_GLOBAL_SUBOBJECT(HybridConfig, hybrid)

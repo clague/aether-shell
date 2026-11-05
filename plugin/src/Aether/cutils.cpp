@@ -331,6 +331,28 @@ QStringList CUtils::availableQtStyles() {
     return styles;
 }
 
+QStringList CUtils::availableIconThemes() {
+    QStringList themes;
+    const QString home = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+    const QStringList dirs{ QDir::homePath() + u"/.icons"_s, home + u"/icons"_s, u"/usr/share/icons"_s };
+
+    for (const QString& dir : dirs) {
+        const QDir directory(dir);
+        for (const QString& name : directory.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
+            // An index.theme is what makes a directory a theme rather than a stray folder.
+            if (QFileInfo::exists(directory.filePath(name) + u"/index.theme"_s))
+                themes << name;
+        }
+    }
+
+    themes.sort(Qt::CaseInsensitive);
+    for (qsizetype i = themes.size() - 1; i > 0; --i) {
+        if (themes[i].compare(themes[i - 1], Qt::CaseInsensitive) == 0)
+            themes.removeAt(i);
+    }
+    return themes;
+}
+
 QString CUtils::qtVersion() {
     return QStringLiteral(QT_VERSION_STR);
 }

@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 import Aether
 import Aether.Config
 import Aether.I18n
@@ -25,6 +26,18 @@ PageBase {
             "text": name === "auto" ? Tr.tr("Automatic") : name
         }))
 
+    // The theme only runs when the session points Qt at it; until then every row below is inert.
+    readonly property bool qtThemeActive: Quickshell.env("QT_QPA_PLATFORMTHEME") === "aether"
+
+    readonly property var iconThemeValues: [""].concat(CUtils.availableIconThemes())
+    readonly property var iconThemeItems: iconThemeValues.map(name => qtStyleItem.createObject(root, {
+            "text": name === "" ? Tr.tr("Follow the desktop") : name
+        }))
+
+    readonly property var toolButtonItems: [Tr.tr("Icon only"), Tr.tr("Text only"), Tr.tr("Text beside icon"), Tr.tr("Text under icon")].map(name => qtStyleItem.createObject(root, {
+            "text": name
+        }))
+
     title: Tr.tr("Look & feel")
 
     ColumnLayout {
@@ -43,21 +56,170 @@ PageBase {
             text: Tr.tr("Qt applications")
         }
 
-        SelectRow {
+        InfoRow {
             first: true
             last: true
             Layout.fillWidth: true
+            visible: !root.qtThemeActive
+            icon: "warning"
+            label: Tr.tr("These settings need Aether's Qt theme")
+            subtext: Tr.tr("Add both lines to ~/.config/caelestia/hypr-user.lua, then log out and back in:\nhl.env(\"QT_QPA_PLATFORMTHEME\", \"aether\")\nhl.env(\"QT_PLUGIN_PATH\", (os.getenv(\"HOME\") or \"\") .. \"/.local/lib/qt6/plugins\")")
+        }
+
+        SelectRow {
+            first: !root.qtThemeActive
+            Layout.fillWidth: true
             label: Tr.tr("Widget style")
             subtext: Tr.tr("How Qt apps draw their controls; takes effect when they restart")
-            configNode: GlobalConfig.appearance
-            propertyName: "qtStyle"
+            configNode: GlobalConfig.qt
+            propertyName: "style"
             menuItems: root.qtStyleItems
-            active: root.qtStyleItems[Math.max(0, root.qtStyleValues.indexOf(GlobalConfig.appearance.qtStyle))] ?? null
+            active: root.qtStyleItems[Math.max(0, root.qtStyleValues.indexOf(GlobalConfig.qt.style))] ?? null
             onSelected: item => {
                 const idx = root.qtStyleItems.indexOf(item);
                 if (idx !== -1)
-                    GlobalConfig.appearance.qtStyle = root.qtStyleValues[idx];
+                    GlobalConfig.qt.style = root.qtStyleValues[idx];
             }
+        }
+
+        SelectRow {
+            Layout.fillWidth: true
+            label: Tr.tr("Icon theme")
+            subtext: Tr.tr("Follow the desktop's own icon setting, or name one here")
+            configNode: GlobalConfig.qt
+            propertyName: "iconTheme"
+            menuItems: root.iconThemeItems
+            active: root.iconThemeItems[Math.max(0, root.iconThemeValues.indexOf(GlobalConfig.qt.iconTheme))] ?? null
+            onSelected: item => {
+                const idx = root.iconThemeItems.indexOf(item);
+                if (idx !== -1)
+                    GlobalConfig.qt.iconTheme = root.iconThemeValues[idx];
+            }
+        }
+
+        TextFieldRow {
+            Layout.fillWidth: true
+            label: Tr.tr("Font family")
+            subtext: Tr.tr("Empty uses fontconfig, which is what App fonts writes")
+            configNode: GlobalConfig.qt
+            propertyName: "font"
+            value: GlobalConfig.qt.font
+            placeholderText: Tr.tr("Follow the system")
+            onEditingFinished: value => GlobalConfig.qt.font = value.trim()
+        }
+
+        StepperRow {
+            Layout.fillWidth: true
+            label: Tr.tr("Font size")
+            subtext: Tr.tr("Zero follows the system size")
+            configNode: GlobalConfig.qt
+            propertyName: "fontSize"
+            value: GlobalConfig.qt.fontSize
+            from: 0
+            to: 32
+            stepSize: 1
+            onMoved: v => GlobalConfig.qt.fontSize = Math.round(v)
+        }
+
+        TextFieldRow {
+            Layout.fillWidth: true
+            label: Tr.tr("Monospace family")
+            subtext: Tr.tr("Empty uses fontconfig's monospace")
+            configNode: GlobalConfig.qt
+            propertyName: "fontFixed"
+            value: GlobalConfig.qt.fontFixed
+            placeholderText: Tr.tr("Follow the system")
+            onEditingFinished: value => GlobalConfig.qt.fontFixed = value.trim()
+        }
+
+        StepperRow {
+            last: true
+            Layout.fillWidth: true
+            label: Tr.tr("Monospace size")
+            subtext: Tr.tr("Zero follows the system size")
+            configNode: GlobalConfig.qt
+            propertyName: "fontFixedSize"
+            value: GlobalConfig.qt.fontFixedSize
+            from: 0
+            to: 32
+            stepSize: 1
+            onMoved: v => GlobalConfig.qt.fontFixedSize = Math.round(v)
+        }
+
+        SectionHeader {
+            text: Tr.tr("Qt behaviour")
+        }
+
+        ToggleRow {
+            first: true
+            Layout.fillWidth: true
+            text: Tr.tr("Icons in menus")
+            subtext: Tr.tr("Show icons beside menu entries")
+            checked: GlobalConfig.qt.menusHaveIcons
+            onToggled: GlobalConfig.qt.menusHaveIcons = checked
+        }
+
+        ToggleRow {
+            Layout.fillWidth: true
+            text: Tr.tr("Shortcuts in context menus")
+            subtext: Tr.tr("Show the key combination beside the action")
+            checked: GlobalConfig.qt.shortcutsInContextMenus
+            onToggled: GlobalConfig.qt.shortcutsInContextMenus = checked
+        }
+
+        SelectRow {
+            Layout.fillWidth: true
+            label: Tr.tr("Toolbar buttons")
+            subtext: Tr.tr("How toolbar actions are labelled")
+            configNode: GlobalConfig.qt
+            propertyName: "toolButtonStyle"
+            menuItems: root.toolButtonItems
+            active: root.toolButtonItems[Math.max(0, Math.min(3, GlobalConfig.qt.toolButtonStyle))] ?? null
+            onSelected: item => {
+                const idx = root.toolButtonItems.indexOf(item);
+                if (idx !== -1)
+                    GlobalConfig.qt.toolButtonStyle = idx;
+            }
+        }
+
+        StepperRow {
+            Layout.fillWidth: true
+            label: Tr.tr("Wheel scroll lines")
+            subtext: Tr.tr("Rows moved per wheel notch")
+            configNode: GlobalConfig.qt
+            propertyName: "wheelScrollLines"
+            value: GlobalConfig.qt.wheelScrollLines
+            from: 1
+            to: 10
+            stepSize: 1
+            onMoved: v => GlobalConfig.qt.wheelScrollLines = Math.round(v)
+        }
+
+        StepperRow {
+            Layout.fillWidth: true
+            label: Tr.tr("Text cursor blink")
+            subtext: Tr.tr("Milliseconds per blink")
+            configNode: GlobalConfig.qt
+            propertyName: "cursorFlashTime"
+            value: GlobalConfig.qt.cursorFlashTime
+            from: 0
+            to: 2000
+            stepSize: 100
+            onMoved: v => GlobalConfig.qt.cursorFlashTime = Math.round(v)
+        }
+
+        StepperRow {
+            last: true
+            Layout.fillWidth: true
+            label: Tr.tr("Double-click interval")
+            subtext: Tr.tr("Milliseconds between two clicks that count as one")
+            configNode: GlobalConfig.qt
+            propertyName: "doubleClickInterval"
+            value: GlobalConfig.qt.doubleClickInterval
+            from: 200
+            to: 1000
+            stepSize: 50
+            onMoved: v => GlobalConfig.qt.doubleClickInterval = Math.round(v)
         }
 
         SectionHeader {

@@ -9,6 +9,8 @@
 
 #include <optional>
 
+#include "aetherstyle.hpp"
+
 #if __has_include(<private/qgenericunixtheme_p.h>)
 #include <private/qgenericunixtheme_p.h>
 #else
@@ -64,12 +66,15 @@ private:
     std::optional<QPalette> m_palette;
     QStringList m_styleNames;
     QString m_configuredStyle;
-    QString m_configuredQtStyle;
+    QtSettings m_settings;
+    bool m_hasShellSettings = false;
+    bool m_configuredMenusHaveIcons = true;
+    bool m_configuredShortcutsInMenus = true;
+    std::optional<QFont> m_font;
+    std::optional<QFont> m_fixedFont;
     QString m_iconTheme;
     QString m_configuredIconTheme;
     bool m_light = true;
-    bool m_showIconsInMenus = true;
-    bool m_showShortcutsInMenus = true;
 
     // The application object is still being filled in while the theme is constructed, so
     // pushing a palette into it then would be overwritten a moment later.

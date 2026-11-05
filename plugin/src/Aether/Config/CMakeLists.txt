@@ -18,6 +18,7 @@ qml_module(aether-config
         aiconfig.hpp
         enums.hpp
         hybridconfig.hpp
+        qtconfig.hpp
         backgroundconfig.hpp
         barconfig.hpp
         dashboardconfig.hpp

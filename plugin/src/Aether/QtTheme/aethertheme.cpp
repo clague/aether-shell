@@ -194,14 +194,22 @@ QVariant AetherTheme::themeHint(ThemeHint hint) const {
         if (!m_iconTheme.isEmpty())
             return m_iconTheme;
         break;
+    case CursorFlashTime:
+        return m_settings.cursorFlashTime;
+    case MouseDoubleClickInterval:
+        return m_settings.doubleClickInterval;
+    case ToolButtonStyle:
+        return m_settings.toolButtonStyle;
+    case WheelScrollLines:
+        return m_settings.wheelScrollLines;
     case StyleNames:
         if (!m_styleNames.isEmpty())
             return m_styleNames;
         break;
     case ShowIconsInMenus:
-        return m_showIconsInMenus;
+        return m_hasShellSettings ? m_settings.menusHaveIcons : m_configuredMenusHaveIcons;
     case ShowShortcutsInContextMenus:
-        return m_showShortcutsInMenus;
+        return m_hasShellSettings ? m_settings.shortcutsInContextMenus : m_configuredShortcutsInMenus;
     default:
         break;
     }
@@ -231,8 +239,6 @@ void AetherTheme::reload() {
     // default instead of leaving the last applied value behind.
     m_styleNames.clear();
     m_configuredIconTheme.clear();
-    m_showIconsInMenus = true;
-    m_showShortcutsInMenus = true;
 
     QFile scheme(m_schemePath);
     if (scheme.open(QIODevice::ReadOnly)) {
@@ -265,10 +271,17 @@ void AetherTheme::reload() {
     qApp->setProperty("KDE_COLOR_SCHEME_PATH", m_colorSchemePath.isEmpty() ? QVariant() : m_colorSchemePath);
 
     QFile shellConfig(m_shellConfigPath);
-    if (shellConfig.open(QIODevice::ReadOnly))
-        m_configuredQtStyle = shellQtStyle(shellConfig.readAll());
+    m_hasShellSettings = shellConfig.open(QIODevice::ReadOnly);
+    m_settings = m_hasShellSettings ? qtSettingsFromJson(shellConfig.readAll()) : QtSettings();
+
+    if (m_settings.font.isEmpty())
+        m_font.reset();
     else
-        m_configuredQtStyle.clear();
+        m_font = QFont(m_settings.font, m_settings.fontSize > 0 ? m_settings.fontSize : 11);
+    if (m_settings.fontFixed.isEmpty())
+        m_fixedFont.reset();
+    else
+        m_fixedFont = QFont(m_settings.fontFixed, m_settings.fontFixedSize > 0 ? m_settings.fontFixedSize : 11);
 
     m_styleNames = resolveStyle();
 
@@ -302,9 +315,11 @@ void AetherTheme::applyConfig(const QByteArray& json) {
 
     m_configuredStyle = theme.value(u"style"_s).toString();
 
+    // The CLI's file still carries these; they are the fallback when the shell's Qt settings say
+    // nothing, which is what keeps a machine that never opened the page behaving as before.
     const QJsonObject misc = root.value(u"misc"_s).toObject();
-    m_showIconsInMenus = misc.value(u"menusHaveIcons"_s).toBool(true);
-    m_showShortcutsInMenus = misc.value(u"shortcutsForContextMenus"_s).toBool(true);
+    m_configuredMenusHaveIcons = misc.value(u"menusHaveIcons"_s).toBool(true);
+    m_configuredShortcutsInMenus = misc.value(u"shortcutsForContextMenus"_s).toBool(true);
 }
 
 QString AetherTheme::kdeIconTheme() const {
@@ -322,10 +337,10 @@ QStringList AetherTheme::resolveStyle() const {
     // An explicit choice beats every guess below. A style that is not installed keeps its value in
     // the config and falls through to the automatic chain, so uninstalling Darkly for an afternoon
     // does not silently rewrite the setting.
-    if (!m_configuredQtStyle.isEmpty() && m_configuredQtStyle.compare(u"auto"_s, Qt::CaseInsensitive) != 0) {
-        if (QStyleFactory::keys().contains(m_configuredQtStyle, Qt::CaseInsensitive))
-            return { m_configuredQtStyle };
-        qCWarning(lcTheme) << "Configured Qt style" << m_configuredQtStyle
+    if (!m_settings.style.isEmpty() && m_settings.style.compare(u"auto"_s, Qt::CaseInsensitive) != 0) {
+        if (QStyleFactory::keys().contains(m_settings.style, Qt::CaseInsensitive))
+            return { m_settings.style };
+        qCWarning(lcTheme) << "Configured Qt style" << m_settings.style
                            << "is not installed; falling back to the automatic choice";
     }
 
@@ -357,6 +372,8 @@ void AetherTheme::apply() {
     if (qobject_cast<QApplication*>(QCoreApplication::instance()) != nullptr) {
         if (m_palette && !kvantumIsActive())
             QApplication::setPalette(*m_palette);
+        if (m_font)
+            QApplication::setFont(*m_font);
     }
 
     QWindowSystemInterface::handleThemeChange();

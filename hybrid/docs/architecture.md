@@ -258,6 +258,14 @@ The icon theme and the font were both wrong at first: they were read from the CL
 every scheme change. That silently replaced a session's `kora` icons and its fontconfig font, and
 looked like "the theme is wrong" while the palette was in fact identical to KDE's.
 
+The Qt settings under Look & feel write `qt.*` in `shell.json` and are read straight from there
+by the engine: widget style, icon theme, font and monospace family/sizes, menu icons, context-menu
+shortcuts, toolbar button style, wheel scroll lines, cursor blink and double-click interval. Three
+things `qtengine` exposes are deliberately absent — `quickStyle` would link QtQuick Controls into
+every Qt Widgets application, `singleClickActivate` is a `QStyle` hint and we ship no style plugin,
+and `dialogTheme` delegates dialogs to another platform theme, which is the dependency D12 exists
+to avoid.
+
 What it deliberately does not do:
 
 - **No Qt5 leg.** Nothing here is Qt5, and qtengine's Qt5 tree is half its code and needs an

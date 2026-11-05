@@ -47,6 +47,10 @@ public:
     // QStyleFactory, which lives in QtWidgets and is not linked here.
     Q_INVOKABLE static QStringList availableQtStyles();
 
+    // Installed icon themes, for the Qt settings page: one entry per directory that carries an
+    // index.theme, in the three places the icon spec searches.
+    Q_INVOKABLE static QStringList availableIconThemes();
+
     [[nodiscard]] static QString version();
     [[nodiscard]] static QString qtVersion();
     Q_INVOKABLE static bool mkdirp(const QString& path);
