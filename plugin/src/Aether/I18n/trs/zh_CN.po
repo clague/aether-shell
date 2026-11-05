@@ -9020,3 +9020,63 @@ msgstr "任务栏时钟"
 #: modules/nexus/pages/background/DesktopClockPage.qml
 msgid "Date, icon and background of the bar clock"
 msgstr "任务栏时钟的日期、图标与背景"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Qt application theme"
+msgstr "Qt 应用主题"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Toolkit backends"
+msgstr "工具包后端"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Aether's Qt theme is active"
+msgstr "Aether 的 Qt 主题已生效"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "QT_QPA_PLATFORMTHEME is aether but the plugin is missing"
+msgstr "QT_QPA_PLATFORMTHEME 设为 aether，但插件不存在"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "No Qt platform theme is set, so Qt apps use their own defaults"
+msgstr "未设置 Qt 平台主题，Qt 应用使用自带默认样式"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Qt apps use %1"
+msgstr "Qt 应用使用 %1"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "No cursor theme is set; the default is used"
+msgstr "未设置光标主题，使用默认光标"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Using %1 at %2 px"
+msgstr "使用 %1，大小 %2 px"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Cursor theme %1 is not installed"
+msgstr "光标主题 %1 未安装"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "GTK, Electron and Qt apps are told to use Wayland"
+msgstr "已告知 GTK、Electron 与 Qt 应用使用 Wayland"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Not set: %1"
+msgstr "未设置：%1"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Install it with ./hybrid/tools/install-qt-theme.sh, then log out and back in"
+msgstr "运行 ./hybrid/tools/install-qt-theme.sh 安装，然后重新登录"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Set QT_QPA_PLATFORMTHEME=aether in ~/.config/caelestia/hypr-user.lua"
+msgstr "在 ~/.config/caelestia/hypr-user.lua 里设置 QT_QPA_PLATFORMTHEME=aether"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Point XCURSOR_THEME at a theme in ~/.icons or ~/.local/share/icons"
+msgstr "把 XCURSOR_THEME 指向 ~/.icons 或 ~/.local/share/icons 里已有的主题"
+
+#: modules/nexus/common/DoctorText.qml
+msgid "Without these, those apps may run under XWayland"
+msgstr "缺少这些变量时，相关应用可能退回 XWayland"

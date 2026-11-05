@@ -139,10 +139,13 @@ def c_rfkill():
             hint="Check the laptop's airplane-mode key or switch",
         )
     if soft:
+        # Turning a radio off in software is something the user did on purpose -- the usual
+        # reason is a machine on Ethernet. It is reported, not counted as a problem; the fix is
+        # still offered for when it was not on purpose.
         return check(
             "rfkill",
             "Radios",
-            "warn",
+            "info",
             f"Switched off in software: {', '.join(soft)}",
             detail_key="Switched off in software: %1",
             detail_args=[", ".join(soft)],
@@ -350,6 +353,118 @@ def c_portal():
     )
 
 
+def qt_theme_plugin():
+    """Where Aether's Qt platform theme lives, if it is installed anywhere Qt looks."""
+    roots = [r for r in os.environ.get("QT_PLUGIN_PATH", "").split(":") if r]
+    # The default location is not in QT_PLUGIN_PATH, and a checkout installs into the user's
+    # own plugin dir without exporting it; both are scanned so "installed" means installed.
+    roots += [str(HOME / ".local/lib/qt6/plugins"), "/usr/lib/qt6/plugins"]
+    for root in roots:
+        candidate = Path(root) / "platformthemes/libaethertheme.so"
+        if candidate.exists():
+            return candidate
+    return None
+
+
+def c_qt_theme():
+    theme = os.environ.get("QT_QPA_PLATFORMTHEME", "").strip()
+    if theme == "aether":
+        if qt_theme_plugin():
+            return check(
+                "qt_theme",
+                "Qt application theme",
+                "ok",
+                "Aether's Qt theme is active",
+                detail_key="Aether's Qt theme is active",
+            )
+        return check(
+            "qt_theme",
+            "Qt application theme",
+            "warn",
+            "QT_QPA_PLATFORMTHEME is aether but the plugin is missing",
+            detail_key="QT_QPA_PLATFORMTHEME is aether but the plugin is missing",
+            hint="Install it with ./hybrid/tools/install-qt-theme.sh, then log out and back in",
+        )
+    if not theme:
+        return check(
+            "qt_theme",
+            "Qt application theme",
+            "info",
+            "No Qt platform theme is set, so Qt apps use their own defaults",
+            detail_key="No Qt platform theme is set, so Qt apps use their own defaults",
+            hint="Set QT_QPA_PLATFORMTHEME=aether in ~/.config/caelestia/hypr-user.lua",
+        )
+    return check(
+        "qt_theme",
+        "Qt application theme",
+        "info",
+        f"Qt apps use {theme}",
+        detail_key="Qt apps use %1",
+        detail_args=[theme],
+    )
+
+
+def c_cursor_theme():
+    theme = os.environ.get("XCURSOR_THEME", "").strip()
+    size = os.environ.get("XCURSOR_SIZE", "").strip()
+    if not theme:
+        return check(
+            "cursor_theme",
+            "Cursor theme",
+            "info",
+            "No cursor theme is set; the default is used",
+            detail_key="No cursor theme is set; the default is used",
+        )
+    dirs = [
+        HOME / ".icons" / theme,
+        HOME / ".local/share/icons" / theme,
+        Path("/usr/share/icons") / theme,
+    ]
+    if any(d.exists() for d in dirs):
+        return check(
+            "cursor_theme",
+            "Cursor theme",
+            "ok",
+            f"Using {theme} at {size or 'default'} px",
+            detail_key="Using %1 at %2 px",
+            detail_args=[theme, size or "default"],
+        )
+    return check(
+        "cursor_theme",
+        "Cursor theme",
+        "warn",
+        f"Cursor theme {theme} is not installed",
+        detail_key="Cursor theme %1 is not installed",
+        detail_args=[theme],
+        hint="Point XCURSOR_THEME at a theme in ~/.icons or /usr/share/icons",
+    )
+
+
+def c_wayland_hints():
+    missing = [
+        var
+        for var in ("GDK_BACKEND", "ELECTRON_OZONE_PLATFORM_HINT", "QT_QPA_PLATFORM")
+        if not os.environ.get(var)
+    ]
+    if not missing:
+        return check(
+            "wayland_hints",
+            "Toolkit backends",
+            "ok",
+            "GTK, Electron and Qt apps are told to use Wayland",
+            detail_key="GTK, Electron and Qt apps are told to use Wayland",
+        )
+    return check(
+        "wayland_hints",
+        "Toolkit backends",
+        "info",
+        f"Not set: {', '.join(missing)}",
+        detail_key="Not set: %1",
+        detail_args=[", ".join(missing)],
+        hint="Without these, those apps may run under XWayland",
+    )
+
+
 def c_audio():
     down = [u for u in ("pipewire", "wireplumber") if not active(u, user=True)]
     if not down:
@@ -542,6 +657,9 @@ CHECKS = [
     c_polkit,
     c_portal,
     c_audio,
+    c_qt_theme,
+    c_cursor_theme,
+    c_wayland_hints,
     c_monitors,
     c_crashes,
     c_plugin,
@@ -643,7 +761,14 @@ FIXES = {
 
 
 # Left out of background runs: they only matter when you are looking, and they cost the most
-NOT_WATCHED = {c_wifi_dupes, c_plugin, c_btagent}
+NOT_WATCHED = {
+    c_wifi_dupes,
+    c_plugin,
+    c_btagent,
+    c_qt_theme,
+    c_cursor_theme,
+    c_wayland_hints,
+}
 # bt-agent runs only while the settings window (which hosts the pairing dialog) is open, so
 # "not running" is normal in the background. Watching it would toast on every open/close;
 # the Doctor page still checks it while the window is open.
