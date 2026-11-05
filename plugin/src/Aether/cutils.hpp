@@ -55,6 +55,14 @@ public:
     // can show what "follow the desktop" resolves to instead of leaving it a guess.
     Q_INVOKABLE static QString desktopIconTheme();
 
+    // The icon theme the caelestia CLI generated (qtengine/config.json), which is what a machine
+    // without KDE falls back to.
+    Q_INVOKABLE static QString qtConfigIconTheme();
+
+    // The font fontconfig resolves, so the settings page can show what "follow fontconfig" gives.
+    // `fixed` asks for fontconfig's monospace font instead of its UI font.
+    Q_INVOKABLE static QString systemFont(bool fixed = false);
+
     [[nodiscard]] static QString version();
     [[nodiscard]] static QString qtVersion();
     Q_INVOKABLE static bool mkdirp(const QString& path);

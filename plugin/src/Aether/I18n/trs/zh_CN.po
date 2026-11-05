@@ -9208,3 +9208,31 @@ msgstr "跟随桌面：%1"
 #: modules/nexus/pages/LookAndFeelPage.qml
 msgid "Name one here, or leave it to the desktop"
 msgstr "在此指定一个，或交给桌面决定"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Using %1"
+msgstr "使用 %1"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Following KDE's icon setting in kdeglobals: %1"
+msgstr "跟随 KDE 的图标设置（kdeglobals）：%1"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "No KDE icon setting on this machine; using the CLI's %1"
+msgstr "本机没有 KDE 图标设置，使用 CLI 生成的 %1"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "No KDE icon setting and no CLI value; using Qt's own icons"
+msgstr "既没有 KDE 图标设置也没有 CLI 配置，使用 Qt 自带的图标"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Empty follows fontconfig; now %1"
+msgstr "留空跟随 fontconfig，当前为 %1"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Empty follows fontconfig's monospace; now %1"
+msgstr "留空跟随 fontconfig 等宽字体，当前为 %1"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Follow fontconfig"
+msgstr "跟随 fontconfig"

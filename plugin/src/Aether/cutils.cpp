@@ -4,7 +4,9 @@
 #include <qdir.h>
 #include <qfile.h>
 #include <qfileinfo.h>
+#include <qfontdatabase.h>
 #include <qjsonarray.h>
+#include <qjsondocument.h>
 #include <qjsonobject.h>
 #include <qjsonvalue.h>
 #include <qlibraryinfo.h>
@@ -359,6 +361,22 @@ QString CUtils::desktopIconTheme() {
     // [Icons] is a real section, unlike the bare [General] section QSettings maps onto the root.
     const QSettings settings(path, QSettings::IniFormat);
     return settings.value(u"Icons/Theme"_s).toString();
+}
+
+QString CUtils::qtConfigIconTheme() {
+    const QString path =
+        QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/qtengine/config.json"_s;
+    QFile file(path);
+    if (!file.open(QIODevice::ReadOnly))
+        return {};
+
+    const QJsonDocument document = QJsonDocument::fromJson(file.readAll());
+    return document.object().value(u"theme"_s).toObject().value(u"iconTheme"_s).toString();
+}
+
+QString CUtils::systemFont(bool fixed) {
+    const QFont font = QFontDatabase::systemFont(fixed ? QFontDatabase::FixedFont : QFontDatabase::GeneralFont);
+    return font.pointSize() > 0 ? QStringLiteral("%1 %2").arg(font.family()).arg(font.pointSize()) : font.family();
 }
 
 QString CUtils::qtVersion() {

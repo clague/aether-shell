@@ -92,6 +92,17 @@ QString colorSchemePath(const QByteArray& kdeglobals) {
     return {};
 }
 
+// Whether a theme directory exists where the icon spec looks. Only used to avoid naming a theme
+// that is not on the machine.
+bool iconThemeInstalled(const QString& name) {
+    const QString home = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+    for (const QString& dir : { QDir::homePath() + u"/.icons"_s, home + u"/icons"_s, u"/usr/share/icons"_s }) {
+        if (QFileInfo::exists(dir + u'/' + name + u"/index.theme"_s))
+            return true;
+    }
+    return false;
+}
+
 QString kvantumConfigPath() {
     return QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/Kvantum/kvantum.kvconfig"_s;
 }
@@ -288,11 +299,19 @@ void AetherTheme::reload() {
     // kdeglobals wins: it is the desktop's icon setting, and the CLI's file only ever holds the
     // Papirus template value it was generated from. Overriding the first with the second is what
     // made Qt apps show Papirus icons in a session whose icons were something else.
-    m_iconTheme = kdeIconTheme();
+    // The setting wins, then the session's own icon choice, then the CLI's template value, then
+    // Papirus -- and only if Papirus is actually installed, because naming a theme that is not
+    // there makes Qt fall back to hicolor while the settings page keeps claiming otherwise.
+    m_iconTheme = m_settings.iconTheme;
+    if (m_iconTheme.isEmpty())
+        m_iconTheme = kdeIconTheme();
     if (m_iconTheme.isEmpty())
         m_iconTheme = m_configuredIconTheme;
-    if (m_iconTheme.isEmpty())
-        m_iconTheme = m_light ? u"Papirus-Light"_s : u"Papirus-Dark"_s;
+    if (m_iconTheme.isEmpty()) {
+        const QString guess = m_light ? u"Papirus-Light"_s : u"Papirus-Dark"_s;
+        if (iconThemeInstalled(guess))
+            m_iconTheme = guess;
+    }
 
     // Re-added every time: whichever file changed, the rename may have dropped its watch.
     watch(m_schemePath);

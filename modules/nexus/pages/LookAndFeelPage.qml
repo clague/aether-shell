@@ -29,6 +29,23 @@ PageBase {
     // The theme only runs when the session points Qt at it; until then every row below is inert.
     readonly property bool qtThemeActive: Quickshell.env("QT_QPA_PLATFORMTHEME") === "aether"
 
+    // What "follow the desktop" actually resolves to, and what happens on a machine that has no
+    // KDE config to follow: the settings page is the only place that answer can be given.
+    readonly property string iconThemeHint: {
+        if (GlobalConfig.qt.iconTheme !== "")
+            return Tr.tr("Using %1").arg(GlobalConfig.qt.iconTheme);
+
+        const kde = CUtils.desktopIconTheme();
+        if (kde !== "")
+            return Tr.tr("Following KDE's icon setting in kdeglobals: %1").arg(kde);
+
+        const cli = CUtils.qtConfigIconTheme();
+        if (cli !== "")
+            return Tr.tr("No KDE icon setting on this machine; using the CLI's %1").arg(cli);
+
+        return Tr.tr("No KDE icon setting and no CLI value; using Qt's own icons");
+    }
+
     readonly property var iconThemeValues: [""].concat(CUtils.availableIconThemes())
     readonly property var iconThemeItems: iconThemeValues.map(name => qtStyleItem.createObject(root, {
             "text": name === "" ? Tr.tr("Follow the desktop") : name
@@ -85,7 +102,7 @@ PageBase {
         SelectRow {
             Layout.fillWidth: true
             label: Tr.tr("Icon theme")
-            subtext: GlobalConfig.qt.iconTheme === "" && CUtils.desktopIconTheme() !== "" ? Tr.tr("Following the desktop: %1").arg(CUtils.desktopIconTheme()) : Tr.tr("Name one here, or leave it to the desktop")
+            subtext: root.iconThemeHint
             configNode: GlobalConfig.qt
             propertyName: "iconTheme"
             menuItems: root.iconThemeItems
@@ -100,11 +117,11 @@ PageBase {
         TextFieldRow {
             Layout.fillWidth: true
             label: Tr.tr("Font family")
-            subtext: Tr.tr("Empty uses fontconfig, which is what App fonts writes")
+            subtext: Tr.tr("Empty follows fontconfig; now %1").arg(CUtils.systemFont())
             configNode: GlobalConfig.qt
             propertyName: "font"
             value: GlobalConfig.qt.font
-            placeholderText: Tr.tr("Follow the system")
+            placeholderText: Tr.tr("Follow fontconfig")
             onEditingFinished: value => GlobalConfig.qt.font = value.trim()
         }
 
@@ -124,11 +141,11 @@ PageBase {
         TextFieldRow {
             Layout.fillWidth: true
             label: Tr.tr("Monospace family")
-            subtext: Tr.tr("Empty uses fontconfig's monospace")
+            subtext: Tr.tr("Empty follows fontconfig's monospace; now %1").arg(CUtils.systemFont(true))
             configNode: GlobalConfig.qt
             propertyName: "fontFixed"
             value: GlobalConfig.qt.fontFixed
-            placeholderText: Tr.tr("Follow the system")
+            placeholderText: Tr.tr("Follow fontconfig")
             onEditingFinished: value => GlobalConfig.qt.fontFixed = value.trim()
         }
 
