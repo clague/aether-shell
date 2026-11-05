@@ -209,6 +209,38 @@ Rejected: keeping these choices only in `~/.local/state` (they vanish with a com
 need the shell to push them again) and writing the user's dotfiles directly (that is a separate
 checkout upstream updates; an editor conflict would silently drop the settings).
 
+### D12 — Aether ships its own Qt platform theme
+
+Qt applications do not read any of this shell's state, so every one of them renders in whatever
+palette the Qt platform theme happens to supply — on this class of machine, usually KDE's, from a
+`kde` package the desktop does not otherwise use. `plugin/src/Aether/QtTheme/` closes that gap
+with a `QPlatformTheme` that reads the scheme the shell is already showing.
+
+The alternative was depending on the AUR `qtengine` package, which the caelestia CLI already writes
+a config for. It was rejected on ownership grounds, not on quality: qtengine is a good shape to
+copy, but it is a second package that must be rebuilt after every Qt upgrade, and its config
+(`~/.config/qtengine/config.json`) would then be the thing that decides the colours. Building it
+in-tree means the theme rebuilds exactly when the shell does, from the same Qt.
+
+What it does: `palette()`, `font()`, `themeHint()` for the icon theme and the widget style, and a
+file watcher that re-applies both when `scheme.json` or the CLI's Qt config is rewritten. What it
+deliberately does not do:
+
+- **No Qt5 leg.** Nothing here is Qt5, and qtengine's Qt5 tree is half its code and needs an
+  explicit `QT5_PLUGINDIR`.
+- **No style plugin.** Qt's own Fusion style already respects the palette; a proxy style would add
+  a second library and a `QStyleFactory` key for no visible gain. The configured style name is
+  still honoured when the factory can create it.
+- **No KDE `.colors` parser.** `scheme.json` already holds the M3 tokens, in the file the shell
+  reads; parsing the KDE format would be a second copy of the same colours.
+
+Installation is two paths because the theme has to be visible to processes the shell never
+starts: `make install` puts it in `${prefix}/lib/qt6/plugins/platformthemes`, and
+`hybrid/tools/install-qt-theme.sh` copies the build output to `~/.local/lib/qt6/plugins` for a
+checkout. `QT_PLUGIN_PATH` and `QT_QPA_PLATFORMTHEME=aether` go in `~/.config/caelestia/hypr-user.lua`,
+never in `hybrid/hypr/` — that tree is shared, and an absolute checkout path in it breaks every
+other machine (which is why the same rule removed a hardcoded `QML2_IMPORT_PATH`).
+
 ---
 
 ## 5. Testing

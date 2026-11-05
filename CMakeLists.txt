@@ -175,6 +175,7 @@ set(DISTRIBUTOR "Unset" CACHE STRING "Distributor")
 set(ENABLE_MODULES "extras;plugin;shell" CACHE STRING "Modules to build/install")
 set(INSTALL_LIBDIR "${CMAKE_INSTALL_LIBDIR}/caelestia" CACHE STRING "Library install dir")
 set(INSTALL_QMLDIR "${CMAKE_INSTALL_LIBDIR}/qt6/qml" CACHE STRING "QML install dir")
+set(INSTALL_QTPLUGINDIR "${CMAKE_INSTALL_LIBDIR}/qt6/plugins" CACHE STRING "Qt plugin install dir")
 set(INSTALL_QSCONFDIR "${CMAKE_INSTALL_SYSCONFDIR}/xdg/quickshell/caelestia" CACHE STRING "Quickshell config install dir")
 
 add_compile_definitions(

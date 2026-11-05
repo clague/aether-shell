@@ -43,6 +43,26 @@ pattern lock this project rejects (D10), so it has no key until that is resolved
 There is no preset layer: every default is static, and the switch on its own page is the only way
 to change it.
 
+### Qt applications follow the shell
+
+`plugin/src/Aether/QtTheme/` builds a Qt platform theme, so Qt Widgets applications use the
+scheme the shell is displaying instead of a separate palette from KDE or `qtengine`. It reads
+`~/.local/state/caelestia/scheme.json` and re-applies while the apps are running, so a scheme
+change reaches them without a restart.
+
+It is opt-in. A system install lands in `${prefix}/lib/qt6/plugins/platformthemes`; for a checkout,
+run `./hybrid/tools/install-qt-theme.sh`, then set the two environment variables in
+`~/.config/caelestia/hypr-user.lua` (not in the shared Hyprland config):
+
+```sh
+hl.env("QT_QPA_PLATFORMTHEME", "aether")
+hl.env("QT_PLUGIN_PATH", (os.getenv("HOME") or "") .. "/.local/lib/qt6/plugins")
+```
+
+It is a plugin, so it is rebuilt with the shell and must be rebuilt after a Qt upgrade —
+`install-qt-theme.sh` re-copies the fresh build, and a system install is redone by the package
+manager. See D12 in `hybrid/docs/architecture.md`.
+
 ## Installation
 
 > [!IMPORTANT]

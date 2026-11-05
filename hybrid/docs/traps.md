@@ -3106,3 +3106,32 @@ The same trap applies to `lua-language-server`'s `Undefined global` diagnostics:
 backticks (`Undefined global \`hl\`.`), not quotes, so the client-side filter has to match the
 backticked form. Hyprland injects `hl`/`vars` as globals and the server in this distribution ignores
 the `diagnostics.globals` setting sent over LSP.
+
+## T71 — A platform theme is not a `QObject`, and its file watcher must outlive the constructor
+
+`QPlatformTheme` is a `Q_GADGET`, not a `QObject`. A plugin that derives from it directly cannot
+carry `Q_OBJECT`, cannot own a `QTimer`, and cannot be the receiver of a `connect`. The class has
+to inherit from both, with `QObject` first: moc needs the QObject base to generate the metaobject,
+and the palette/font overrides still dispatch through the `QPlatformTheme` base. qtengine does the
+same, which is why its `.hpp` lists `public QObject, public QGenericUnixTheme`.
+
+The second half is quieter. A `QFileSystemWatcher` created inside the platform theme's constructor
+accepts the path — `addPath` returns true, `files()` lists it — and then never fires again. The
+theme is constructed while `QGuiApplication` is still being set up, before the event loop runs,
+and the watcher's socket notifier is attached to nothing. The symptom is a theme that applies
+perfectly at startup and ignores every later change, with no error anywhere.
+
+The fix is one deferred call:
+
+```cpp
+reload();  // palette() is asked for synchronously, so the first read cannot wait
+QMetaObject::invokeMethod(this, &AetherTheme::startWatching, Qt::QueuedConnection);
+```
+
+with the watcher, the debounce timer and the `m_started` flag created there, followed by one more
+`reload()` to catch whatever changed in between. qtengine reaches the same shape through a queued
+`applySettings` and a singleton watcher for the same reason.
+
+Verified by running a Qt Widgets probe application under `QT_QPA_PLATFORMTHEME=aether`, rewriting
+`scheme.json` while it ran, and watching it print the new palette — and by screenshotting Dolphin,
+which is the only check that shows the theme reached a real application rather than a probe.
