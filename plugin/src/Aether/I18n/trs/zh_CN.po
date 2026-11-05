@@ -1829,7 +1829,7 @@ msgid "Shell"
 msgstr "Shell"
 
 #: modules/nexus/pages/AboutPage.qml modules/nexus/SearchIndex.qml
-msgctxt "the caelestia command line tool"
+msgctxt "the aether command line tool"
 msgid "CLI"
 msgstr "CLI"
 

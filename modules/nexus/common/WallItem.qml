@@ -84,7 +84,7 @@ Item {
                         return "";
 
                     if (Wallpapers.isVideo(target)) {
-                        const thumb = Wallpapers.getWallpaperThumb(target, Wallpapers.cacheBuster);
+                        const thumb = Wallpapers.getWallpaperThumb(target);
                         return (typeof thumb === "string" && thumb !== "undefined") ? thumb : "";
                     }
                     return root.source || target;

@@ -4741,7 +4741,7 @@ QtObject {
             kind: "row",
             page: 16,
             sub: 0,
-            label: Tr.trCtx("CLI", "the caelestia command line tool"),
+            label: Tr.trCtx("CLI", "the aether command line tool"),
             subtext: "",
             section: Tr.tr("Software"),
             subTitle: Tr.tr("About"),

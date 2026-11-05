@@ -205,9 +205,14 @@ if("plugin" IN_LIST ENABLE_MODULES)
 endif()
 
 if("shell" IN_LIST ENABLE_MODULES)
-    foreach(dir assets components daemons modules services utils)
-        install(DIRECTORY ${dir} DESTINATION "${INSTALL_QSCONFDIR}")
+    foreach(dir assets components daemons modules services utils hybrid)
+        install(DIRECTORY ${dir} DESTINATION "${INSTALL_QSCONFDIR}"
+            PATTERN "__pycache__" EXCLUDE PATTERN "*.pyc" EXCLUDE)
     endforeach()
+
+    # install(DIRECTORY) does not carry the executable bit. The QML callers run this file
+    # directly, so it has to stay executable.
+    install(PROGRAMS hybrid/bin/aether DESTINATION "${INSTALL_QSCONFDIR}/hybrid/bin")
 
     # Runtime helpers (bt-agent, app-fonts, doctor, display-draft, wifi-connect,
     # startup-shell) are resolved through Quickshell.shellPath("scripts/..."), so an

@@ -57,7 +57,7 @@ Item {
         Item {
             id: imagePreview
 
-            property string imagePath: (root.modelData?.isImage ?? false) ? `${Quickshell.env("XDG_RUNTIME_DIR") || "/tmp"}/caelestia/clipboard/${root.modelData?.id ?? ""}.png` : ""
+            property string imagePath: (root.modelData?.isImage ?? false) ? Clipboard.getImagePath(root.modelData?.id ?? -1) : ""
 
             width: (root.modelData?.isImage ?? false) ? 120 : 0
             height: (root.modelData?.isImage ?? false) ? 80 : 0

@@ -39,7 +39,7 @@ Singleton {
     property bool combinedSinkEnabled: false
     property var combinedSinkMembers: []
     property var sinkVolumeTrims: ({})
-    readonly property string combinedModuleName: "caelestia_combined"
+    readonly property string combinedModuleName: "aether_combined"
     readonly property PwNode combinedSinkNode: sinks.find(s => s && s.name === combinedModuleName) ?? null
     readonly property bool isCombinedSinkActive: combinedSinkNode !== null
     property bool routingStateLoaded: false

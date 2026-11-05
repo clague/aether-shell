@@ -37,8 +37,6 @@ Searcher {
 
     property string wallpaperMode: "static"
 
-    property string cacheBuster: ""
-
     property string rollbackPath: ""
 
     property string rollbackMode: ""
@@ -125,12 +123,11 @@ Searcher {
         return res;
     }
 
-    function getWallpaperThumb(path, buster) {
+    function getWallpaperThumb(path) {
         let clean = String(path || "").split(/[?#]/)[0];
         if (clean.indexOf("file://") === 0)
             clean = clean.substring(7);
-        let b = buster !== undefined ? buster : cacheBuster;
-        return Paths.cache + "/videothumbs/" + djb2_hash(clean) + ".jpg" + (b ? "?v=" + b : "");
+        return Paths.cache + "/videothumbs/" + djb2_hash(clean) + ".jpg";
     }
 
     function isVideo(path: string): bool {

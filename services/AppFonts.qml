@@ -66,9 +66,9 @@ Singleton {
     }
 
     function restartShell(): void {
-        // caelestia-cli is a hard dependency of this shell and `shell -r` is the supported
-        // restart path. OP's tree has scripts/startup-shell.sh; this one does not, so the
-        // button used to exec a missing file. Quickshell exposes no programmatic reload.
+        // `shell -r` is the supported restart path. OP's tree has scripts/startup-shell.sh;
+        // this one does not, so the button used to exec a missing file. Quickshell exposes no
+        // programmatic reload.
         Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "shell", "-r"]);
     }
 

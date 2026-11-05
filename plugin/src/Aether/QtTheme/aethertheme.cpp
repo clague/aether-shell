@@ -45,19 +45,18 @@ QString stateDir() {
     return QStandardPaths::writableLocation(QStandardPaths::GenericStateLocation) + u"/caelestia"_s;
 }
 
-// The caelestia CLI writes this for the Qt theme it expects to be present. Reading it keeps
-// Aether's engine a drop-in for that setup: the colour scheme comes from scheme.json, while the
-// font, icon theme and widget style come from here.
+// qtengine writes this when the user has it installed. Reading it keeps Aether's engine a
+// drop-in for that setup: the colour scheme comes from scheme.json, while the font, icon theme
+// and widget style may come from here.
 QString configPath() {
     return QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/qtengine/config.json"_s;
 }
 
 // kvantummanager writes this. Its [General] theme is the only signal in the tree that a person
-// chose a widget style by hand -- the style named in the CLI's config is regenerated from a
-// template on every scheme change, so it is a default, not a preference.
-// The shell's own settings. This is the only place a style choice can live: the CLI regenerates
-// ~/.config/qtengine/config.json from a template on every scheme change, so a value written there
-// is gone by the next theme switch.
+// chose a widget style by hand -- the style named in the generated Qt config is a default, not
+// a preference.
+// The shell's own settings. This is the only place a style choice can live: a generated
+// qtengine config is replaced on theme changes, so a value written there does not survive.
 QString shellConfigPath() {
     return QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/caelestia/shell.json"_s;
 }

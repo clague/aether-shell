@@ -16,6 +16,7 @@ import qs.components.controls
 import qs.components.effects
 import qs.services
 import qs.utils
+import qs.modules.launcher.services
 
 Item {
     id: root
@@ -306,8 +307,8 @@ Item {
         GlobalConfig.ai.recentModels = list;
     }
 
-    function runAgentCommand(cmd, type) {
-        var processQml = "import QtQuick\n" + "import Quickshell.Io\n" + "Process {\n" + "    id: proc\n" + "    command: [\"sh\", \"-c\", " + JSON.stringify(cmd) + "]\n" + "    property string outStr: \"\"\n" + "    property string errStr: \"\"\n" + "    property bool hasExited: false\n" + "    property int exitCode: 0\n" + "    property bool outFinished: false\n" + "    property bool errFinished: false\n" + "    function checkDone() {\n" + "        if (hasExited && outFinished && errFinished) {\n" + "            root.handleAgentProcessResult(" + JSON.stringify(type) + ", proc.outStr, proc.errStr, " + JSON.stringify(cmd) + ", proc.exitCode);\n" + "            proc.destroy();\n" + "        }\n" + "    }\n" + "    stdout: StdioCollector { onStreamFinished: { proc.outStr = text || \"\"; proc.outFinished = true; proc.checkDone(); } }\n" + "    stderr: StdioCollector { onStreamFinished: { proc.errStr = text || \"\"; proc.errFinished = true; proc.checkDone(); } }\n" + "    onExited: code => { proc.exitCode = code; proc.hasExited = true; proc.checkDone(); }\n" + "}";
+    function runAgentArgv(argv, type) {
+        var processQml = "import QtQuick\n" + "import Quickshell.Io\n" + "Process {\n" + "    id: proc\n" + "    command: " + JSON.stringify(argv) + "\n" + "    property string outStr: \"\"\n" + "    property string errStr: \"\"\n" + "    property bool hasExited: false\n" + "    property int exitCode: 0\n" + "    property bool outFinished: false\n" + "    property bool errFinished: false\n" + "    function checkDone() {\n" + "        if (hasExited && outFinished && errFinished) {\n" + "            root.handleAgentProcessResult(" + JSON.stringify(type) + ", proc.outStr, proc.errStr, " + JSON.stringify(argv.join(" ")) + ", proc.exitCode);\n" + "            proc.destroy();\n" + "        }\n" + "    }\n" + "    stdout: StdioCollector { onStreamFinished: { proc.outStr = text || \"\"; proc.outFinished = true; proc.checkDone(); } }\n" + "    stderr: StdioCollector { onStreamFinished: { proc.errStr = text || \"\"; proc.errFinished = true; proc.checkDone(); } }\n" + "    onExited: code => { proc.exitCode = code; proc.hasExited = true; proc.checkDone(); }\n" + "}";
         var obj = Qt.createQmlObject(processQml, root, "agentProcess");
         obj.running = true;
     }
@@ -1174,7 +1175,7 @@ Item {
                                     var toolName = calls[t].name;
                                     var args = calls[t].args;
 
-                                    if (toolName === "web_search" || toolName === "read_webpage" || toolName === "open_app" || toolName === "get_weather" || toolName === "caelestia_command") {
+                                    if (toolName === "web_search" || toolName === "read_webpage" || toolName === "open_app" || toolName === "get_weather" || toolName === "aether_command") {
                                         runningToolsCount++;
                                     }
 
@@ -1182,35 +1183,46 @@ Item {
                                         currentActionText = "Searching the web...";
                                         var query = args.query;
                                         var page = args.page || 1;
-                                        runAgentCommand('PYTHONIOENCODING=utf8 python3 "' + Quickshell.shellDir + '/assets/scripts/orion_search.py" --mode search --query "' + query.replace(new RegExp("\"", "g"), '\"') + '" --page ' + page, "exec_" + toolName);
+                                        runAgentArgv(["env", "PYTHONIOENCODING=utf8", "python3", Quickshell.shellDir + "/assets/scripts/orion_search.py", "--mode", "search", "--query", String(query), "--page", String(page)], "exec_" + toolName);
                                     } else if (toolName === "read_webpage") {
                                         currentActionText = "Reading webpage...";
                                         var url = args.url;
-                                        runAgentCommand('PYTHONIOENCODING=utf8 python3 "' + Quickshell.shellDir + '/assets/scripts/orion_search.py" --mode read --url "' + url.replace(new RegExp("\"", "g"), '\"') + '"', "exec_" + toolName);
+                                        runAgentArgv(["env", "PYTHONIOENCODING=utf8", "python3", Quickshell.shellDir + "/assets/scripts/orion_search.py", "--mode", "read", "--url", String(url)], "exec_" + toolName);
                                     } else if (toolName === "open_app") {
                                         currentActionText = "Opening app...";
-                                        var app = args.app_name;
-                                        runAgentCommand('grep -i -m 1 "^Exec=" $(find /usr/share/applications ~/.local/share/applications -name "*.desktop" -exec grep -il "Name=.*' + app.replace(new RegExp("\"", "g"), '\"') + '" {} \;) | cut -d "=" -f 2- | sed "s/ %[a-zA-Z]//g" | xargs -I {} sh -c "{} & disown"', "exec_" + toolName);
+                                        var wanted = String(args.app_name || "").toLowerCase();
+                                        var entry = DesktopEntries.applications.values.find(e => (e.name || "").toLowerCase().includes(wanted));
+                                        runningToolsCount--;
+                                        if (!entry)
+                                            recordToolResult("open_app", "No application matched: " + wanted);
+                                        else {
+                                            Apps.launch(entry);
+                                            recordToolResult("open_app", "Opened " + entry.name);
+                                        }
                                     } else if (toolName === "set_timer") {
                                         currentActionText = "Setting timer...";
                                         var secs = args.seconds || 5;
                                         var msg = args.message || "Timer finished";
-                                        var safeMsg = msg.replace(new RegExp("\"", "g"), '\"');
-                                        var timerQml = "import QtQuick; Timer { interval: " + (secs * 1000) + "; running: true; onTriggered: { root.runAgentCommand('notify-send \"Orion Timer\" \"" + safeMsg + "\"', \"timer_trigger\"); destroy(); } }";
+                                        // JSON.stringify turns the message into a JS literal, so a quote in it
+                                        // cannot end the generated string.
+                                        var timerQml = "import QtQuick; Timer { interval: " + (secs * 1000) + "; running: true; onTriggered: { root.runAgentArgv(" + JSON.stringify(["notify-send", "Orion Timer", String(msg)]) + ", \"timer_trigger\"); destroy(); } }";
                                         Qt.createQmlObject(timerQml, root, "timer_" + Date.now());
                                         recordToolResult("set_timer", "Timer successfully set for " + secs + " seconds in the background.");
                                     } else if (toolName === "get_weather") {
                                         currentActionText = "Checking weather...";
                                         var loc = args.location;
-                                        runAgentCommand('curl -s "wttr.in/' + loc.replace(new RegExp("\"", "g"), '\"') + '?0T"', "exec_" + toolName);
-                                    } else if (toolName === "caelestia_command") {
-                                        currentActionText = "Running caelestia...";
-                                        var subcmd = args.subcommand || "";
-                                        var subargs = args.args || "";
-                                        var cmd = "caelestia " + subcmd;
-                                        if (subargs)
-                                            cmd += " " + subargs;
-                                        runAgentCommand(cmd, "exec_" + toolName);
+                                        runAgentArgv(["curl", "-s", "wttr.in/" + String(loc) + "?0T"], "exec_" + toolName);
+                                    } else if (toolName === "aether_command") {
+                                        currentActionText = "Running aether...";
+                                        var subcmd = String(args.subcommand || "");
+                                        var allowed = ["shell", "scheme", "wallpaper", "screenshot", "record", "clipboard", "ipc"];
+                                        if (allowed.indexOf(subcmd) === -1) {
+                                            runningToolsCount--;
+                                            recordToolResult("aether_command", "Unknown subcommand. Use one of: " + allowed.join(", "));
+                                        } else {
+                                            // Array argv, not a shell string: the model picks the arguments.
+                                            runAgentArgv(["aether", subcmd].concat(args.args || []), "exec_" + toolName);
+                                        }
                                     }
                                 }
 
@@ -1438,8 +1450,8 @@ Item {
                 {
                     "type": "function",
                     "function": {
-                        "name": "caelestia_command",
-                        "description": "Execute a caelestia CLI command to manage the system. Valid subcommands: shell, toggle, scheme, search, screenshot, record, clipboard, emoji, wallpaper, resizer, install, update.",
+                        "name": "aether_command",
+                        "description": "Run an aether command to manage the system. Valid subcommands: shell, scheme, wallpaper, screenshot, record, clipboard, ipc.",
                         "parameters": {
                             "type": "object",
                             "properties": {
@@ -1448,8 +1460,11 @@ Item {
                                     "description": "The subcommand to run (e.g., scheme, wallpaper, toggle, record)"
                                 },
                                 "args": {
-                                    "type": "string",
-                                    "description": "Additional arguments to pass to the subcommand"
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "description": "Arguments for the subcommand, one per item"
                                 }
                             },
                             "required": ["subcommand"]

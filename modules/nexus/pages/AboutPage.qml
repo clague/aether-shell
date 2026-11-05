@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 import Quickshell.Io
 import Aether
 import Aether.Config
@@ -46,14 +47,14 @@ PageBase {
             }
         }
 
-        // Parsed from the caelestia CLI's package listing; the sh wrapper avoids a
-        // warning when the (optional) CLI isn't installed
+        // The in-tree command surface prints "aether v<describe>"; the first version-like
+        // number is the shell's own tag.
         Process {
             running: true
-            command: ["sh", "-c", "caelestia --version 2>/dev/null"]
+            command: [Quickshell.shellPath("hybrid/bin/aether"), "--version"]
             stdout: StdioCollector {
                 onStreamFinished: {
-                    const m = text.match(/caelestia-cli\S*\s+(\d+(?:\.\d+)*)/);
+                    const m = text.match(/(\d+(?:\.\d+)*)/);
                     root.cliVersion = m ? m[1] : "";
                 }
             }
@@ -232,7 +233,7 @@ PageBase {
         }
 
         InfoRow {
-            label: Tr.trCtx("CLI", "the caelestia command line tool")
+            label: Tr.trCtx("CLI", "the aether command line tool")
             value: root.cliVersion || "…"
         }
 

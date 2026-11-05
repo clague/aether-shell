@@ -41,8 +41,10 @@ local function maybe_copy(src, dst)
     input:close()
 end
 
--- Maybe set current colours to defaults
+-- Maybe set current colours to defaults. The old location is tried first so an upgrade
+-- keeps the user's colours instead of dropping to the generic default.
 os.execute('mkdir -p "' .. state .. '/scheme"')
+maybe_copy(hypr .. "/scheme/current.lua", state .. "/scheme/current.lua")
 maybe_copy(hypr .. "/scheme/default.lua", state .. "/scheme/current.lua")
 
 -- User variables

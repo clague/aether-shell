@@ -20,8 +20,25 @@ from aether_cli.parser import parse_args  # noqa: E402
 from aether_cli.utils.paths import shell_root  # noqa: E402
 
 
+def version() -> str:
+    try:
+        describe = subprocess.run(
+            ["git", "-C", str(shell_root), "describe", "--tags", "--always", "--dirty"],
+            capture_output=True,
+            text=True,
+            check=False,
+        ).stdout.strip()
+    except OSError:
+        describe = ""
+    return describe or "unknown"
+
+
 def main() -> None:
     _, args = parse_args()
+
+    if getattr(args, "version", False):
+        print(f"aether {version()}")
+        return
 
     if getattr(args, "cls", None) is None:
         # ipc: keystrokes should reach the running shell without knowing how it was started.

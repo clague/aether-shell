@@ -9,12 +9,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    caelestia-cli = {
-      url = "github:dim-ghub/caelestia-cli";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.caelestia-shell.follows = "";
-    };
-
     m3shapes = {
       url = "github:soramanew/m3shapes/32ad9ce328bb77ed349b40a3be10ee9ea610b8ab";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -44,10 +38,8 @@
           withX11 = false;
           withI3 = false;
         };
-        caelestia-cli = inputs.caelestia-cli.packages.${system}.default;
         m3shapes = inputs.m3shapes.packages.${system}.default;
       };
-      with-cli = aether-shell.override {withCli = true;};
       debug = aether-shell.override {debug = true;};
       default = aether-shell;
     });

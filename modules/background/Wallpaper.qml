@@ -379,7 +379,7 @@ Item {
                     if (!img.verifiedPath)
                         return "";
                     if (img.isVideo) {
-                        const thumb = Wallpapers.getWallpaperThumb(img.verifiedPath, Wallpapers.cacheBuster);
+                        const thumb = Wallpapers.getWallpaperThumb(img.verifiedPath);
                         return typeof thumb === "string" ? thumb : "";
                     }
                     return img.verifiedPath;

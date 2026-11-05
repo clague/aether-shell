@@ -8,10 +8,10 @@ import tempfile
 from pathlib import Path
 
 from aether_cli.utils.colour import get_dynamic_colours
-from aether_cli.utils.hypr import is_lua_config
 from aether_cli.utils.io import log_exception
 from aether_cli.utils.paths import (
     atomic_write,
+    atomic_write_user,
     c_state_dir,
     config_dir,
     data_dir,
@@ -22,13 +22,6 @@ from aether_cli.utils.paths import (
     user_templates_dir,
 )
 from aether_cli.utils.scheme import get_scheme
-
-
-def gen_conf(colours: dict[str, str]) -> str:
-    conf = ""
-    for name, colour in colours.items():
-        conf += f"${name} = {colour}\n"
-    return conf
 
 
 def gen_lua(colours: dict[str, str]) -> str:
@@ -145,10 +138,11 @@ def apply_terms(sequences: str) -> None:
 
 
 @log_exception
-def apply_hypr(conf: str) -> None:
+def apply_hypr(colours: dict[str, str]) -> None:
     # State, not ~/.config/hypr: the compositor's package.path includes the state dir, so the
-    # generated colours stay out of the dotfiles (D11).
-    atomic_write(hypr_scheme_path, conf)
+    # generated colours stay out of the dotfiles (D11). Lua only -- `hyprland.lua` is the only
+    # config this tree ships, and a conf-format file here would be a syntax error at login.
+    atomic_write(hypr_scheme_path, gen_lua(colours))
 
 
 @log_exception
@@ -177,7 +171,7 @@ def apply_spicetify(colours: dict[str, str], mode: str) -> None:
 @log_exception
 def apply_fuzzel(colours: dict[str, str]) -> None:
     template = gen_replace(colours, templates_dir / "fuzzel.ini")
-    atomic_write(config_dir / "fuzzel/fuzzel.ini", template)
+    atomic_write_user(config_dir / "fuzzel/fuzzel.ini", template)
 
 
 @log_exception
@@ -196,7 +190,7 @@ def apply_nvtop(colours: dict[str, str]) -> None:
 @log_exception
 def apply_htop(colours: dict[str, str]) -> None:
     template = gen_replace(colours, templates_dir / "htop.theme", hash=True)
-    atomic_write(config_dir / "htop/htoprc", template)
+    atomic_write_user(config_dir / "htop/htoprc", template)
     subprocess.run(["killall", "-USR2", "htop"], stderr=subprocess.DEVNULL)
 
 
@@ -312,8 +306,8 @@ def apply_gtk(colours: dict[str, str], mode: str, icon_theme: str | None = None)
 
     for gtk_version in ["gtk-3.0", "gtk-4.0"]:
         gtk_config_dir = config_dir / gtk_version
-        atomic_write(gtk_config_dir / "gtk.css", gtk_template)
-        atomic_write(gtk_config_dir / "thunar.css", thunar_template)
+        atomic_write_user(gtk_config_dir / "gtk.css", gtk_template)
+        atomic_write_user(gtk_config_dir / "thunar.css", thunar_template)
 
     subprocess.run(["dconf", "write", "/org/gnome/desktop/interface/gtk-theme", "'adw-gtk3-dark'"])
     subprocess.run(["dconf", "write", "/org/gnome/desktop/interface/color-scheme", f"'prefer-{mode}'"])
@@ -380,7 +374,7 @@ def apply_zed(colours: dict[str, str], mode: str) -> None:
 @log_exception
 def apply_cava(colours: dict[str, str]) -> None:
     template = gen_replace(colours, templates_dir / "cava.conf", hash=True)
-    atomic_write(config_dir / "cava/config", template)
+    atomic_write_user(config_dir / "cava/config", template)
     subprocess.run(["killall", "-USR2", "cava"], stderr=subprocess.DEVNULL)
 
 
@@ -415,7 +409,7 @@ def apply_colours(colours: dict[str, str], mode: str) -> None:
             if check("enableTerm"):
                 apply_terms(gen_sequences(colours))
             if check("enableHypr"):
-                apply_hypr(gen_lua(colours) if is_lua_config() else gen_conf(colours))
+                apply_hypr(colours)
             if check("enableDiscord"):
                 apply_discord(gen_scss(colours))
             if check("enableSpicetify"):

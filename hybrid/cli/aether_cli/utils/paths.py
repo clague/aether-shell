@@ -1,6 +1,7 @@
 import hashlib
 import json
 import os
+import shutil
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -76,6 +77,21 @@ def atomic_write(path: Path, content: str) -> None:
 
 def atomic_dump(path: Path, content: dict[str, Any]) -> None:
     atomic_write(path, json.dumps(content))
+
+
+def atomic_write_user(path: Path, content: str) -> None:
+    """Write a user-owned config file, keeping the first version we replace.
+
+    shortcut: one backup per path, never refreshed. A proper include-based theme would
+    stop the overwrite altogether; upgrade if a user reports losing settings twice.
+    """
+    backup = path.with_name(path.name + ".aether.bak")
+    try:
+        if path.exists() and not backup.exists() and path.read_text() != content:
+            shutil.copy2(path, backup)
+    except OSError:
+        pass
+    atomic_write(path, content)
 
 
 def get_config() -> dict[str, Any]:

@@ -41,6 +41,43 @@ class Set:
             print("No args given. Use --name, --flavour, --mode, --variant or --random to set a scheme")
 
 
+class Preview:
+    """Print the colours a scheme would have, without touching scheme.json."""
+
+    args: Namespace
+
+    def __init__(self, args: Namespace) -> None:
+        self.args = args
+
+    def run(self) -> None:
+        scheme = get_scheme()
+
+        if self.args.name:
+            scheme._name = self.args.name
+            scheme._check_flavour()
+            scheme._check_mode()
+        if self.args.flavour:
+            scheme._flavour = self.args.flavour
+            scheme._check_mode()
+        if self.args.mode:
+            scheme._mode = self.args.mode
+        if self.args.variant:
+            scheme._variant = self.args.variant
+
+        scheme._update_colours()
+        print(
+            json.dumps(
+                {
+                    "name": scheme.name,
+                    "flavour": scheme.flavour,
+                    "mode": scheme.mode,
+                    "variant": scheme.variant,
+                    "colours": scheme.colours,
+                }
+            )
+        )
+
+
 class Get:
     args: Namespace
 

@@ -95,6 +95,7 @@ step "cli deps self-test"; ./hybrid/tools/cli-deps.py --self-test | tail -1; ./h
 # The in-tree command surface replaced caelestia-cli; a stray argv would keep the old dependency
 # alive on exactly the machines that have the package installed.
 step "cli deps";      ./hybrid/tools/cli-deps.py           | tail -1; ./hybrid/tools/cli-deps.py           >/dev/null || fail=1
+step "cli tests";     ./hybrid/tools/cli-test.sh            | tail -1; ./hybrid/tools/cli-test.sh            >/dev/null || fail=1
 step "singleton self-test"
 ./hybrid/tools/singleton-members.py --self-test | tail -1; ./hybrid/tools/singleton-members.py --self-test >/dev/null || fail=1
 step "singletons";    ./hybrid/tools/singleton-members.py | tail -1; ./hybrid/tools/singleton-members.py >/dev/null || fail=1

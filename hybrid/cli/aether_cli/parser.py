@@ -15,6 +15,7 @@ from aether_cli.utils.wallpaper import get_wallpaper
 
 def parse_args() -> tuple[ArgumentParser, Namespace]:
     parser = ArgumentParser(prog="aether", description="Aether shell control")
+    parser.add_argument("-v", "--version", action="store_true", help="print the checkout version")
     command = parser.add_subparsers(
         title="subcommands", description="valid subcommands", metavar="COMMAND"
     )
@@ -69,6 +70,13 @@ def parse_args() -> tuple[ArgumentParser, Namespace]:
     get.add_argument(
         "-v", "--variant", action="store_true", help="print the current scheme variant"
     )
+
+    preview = scheme_command.add_parser("preview", help="print a scheme without applying it")
+    preview.set_defaults(cls=scheme.Preview)
+    preview.add_argument("-n", "--name", help="the name of the scheme to preview")
+    preview.add_argument("-f", "--flavour", help="the flavour to preview")
+    preview.add_argument("-m", "--mode", choices=["dark", "light"], help="the mode to preview")
+    preview.add_argument("-v", "--variant", choices=scheme_variants, help="the variant to preview")
 
     setter = scheme_command.add_parser("set", help="set the current scheme")
     setter.set_defaults(cls=scheme.Set)
@@ -164,6 +172,8 @@ def parse_args() -> tuple[ArgumentParser, Namespace]:
     ipc.add_argument("args", nargs="*")
 
     args = parser.parse_args()
+    if args.version:
+        return parser, args
     if not hasattr(args, "cls"):
         parser.print_help(sys.stderr)
         raise SystemExit(2)

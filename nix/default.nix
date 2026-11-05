@@ -28,17 +28,18 @@
   cmake,
   ninja,
   pkg-config,
-  caelestia-cli,
+  python3,
   m3shapes,
   gettext,
   openssl,
   debug ? false,
-  withCli ? false,
   extraRuntimeDeps ? [],
 }: let
   version = "1.0.0";
 
   qs = quickshell.withModules [qt6.qtimageformats qt6.qtmultimedia m3shapes];
+  # The in-tree command surface (hybrid/bin/aether) imports these two at runtime.
+  cliPython = python3.withPackages (ps: [ps.materialyoucolor ps.pillow]);
 
   runtimeDeps =
     [
@@ -52,9 +53,14 @@
       libqalculate
       bash
       hyprland
+      cliPython
+      fuzzel
+      grim
+      slurp
+      libnotify
+      procps
     ]
-    ++ extraRuntimeDeps
-    ++ lib.optional withCli caelestia-cli;
+    ++ extraRuntimeDeps;
 
   fontconfig = makeFontsConf {
     fontDirectories = [material-symbols rubik nerd-fonts.caskaydia-cove];
@@ -146,6 +152,9 @@ in
         --set AETHER_XKB_RULES_PATH ${xkeyboard-config}/share/xkeyboard-config-2/rules/base.lst \
         --add-flags "-p $out/share/aether-shell"
 
+      # Hyprland can only call a name; QML calls the same file by path.
+      ln -s "$out/share/aether-shell/hybrid/bin/aether" "$out/bin/aether"
+
       mkdir -p $out/lib
       ln -s ${extras}/lib/* $out/lib/
     '';
@@ -156,7 +165,7 @@ in
 
     meta = {
       description = "A fluid, morphing shell for your Linux desktop";
-      homepage = "https://github.com/caelestia-dots/shell";
+      homepage = "https://github.com/clague/aether-shell";
       license = lib.licenses.gpl3Only;
       mainProgram = "aether-shell";
     };

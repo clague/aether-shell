@@ -22,7 +22,7 @@ class Command:
     def region(self) -> None:
         if self.args.region == "slurp":
             subprocess.run(
-                ["qs", "-c", "caelestia", "ipc", "call", "picker", "openFreeze" if self.args.freeze else "open"]
+                ["qs", "-p", str(shell_root), "ipc", "call", "picker", "openFreeze" if self.args.freeze else "open"]
             )
         else:
             sc_data = subprocess.check_output(["grim", "-l", "0", "-g", self.args.region.strip(), "-"])

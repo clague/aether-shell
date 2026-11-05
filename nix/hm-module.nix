@@ -6,8 +6,7 @@ self: {
 }: let
   inherit (pkgs.stdenv.hostPlatform) system;
 
-  cli-default = self.inputs.caelestia-cli.packages.${system}.default;
-  shell-default = self.packages.${system}.with-cli;
+  shell-default = self.packages.${system}.aether-shell;
 
   cfg = config.programs.caelestia;
 in {
@@ -55,12 +54,6 @@ in {
         description = "Aether shell extra configs written to shell.json";
       };
       cli = {
-        enable = mkEnableOption "Enable Aether CLI";
-        package = mkOption {
-          type = types.package;
-          default = cli-default;
-          description = "The package of Aether CLI"; # Doesn't override the shell's CLI, only change from home.packages
-        };
         settings = mkOption {
           type = types.attrsOf types.anything;
           default = {};
@@ -76,7 +69,6 @@ in {
   };
 
   config = let
-    cli = cfg.cli.package;
     shell = cfg.package;
   in
     lib.mkIf cfg.enable {
@@ -131,6 +123,6 @@ in {
         };
       };
 
-      home.packages = [shell] ++ lib.optional cfg.cli.enable cli;
+      home.packages = [shell];
     };
 }

@@ -15,9 +15,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 
-SCAN_SUFFIXES = {".qml", ".lua", ".sh", ".py", ".json", ".conf", ".toml"}
+SCAN_SUFFIXES = {".qml", ".lua", ".sh", ".py", ".json", ".conf", ".toml", ".hpp", ".cpp"}
 # Docs quote the old CLI on purpose; generated and vendored trees are not call sites.
-SKIP_DIRS = {".git", "build", "hybrid/cli/aether_cli/data"}
+SKIP_DIRS = {".git", "build", ".verify", "hybrid/cli/aether_cli/data"}
 SKIP_FILES = {"hybrid/tools/cli-deps.py"}
 
 PATTERNS = [

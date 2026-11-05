@@ -2,10 +2,10 @@
 
 local home = os.getenv("HOME") or ""
 local hypr = home .. "/.config/hypr"
-local caelestia_dir = home .. "/.config/caelestia"
+local config_dir = home .. "/.config/caelestia"
 
 package.path = hypr .. "/?.lua;" .. hypr .. "/?/init.lua;" ..
-               caelestia_dir .. "/?.lua;" .. caelestia_dir .. "/?/init.lua;" ..
+               config_dir .. "/?.lua;" .. config_dir .. "/?/init.lua;" ..
                package.path
 
 local binds = {}

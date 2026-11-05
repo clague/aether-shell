@@ -13,7 +13,7 @@ namespace aether::shell::config {
 class QtConfig : public settings::ObjectNode {
     CONFIG_NODE(QtConfig, settings::ObjectNode)
 
-    // "auto" lets the theme choose (Kvantum when configured, then the CLI's style, then Fusion).
+    // "auto" lets the theme choose (Kvantum when configured, then the generated style, then Fusion).
     CONFIG_PROPERTY(QString, style, u"auto"_s)
     // Empty follows kdeglobals, which is the desktop's own icon setting.
     CONFIG_PROPERTY(QString, iconTheme, QString())
