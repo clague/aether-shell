@@ -70,6 +70,12 @@ Item {
                 anchors.fill: parent
                 asynchronous: true
                 fillMode: Image.PreserveAspectCrop
+                // A clipboard screenshot can be 4K; decode it at the preview size, not at the
+                // file's resolution (T69).
+                sourceSize: {
+                    const dpr = (QsWindow.window as QsWindow)?.devicePixelRatio ?? 1;
+                    return Qt.size(imagePreview.width * dpr, imagePreview.height * dpr);
+                }
                 source: imagePreview.imagePath.length > 0 ? "file://" + imagePreview.imagePath : ""
             }
         }

@@ -1,7 +1,6 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Shapes
 import QtQuick.Layouts
 import Quickshell
@@ -27,6 +26,9 @@ PageBase {
     // editor's own line positions is what keeps them aligned: font metrics, CJK comments and
     // line spacing can all differ from what a separate Text would assume.
     property var lineRects: []
+    // Offset of each line's first character, built alongside lineRects. Position-to-line and
+    // line-to-offset lookups are then a binary search instead of a full-text split per call.
+    property var lineStarts: []
     property real lineHeight: 1
     property var squiggles: []
 
@@ -270,12 +272,32 @@ PageBase {
         root.autoScroll = false;
     }
 
+    function lineIndexAt(position: int): int {
+        const starts = root.lineStarts;
+        if (starts.length === 0)
+            return 0;
+
+        let low = 0;
+        let high = starts.length - 1;
+        while (low <= high) {
+            const middle = (low + high) >> 1;
+            if (starts[middle] <= position)
+                low = middle + 1;
+            else
+                high = middle - 1;
+        }
+        return Math.max(0, high);
+    }
+
     function offsetAt(line: int, character: int): int {
-        const lines = editor.text.split("\n");
-        let offset = 0;
-        for (let i = 0; i < line && i < lines.length; i++)
-            offset += lines[i].length + 1;
-        return offset + Math.min(character, (lines[line] ?? "").length);
+        const starts = root.lineStarts;
+        if (starts.length === 0)
+            return 0;
+
+        const index = Math.max(0, Math.min(line, starts.length - 1));
+        const start = starts[index];
+        const end = index + 1 < starts.length ? starts[index + 1] - 1 : editor.text.length;
+        return start + Math.max(0, Math.min(character, end - start));
     }
 
     function acceptCompletion(): void {
@@ -309,11 +331,7 @@ PageBase {
         root.completionOpen = false;
         root.contextMenuOpen = false;
         root.diagnosticTip = "";
-        const lines = editor.text.split("\n");
-        let offset = 0;
-        for (let i = 0; i < line && i < lines.length; i++)
-            offset += lines[i].length + 1;
-        editor.cursorPosition = offset + Math.min(character, (lines[line] ?? "").length);
+        editor.cursorPosition = root.offsetAt(line, character);
         editor.forceActiveFocus();
         root.ensureCursorVisible();
     }
@@ -321,8 +339,10 @@ PageBase {
     function recomputeLineRects(): void {
         const text = editor.text;
         const rects = [];
+        const starts = [];
         let offset = 0;
         while (true) {
+            starts.push(offset);
             const rect = editor.positionToRectangle(offset);
             rects.push({
                 top: rect.y,
@@ -333,7 +353,15 @@ PageBase {
                 break;
             offset = next + 1;
         }
-        root.lineRects = rects;
+        root.lineStarts = starts;
+        // Re-assigning the array re-evaluates every line-number binding. Typing inside a line
+        // changes the offsets but not the line boxes, so only publish when the boxes moved.
+        const unchanged = rects.length === root.lineRects.length && rects.every((rect, index) => {
+            const previous = root.lineRects[index];
+            return previous && previous.top === rect.top && previous.height === rect.height;
+        });
+        if (!unchanged)
+            root.lineRects = rects;
         root.lineHeight = Math.max(1, rects.length > 0 ? rects[0].height : 1);
     }
 
@@ -374,14 +402,17 @@ PageBase {
                 });
             }
         }
+        // A clean file rebuilds an empty list on every keystroke; don't churn the Repeater.
+        if (result.length === 0 && root.squiggles.length === 0)
+            return;
         root.squiggles = result;
     }
 
     function lineCharacterAt(position: int): var {
-        const before = editor.text.slice(0, position);
+        const line = root.lineIndexAt(position);
         return {
-            line: before.split("\n").length - 1,
-            character: position - before.lastIndexOf("\n") - 1
+            line: line,
+            character: position - (root.lineStarts[line] ?? 0)
         };
     }
 
@@ -506,9 +537,10 @@ PageBase {
     }
 
     function refreshCaret(): void {
-        const before = editor.text.slice(0, Math.max(0, editor.cursorPosition));
-        root.caretLine = before.split("\n").length - 1;
-        root.caretColumn = before.length - before.lastIndexOf("\n") - 1;
+        const position = Math.max(0, editor.cursorPosition);
+        const line = root.lineIndexAt(position);
+        root.caretLine = line;
+        root.caretColumn = position - (root.lineStarts[line] ?? 0);
     }
 
     function undoEdit(): void {
@@ -1013,8 +1045,12 @@ PageBase {
                         root.recomputeLineRects();
                         root.rebuildSquiggles();
                         root.refreshCaret();
-                        Qt.callLater(root.recomputeLineRects);
-                        Qt.callLater(root.rebuildSquiggles);
+                        // Only a changed line count can make the synchronous layout pass stale;
+                        // typing inside a line keeps every line's position and height.
+                        if (root.lineRects.length !== editor.lineCount) {
+                            Qt.callLater(root.recomputeLineRects);
+                            Qt.callLater(root.rebuildSquiggles);
+                        }
                         if (lsp.status === "ready")
                             syncTimer.restart();
                         if (!root.suppressCompletion) {
@@ -1702,8 +1738,8 @@ PageBase {
                     spacing: Tokens.spacing.small
 
                     Rectangle {
-                        width: 6
-                        height: 6
+                        implicitWidth: 6
+                        implicitHeight: 6
                         radius: 3
                         color: root.severityColour(diagnosticItem.modelData.severity)
                     }

@@ -113,6 +113,10 @@ QtObject {
                 anchors.fill: parent
                 source: Qt.resolvedUrl(notif.image)
                 fillMode: Image.PreserveAspectCrop
+                sourceSize: {
+                    const dpr = (QsWindow.window as QsWindow)?.devicePixelRatio ?? 1;
+                    return Qt.size(TokenConfig.sizes.notifs.image * dpr, TokenConfig.sizes.notifs.image * dpr);
+                }
                 cache: false
                 asynchronous: true
                 opacity: 0
