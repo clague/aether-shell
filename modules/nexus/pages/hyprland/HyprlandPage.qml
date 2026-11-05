@@ -45,23 +45,15 @@ PageBase {
         }
 
         NavRow {
+            last: true
             icon: "data_object"
             text: Tr.tr("Variables")
             subtext: Tr.tr("Launcher apps, cursor and misc variables")
             onClicked: root.nState.openSubPage(5)
         }
 
-        NavRow {
-            last: true
-            icon: "settings_suggest"
-            text: Tr.tr("User configuration")
-            subtext: Tr.tr("Advanced configuration options")
-            onClicked: root.nState.openSubPage(6)
-        }
-
-        // One note for the whole category instead of repeating it inside each sub-page. Every
-        // option here ends up in hypr-vars.lua: the plain rows write it directly, and Glass,
-        // Motion and Density persist their values there too while still pushing them live.
+        // One note for the five settings pages above. User configuration is deliberately not
+        // part of it: that page edits hypr-user.lua, not the hypr-vars.lua overrides.
         InfoRow {
             first: true
             last: true
@@ -69,7 +61,17 @@ PageBase {
             Layout.topMargin: Tokens.spacing.large
             icon: "info"
             label: Tr.tr("Saved in hypr-vars.lua")
-            subtext: Tr.tr("Hyprland reads it at startup, so settings survive restarts; clear a row to remove its override.")
+            subtext: Tr.tr("The settings above write overrides to hypr-vars.lua; Hyprland reads it at startup. Clear a row to remove its override.")
+        }
+
+        NavRow {
+            first: true
+            last: true
+            Layout.topMargin: Tokens.spacing.large
+            icon: "settings_suggest"
+            text: Tr.tr("User configuration")
+            subtext: Tr.tr("Edit hypr-user.lua for anything not covered above")
+            onClicked: root.nState.openSubPage(6)
         }
     }
 }

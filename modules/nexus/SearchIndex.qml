@@ -2272,7 +2272,7 @@ QtObject {
             page: 4,
             sub: 0,
             label: Tr.tr("Saved in hypr-vars.lua"),
-            subtext: Tr.tr("Hyprland reads it at startup, so settings survive restarts; clear a row to remove its override."),
+            subtext: Tr.tr("The settings above write overrides to hypr-vars.lua; Hyprland reads it at startup. Clear a row to remove its override."),
             section: "",
             subTitle: Tr.tr("Hyprland"),
             kw: ["hypr-vars"]

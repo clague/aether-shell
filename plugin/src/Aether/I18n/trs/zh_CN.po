@@ -2988,8 +2988,8 @@ msgid "User configuration"
 msgstr "用户配置"
 
 #: modules/nexus/pages/hyprland/HyprlandPage.qml
-msgid "Advanced configuration options"
-msgstr "高级配置选项"
+msgid "Edit hypr-user.lua for anything not covered above"
+msgstr "编辑 hypr-user.lua，处理以上设置未覆盖的内容"
 
 #: modules/nexus/pages/hyprland/HyprSpacingPage.qml
 #: modules/nexus/SearchIndex.qml
@@ -3042,10 +3042,8 @@ msgstr "保存在 hypr-vars.lua"
 
 #: modules/nexus/pages/hyprland/HyprlandPage.qml
 #: modules/nexus/SearchIndex.qml
-msgid ""
-"Hyprland reads it at startup, so settings survive restarts; clear a row to "
-"remove its override."
-msgstr "Hyprland 启动时读取，因此设置可跨重启保留；清除某一行即可移除覆盖。"
+msgid "The settings above write overrides to hypr-vars.lua; Hyprland reads it at startup. Clear a row to remove its override."
+msgstr "以上设置会写入 hypr-vars.lua，Hyprland 启动时读取；清除某一行即可移除对应覆盖。"
 
 #: modules/nexus/pages/hyprland/HyprSpacingPage.qml
 msgid "Workspace gaps"
