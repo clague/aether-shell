@@ -8596,3 +8596,17 @@ msgstr "应用到 Hyprland"
 msgid "Ctrl+S saves · completion opens as you type · Tab indents · the language server shows problems"
 msgstr "Ctrl+S 保存 · 输入时自动补全 · Tab 缩进 · 语言服务器会标出问题"
 
+
+#. Hybrid shell additions
+#: modules/nexus/pages/hyprland
+msgid "Input"
+msgstr "输入"
+
+#: modules/nexus/pages/hyprland
+msgid "Save"
+msgstr "保存"
+
+#: modules/nexus/pages/hyprland
+msgid "Variant"
+msgstr "变体"
+
