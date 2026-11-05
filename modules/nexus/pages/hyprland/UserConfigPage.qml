@@ -38,6 +38,8 @@ PageBase {
     property real diagnosticsHeight: 96
     property bool completionOpen: false
     property bool suppressCompletion: false
+    // Set while ensureCursorVisible moves the view; scrolling for any other reason closes popups.
+    property bool autoScroll: false
     property int completionIndex: 0
     property real completionX: 0
     property real completionY: 0
@@ -238,6 +240,7 @@ PageBase {
         const top = editor.y + rect.y;
         const bottom = top + rect.height;
 
+        root.autoScroll = true;
         if (top < flick.contentY + margin)
             flick.contentY = Math.max(0, top - margin);
         else if (bottom > flick.contentY + flick.height - margin)
@@ -249,6 +252,7 @@ PageBase {
             flick.contentX = Math.max(0, left - 24);
         else if (right > flick.contentX + flick.width - 24)
             flick.contentX = Math.min(Math.max(0, flick.contentWidth - flick.width), right - flick.width + 24);
+        root.autoScroll = false;
     }
 
     function offsetAt(line: int, character: int): int {
@@ -442,6 +446,12 @@ PageBase {
         root.diagnosticTipAnchorX = gutter.width + editor.x + rect.x - flick.contentX;
         root.diagnosticTipAnchorY = editor.y + rect.y + rect.height - flick.contentY;
         root.diagnosticTip = messages.join("\n\n");
+    }
+
+    function closePopupsOnScroll(): void {
+        if (root.completionOpen)
+            root.completionOpen = false;
+        root.diagnosticTip = "";
     }
 
     function severityColour(severity: int): color {
@@ -689,7 +699,8 @@ PageBase {
                 id: flick
 
                 anchors.left: gutter.right
-                anchors.right: parent.right
+                anchors.right: minimap.left
+                anchors.rightMargin: Tokens.padding.small
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 clip: true
@@ -702,12 +713,14 @@ PageBase {
                         root.ensureCursorVisible();
                 }
 
-                StyledScrollBar {
-                    anchors.right: parent.right
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
-                    flickable: flick
-                    orientation: Qt.Vertical
+                onContentYChanged: {
+                    if (!root.autoScroll)
+                        root.closePopupsOnScroll();
+                }
+
+                onContentXChanged: {
+                    if (!root.autoScroll)
+                        root.closePopupsOnScroll();
                 }
 
                 Rectangle {
@@ -896,6 +909,162 @@ PageBase {
                             if (!hovered && editor.selectionStart === editor.selectionEnd)
                                 root.diagnosticTip = "";
                         }
+                    }
+                }
+            }
+
+            Item {
+                id: verticalScrollBar
+
+                anchors.top: flick.top
+                anchors.bottom: flick.bottom
+                anchors.right: flick.right
+                width: 8
+                visible: flick.contentHeight > flick.height
+
+                function scrollTo(y: real): void {
+                    const travel = Math.max(1, height - verticalThumb.height);
+                    const ratio = Math.max(0, Math.min(1, (y - verticalThumb.height / 2) / travel));
+                    flick.contentY = ratio * Math.max(0, flick.contentHeight - flick.height);
+                }
+
+                Rectangle {
+                    anchors.fill: parent
+                    radius: 4
+                    color: Qt.alpha(Colours.palette.m3onSurfaceVariant, 0.08)
+                }
+
+                Rectangle {
+                    id: verticalThumb
+
+                    readonly property real ratio: flick.contentHeight > flick.height ? flick.height / flick.contentHeight : 1
+
+                    width: parent.width
+                    height: Math.max(24, parent.height * ratio)
+                    y: (parent.height - height) * (flick.contentY / Math.max(1, flick.contentHeight - flick.height))
+                    radius: 4
+                    color: Qt.alpha(Colours.palette.m3secondary, 0.7)
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+
+                    onPressed: mouse => verticalScrollBar.scrollTo(mouse.y)
+
+                    onPositionChanged: mouse => {
+                        if (pressed)
+                            verticalScrollBar.scrollTo(mouse.y);
+                    }
+                }
+            }
+
+            Item {
+                id: horizontalScrollBar
+
+                anchors.left: flick.left
+                anchors.right: flick.right
+                anchors.bottom: flick.bottom
+                height: 8
+                visible: flick.contentWidth > flick.width
+
+                function scrollTo(x: real): void {
+                    const travel = Math.max(1, width - horizontalThumb.width);
+                    const ratio = Math.max(0, Math.min(1, (x - horizontalThumb.width / 2) / travel));
+                    flick.contentX = ratio * Math.max(0, flick.contentWidth - flick.width);
+                }
+
+                Rectangle {
+                    anchors.fill: parent
+                    radius: 4
+                    color: Qt.alpha(Colours.palette.m3onSurfaceVariant, 0.08)
+                }
+
+                Rectangle {
+                    id: horizontalThumb
+
+                    readonly property real ratio: flick.contentWidth > flick.width ? flick.width / flick.contentWidth : 1
+
+                    height: parent.height
+                    width: Math.max(24, parent.width * ratio)
+                    x: (parent.width - width) * (flick.contentX / Math.max(1, flick.contentWidth - flick.width))
+                    radius: 4
+                    color: Qt.alpha(Colours.palette.m3secondary, 0.7)
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+
+                    onPressed: mouse => horizontalScrollBar.scrollTo(mouse.x)
+
+                    onPositionChanged: mouse => {
+                        if (pressed)
+                            horizontalScrollBar.scrollTo(mouse.x);
+                    }
+                }
+            }
+
+            Rectangle {
+                id: minimap
+
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.right: parent.right
+                anchors.rightMargin: 4
+                width: 84
+                radius: Tokens.rounding.medium
+                color: Qt.alpha(Colours.palette.m3surfaceContainerLowest, 0.35)
+                border.width: 1
+                border.color: Qt.alpha(Colours.palette.m3outlineVariant, 0.35)
+                clip: true
+
+                readonly property real mapHeight: Math.min(height - 8, minimapText.contentHeight)
+
+                function scrollFromMinimap(y: real): void {
+                    const map = Math.max(1, minimap.mapHeight);
+                    const ratio = Math.max(0, Math.min(1, (y - 4) / map));
+                    flick.contentY = ratio * Math.max(0, flick.contentHeight - flick.height);
+                }
+
+                Text {
+                    id: minimapText
+
+                    x: 6
+                    y: 4
+                    width: parent.width - 12
+                    text: editor.text
+                    color: Qt.alpha(Colours.palette.m3onSurface, 0.55)
+                    font.family: editor.font.family
+                    font.pixelSize: Math.max(1, Math.min(3, (parent.height - 8) / Math.max(1, editor.lineCount) / 1.25))
+                    wrapMode: Text.NoWrap
+                    clip: true
+                    textFormat: Text.PlainText
+                    renderType: Text.QtRendering
+                }
+
+                Rectangle {
+                    id: minimapViewport
+
+                    x: 2
+                    width: parent.width - 4
+                    height: Math.max(8, Math.min(minimap.mapHeight, (flick.height / Math.max(1, flick.contentHeight)) * minimap.mapHeight))
+                    y: 4 + (flick.contentY / Math.max(1, flick.contentHeight - flick.height)) * Math.max(0, minimap.mapHeight - height)
+                    color: Qt.alpha(Colours.palette.m3primary, 0.12)
+                    border.width: 1
+                    border.color: Qt.alpha(Colours.palette.m3primary, 0.4)
+                    radius: 2
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+
+                    onPressed: mouse => minimap.scrollFromMinimap(mouse.y)
+
+                    onPositionChanged: mouse => {
+                        if (pressed)
+                            minimap.scrollFromMinimap(mouse.y);
                     }
                 }
             }
