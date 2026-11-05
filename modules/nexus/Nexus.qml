@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Window
+import Aether
 import Aether.Blobs
 import Aether.Config
 import qs.components
