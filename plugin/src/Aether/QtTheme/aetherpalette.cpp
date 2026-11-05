@@ -136,7 +136,131 @@ std::optional<Scheme> schemeFromJson(const QByteArray& json) {
     return Scheme{
         .palette = buildPalette(map),
         .light = root.value(u"mode"_s).toString() == u"light"_s,
+        .colours = map,
     };
+}
+
+namespace {
+
+// One colour from the scheme, with "#" for the KDE format and a fallback token when a scheme is
+// older than the one this engine was written against.
+QString entry(const QJsonObject& colours, const QString& key, const QString& fallback = {}) {
+    QString value = colours.value(key).toString();
+    if (value.isEmpty())
+        value = colours.value(fallback).toString();
+    return value.isEmpty() ? QStringLiteral("#000000") : u'#' + value;
+}
+
+void section(QStringList& out, const QString& name) {
+    out << QString() << u'[' + name + u']';
+}
+
+void row(QStringList& out, const QString& key, const QJsonObject& colours, const QString& token,
+    const QString& fallback = {}) {
+    out << key + u'=' + entry(colours, token, fallback);
+}
+
+// The sections KDE's own schemes carry, filled from the M3 tokens the same way the palette above
+// is. kdeglobals names this file, and KColorScheme reads whichever scheme it names first.
+void foregrounds(QStringList& out, const QJsonObject& colours, const QString& normal, const QString& active = {},
+    const QString& link = u"klink"_s, const QString& visited = u"kvisited"_s) {
+    row(out, u"ForegroundActive"_s, colours, active.isEmpty() ? normal : active, normal);
+    row(out, u"ForegroundInactive"_s, colours, u"outline"_s, u"onSurfaceVariant"_s);
+    row(out, u"ForegroundLink"_s, colours, link, u"primary"_s);
+    row(out, u"ForegroundNegative"_s, colours, u"knegative"_s, u"error"_s);
+    row(out, u"ForegroundNeutral"_s, colours, u"kneutral"_s, u"tertiary"_s);
+    row(out, u"ForegroundNormal"_s, colours, normal, u"onSurface"_s);
+    row(out, u"ForegroundPositive"_s, colours, u"kpositive"_s, u"success"_s);
+    row(out, u"ForegroundVisited"_s, colours, visited, u"kvisited"_s);
+}
+
+} // namespace
+
+QByteArray kdeColorScheme(const QJsonObject& colours, const QString& name) {
+    QStringList out;
+
+    section(out, u"ColorEffects:Disabled"_s);
+    row(out, u"Color"_s, colours, u"surfaceContainer"_s);
+    out << u"ColorAmount=0.5"_s << u"ColorEffect=3"_s << u"ContrastAmount=0"_s << u"ContrastEffect=0"_s
+        << u"IntensityAmount=0"_s << u"IntensityEffect=0"_s;
+
+    section(out, u"ColorEffects:Inactive"_s);
+    out << u"ChangeSelectionColor=true"_s;
+    row(out, u"Color"_s, colours, u"surfaceContainerLowest"_s);
+    out << u"ColorAmount=0.025"_s << u"ColorEffect=0"_s << u"ContrastAmount=0.1"_s << u"ContrastEffect=0"_s
+        << u"Enable=true"_s << u"IntensityAmount=0"_s << u"IntensityEffect=0"_s;
+
+    section(out, u"Colors:Button"_s);
+    row(out, u"BackgroundAlternate"_s, colours, u"surfaceVariant"_s);
+    row(out, u"BackgroundNormal"_s, colours, u"surfaceContainerHigh"_s);
+    row(out, u"DecorationFocus"_s, colours, u"primary"_s);
+    row(out, u"DecorationHover"_s, colours, u"primary"_s);
+    foregrounds(out, colours, u"onSurface"_s);
+
+    section(out, u"Colors:Complementary"_s);
+    row(out, u"BackgroundAlternate"_s, colours, u"surface"_s);
+    row(out, u"BackgroundNormal"_s, colours, u"surfaceContainer"_s);
+    row(out, u"DecorationFocus"_s, colours, u"primary"_s);
+    row(out, u"DecorationHover"_s, colours, u"primary"_s);
+    foregrounds(out, colours, u"onSurfaceVariant"_s, u"inverseSurface"_s);
+
+    section(out, u"Colors:Header"_s);
+    row(out, u"BackgroundAlternate"_s, colours, u"surfaceContainer"_s);
+    row(out, u"BackgroundNormal"_s, colours, u"surfaceContainer"_s);
+    row(out, u"DecorationFocus"_s, colours, u"primary"_s);
+    row(out, u"DecorationHover"_s, colours, u"primary"_s);
+    foregrounds(out, colours, u"onSurfaceVariant"_s, u"inverseSurface"_s);
+
+    section(out, u"Colors:Header][Inactive"_s);
+    row(out, u"BackgroundAlternate"_s, colours, u"surfaceContainer"_s);
+    row(out, u"BackgroundNormal"_s, colours, u"surfaceContainer"_s);
+    row(out, u"DecorationFocus"_s, colours, u"primary"_s);
+    row(out, u"DecorationHover"_s, colours, u"primary"_s);
+    foregrounds(out, colours, u"onSurfaceVariant"_s, u"inverseSurface"_s);
+
+    section(out, u"Colors:Selection"_s);
+    row(out, u"BackgroundAlternate"_s, colours, u"primary"_s);
+    row(out, u"BackgroundNormal"_s, colours, u"primary"_s);
+    row(out, u"DecorationFocus"_s, colours, u"primary"_s);
+    row(out, u"DecorationHover"_s, colours, u"secondary"_s);
+    foregrounds(out, colours, u"onPrimary"_s, u"onPrimary"_s, u"klinkSelection"_s, u"kvisitedSelection"_s);
+
+    section(out, u"Colors:Tooltip"_s);
+    row(out, u"BackgroundAlternate"_s, colours, u"surfaceVariant"_s);
+    row(out, u"BackgroundNormal"_s, colours, u"surfaceContainer"_s);
+    row(out, u"DecorationFocus"_s, colours, u"primary"_s);
+    row(out, u"DecorationHover"_s, colours, u"primary"_s);
+    foregrounds(out, colours, u"onSurface"_s);
+
+    section(out, u"Colors:View"_s);
+    row(out, u"BackgroundAlternate"_s, colours, u"surfaceContainer"_s);
+    row(out, u"BackgroundNormal"_s, colours, u"surfaceDim"_s);
+    row(out, u"DecorationFocus"_s, colours, u"primary"_s);
+    row(out, u"DecorationHover"_s, colours, u"inversePrimary"_s);
+    foregrounds(out, colours, u"onSurface"_s, u"inverseSurface"_s);
+
+    section(out, u"Colors:Window"_s);
+    row(out, u"BackgroundAlternate"_s, colours, u"surfaceVariant"_s);
+    row(out, u"BackgroundNormal"_s, colours, u"surfaceContainer"_s);
+    row(out, u"DecorationFocus"_s, colours, u"primary"_s);
+    row(out, u"DecorationHover"_s, colours, u"primary"_s);
+    foregrounds(out, colours, u"onSurfaceVariant"_s, u"klink"_s);
+
+    section(out, u"General"_s);
+    out << u"ColorScheme="_s + name << u"Name="_s + name << u"shadeSortColumn=true"_s;
+
+    section(out, u"KDE"_s);
+    out << u"contrast=4"_s;
+
+    section(out, u"WM"_s);
+    row(out, u"activeBackground"_s, colours, u"surfaceContainerHighest"_s);
+    out << u"activeBlend=252,252,252"_s;
+    row(out, u"activeForeground"_s, colours, u"onSurface"_s);
+    row(out, u"inactiveBackground"_s, colours, u"secondaryContainer"_s);
+    out << u"inactiveBlend=161,169,177"_s;
+    row(out, u"inactiveForeground"_s, colours, u"onSecondaryContainer"_s);
+
+    return (out.join(u'\n') + u'\n').toUtf8();
 }
 
 } // namespace aether::theme

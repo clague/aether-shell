@@ -13,6 +13,7 @@
 #include <qlibraryinfo.h>
 #include <qloggingcategory.h>
 #include <qpa/qwindowsysteminterface.h>
+#include <qsavefile.h>
 #include <qstandardpaths.h>
 #include <qstyle.h>
 #include <qstylefactory.h>
@@ -84,6 +85,20 @@ QString colorSchemePath(const QByteArray& kdeglobals) {
             return candidate;
     }
     return {};
+}
+
+// Writes atomically, and only when the bytes differ: every Qt application runs this at startup,
+// and a needless rewrite would wake every KColorScheme watcher on the desktop.
+bool writeIfChanged(const QString& path, const QByteArray& body) {
+    QFile existing(path);
+    if (existing.open(QIODevice::ReadOnly) && existing.readAll() == body)
+        return true;
+
+    QSaveFile file(path);
+    if (!file.open(QIODevice::WriteOnly))
+        return false;
+    file.write(body);
+    return file.commit();
 }
 
 QString kvantumConfigPath() {
@@ -228,11 +243,20 @@ void AetherTheme::reload() {
     m_showIconsInMenus = true;
     m_showShortcutsInMenus = true;
 
+    m_generatedSchemePath.clear();
     QFile scheme(m_schemePath);
     if (scheme.open(QIODevice::ReadOnly)) {
         if (auto parsed = schemeFromJson(scheme.readAll())) {
             m_light = parsed->light;
             m_palette = std::move(parsed->palette);
+
+            // Aether's own copy in the KDE format, written beside the scheme it is derived from.
+            // KColorScheme reads this file, so it has to be somewhere Aether owns rather than a
+            // by-product of the CLI: same directory as scheme.json, rewritten when the scheme is.
+            const QString path = stateDir() + u"/aether.colors"_s;
+            const QByteArray body = kdeColorScheme(parsed->colours, u"Aether"_s);
+            if (writeIfChanged(path, body))
+                m_generatedSchemePath = path;
         } else {
             qCWarning(lcTheme) << "Ignoring unreadable scheme at" << m_schemePath;
         }
@@ -253,9 +277,9 @@ void AetherTheme::reload() {
     // platform theme sets it; without it those applications fall back to a scheme of their own,
     // which is how the sidebar ended up with dark text on a dark background.
     //
-    // The CLI rewrites qtengine/caelestia.colors from the current scheme on every colour change,
-    // so it is the only copy that cannot go stale. A scheme named in kdeglobals is the fallback.
-    m_colorSchemePath = colorSchemePath(kde);
+    // Ours first, then the CLI's copy for the case where scheme.json is missing, then whatever
+    // kdeglobals names.
+    m_colorSchemePath = !m_generatedSchemePath.isEmpty() ? m_generatedSchemePath : colorSchemePath(kde);
     qApp->setProperty("KDE_COLOR_SCHEME_PATH", m_colorSchemePath.isEmpty() ? QVariant() : m_colorSchemePath);
 
     QFile shellConfig(m_shellConfigPath);

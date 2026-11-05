@@ -14,6 +14,7 @@
 #include "Aether/QtTheme/aetherstyle.hpp"
 
 using aether::theme::iniValue;
+using aether::theme::kdeColorScheme;
 using aether::theme::kvantumThemeName;
 using aether::theme::schemeFromJson;
 using aether::theme::shellQtStyle;
@@ -69,6 +70,17 @@ int main(int argc, char** argv) {
             "Inactive Highlight is primaryDim");
         check(pal.color(QPalette::Disabled, QPalette::WindowText).alpha() < 255, "Disabled text is translucent");
         check(pal.color(QPalette::Disabled, QPalette::Highlight) != QColor("#f2bc90"), "Disabled Highlight is muted");
+    }
+
+    // KDE applications paint from this file, not from the palette above, so it has to carry the
+    // same colours in the format KColorScheme reads.
+    if (dark) {
+        const QByteArray kde = kdeColorScheme(dark->colours, "Aether");
+        check(kde.contains("[Colors:View]"), "kde scheme has a View section");
+        check(kde.contains("[Colors:Selection]"), "kde scheme has a Selection section");
+        check(kde.contains("ForegroundNormal=#f7e2d3"), "view text is onSurface");
+        check(kde.contains("BackgroundNormal=#f2bc90"), "selection background is primary");
+        check(kde.contains("ColorScheme=Aether"), "the scheme names itself");
     }
 
     const auto light = schemeFromJson(scheme("light"));
