@@ -1048,7 +1048,7 @@ PageBase {
                             }
                         }
 
-                        if (event.key === Qt.Key_Escape) {
+                        if (event.key === Qt.Key_Escape && root.diagnosticTip !== "") {
                             root.diagnosticTip = "";
                             event.accepted = true;
                             return;
