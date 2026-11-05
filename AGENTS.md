@@ -8,7 +8,7 @@ on top of upstream **Caelestia**. One shell, one config, one CLI — features to
 
 ## Status
 
-**Phases 0-5 are done and merged to `main`. Phase 6 has not started; Phase 7 is half done.**
+**Phases 0-6 are done and merged to `main`. Phase 7 has three of its six variants wired; the rest were removed or are blocked.**
 
 | phase | what | state |
 |---|---|---|
@@ -18,16 +18,18 @@ on top of upstream **Caelestia**. One shell, one config, one CLI — features to
 | 3 | `hybrid.features` / `hybrid.variants` schema + Nexus page | done |
 | 4 | OP's dock behind `hybrid.variants.dock` | done, and verified on hardware |
 | 5 | OP overview, hotspot/BtAgent/Nmcli, GPU detection, themes | done |
-| 6 | single CLI (D6) | done -- separate repo, [`YoavR1/caelestia-hybrid-cli`](https://github.com/YoavR1/caelestia-hybrid-cli) |
+| 6 | single CLI (D6) | done -- in-tree at `hybrid/bin/aether`; the separate repo is no longer used (D6 superseded) |
 | 7 | the real variants | 3 of 6 wired: `audioPopout`, `overview`, `dock` |
 | 8 | OP's pattern lock | satisfied by omission -- it is not in the tree (D10) |
 
 Phase 6 was not cosmetic. Every CLI subcommand ran `qs -c caelestia`, which resolves a config
 *by name* -- so on a machine with `midnight-shell-git` installed it drove the packaged shell
-rather than this tree. That is T53, and it is what broke the launcher's Settings action. The
-fork centralises that decision in `utils/instance.py`, which honours `$CAELESTIA_SHELL_PATH`
-(for a checkout) and `$CAELESTIA_SHELL_CONFIG` before falling back to the historical default,
-and carries a test that greps the subcommand tree for anyone re-hardcoding it.
+rather than this tree. That is T53, and it is what broke the launcher's Settings action.
+
+The command surface now lives in the checkout (`hybrid/bin/aether`, `hybrid/cli/aether_cli/`)
+and starts the shell with `qs -p <checkout>`. `hybrid/tools/cli-deps.py` fails the gate if an
+argv element or exec line spawns the old `caelestia` binary again. QML calls it by absolute
+path; Hyprland keybinds call `aether` from PATH (`hybrid/tools/install-cli.sh`).
 
 Phase 7's remaining two -- `desktopClock`, `colours` -- have no second implementation to
 select between: OP's side of each is edits to shared files rather than separate files.
@@ -97,7 +99,7 @@ These were settled by source audit on 2026-09-02. Do not re-litigate without new
 | D3 | **Feature flags, not implementation selectors** | The forks are ~90% disjoint. Only 4 components have two real implementations. |
 | D4 | **`hybrid.variants` is capped at ~6 entries** | If it grows, the design is drifting back toward a registry we deliberately rejected. |
 | D5 | **Services are merged, never dual-implemented** | Both forks *extended* a shared service set. Their diffs are additive and non-overlapping. |
-| D6 | **One CLI**, forked from `dim-ghub/midnight-cli` | All of them install the binary as `caelestia`, so they cannot coexist. Corrected 2026-09-05: the fork source is MiDnight's CLI, not upstream's, because MiDnight's already contains all 665 of upstream's commits (`merge-base` = upstream `HEAD`) and OP ships no CLI at all. There was never a merge to do. Its delta is +3664/−108 across 22 files, not ~850 lines. |
+| D6 | **Superseded 2026-11-06: one in-tree command surface** | The shell no longer spawns `caelestia`. `hybrid/bin/aether` + `hybrid/cli/aether_cli/` carry the subcommands the shell uses, so the separate `caelestia-hybrid-cli` fork has no consumer. Why the fork existed: all three shells install a binary named `caelestia`, so they cannot coexist, and naming a config with `qs -c` could drive the packaged shell instead of this tree (T53). |
 | D7 | **Upstream catch-up is Phase 2**, before the feature system | Upstream rewrote the config module and rearranged the plugin layout. Build the feature defaults on the system we keep. |
 | D8 | **No presets** (superseded) | Every setting has a static default and one switch on its Nexus page. `hybrid/presets/*.json` are smoke-matrix inputs only. |
 | D9 | **Merge upstream; cherry-pick OP** | Upstream is a true ancestor. OP shares ancestor `ad8dca0a`, so `git cherry-pick -x` works directly. Never rebase onto an upstream. |

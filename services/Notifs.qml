@@ -219,4 +219,10 @@ Singleton {
 
         NotifData {}
     }
+
+    // Notification images are cached per (app, summary, id) and never removed otherwise.
+    Process {
+        running: true
+        command: ["sh", "-c", 'find "$1" -type f ! -newermt "-7 days" -delete 2>/dev/null', "sh", Paths.notifimagecache]
+    }
 }

@@ -82,22 +82,6 @@ def get_wallpaper() -> str | None:
         return None
 
 
-def get_wallpapers(args: Namespace) -> list[Path]:
-    directory = Path(args.random)
-    if not directory.is_dir():
-        return []
-
-    walls = [f for f in directory.rglob("*") if is_valid_wallpaper(f)]
-
-    if args.no_filter:
-        return walls
-
-    monitors = cast(list[dict[str, int]], message("monitors"))
-    filter_size = min(m["width"] for m in monitors), min(m["height"] for m in monitors)
-
-    return [f for f in walls if check_wall(f, filter_size, args.threshold)]
-
-
 def get_thumb(wall: Path, cache: Path) -> Path:
     thumb = cache / "thumbnail.jpg"
 
@@ -233,7 +217,8 @@ def set_wallpaper(wall: Path, no_smart: bool) -> None:
 
     # Update colours
     scheme.update_colours()
-    apply_colours(scheme.colours, scheme.mode)
+    if not apply_colours(scheme.colours, scheme.mode):
+        raise SystemExit(1)
 
     # Run custom post-hook if configured
     cfg = get_config().get("wallpaper", {})
@@ -256,18 +241,44 @@ def set_wallpaper(wall: Path, no_smart: bool) -> None:
 
 
 def set_random(args: Namespace) -> None:
-    wallpapers = get_wallpapers(args)
+    directory = Path(args.random)
+    if not directory.is_dir():
+        fatal(f'"{directory}" is not a directory')
 
-    if not wallpapers:
-        raise ValueError("No valid wallpapers found")
+    walls = [f for f in directory.rglob("*") if is_valid_wallpaper(f)]
+    if not walls:
+        fatal("No valid wallpapers found")
 
     try:
-        last_wall = wallpaper_path_path.read_text()
-        wallpapers.remove(Path(last_wall))
+        current = Path(wallpaper_path_path.read_text())
+    except (FileNotFoundError, OSError):
+        current = None
 
-        if not wallpapers:
-            raise ValueError("Only valid wallpaper is current")
-    except (FileNotFoundError, ValueError):
-        pass
+    random.shuffle(walls)
 
-    set_wallpaper(random.choice(wallpapers), args.no_smart)
+    if args.no_filter:
+        candidates = [w for w in walls if w != current]
+        if not candidates:
+            fatal("Only valid wallpaper is current")
+        set_wallpaper(random.choice(candidates), args.no_smart)
+        return
+
+    # Check lazily: filtering the whole directory opened every image, which is slow on a
+    # folder of 4K wallpapers. The first acceptable one wins.
+    try:
+        monitors = cast(list[dict[str, int]], message("monitors"))
+        filter_size = min(m["width"] for m in monitors), min(m["height"] for m in monitors)
+    except Exception:
+        # No compositor socket (TTY, CI): size cannot be compared, so accept any candidate.
+        monitor_filter = None
+    else:
+        monitor_filter = filter_size
+
+    for wall in walls:
+        if wall == current:
+            continue
+        if monitor_filter is None or check_wall(wall, monitor_filter, args.threshold):
+            set_wallpaper(wall, args.no_smart)
+            return
+
+    fatal("No valid wallpapers found")

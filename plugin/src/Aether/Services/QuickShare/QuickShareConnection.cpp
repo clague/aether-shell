@@ -795,46 +795,81 @@ void QuickShareConnection::handleSharingFrame(const sharing::nearby::Frame& fram
     }
 }
 
-// Accumulates an incoming FILE payload and writes it out on the chunk flagged last. Chunks
-// that do not start exactly where the buffer ends are dropped rather than reordered, which
-// is what the inline version did.
+namespace {
+
+// A phone-to-desktop transfer is normally a photo or a document. This cap is only here to stop
+// a peer from filling the disk; it is not a product limit.
+constexpr qint64 k_maxIncomingFileSize = 4LL * 1024 * 1024 * 1024;
+
+} // namespace
+
+void QuickShareConnection::cancelIncomingFile() {
+    if (m_incomingFile) {
+        m_incomingFile->cancelWriting();
+        m_incomingFile = nullptr;
+    }
+    m_incomingBytes = 0;
+    m_fileTransferActive = false;
+}
+
+// Streams an incoming FILE payload straight to disk. Chunks that do not start exactly where the
+// last one ended are dropped rather than reordered, as before. The file is written through
+// QSaveFile, so a partial transfer never appears under its final name.
 void QuickShareConnection::handleIncomingFileChunk(const QByteArray& chunkBody, qint64 offset, qint32 flags) {
     if (!m_fileTransferActive) {
         m_fileTransferActive = true;
-        m_fileBuffer.clear();
+        m_incomingBytes = 0;
+
+        if (m_incomingFileSize > k_maxIncomingFileSize) {
+            qCWarning(lcQuickShareConn) << "Refusing incoming file larger than" << k_maxIncomingFileSize;
+            cancelIncomingFile();
+            emit transferFinished(false);
+            return;
+        }
+
+        const QString savePath = uniquePath(QDir::homePath() + u"/Downloads"_s, m_incomingFileName);
+        m_incomingFile = std::make_unique<QSaveFile>(savePath);
+        if (!m_incomingFile->open(QIODevice::WriteOnly)) {
+            qCWarning(lcQuickShareConn) << "Failed to open" << savePath;
+            cancelIncomingFile();
+            emit transferFinished(false);
+            return;
+        }
     }
 
-    if (offset != m_fileBuffer.size())
+    if (offset != m_incomingBytes)
         return;
 
-    if (!chunkBody.isEmpty())
-        m_fileBuffer.append(chunkBody);
+    if (!chunkBody.isEmpty()) {
+        if (m_incomingFile->write(chunkBody) != chunkBody.size() ||
+            m_incomingBytes + chunkBody.size() > k_maxIncomingFileSize) {
+            qCWarning(lcQuickShareConn) << "Failed to write incoming file";
+            cancelIncomingFile();
+            emit transferFinished(false);
+            return;
+        }
+        m_incomingBytes += chunkBody.size();
+    }
 
-    emit transferProgress(m_fileBuffer.size(), m_incomingFileSize);
+    emit transferProgress(m_incomingBytes, m_incomingFileSize);
 
     if ((static_cast<unsigned>(flags) & 0x1u) != 1)
         return;
 
-    // Never overwrite what is already in Downloads: a second file of the same name is common
-    // enough (two photos called IMG_0001.jpg) and the old code truncated it without a word.
-    const QString savePath = uniquePath(QDir::homePath() + u"/Downloads"_s, m_incomingFileName);
-    QFile file(savePath);
-    if (file.open(QIODevice::WriteOnly)) {
-        file.write(m_fileBuffer);
-        file.close();
-    } else {
-        qCWarning(lcQuickShareConn) << "Failed to save file to" << savePath;
-    }
-
+    const bool saved = m_incomingFile->commit();
+    if (!saved)
+        qCWarning(lcQuickShareConn) << "Failed to commit incoming file" << m_incomingFile->fileName();
+    m_incomingFile = nullptr;
+    m_incomingBytes = 0;
     m_fileTransferActive = false;
-    m_fileBuffer.clear();
-    emit transferFinished(true);
+    emit transferFinished(saved);
 }
 
 void QuickShareConnection::onDisconnected() {
     m_state = Disconnected;
     m_payloadBuffers.clear();
     m_payloadTotalSizes.clear();
+    cancelIncomingFile();
     emit stateChanged(m_state);
 }
 
@@ -845,7 +880,7 @@ void QuickShareConnection::onError(QAbstractSocket::SocketError socketError) {
     // object may stay alive for the service's teardown delay.
     m_payloadBuffers.clear();
     m_payloadTotalSizes.clear();
-    m_fileBuffer.clear();
+    cancelIncomingFile();
     emit transferFinished(false);
 }
 

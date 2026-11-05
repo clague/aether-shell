@@ -4741,16 +4741,6 @@ QtObject {
             kind: "row",
             page: 16,
             sub: 0,
-            label: Tr.trCtx("CLI", "the aether command line tool"),
-            subtext: "",
-            section: Tr.tr("Software"),
-            subTitle: Tr.tr("About"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 16,
-            sub: 0,
             label: Tr.tr("Loaded plugins"),
             subtext: "",
             section: Tr.tr("Plugins"),

@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Layouts
-import Quickshell
 import Quickshell.Io
 import Aether
 import Aether.Config
@@ -17,7 +16,6 @@ PageBase {
     readonly property int pluginCount: 0
 
     property string quickshellVersion
-    property string cliVersion
 
     // CUtils.version is a SemVer string: `2.5.0` at a release tag, or
     // `2.6.0-dev.978+g8867aae` for a build N commits past one. The `dev.N` counter is what
@@ -44,19 +42,6 @@ PageBase {
             command: ["quickshell", "--version"]
             stdout: StdioCollector {
                 onStreamFinished: root.quickshellVersion = text.trim().split(" ")[1] ?? ""
-            }
-        }
-
-        // The in-tree command surface prints "aether v<describe>"; the first version-like
-        // number is the shell's own tag.
-        Process {
-            running: true
-            command: [Quickshell.shellPath("hybrid/bin/aether"), "--version"]
-            stdout: StdioCollector {
-                onStreamFinished: {
-                    const m = text.match(/(\d+(?:\.\d+)*)/);
-                    root.cliVersion = m ? m[1] : "";
-                }
             }
         }
 
@@ -230,11 +215,6 @@ PageBase {
             first: true
             label: Tr.trCtx("Shell", "the Aether shell itself, not a unix shell")
             value: root.displayVersion
-        }
-
-        InfoRow {
-            label: Tr.trCtx("CLI", "the aether command line tool")
-            value: root.cliVersion || "…"
         }
 
         InfoRow {

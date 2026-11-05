@@ -16,7 +16,6 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "cli"))
 
-from aether_cli.parser import parse_args  # noqa: E402
 from aether_cli.utils.paths import shell_root  # noqa: E402
 
 
@@ -34,6 +33,13 @@ def version() -> str:
 
 
 def main() -> None:
+    # Keybind path: do not import the parser and every subcommand just to forward a call.
+    if len(sys.argv) > 1 and sys.argv[1] == "ipc":
+        subprocess.run(["qs", "-p", str(shell_root), "ipc", "call", *sys.argv[2:]])
+        return
+
+    from aether_cli.parser import parse_args
+
     _, args = parse_args()
 
     if getattr(args, "version", False):

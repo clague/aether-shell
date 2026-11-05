@@ -12,18 +12,6 @@ QtObject {
 
     readonly property string imageCacheDir: `${Quickshell.env("XDG_RUNTIME_DIR") || "/tmp"}/caelestia/clipboard`
 
-    property Component waitTimer: Component {
-        Timer {
-            property string imgPath
-            property var callback
-
-            interval: 1000
-            repeat: false
-
-            onTriggered: callback(imgPath)
-        }
-    }
-
     property Process fetcher: Process {
         running: false
         command: ["cliphist", "list"]
@@ -49,22 +37,12 @@ QtObject {
                 }
 
                 root.items = result;
-                root.preloadImages();
             }
         }
     }
 
     function reload(): void {
         fetcher.running = true;
-    }
-
-    function preloadImages(): void {
-        for (const item of items) {
-            if (item.isImage && item.id) {
-                const imgPath = getImagePath(item.id);
-                Quickshell.execDetached(["sh", "-c", 'mkdir -p "$1" && cliphist decode "$2" > "$3" 2>&1', "sh", imageCacheDir, String(item.id), imgPath]);
-            }
-        }
     }
 
     function getSortedItems(): var {
@@ -87,12 +65,10 @@ QtObject {
         return imageCacheDir + "/" + clipId + ".png";
     }
 
-    function ensureImageCached(id: int, onReady: var): void {
+    function ensureImageCached(id: int): void {
+        // The delegate asks once when it is built; a file already decoded by an earlier open
+        // is reused instead of spawning cliphist again.
         const imgPath = getImagePath(id);
-        Quickshell.execDetached(["sh", "-c", 'mkdir -p "$1" && cliphist decode "$2" > "$3" 2>&1', "sh", imageCacheDir, String(id), imgPath]);
-        const timer = waitTimer.createObject(root, {
-            imgPath: imgPath,
-            callback: onReady
-        });
+        Quickshell.execDetached(["sh", "-c", 'test -f "$1" || { mkdir -p "$2" && cliphist decode "$3" > "$1"; }', "sh", imgPath, imageCacheDir, String(id)]);
     }
 }

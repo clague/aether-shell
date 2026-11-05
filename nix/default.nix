@@ -152,8 +152,11 @@ in
         --set AETHER_XKB_RULES_PATH ${xkeyboard-config}/share/xkeyboard-config-2/rules/base.lst \
         --add-flags "-p $out/share/aether-shell"
 
-      # Hyprland can only call a name; QML calls the same file by path.
-      ln -s "$out/share/aether-shell/hybrid/bin/aether" "$out/bin/aether"
+      # Hyprland can only call a name; QML calls the same file by path. The wrapper is what
+      # puts materialyoucolor and Pillow on PATH -- a plain symlink would use the system python.
+      makeWrapper ${cliPython}/bin/python3 $out/bin/aether \
+        --add-flags "$out/share/aether-shell/hybrid/bin/aether" \
+        --prefix PATH : "${lib.makeBinPath runtimeDeps}"
 
       mkdir -p $out/lib
       ln -s ${extras}/lib/* $out/lib/

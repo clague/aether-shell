@@ -15,11 +15,23 @@ def disable_input() -> None:
     _disable_input = True
 
 
+_failures: list[str] = []
+
+
+def failures() -> list[str]:
+    return _failures
+
+
+def reset_failures() -> None:
+    _failures.clear()
+
+
 def log_exception(func):
     """Log exceptions to stderr instead of raising.
 
     Used by the `apply_()` functions so that an exception, when applying
-    a theme, does not prevent the other themes from being applied.
+    a theme, does not prevent the other themes from being applied. The name
+    is recorded so the command can still exit nonzero.
     """
 
     def wrapper(*args, **kwargs):
@@ -27,6 +39,7 @@ def log_exception(func):
             func(*args, **kwargs)
         except Exception as e:
             error(f'exception during "{func.__name__}()": {str(e)}')
+            _failures.append(func.__name__)
 
     return wrapper
 

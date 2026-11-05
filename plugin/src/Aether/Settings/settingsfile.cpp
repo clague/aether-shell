@@ -222,6 +222,10 @@ void SettingsFile::writeNow() {
         return;
     }
 
+    // shell.json holds API keys; a 0644 file would expose them to every local user.
+    if (!QFile::setPermissions(m_path, QFileDevice::ReadOwner | QFileDevice::WriteOwner))
+        qCWarning(lcSettingsFile) << "Failed to restrict permissions on" << m_path;
+
     m_lastData = json;
     qCDebug(lcSettingsFile) << "Saved" << m_path;
 

@@ -90,6 +90,12 @@ check "current symlink resolves to the file" "$WALL" "$(readlink -f "$XDG_STATE_
 [ -s "$XDG_STATE_HOME/caelestia/wallpaper/thumbnail.jpg" ]
 checks=$((checks + 1))
 
+mkdir -p "$work/walls"
+cp "$WALL" "$work/walls/only.png"
+"$AETHER" wallpaper -r "$work/walls" -N
+check "random wallpaper writes the path" "$work/walls/only.png" \
+    "$(cat "$XDG_STATE_HOME/caelestia/wallpaper/path.txt")"
+
 case "$("$AETHER" wallpaper -p "$WALL" -N)" in
     '{"name": "dynamic"'*) checks=$((checks + 1)) ;;
     *) echo "FAIL: wallpaper -p did not print a scheme" >&2; exit 1 ;;

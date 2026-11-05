@@ -133,13 +133,19 @@ class Command:
         return f"Cannot open: file://{c_cache_dir}/imagecache/" not in line
 
     def print_ipc(self) -> None:
-        print(self.shell("ipc", "show"), end="")
+        try:
+            print(self.shell("ipc", "show"), end="")
+        except subprocess.CalledProcessError:
+            fatal("no running shell")
 
     def print_log(self) -> None:
-        if self.args.log_rules:
-            log = self.shell("log", "-r", self.args.log_rules)
-        else:
-            log = self.shell("log")
+        try:
+            if self.args.log_rules:
+                log = self.shell("log", "-r", self.args.log_rules)
+            else:
+                log = self.shell("log")
+        except subprocess.CalledProcessError:
+            fatal("no running shell")
         # FIXME: remove when logging rules are added/warning is removed
         for line in log.splitlines():
             if self.filter_log(line):

@@ -205,10 +205,14 @@ if("plugin" IN_LIST ENABLE_MODULES)
 endif()
 
 if("shell" IN_LIST ENABLE_MODULES)
-    foreach(dir assets components daemons modules services utils hybrid)
-        install(DIRECTORY ${dir} DESTINATION "${INSTALL_QSCONFDIR}"
-            PATTERN "__pycache__" EXCLUDE PATTERN "*.pyc" EXCLUDE)
+    foreach(dir assets components daemons modules services utils)
+        install(DIRECTORY ${dir} DESTINATION "${INSTALL_QSCONFDIR}")
     endforeach()
+
+    # Only the command surface is needed at runtime; hybrid/tools and hybrid/docs are for
+    # the checkout.
+    install(DIRECTORY hybrid/bin hybrid/cli DESTINATION "${INSTALL_QSCONFDIR}/hybrid"
+        PATTERN "__pycache__" EXCLUDE PATTERN "*.pyc" EXCLUDE)
 
     # install(DIRECTORY) does not carry the executable bit. The QML callers run this file
     # directly, so it has to stay executable.

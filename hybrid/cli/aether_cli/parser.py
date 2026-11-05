@@ -73,7 +73,7 @@ def parse_args() -> tuple[ArgumentParser, Namespace]:
 
     preview = scheme_command.add_parser("preview", help="print a scheme without applying it")
     preview.set_defaults(cls=scheme.Preview)
-    preview.add_argument("-n", "--name", help="the name of the scheme to preview")
+    preview.add_argument("-n", "--name", choices=get_scheme_names(), help="the name of the scheme to preview")
     preview.add_argument("-f", "--flavour", help="the flavour to preview")
     preview.add_argument("-m", "--mode", choices=["dark", "light"], help="the mode to preview")
     preview.add_argument("-v", "--variant", choices=scheme_variants, help="the variant to preview")

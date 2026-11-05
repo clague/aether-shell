@@ -75,14 +75,14 @@ Qt Quick applications create no `QStyle` and keep the Aether palette, so the she
 surfaces stay on the scheme either way.
 
 The style is a setting, not an environment variable: **Look & feel → Qt applications → Widget
-style**, stored as `appearance.qtStyle` in `~/.config/caelestia/shell.json`. The list is every style
+style**, stored as `qt.style` in `~/.config/caelestia/shell.json`. The list is every style
 Qt can create on the machine, plus **Automatic**.
 
 Resolution order:
 
 1. `QT_STYLE_OVERRIDE`, if set — Qt applies it after any platform theme, and palette ownership
    follows whatever actually loaded.
-2. `appearance.qtStyle`, when it names an installed style.
+2. `qt.style`, when it names an installed style.
 3. Kvantum, when `~/.config/Kvantum/kvantum.kvconfig` names a theme that resolves.
 4. The style in the CLI's `~/.config/qtengine/config.json`, when that style is installed.
 5. Fusion, via the default Qt behaviour.
@@ -144,7 +144,7 @@ scheme change, so a choice written there survives only until the next one.
 Clone into `$XDG_CONFIG_HOME/quickshell/caelestia`, then build and install with `cmake`:
 ```sh
 cd $XDG_CONFIG_HOME/quickshell
-git clone <this repository> aether
+git clone <this repository> caelestia
 
 cd caelestia
 cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/
@@ -154,6 +154,9 @@ sudo cmake --install build
 # Put the command surface on PATH: Hyprland can only call a name.
 ./hybrid/tools/install-cli.sh
 ```
+
+`~/.local/bin` must be on the session's `PATH` before Hyprland starts: `execs.lua` starts the
+shell with `aether`, and the keybinds use the same name.
 
 > [!NOTE]
 > `VERSION` and `GIT_REVISION` come from the local checkout — its nearest tag and its `HEAD`.

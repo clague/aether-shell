@@ -1,7 +1,10 @@
 #pragma once
 
 #include <qobject.h>
+#include <qsavefile.h>
 #include <qtcpsocket.h>
+
+#include <memory>
 
 #include "QuickShareCrypto.hpp"
 #include "wire_format.pb.h"
@@ -56,6 +59,7 @@ private:
     void sendOutgoingFile();
     void handleSharingFrame(const sharing::nearby::Frame& frame);
     void handleIncomingFileChunk(const QByteArray& chunkBody, qint64 offset, qint32 flags);
+    void cancelIncomingFile();
 
     QByteArray wrapInSecureMessage(const QByteArray& offlineFrameData);
     QByteArray unwrapSecureMessage(const QByteArray& secureMessageData);
@@ -84,7 +88,8 @@ private:
     QMap<qint64, QByteArray> m_payloadBuffers;
     QMap<qint64, qint64> m_payloadTotalSizes;
 
-    QByteArray m_fileBuffer;
+    std::unique_ptr<QSaveFile> m_incomingFile;
+    qint64 m_incomingBytes = 0;
     bool m_fileTransferActive = false;
 };
 

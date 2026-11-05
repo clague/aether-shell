@@ -1829,11 +1829,6 @@ msgid "Shell"
 msgstr "Shell"
 
 #: modules/nexus/pages/AboutPage.qml modules/nexus/SearchIndex.qml
-msgctxt "the aether command line tool"
-msgid "CLI"
-msgstr "CLI"
-
-#: modules/nexus/pages/AboutPage.qml modules/nexus/SearchIndex.qml
 msgid "Loaded plugins"
 msgstr "已加载的插件"
 

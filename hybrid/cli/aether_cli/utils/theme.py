@@ -5,10 +5,11 @@ import re
 import shutil
 import subprocess
 import tempfile
+import time
 from pathlib import Path
 
 from aether_cli.utils.colour import get_dynamic_colours
-from aether_cli.utils.io import log_exception
+from aether_cli.utils.io import error, failures, log_exception, reset_failures
 from aether_cli.utils.paths import (
     atomic_write,
     atomic_write_user,
@@ -389,72 +390,82 @@ def apply_user_templates(colours: dict[str, str], mode: str) -> None:
             atomic_write(theme_dir / file.name, content)
 
 
-def apply_colours(colours: dict[str, str], mode: str) -> None:
+def apply_colours(colours: dict[str, str], mode: str) -> bool:
+    reset_failures()
     # Use file-based lock to prevent concurrent theme changes
     lock_file = c_state_dir / "theme.lock"
     c_state_dir.mkdir(parents=True, exist_ok=True)
 
-    try:
-        with open(lock_file, "w") as lock_fd:
+    with open(lock_file, "w") as lock_fd:
+        # Wait instead of dropping the change: two quick actions (wallpaper, then mode)
+        # used to leave the second one silently unapplied.
+        deadline = time.monotonic() + 10
+        while True:
             try:
                 fcntl.flock(lock_fd.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                break
             except BlockingIOError:
-                return
+                if time.monotonic() >= deadline:
+                    error("another theme change is still running; gave up")
+                    return False
+                time.sleep(0.1)
 
-            cfg = get_config().get("theme", {})
+        cfg = get_config().get("theme", {})
 
-            def check(key: str) -> bool:
-                return cfg[key] if key in cfg else True
+        def check(key: str) -> bool:
+            return cfg[key] if key in cfg else True
 
-            if check("enableTerm"):
-                apply_terms(gen_sequences(colours))
-            if check("enableHypr"):
-                apply_hypr(colours)
-            if check("enableDiscord"):
-                apply_discord(gen_scss(colours))
-            if check("enableSpicetify"):
-                apply_spicetify(colours, mode)
-            if check("enablePandora"):
-                apply_pandora(colours, mode)
-            if check("enableFuzzel"):
-                apply_fuzzel(colours)
-            if check("enableBtop"):
-                apply_btop(colours)
-            if check("enableNvtop"):
-                apply_nvtop(colours)
-            if check("enableHtop"):
-                apply_htop(colours)
-            icon_theme = cfg.get(f"iconTheme{mode.capitalize()}") or cfg.get("iconTheme")
-            if check("enableGtk"):
-                apply_gtk(colours, mode, icon_theme)
-            if check("enableWarp"):
-                apply_warp(colours, mode)
-            if check("enableChromium"):
-                apply_chromium(colours)
-            if check("enableZed"):
-                apply_zed(colours, mode)
-            if check("enableCava"):
-                apply_cava(colours)
-            apply_user_templates(colours, mode)
+        if check("enableTerm"):
+            apply_terms(gen_sequences(colours))
+        if check("enableHypr"):
+            apply_hypr(colours)
+        if check("enableDiscord"):
+            apply_discord(gen_scss(colours))
+        if check("enableSpicetify"):
+            apply_spicetify(colours, mode)
+        if check("enablePandora"):
+            apply_pandora(colours, mode)
+        if check("enableFuzzel"):
+            apply_fuzzel(colours)
+        if check("enableBtop"):
+            apply_btop(colours)
+        if check("enableNvtop"):
+            apply_nvtop(colours)
+        if check("enableHtop"):
+            apply_htop(colours)
+        icon_theme = cfg.get(f"iconTheme{mode.capitalize()}") or cfg.get("iconTheme")
+        if check("enableGtk"):
+            apply_gtk(colours, mode, icon_theme)
+        if check("enableWarp"):
+            apply_warp(colours, mode)
+        if check("enableChromium"):
+            apply_chromium(colours)
+        if check("enableZed"):
+            apply_zed(colours, mode)
+        if check("enableCava"):
+            apply_cava(colours)
+        apply_user_templates(colours, mode)
 
-            if post_hook := cfg.get("postHook"):
-                scheme = get_scheme()
-                subprocess.run(
-                    post_hook,
-                    shell=True,
-                    env={
-                        **os.environ,
-                        "SCHEME_NAME": scheme.name,
-                        "SCHEME_FLAVOUR": scheme.flavour,
-                        "SCHEME_MODE": scheme.mode,
-                        "SCHEME_VARIANT": scheme.variant,
-                        "SCHEME_COLOURS": json.dumps(scheme.colours),
-                    },
-                    stderr=subprocess.DEVNULL,
-                )
+        if failed := failures():
+            error(f"{len(failed)} theme target(s) failed: {', '.join(failed)}")
+            return False
 
-    finally:
-        try:
-            lock_file.unlink()
-        except FileNotFoundError:
-            pass
+        if post_hook := cfg.get("postHook"):
+            scheme = get_scheme()
+            subprocess.run(
+                post_hook,
+                shell=True,
+                env={
+                    **os.environ,
+                    "SCHEME_NAME": scheme.name,
+                    "SCHEME_FLAVOUR": scheme.flavour,
+                    "SCHEME_MODE": scheme.mode,
+                    "SCHEME_VARIANT": scheme.variant,
+                    "SCHEME_COLOURS": json.dumps(scheme.colours),
+                },
+                stderr=subprocess.DEVNULL,
+            )
+
+        return True
+
+        pass

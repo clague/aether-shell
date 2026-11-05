@@ -9,6 +9,7 @@ from aether_cli.utils.scheme import (
     get_scheme_names,
     scheme_variants,
 )
+from aether_cli.utils.io import fatal
 from aether_cli.utils.theme import apply_colours
 
 
@@ -26,7 +27,8 @@ class Set:
 
         if self.args.random:
             scheme.set_random()
-            apply_colours(scheme.colours, scheme.mode)
+            if not apply_colours(scheme.colours, scheme.mode):
+                raise SystemExit(1)
         elif self.args.name or self.args.flavour or self.args.mode or self.args.variant:
             if self.args.name:
                 scheme.name = self.args.name
@@ -36,7 +38,8 @@ class Set:
                 scheme.mode = self.args.mode
             if self.args.variant:
                 scheme.variant = self.args.variant
-            apply_colours(scheme.colours, scheme.mode)
+            if not apply_colours(scheme.colours, scheme.mode):
+                raise SystemExit(1)
         else:
             print("No args given. Use --name, --flavour, --mode, --variant or --random to set a scheme")
 
@@ -57,6 +60,8 @@ class Preview:
             scheme._check_flavour()
             scheme._check_mode()
         if self.args.flavour:
+            if self.args.flavour not in get_scheme_flavours(scheme.name):
+                fatal(f'"{self.args.flavour}" is not a flavour of scheme "{scheme.name}"')
             scheme._flavour = self.args.flavour
             scheme._check_mode()
         if self.args.mode:
