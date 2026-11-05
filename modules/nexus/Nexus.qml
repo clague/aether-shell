@@ -30,6 +30,9 @@ Item {
     readonly property real navWidthMin: 200
     readonly property real navWidthMax: Math.max(navWidthMin, Math.min(Tokens.sizes.nexus.maxNavWidth, Math.round(root.width * 0.6)))
     property real navWidthOverride: -1
+    // Last width actually written, so the debounce timer and the release handler cannot write
+    // the same value twice.
+    property int savedNavWidth: -1
     readonly property string navStatePath: `${Paths.state}/nexus-nav.json`
     readonly property real navWidth: {
         const auto = Math.max(root.navWidthMin, Math.min(root.navWidthMax, Math.round(root.width / 3)));
@@ -55,8 +58,10 @@ Item {
             return;
         try {
             const data = JSON.parse(content);
-            if (typeof data.navWidth === "number")
+            if (typeof data.navWidth === "number") {
                 root.navWidthOverride = data.navWidth;
+                root.savedNavWidth = Math.round(data.navWidth);
+            }
         } catch (e) {
             console.warn("[nexus] could not read the saved nav width:", e);
         }
@@ -65,10 +70,16 @@ Item {
     function saveNavWidth(): void {
         if (root.navWidthOverride <= 0)
             return;
+        const width = Math.round(root.navWidthOverride);
+        if (width === root.savedNavWidth)
+            return;
         if (!CUtils.writeFile(root.navStatePath, JSON.stringify({
-            navWidth: Math.round(root.navWidthOverride)
-        })))
+            navWidth: width
+        }))) {
             console.warn("[nexus] could not save the nav width");
+            return;
+        }
+        root.savedNavWidth = width;
     }
 
     function isInside(item: Item, container: Item): bool {
@@ -199,7 +210,7 @@ Item {
     Timer {
         id: navSaveTimer
 
-        interval: 200
+        interval: 300
         onTriggered: root.saveNavWidth()
     }
 

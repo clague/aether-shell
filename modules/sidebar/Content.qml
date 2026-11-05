@@ -25,6 +25,12 @@ Item {
 
     property string activeTab: "notifications"
 
+    // Tabs are constructed on first use and then kept, so a chat is not lost by switching away
+    // and a tab that is never opened costs nothing.
+    property bool aiLoaded: false
+
+    property bool newsLoaded: false
+
     readonly property bool aiAvailable: GlobalConfig.ai.enableOllama || GlobalConfig.ai.enableOpenRouter === true || GlobalConfig.ai.enableOpenClaw === true
 
     function checkTabs() {
@@ -38,6 +44,13 @@ Item {
                 root.activeTab = "notifications";
             }
         }
+    }
+
+    onActiveTabChanged: {
+        if (activeTab === "ai")
+            aiLoaded = true;
+        else if (activeTab === "news")
+            newsLoaded = true;
     }
 
     Component.onCompleted: checkTabs()
@@ -297,8 +310,8 @@ Item {
                         }
                     }
 
-                    AiAssistant {
-                        id: aiAssistant
+                    Loader {
+                        id: aiLoader
 
                         anchors.top: parent.top
 
@@ -306,19 +319,19 @@ Item {
 
                         width: parent.width
 
+                        active: root.activeTab === "ai" || root.aiLoaded
+
                         x: root.activeTab === "ai" ? 0 : (indicator.activeIndex < 1 ? width : -width)
 
                         opacity: root.activeTab === "ai" ? 1 : 0
 
                         visible: opacity > 0
 
-                        Connections {
-                            function onIsStreamingChanged() {
-                                root.sidebarStreaming = aiAssistant.isStreaming;
-                            }
-
-                            target: aiAssistant
+                        sourceComponent: AiAssistant {
+                            anchors.fill: parent
                         }
+
+                        onLoaded: root.sidebarStreaming = (item as AiAssistant)?.isStreaming ?? false
 
                         Behavior on x {
                             Anim {
@@ -333,18 +346,34 @@ Item {
                         }
                     }
 
-                    News {
+                    Connections {
+                        function onIsStreamingChanged() {
+                            root.sidebarStreaming = (aiLoader.item as AiAssistant)?.isStreaming ?? false;
+                        }
+
+                        target: aiLoader.item
+                    }
+
+                    Loader {
+                        id: newsLoader
+
                         anchors.top: parent.top
 
                         anchors.bottom: parent.bottom
 
                         width: parent.width
 
+                        active: root.activeTab === "news" || root.newsLoaded
+
                         x: root.activeTab === "news" ? 0 : width
 
                         opacity: root.activeTab === "news" ? 1 : 0
 
                         visible: opacity > 0
+
+                        sourceComponent: News {
+                            anchors.fill: parent
+                        }
 
                         Behavior on x {
                             Anim {

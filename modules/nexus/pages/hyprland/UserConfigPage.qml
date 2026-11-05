@@ -33,6 +33,9 @@ PageBase {
     property var squiggles: []
 
     property string savedText: ""
+    // The minimap renders the whole document; coalesce updates so typing does not relayout it
+    // on every keystroke.
+    property string minimapSource: ""
     property string notice: ""
     property string diagnosticTip: ""
     property real diagnosticTipAnchorX: 0
@@ -728,6 +731,7 @@ PageBase {
                 const content = text();
                 root.savedText = content;
                 editor.text = content;
+                root.minimapSource = content;
             }
         }
 
@@ -791,6 +795,16 @@ PageBase {
 
             interval: 250
             onTriggered: root.requestCompletion()
+        }
+
+        Timer {
+            id: minimapTimer
+
+            interval: 120
+            onTriggered: {
+                if (root.minimapSource !== editor.text)
+                    root.minimapSource = editor.text;
+            }
         }
 
         Process {
@@ -1042,6 +1056,7 @@ PageBase {
 
                     onTextChanged: {
                         root.diagnosticTip = "";
+                        minimapTimer.restart();
                         root.recomputeLineRects();
                         root.rebuildSquiggles();
                         root.refreshCaret();
@@ -1401,7 +1416,7 @@ PageBase {
                     x: 6
                     y: 4
                     width: parent.width - 12
-                    text: editor.text
+                    text: root.minimapSource
                     color: Qt.alpha(Colours.palette.m3onSurface, 0.55)
                     font.family: editor.font.family
                     font.pixelSize: Math.max(1, Math.min(3, (parent.height - 8) / Math.max(1, editor.lineCount) / 1.25))
