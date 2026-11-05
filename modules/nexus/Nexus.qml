@@ -60,9 +60,10 @@ Item {
     function saveNavWidth(): void {
         if (root.navWidthOverride <= 0)
             return;
-        CUtils.writeFile(root.navStatePath, JSON.stringify({
+        if (!CUtils.writeFile(root.navStatePath, JSON.stringify({
             navWidth: Math.round(root.navWidthOverride)
-        }));
+        })))
+            console.warn("[nexus] could not save the nav width");
     }
 
     function isInside(item: Item, container: Item): bool {
@@ -94,6 +95,11 @@ Item {
     // Keys only reach these handlers through the focused item, so the window has to hand the
     // root focus when it opens (or when it is re-activated with nothing focused); without this
     // the arrows did nothing until the first click.
+    onNavWidthOverrideChanged: {
+        if (root.navWidthOverride > 0)
+            navSaveTimer.restart();
+    }
+
     Window.onActiveChanged: {
         if (Window.active) {
             NexusTarget.state = nState;
@@ -183,6 +189,13 @@ Item {
             else
                 nState.goForward();
         }
+    }
+
+    Timer {
+        id: navSaveTimer
+
+        interval: 200
+        onTriggered: root.saveNavWidth()
     }
 
     BlobGroup {
