@@ -8956,3 +8956,27 @@ msgstr "自动"
 #: modules/nexus/pages/LookAndFeelPage.qml
 msgid "How Qt apps draw their controls; takes effect when they restart"
 msgstr "Qt 应用绘制控件的方式，重启应用后生效"
+
+#: modules/nexus/PageRegistry.qml
+msgid "Devices"
+msgstr "设备"
+
+#: modules/nexus/pages/NetworkPage.qml
+msgid "Scanning"
+msgstr "扫描"
+
+#: modules/nexus/PageRegistry.qml
+msgid "Monitors, scaling and brightness"
+msgstr "显示器、缩放与亮度"
+
+#: modules/nexus/PageRegistry.qml
+msgid "Outputs, app volumes and sound effects"
+msgstr "输出设备、应用音量与音效"
+
+#: modules/nexus/PageRegistry.qml
+msgid "Poll intervals, integrations, media backend"
+msgstr "轮询间隔、集成与媒体后端"
+
+#: modules/nexus/PageRegistry.qml
+msgid "Desktop"
+msgstr "桌面"

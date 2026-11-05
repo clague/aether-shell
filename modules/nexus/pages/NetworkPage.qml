@@ -113,6 +113,22 @@ PageBase {
             onClicked: root.nState.openSubPage(2) // Add network sub-page
         }
 
+        SectionHeader {
+            text: Tr.tr("Scanning")
+        }
+
+        StepperRow {
+            first: true
+            last: true
+            label: Tr.tr("Wi-Fi rescan")
+            subtext: Tr.tr("How often available networks are rescanned (seconds)")
+            value: GlobalConfig.nexus.networkRescanInterval / 1000
+            from: 5
+            to: 120
+            stepSize: 5
+            onMoved: v => GlobalConfig.nexus.networkRescanInterval = Math.round(v * 1000)
+        }
+
         // ---- VPN -------------------------------------------------------------
         ToggleRow {
             Layout.topMargin: Tokens.spacing.large

@@ -109,22 +109,12 @@ PageBase {
             label: Tr.tr("System stats refresh")
             // TRANSLATORS: CPU and GPU are hardware abbreviations, leave them untranslated
             subtext: Tr.tr("CPU, memory and GPU update interval (seconds)")
+            last: true
             value: GlobalConfig.dashboard.resourceUpdateInterval / 1000
             from: 0.5
             to: 10
             stepSize: 0.5
             onMoved: v => GlobalConfig.dashboard.resourceUpdateInterval = Math.round(v * 1000)
-        }
-
-        StepperRow {
-            last: true
-            label: Tr.tr("Wi-Fi rescan")
-            subtext: Tr.tr("How often available networks are rescanned (seconds)")
-            value: GlobalConfig.nexus.networkRescanInterval / 1000
-            from: 5
-            to: 120
-            stepSize: 5
-            onMoved: v => GlobalConfig.nexus.networkRescanInterval = Math.round(v * 1000)
         }
 
         // Media & lyrics
@@ -150,43 +140,6 @@ PageBase {
             fallbackIcon: "music_note"
             fallbackText: GlobalConfig.services.defaultPlayer || Tr.trCtx("Auto", "default media player")
             onSelected: item => GlobalConfig.services.defaultPlayer = item.text
-        }
-
-        // Input increments
-        SectionHeader {
-            text: Tr.tr("Input increments")
-        }
-
-        StepperRow {
-            first: true
-            label: Tr.tr("Volume step")
-            subtext: Tr.tr("Amount the volume changes per scroll (%)")
-            value: Math.round(GlobalConfig.services.audioIncrement * 100)
-            from: 1
-            to: 50
-            stepSize: 1
-            onMoved: v => GlobalConfig.services.audioIncrement = v / 100
-        }
-
-        StepperRow {
-            label: Tr.tr("Brightness step")
-            subtext: Tr.tr("Amount the brightness changes per scroll (%)")
-            value: Math.round(GlobalConfig.services.brightnessIncrement * 100)
-            from: 1
-            to: 50
-            stepSize: 1
-            onMoved: v => GlobalConfig.services.brightnessIncrement = v / 100
-        }
-
-        StepperRow {
-            last: true
-            label: Tr.tr("Max volume")
-            subtext: Tr.tr("Upper limit for output volume (%)")
-            value: Math.round(GlobalConfig.services.maxVolume * 100)
-            from: 50
-            to: 200
-            stepSize: 5
-            onMoved: v => GlobalConfig.services.maxVolume = v / 100
         }
 
         SectionHeader {

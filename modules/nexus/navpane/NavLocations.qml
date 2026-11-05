@@ -112,6 +112,8 @@ VerticalFadeFlickable {
 
                 readonly property bool isCategoryEnd: index === list.model.length - 1 || list.model[index + 1].category !== modelData.category
 
+                readonly property string categoryLabel: PageRegistry.categoryLabel(modelData.category)
+
                 property real animHeight: 1
 
                 property real animSlide: 1
@@ -126,7 +128,9 @@ VerticalFadeFlickable {
                 // the page list without any special key handling here.
                 activeFocusOnTab: true
 
-                clip: true
+                // Only the unlock animation needs clipping; the category heading sits outside the
+                // row on purpose.
+                clip: animHeight < 1
 
                 Component.onCompleted: {
                     if (item.isDeveloperPage && root.nState.justUnlockedDevMode) {
@@ -143,7 +147,9 @@ VerticalFadeFlickable {
                 }
 
                 Layout.fillWidth: true
-                Layout.topMargin: (index !== 0 && isCategoryStart ? Tokens.spacing.medium : 0) * animHeight
+                // The heading lives in the margin the layout reserves above the first row of a
+                // block, so the row keeps the shape and focus behaviour it had.
+                Layout.topMargin: (isCategoryStart ? heading.implicitHeight + Tokens.spacing.small : 0) * animHeight
 
                 implicitHeight: {
                     const h = layout.implicitHeight + layout.anchors.margins * 2;
@@ -245,6 +251,22 @@ VerticalFadeFlickable {
                     topRightRadius: item.topRightRadius
                     bottomLeftRadius: item.bottomLeftRadius
                     bottomRightRadius: item.bottomRightRadius
+                }
+
+                StyledText {
+                    id: heading
+
+                    visible: item.isCategoryStart
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.bottom: parent.top
+                    anchors.bottomMargin: Tokens.spacing.extraSmall
+                    anchors.leftMargin: Tokens.padding.largeIncreased
+                    anchors.rightMargin: Tokens.padding.largeIncreased
+                    text: item.categoryLabel
+                    color: Colours.palette.m3onSurfaceVariant
+                    font: Tokens.font.label.medium
+                    elide: Text.ElideRight
                 }
 
                 RowLayout {

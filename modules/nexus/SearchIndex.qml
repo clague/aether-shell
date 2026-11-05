@@ -671,26 +671,6 @@ QtObject {
             kind: "row",
             page: 1,
             sub: 0,
-            label: Tr.tr("Sans-serif font"),
-            subtext: Tr.tr("Text in browsers, Qt and most other apps"),
-            section: Tr.tr("App fonts"),
-            subTitle: Tr.tr("Look & feel"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 1,
-            sub: 0,
-            label: Tr.tr("Monospace font"),
-            subtext: Tr.tr("Code and terminal-style text"),
-            section: Tr.tr("App fonts"),
-            subTitle: Tr.tr("Look & feel"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 1,
-            sub: 0,
             label: Tr.tr("Text size"),
             subtext: "",
             section: Tr.tr("App fonts"),
@@ -714,6 +694,16 @@ QtObject {
             label: Tr.tr("Also use them in the shell"),
             subtext: Tr.tr("The bar, panels and Nexus too. Icons keep their own font"),
             section: Tr.tr("App fonts"),
+            subTitle: Tr.tr("Look & feel"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 1,
+            sub: 0,
+            label: Tr.tr("Widget style"),
+            subtext: Tr.tr("How Qt apps draw their controls; takes effect when they restart"),
+            section: Tr.tr("Qt applications"),
             subTitle: Tr.tr("Look & feel"),
             kw: []
         },
@@ -2260,7 +2250,7 @@ QtObject {
         {
             kind: "row",
             page: 4,
-            sub: 4,
+            sub: 0,
             label: Tr.tr("Keybinds"),
             subtext: Tr.tr("Workspaces, window actions and app shortcuts"),
             section: "",
@@ -2275,7 +2265,17 @@ QtObject {
             subtext: Tr.tr("The settings above write overrides to hypr-vars.lua; Hyprland reads it at startup. Clear a row to remove its override."),
             section: "",
             subTitle: Tr.tr("Hyprland"),
-            kw: ["hypr-vars"]
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 4,
+            sub: 0,
+            label: Tr.tr("User configuration"),
+            subtext: Tr.tr("Edit hypr-user.lua for anything not covered above"),
+            section: "",
+            subTitle: Tr.tr("Hyprland"),
+            kw: []
         },
         {
             kind: "page",
@@ -2334,6 +2334,16 @@ QtObject {
             label: Tr.tr("Spacing & animations"),
             subtext: "",
             section: "",
+            subTitle: Tr.tr("Spacing & animations"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 4,
+            sub: 2,
+            label: Tr.tr("Window layout"),
+            subtext: Tr.tr("Dwindle, master or scrolling"),
+            section: Tr.tr("Layout"),
             subTitle: Tr.tr("Spacing & animations"),
             kw: []
         },
@@ -2420,16 +2430,6 @@ QtObject {
         {
             kind: "page",
             page: 4,
-            sub: 4,
-            label: Tr.tr("Keybinds"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Keybinds"),
-            kw: []
-        },
-        {
-            kind: "page",
-            page: 4,
             sub: 5,
             label: Tr.tr("Variables"),
             subtext: "",
@@ -2439,22 +2439,22 @@ QtObject {
         },
         {
             kind: "page",
-            page: 4,
-            sub: 6,
-            label: Tr.tr("User configuration"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("User configuration"),
-            kw: []
-        },
-        {
-            kind: "page",
             page: 5,
             sub: 0,
             label: Tr.tr("Display"),
-            subtext: Tr.tr("Output configuration"),
+            subtext: Tr.tr("Monitors, scaling and brightness"),
             section: "",
             subTitle: "",
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 5,
+            sub: 0,
+            label: Tr.tr("Monitor settings are applied through hyprmoncfg"),
+            subtext: Tr.tr("Your Hyprland config is not edited. Install hyprmoncfg if this page stays empty."),
+            section: "",
+            subTitle: Tr.tr("Display"),
             kw: []
         },
         {
@@ -2541,6 +2541,16 @@ QtObject {
             kind: "row",
             page: 5,
             sub: 0,
+            label: Tr.tr("Brightness step"),
+            subtext: "",
+            section: Tr.tr("Brightness"),
+            subTitle: Tr.tr("Display"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 5,
+            sub: 0,
             label: Tr.tr("Save current layout"),
             subtext: Tr.tr("Type a name and press Enter"),
             section: Tr.tr("Profiles"),
@@ -2551,8 +2561,8 @@ QtObject {
             kind: "page",
             page: 6,
             sub: 0,
-            label: Tr.tr("Network"),
-            subtext: Tr.tr("Wi-Fi, ethernet, VPN"),
+            label: Tr.tr("Audio"),
+            subtext: Tr.tr("Outputs, app volumes and sound effects"),
             section: "",
             subTitle: "",
             kw: []
@@ -2561,120 +2571,190 @@ QtObject {
             kind: "row",
             page: 6,
             sub: 0,
-            label: Tr.tr("Wi-Fi"),
+            label: Tr.trCtx("Output", "audio output"),
             subtext: "",
             section: "",
-            subTitle: Tr.tr("Network"),
-            kw: ["internet", "wireless"]
-        },
-        {
-            kind: "row",
-            page: 6,
-            sub: 0,
-            label: Tr.tr("VPN"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Network"),
+            subTitle: Tr.tr("Audio"),
             kw: []
         },
         {
             kind: "row",
             page: 6,
             sub: 0,
-            label: Tr.tr("Add provider"),
+            label: Tr.trCtx("Muted", "audio output muted"),
             subtext: "",
             section: "",
-            subTitle: Tr.tr("Network"),
+            subTitle: Tr.tr("Audio"),
             kw: []
         },
         {
             kind: "row",
             page: 6,
             sub: 0,
-            label: Tr.tr("Enable hotspot"),
-            subtext: Tr.tr("Show the hotspot page and keep its status up to date"),
-            section: Tr.tr("Hotspot"),
-            subTitle: Tr.tr("Network"),
+            label: Tr.tr("Combined Audio Output"),
+            subtext: Tr.tr("Simultaneous playback across multiple devices"),
+            section: "",
+            subTitle: Tr.tr("Audio"),
             kw: []
         },
         {
             kind: "row",
             page: 6,
             sub: 0,
-            label: Tr.tr("Hotspot"),
-            subtext: "",
-            section: Tr.tr("Hotspot"),
-            subTitle: Tr.tr("Network"),
-            kw: []
-        },
-        {
-            kind: "page",
-            page: 6,
-            sub: 2,
-            label: Tr.tr("Add network"),
+            label: Tr.trCtx("Input", "audio input"),
             subtext: "",
             section: "",
-            subTitle: Tr.tr("Add network"),
+            subTitle: Tr.tr("Audio"),
             kw: []
         },
         {
             kind: "row",
             page: 6,
-            sub: 2,
-            label: Tr.tr("Hidden network"),
-            subtext: Tr.tr("Actively probe for a network that doesn't broadcast its name"),
+            sub: 0,
+            label: Tr.trCtx("Muted", "audio input muted"),
+            subtext: "",
             section: "",
-            subTitle: Tr.tr("Add network"),
+            subTitle: Tr.tr("Audio"),
             kw: []
         },
         {
             kind: "row",
             page: 6,
-            sub: 2,
-            label: Tr.tr("Security"),
+            sub: 0,
+            label: Tr.tr("Enable sound effects"),
             subtext: "",
             section: "",
-            subTitle: Tr.tr("Add network"),
-            kw: []
-        },
-        {
-            kind: "page",
-            page: 6,
-            sub: 5,
-            label: Tr.tr("All networks"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("All networks"),
-            kw: []
-        },
-        {
-            kind: "page",
-            page: 6,
-            sub: 6,
-            label: Tr.tr("Saved networks"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Saved networks"),
-            kw: []
-        },
-        {
-            kind: "page",
-            page: 6,
-            sub: 7,
-            label: Tr.tr("Wi-Fi Hotspot"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Wi-Fi Hotspot"),
+            subTitle: Tr.tr("Audio"),
             kw: []
         },
         {
             kind: "row",
             page: 6,
-            sub: 7,
-            label: Tr.tr("Frequency band"),
+            sub: 0,
+            label: Tr.tr("SFX Volume"),
             subtext: "",
-            section: Tr.tr("Hotspot Settings"),
-            subTitle: Tr.tr("Wi-Fi Hotspot"),
+            section: "",
+            subTitle: Tr.tr("Audio"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 6,
+            sub: 0,
+            label: Tr.tr("Notification Volume"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Audio"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 6,
+            sub: 0,
+            label: Tr.tr("Camera click"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Audio"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 6,
+            sub: 0,
+            label: Tr.tr("Charging started"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Audio"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 6,
+            sub: 0,
+            label: Tr.tr("Volume tick"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Audio"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 6,
+            sub: 0,
+            label: Tr.tr("Screen lock"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Audio"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 6,
+            sub: 0,
+            label: Tr.tr("Screen unlock"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Audio"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 6,
+            sub: 0,
+            label: Tr.tr("Low battery"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Audio"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 6,
+            sub: 0,
+            label: Tr.tr("Screen record"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Audio"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 6,
+            sub: 0,
+            label: Tr.tr("Volume step"),
+            subtext: "",
+            section: Tr.tr("Volume"),
+            subTitle: Tr.tr("Audio"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 6,
+            sub: 0,
+            label: Tr.tr("Max volume"),
+            subtext: "",
+            section: Tr.tr("Volume"),
+            subTitle: Tr.tr("Audio"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 6,
+            sub: 0,
+            label: Tr.tr("Audio popout"),
+            subtext: Tr.tr("Which fork's audio panel the bar opens"),
+            section: Tr.tr("Bar popout"),
+            subTitle: Tr.tr("Audio"),
+            kw: []
+        },
+        {
+            kind: "page",
+            page: 6,
+            sub: 1,
+            label: Tr.tr("App routing & volumes"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("App routing & volumes"),
             kw: []
         },
         {
@@ -2741,8 +2821,8 @@ QtObject {
             kind: "page",
             page: 8,
             sub: 0,
-            label: Tr.tr("Audio"),
-            subtext: Tr.tr("App volumes, sound devices"),
+            label: Tr.tr("Network"),
+            subtext: Tr.tr("Wi-Fi, ethernet, VPN"),
             section: "",
             subTitle: "",
             kw: []
@@ -2751,815 +2831,135 @@ QtObject {
             kind: "row",
             page: 8,
             sub: 0,
-            label: Tr.trCtx("Output", "audio output"),
+            label: Tr.tr("Wi-Fi"),
             subtext: "",
             section: "",
-            subTitle: Tr.tr("Audio"),
+            subTitle: Tr.tr("Network"),
+            kw: ["internet", "wireless"]
+        },
+        {
+            kind: "row",
+            page: 8,
+            sub: 0,
+            label: Tr.tr("Wi-Fi rescan"),
+            subtext: Tr.tr("How often available networks are rescanned (seconds)"),
+            section: Tr.tr("Scanning"),
+            subTitle: Tr.tr("Network"),
             kw: []
         },
         {
             kind: "row",
             page: 8,
             sub: 0,
-            label: Tr.trCtx("Muted", "audio output muted"),
+            label: Tr.tr("VPN"),
             subtext: "",
-            section: "",
-            subTitle: Tr.tr("Audio"),
+            section: Tr.tr("Scanning"),
+            subTitle: Tr.tr("Network"),
             kw: []
         },
         {
             kind: "row",
             page: 8,
             sub: 0,
-            label: Tr.tr("Combined Audio Output"),
-            subtext: Tr.tr("Simultaneous playback across multiple devices"),
-            section: "",
-            subTitle: Tr.tr("Audio"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 8,
-            sub: 0,
-            label: Tr.trCtx("Input", "audio input"),
+            label: Tr.tr("Add provider"),
             subtext: "",
-            section: "",
-            subTitle: Tr.tr("Audio"),
+            section: Tr.tr("Scanning"),
+            subTitle: Tr.tr("Network"),
             kw: []
         },
         {
             kind: "row",
             page: 8,
             sub: 0,
-            label: Tr.trCtx("Muted", "audio input muted"),
+            label: Tr.tr("Enable hotspot"),
+            subtext: Tr.tr("Show the hotspot page and keep its status up to date"),
+            section: Tr.tr("Hotspot"),
+            subTitle: Tr.tr("Network"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 8,
+            sub: 0,
+            label: Tr.tr("Hotspot"),
             subtext: "",
-            section: "",
-            subTitle: Tr.tr("Audio"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 8,
-            sub: 0,
-            label: Tr.tr("Enable sound effects"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Audio"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 8,
-            sub: 0,
-            label: Tr.tr("SFX Volume"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Audio"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 8,
-            sub: 0,
-            label: Tr.tr("Notification Volume"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Audio"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 8,
-            sub: 0,
-            label: Tr.tr("Camera click"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Audio"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 8,
-            sub: 0,
-            label: Tr.tr("Charging started"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Audio"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 8,
-            sub: 0,
-            label: Tr.tr("Volume tick"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Audio"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 8,
-            sub: 0,
-            label: Tr.tr("Screen lock"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Audio"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 8,
-            sub: 0,
-            label: Tr.tr("Screen unlock"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Audio"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 8,
-            sub: 0,
-            label: Tr.tr("Low battery"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Audio"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 8,
-            sub: 0,
-            label: Tr.tr("Screen record"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Audio"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 8,
-            sub: 0,
-            label: Tr.tr("Audio popout"),
-            subtext: Tr.tr("Which fork's audio panel the bar opens"),
-            section: Tr.tr("Bar popout"),
-            subTitle: Tr.tr("Audio"),
+            section: Tr.tr("Hotspot"),
+            subTitle: Tr.tr("Network"),
             kw: []
         },
         {
             kind: "page",
             page: 8,
-            sub: 1,
-            label: Tr.tr("App routing & volumes"),
+            sub: 2,
+            label: Tr.tr("Add network"),
             subtext: "",
             section: "",
-            subTitle: Tr.tr("App routing & volumes"),
+            subTitle: Tr.tr("Add network"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 8,
+            sub: 2,
+            label: Tr.tr("Hidden network"),
+            subtext: Tr.tr("Actively probe for a network that doesn't broadcast its name"),
+            section: "",
+            subTitle: Tr.tr("Add network"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 8,
+            sub: 2,
+            label: Tr.tr("Security"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Add network"),
+            kw: []
+        },
+        {
+            kind: "page",
+            page: 8,
+            sub: 5,
+            label: Tr.tr("All networks"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("All networks"),
+            kw: []
+        },
+        {
+            kind: "page",
+            page: 8,
+            sub: 6,
+            label: Tr.tr("Saved networks"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Saved networks"),
+            kw: []
+        },
+        {
+            kind: "page",
+            page: 8,
+            sub: 7,
+            label: Tr.tr("Wi-Fi Hotspot"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Wi-Fi Hotspot"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 8,
+            sub: 7,
+            label: Tr.tr("Frequency band"),
+            subtext: "",
+            section: Tr.tr("Hotspot Settings"),
+            subTitle: Tr.tr("Wi-Fi Hotspot"),
             kw: []
         },
         {
             kind: "page",
             page: 9,
-            sub: 0,
-            label: Tr.tr("Updates"),
-            subtext: Tr.tr("System updates"),
-            section: "",
-            subTitle: "",
-            kw: []
-        },
-        {
-            kind: "page",
-            page: 10,
-            sub: 0,
-            label: Tr.tr("Plugins"),
-            subtext: Tr.tr("Manage plugins"),
-            section: "",
-            subTitle: "",
-            kw: []
-        },
-        {
-            kind: "page",
-            page: 11,
-            sub: 0,
-            label: Tr.tr("Doctor"),
-            subtext: Tr.tr("Check Wi-Fi, Bluetooth, audio, displays and services"),
-            section: "",
-            subTitle: "",
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 11,
-            sub: 0,
-            label: Tr.tr("Watch in the background"),
-            subtext: Tr.tr("Look for new problems every few minutes and show a notification. Uses almost no CPU, and pauses in game mode"),
-            section: Tr.tr("Watchdog"),
-            subTitle: Tr.tr("Doctor"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 11,
-            sub: 0,
-            label: Tr.tr("Check every"),
-            subtext: "",
-            section: Tr.tr("Watchdog"),
-            subTitle: Tr.tr("Doctor"),
-            kw: []
-        },
-        {
-            kind: "page",
-            page: 12,
-            sub: 0,
-            label: Tr.tr("Language & region"),
-            subtext: Tr.tr("UI language, weather location, display units"),
-            section: "",
-            subTitle: "",
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 12,
-            sub: 0,
-            label: Tr.tr("UI language"),
-            subtext: Tr.tr("The language used in the shell UI"),
-            section: Tr.tr("Language"),
-            subTitle: Tr.tr("Language & region"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 12,
-            sub: 0,
-            label: Tr.tr("Temperature"),
-            subtext: Tr.tr("Units for weather temperatures"),
-            section: Tr.tr("Units"),
-            subTitle: Tr.tr("Language & region"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 12,
-            sub: 0,
-            label: Tr.tr("System temperatures"),
-            subtext: Tr.tr("Units for CPU and GPU temperatures"),
-            section: Tr.tr("Units"),
-            subTitle: Tr.tr("Language & region"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 12,
-            sub: 0,
-            label: Tr.tr("Clock format"),
-            subtext: Tr.tr("How times are shown across the shell"),
-            section: Tr.tr("Time & date"),
-            subTitle: Tr.tr("Language & region"),
-            kw: []
-        },
-        {
-            kind: "page",
-            page: 13,
-            sub: 0,
-            label: Tr.tr("Services"),
-            subtext: Tr.tr("Poll intervals, integrations, lyrics backend"),
-            section: "",
-            subTitle: "",
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 0,
-            label: Tr.tr("Media refresh"),
-            subtext: Tr.tr("How often the media position updates (ms)"),
-            section: Tr.tr("Polling"),
-            subTitle: Tr.tr("Services"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 0,
-            label: Tr.tr("System stats refresh"),
-            subtext: Tr.tr("CPU, memory and GPU update interval (seconds)"),
-            section: Tr.tr("Polling"),
-            subTitle: Tr.tr("Services"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 0,
-            label: Tr.tr("Wi-Fi rescan"),
-            subtext: Tr.tr("How often available networks are rescanned (seconds)"),
-            section: Tr.tr("Polling"),
-            subTitle: Tr.tr("Services"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 0,
-            label: Tr.tr("Lyrics backend"),
-            subtext: Tr.tr("Source used to fetch synced lyrics"),
-            section: Tr.tr("Media & lyrics"),
-            subTitle: Tr.tr("Services"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 0,
-            label: Tr.tr("Default player"),
-            subtext: Tr.tr("Preferred media player when several are open"),
-            section: Tr.tr("Media & lyrics"),
-            subTitle: Tr.tr("Services"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 0,
-            label: Tr.tr("Volume step"),
-            subtext: "",
-            section: Tr.tr("Input increments"),
-            subTitle: Tr.tr("Services"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 0,
-            label: Tr.tr("Brightness step"),
-            subtext: "",
-            section: Tr.tr("Input increments"),
-            subTitle: Tr.tr("Services"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 0,
-            label: Tr.tr("Max volume"),
-            subtext: "",
-            section: Tr.tr("Input increments"),
-            subTitle: Tr.tr("Services"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 0,
-            label: Tr.tr("GPU override"),
-            subtext: "",
-            section: Tr.tr("Hardware"),
-            subTitle: Tr.tr("Services"),
-            kw: []
-        },
-        {
-            kind: "page",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Notifications"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Show notifications in fullscreen"),
-            subtext: Tr.tr("Whether notifications appear over fullscreen apps"),
-            section: Tr.tr("Notifications"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Expire automatically"),
-            subtext: Tr.tr("Dismiss notifications after their timeout"),
-            section: Tr.tr("Notifications"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Open expanded"),
-            subtext: Tr.tr("Show notifications expanded by default"),
-            section: Tr.tr("Notifications"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Default timeout"),
-            subtext: Tr.tr("Time before a notification dismisses (ms)"),
-            section: Tr.tr("Notifications"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Group preview count"),
-            subtext: Tr.tr("Notifications shown per group before collapsing"),
-            section: Tr.tr("Notifications"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Show toasts in fullscreen"),
-            subtext: Tr.tr("Whether toasts appear over fullscreen apps"),
-            section: Tr.tr("Toasts"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Visible toasts"),
-            subtext: Tr.tr("Maximum number of toasts shown at once"),
-            section: Tr.tr("Toasts"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Toast transparency"),
-            subtext: Tr.tr("Apply transparency and blur to toast notifications"),
-            section: Tr.tr("Toasts"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Base transparency"),
-            subtext: "",
-            section: Tr.tr("Toasts"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Charging changes"),
-            subtext: "",
-            section: Tr.tr("Toast events"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Game mode changes"),
-            subtext: "",
-            section: Tr.tr("Toast events"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Do not disturb changes"),
-            subtext: "",
-            section: Tr.tr("Toast events"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Audio output changes"),
-            subtext: "",
-            section: Tr.tr("Toast events"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Audio input changes"),
-            subtext: "",
-            section: Tr.tr("Toast events"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Caps lock changes"),
-            subtext: "",
-            section: Tr.tr("Toast events"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Num lock changes"),
-            subtext: "",
-            section: Tr.tr("Toast events"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Keyboard layout changes"),
-            subtext: "",
-            section: Tr.tr("Toast events"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("VPN changes"),
-            subtext: "",
-            section: Tr.tr("Toast events"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 1,
-            label: Tr.tr("Now playing"),
-            subtext: "",
-            section: Tr.tr("Toast events"),
-            subTitle: Tr.tr("Notifications"),
-            kw: []
-        },
-        {
-            kind: "page",
-            page: 13,
-            sub: 2,
-            label: Tr.tr("Game mode"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Game mode"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 2,
-            label: Tr.tr("Enable automatically"),
-            subtext: Tr.tr("Turn on game mode when a target window is focused or running"),
-            section: Tr.tr("Auto-enable rules"),
-            subTitle: Tr.tr("Game mode"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 2,
-            label: Tr.tr("Disable animations"),
-            subtext: "",
-            section: Tr.tr("Hyprland overrides"),
-            subTitle: Tr.tr("Game mode"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 2,
-            label: Tr.tr("Disable blur"),
-            subtext: "",
-            section: Tr.tr("Hyprland overrides"),
-            subTitle: Tr.tr("Game mode"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 2,
-            label: Tr.tr("Disable gaps and rounding"),
-            subtext: "",
-            section: Tr.tr("Hyprland overrides"),
-            subTitle: Tr.tr("Game mode"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 2,
-            label: Tr.tr("Disable shadows"),
-            subtext: "",
-            section: Tr.tr("Hyprland overrides"),
-            subTitle: Tr.tr("Game mode"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 2,
-            label: Tr.tr("Disable window transparency"),
-            subtext: "",
-            section: Tr.tr("Hyprland overrides"),
-            subTitle: Tr.tr("Game mode"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 2,
-            label: Tr.tr("Disable shell transparency"),
-            subtext: "",
-            section: Tr.tr("MiDnight feature overrides"),
-            subTitle: Tr.tr("Game mode"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 2,
-            label: Tr.tr("Disable toast notifications transparency"),
-            subtext: "",
-            section: Tr.tr("MiDnight feature overrides"),
-            subTitle: Tr.tr("Game mode"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 2,
-            label: Tr.tr("Disable desktop lyrics"),
-            subtext: "",
-            section: Tr.tr("MiDnight feature overrides"),
-            subTitle: Tr.tr("Game mode"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 2,
-            label: Tr.tr("Disable visualizer"),
-            subtext: "",
-            section: Tr.tr("MiDnight feature overrides"),
-            subTitle: Tr.tr("Game mode"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 2,
-            label: Tr.tr("Disable shimeji pets"),
-            subtext: "",
-            section: Tr.tr("MiDnight feature overrides"),
-            subTitle: Tr.tr("Game mode"),
-            kw: []
-        },
-        {
-            kind: "page",
-            page: 13,
-            sub: 3,
-            label: Tr.tr("Target windows"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Target windows"),
-            kw: []
-        },
-        {
-            kind: "page",
-            page: 13,
-            sub: 4,
-            label: Tr.tr("Discord Rich Presence"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Discord Rich Presence"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 4,
-            label: Tr.tr("Enable rich presence"),
-            subtext: Tr.tr("Broadcast custom presence to Vesktop"),
-            section: Tr.tr("Broadcast settings"),
-            subTitle: Tr.tr("Discord Rich Presence"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 4,
-            label: Tr.tr("Auto-detect Steam games"),
-            subtext: Tr.tr("Automatically broadcast running Steam games"),
-            section: Tr.tr("Broadcast settings"),
-            subTitle: Tr.tr("Discord Rich Presence"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 4,
-            label: Tr.tr("Broadcast MiDnight info"),
-            subtext: Tr.tr("Broadcast shell uptime and system info"),
-            section: Tr.tr("Broadcast settings"),
-            subTitle: Tr.tr("Discord Rich Presence"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 4,
-            label: Tr.tr("Enable manual override"),
-            subtext: Tr.tr("Force broadcast this custom presence and ignore all other apps"),
-            section: Tr.tr("Manual custom presence"),
-            subTitle: Tr.tr("Discord Rich Presence"),
-            kw: []
-        },
-        {
-            kind: "page",
-            page: 13,
-            sub: 5,
-            label: Tr.tr("Picture in Picture"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Picture in Picture"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 5,
-            label: Tr.tr("Position"),
-            subtext: Tr.tr("Anchor quadrant for Picture in Picture windows"),
-            section: Tr.tr("Behavior"),
-            subTitle: Tr.tr("Picture in Picture"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 5,
-            label: Tr.tr("Follow active focus"),
-            subtext: Tr.tr("Automatically warp PiP to the active monitor and workspace"),
-            section: Tr.tr("Behavior"),
-            subTitle: Tr.tr("Picture in Picture"),
-            kw: []
-        },
-        {
-            kind: "page",
-            page: 13,
-            sub: 6,
-            label: Tr.tr("Quick Share"),
-            subtext: "",
-            section: "",
-            subTitle: Tr.tr("Quick Share"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 6,
-            label: Tr.tr("Auto-start on launch"),
-            subtext: Tr.tr("Enable Quick Share when the shell starts"),
-            section: Tr.tr("Startup"),
-            subTitle: Tr.tr("Quick Share"),
-            kw: []
-        },
-        {
-            kind: "row",
-            page: 13,
-            sub: 6,
-            label: Tr.tr("Enable Quick Share"),
-            subtext: "",
-            section: Tr.tr("Status"),
-            subTitle: Tr.tr("Quick Share"),
-            kw: []
-        },
-        {
-            kind: "page",
-            page: 14,
             sub: 0,
             label: Tr.tr("Power & idle"),
             subtext: Tr.tr("Idle timeouts, sleep and screen-off behaviour"),
@@ -3569,7 +2969,7 @@ QtObject {
         },
         {
             kind: "row",
-            page: 14,
+            page: 9,
             sub: 0,
             label: Tr.tr("Critical hibernate level"),
             subtext: "",
@@ -3579,7 +2979,7 @@ QtObject {
         },
         {
             kind: "row",
-            page: 14,
+            page: 9,
             sub: 0,
             label: Tr.tr("Inhibit sleep during audio"),
             subtext: Tr.tr("Keep system awake while media or music is playing"),
@@ -3589,7 +2989,7 @@ QtObject {
         },
         {
             kind: "row",
-            page: 14,
+            page: 9,
             sub: 0,
             label: Tr.tr("Inhibit sleep when plugged in"),
             subtext: Tr.tr("Keep system awake while charging on AC power"),
@@ -3599,7 +2999,7 @@ QtObject {
         },
         {
             kind: "row",
-            page: 14,
+            page: 9,
             sub: 0,
             label: Tr.tr("Lock before sleep"),
             subtext: Tr.tr("Automatically lock the session before system suspends"),
@@ -3609,7 +3009,7 @@ QtObject {
         },
         {
             kind: "row",
-            page: 14,
+            page: 9,
             sub: 0,
             label: Tr.tr("Lock screen timeout"),
             subtext: Tr.tr("Minutes of inactivity before locking the screen"),
@@ -3619,7 +3019,7 @@ QtObject {
         },
         {
             kind: "row",
-            page: 14,
+            page: 9,
             sub: 0,
             label: Tr.tr("Display turn-off (DPMS)"),
             subtext: Tr.tr("Minutes of inactivity before turning displays off"),
@@ -3629,12 +3029,622 @@ QtObject {
         },
         {
             kind: "row",
-            page: 14,
+            page: 9,
             sub: 0,
             label: Tr.tr("Suspend / Hibernate timeout"),
             subtext: Tr.tr("Minutes of inactivity before putting system to sleep"),
             section: Tr.tr("Inactivity timeouts"),
             subTitle: Tr.tr("Power & idle"),
+            kw: []
+        },
+        {
+            kind: "page",
+            page: 10,
+            sub: 0,
+            label: Tr.tr("Updates"),
+            subtext: Tr.tr("System updates"),
+            section: "",
+            subTitle: "",
+            kw: []
+        },
+        {
+            kind: "page",
+            page: 11,
+            sub: 0,
+            label: Tr.tr("Plugins"),
+            subtext: Tr.tr("Manage plugins"),
+            section: "",
+            subTitle: "",
+            kw: []
+        },
+        {
+            kind: "page",
+            page: 12,
+            sub: 0,
+            label: Tr.tr("Doctor"),
+            subtext: Tr.tr("Check Wi-Fi, Bluetooth, audio, displays and services"),
+            section: "",
+            subTitle: "",
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 12,
+            sub: 0,
+            label: Tr.tr("Watch in the background"),
+            subtext: Tr.tr("Look for new problems every few minutes and show a notification. Uses almost no CPU, and pauses in game mode"),
+            section: Tr.tr("Watchdog"),
+            subTitle: Tr.tr("Doctor"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 12,
+            sub: 0,
+            label: Tr.tr("Check every"),
+            subtext: "",
+            section: Tr.tr("Watchdog"),
+            subTitle: Tr.tr("Doctor"),
+            kw: []
+        },
+        {
+            kind: "page",
+            page: 13,
+            sub: 0,
+            label: Tr.tr("Language & region"),
+            subtext: Tr.tr("UI language, weather location, display units"),
+            section: "",
+            subTitle: "",
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 13,
+            sub: 0,
+            label: Tr.tr("UI language"),
+            subtext: Tr.tr("The language used in the shell UI"),
+            section: Tr.tr("Language"),
+            subTitle: Tr.tr("Language & region"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 13,
+            sub: 0,
+            label: Tr.tr("Automatic location"),
+            subtext: Tr.tr("Use the location your network provider reports"),
+            section: Tr.tr("Weather"),
+            subTitle: Tr.tr("Language & region"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 13,
+            sub: 0,
+            label: Tr.tr("Temperature"),
+            subtext: Tr.tr("Units for weather temperatures"),
+            section: Tr.tr("Units"),
+            subTitle: Tr.tr("Language & region"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 13,
+            sub: 0,
+            label: Tr.tr("System temperatures"),
+            subtext: Tr.tr("Units for CPU and GPU temperatures"),
+            section: Tr.tr("Units"),
+            subTitle: Tr.tr("Language & region"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 13,
+            sub: 0,
+            label: Tr.tr("Clock format"),
+            subtext: Tr.tr("How times are shown across the shell"),
+            section: Tr.tr("Time & date"),
+            subTitle: Tr.tr("Language & region"),
+            kw: []
+        },
+        {
+            kind: "page",
+            page: 14,
+            sub: 0,
+            label: Tr.tr("Services"),
+            subtext: Tr.tr("Poll intervals, integrations, media backend"),
+            section: "",
+            subTitle: "",
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 0,
+            label: Tr.tr("Media refresh"),
+            subtext: Tr.tr("How often the media position updates (ms)"),
+            section: Tr.tr("Polling"),
+            subTitle: Tr.tr("Services"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 0,
+            label: Tr.tr("System stats refresh"),
+            subtext: Tr.tr("CPU, memory and GPU update interval (seconds)"),
+            section: Tr.tr("Polling"),
+            subTitle: Tr.tr("Services"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 0,
+            label: Tr.tr("Lyrics backend"),
+            subtext: Tr.tr("Source used to fetch synced lyrics"),
+            section: Tr.tr("Media & lyrics"),
+            subTitle: Tr.tr("Services"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 0,
+            label: Tr.tr("Default player"),
+            subtext: Tr.tr("Preferred media player when several are open"),
+            section: Tr.tr("Media & lyrics"),
+            subTitle: Tr.tr("Services"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 0,
+            label: Tr.tr("GPU override"),
+            subtext: "",
+            section: Tr.tr("Hardware"),
+            subTitle: Tr.tr("Services"),
+            kw: []
+        },
+        {
+            kind: "page",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Notifications"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Show notifications in fullscreen"),
+            subtext: Tr.tr("Whether notifications appear over fullscreen apps"),
+            section: Tr.tr("Notifications"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Expire automatically"),
+            subtext: Tr.tr("Dismiss notifications after their timeout"),
+            section: Tr.tr("Notifications"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Open expanded"),
+            subtext: Tr.tr("Show notifications expanded by default"),
+            section: Tr.tr("Notifications"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Default timeout"),
+            subtext: Tr.tr("Time before a notification dismisses (ms)"),
+            section: Tr.tr("Notifications"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Group preview count"),
+            subtext: Tr.tr("Notifications shown per group before collapsing"),
+            section: Tr.tr("Notifications"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Show toasts in fullscreen"),
+            subtext: Tr.tr("Whether toasts appear over fullscreen apps"),
+            section: Tr.tr("Toasts"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Visible toasts"),
+            subtext: Tr.tr("Maximum number of toasts shown at once"),
+            section: Tr.tr("Toasts"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Toast transparency"),
+            subtext: Tr.tr("Apply transparency and blur to toast notifications"),
+            section: Tr.tr("Toasts"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Base transparency"),
+            subtext: "",
+            section: Tr.tr("Toasts"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Charging changes"),
+            subtext: "",
+            section: Tr.tr("Toast events"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Game mode changes"),
+            subtext: "",
+            section: Tr.tr("Toast events"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Do not disturb changes"),
+            subtext: "",
+            section: Tr.tr("Toast events"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Audio output changes"),
+            subtext: "",
+            section: Tr.tr("Toast events"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Audio input changes"),
+            subtext: "",
+            section: Tr.tr("Toast events"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Caps lock changes"),
+            subtext: "",
+            section: Tr.tr("Toast events"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Num lock changes"),
+            subtext: "",
+            section: Tr.tr("Toast events"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Keyboard layout changes"),
+            subtext: "",
+            section: Tr.tr("Toast events"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("VPN changes"),
+            subtext: "",
+            section: Tr.tr("Toast events"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 1,
+            label: Tr.tr("Now playing"),
+            subtext: "",
+            section: Tr.tr("Toast events"),
+            subTitle: Tr.tr("Notifications"),
+            kw: []
+        },
+        {
+            kind: "page",
+            page: 14,
+            sub: 2,
+            label: Tr.tr("Game mode"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Game mode"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 2,
+            label: Tr.tr("Enable automatically"),
+            subtext: Tr.tr("Turn on game mode when a target window is focused or running"),
+            section: Tr.tr("Auto-enable rules"),
+            subTitle: Tr.tr("Game mode"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 2,
+            label: Tr.tr("Disable animations"),
+            subtext: "",
+            section: Tr.tr("Hyprland overrides"),
+            subTitle: Tr.tr("Game mode"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 2,
+            label: Tr.tr("Disable blur"),
+            subtext: "",
+            section: Tr.tr("Hyprland overrides"),
+            subTitle: Tr.tr("Game mode"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 2,
+            label: Tr.tr("Disable gaps and rounding"),
+            subtext: "",
+            section: Tr.tr("Hyprland overrides"),
+            subTitle: Tr.tr("Game mode"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 2,
+            label: Tr.tr("Disable shadows"),
+            subtext: "",
+            section: Tr.tr("Hyprland overrides"),
+            subTitle: Tr.tr("Game mode"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 2,
+            label: Tr.tr("Disable window transparency"),
+            subtext: "",
+            section: Tr.tr("Hyprland overrides"),
+            subTitle: Tr.tr("Game mode"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 2,
+            label: Tr.tr("Disable shell transparency"),
+            subtext: "",
+            section: Tr.tr("MiDnight feature overrides"),
+            subTitle: Tr.tr("Game mode"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 2,
+            label: Tr.tr("Disable toast notifications transparency"),
+            subtext: "",
+            section: Tr.tr("MiDnight feature overrides"),
+            subTitle: Tr.tr("Game mode"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 2,
+            label: Tr.tr("Disable desktop lyrics"),
+            subtext: "",
+            section: Tr.tr("MiDnight feature overrides"),
+            subTitle: Tr.tr("Game mode"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 2,
+            label: Tr.tr("Disable visualizer"),
+            subtext: "",
+            section: Tr.tr("MiDnight feature overrides"),
+            subTitle: Tr.tr("Game mode"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 2,
+            label: Tr.tr("Disable shimeji pets"),
+            subtext: "",
+            section: Tr.tr("MiDnight feature overrides"),
+            subTitle: Tr.tr("Game mode"),
+            kw: []
+        },
+        {
+            kind: "page",
+            page: 14,
+            sub: 3,
+            label: Tr.tr("Target windows"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Target windows"),
+            kw: []
+        },
+        {
+            kind: "page",
+            page: 14,
+            sub: 4,
+            label: Tr.tr("Discord Rich Presence"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Discord Rich Presence"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 4,
+            label: Tr.tr("Enable rich presence"),
+            subtext: Tr.tr("Broadcast custom presence to Vesktop"),
+            section: Tr.tr("Broadcast settings"),
+            subTitle: Tr.tr("Discord Rich Presence"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 4,
+            label: Tr.tr("Auto-detect Steam games"),
+            subtext: Tr.tr("Automatically broadcast running Steam games"),
+            section: Tr.tr("Broadcast settings"),
+            subTitle: Tr.tr("Discord Rich Presence"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 4,
+            label: Tr.tr("Broadcast MiDnight info"),
+            subtext: Tr.tr("Broadcast shell uptime and system info"),
+            section: Tr.tr("Broadcast settings"),
+            subTitle: Tr.tr("Discord Rich Presence"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 4,
+            label: Tr.tr("Enable manual override"),
+            subtext: Tr.tr("Force broadcast this custom presence and ignore all other apps"),
+            section: Tr.tr("Manual custom presence"),
+            subTitle: Tr.tr("Discord Rich Presence"),
+            kw: []
+        },
+        {
+            kind: "page",
+            page: 14,
+            sub: 5,
+            label: Tr.tr("Picture in Picture"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Picture in Picture"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 5,
+            label: Tr.tr("Position"),
+            subtext: Tr.tr("Anchor quadrant for Picture in Picture windows"),
+            section: Tr.tr("Behavior"),
+            subTitle: Tr.tr("Picture in Picture"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 5,
+            label: Tr.tr("Follow active focus"),
+            subtext: Tr.tr("Automatically warp PiP to the active monitor and workspace"),
+            section: Tr.tr("Behavior"),
+            subTitle: Tr.tr("Picture in Picture"),
+            kw: []
+        },
+        {
+            kind: "page",
+            page: 14,
+            sub: 6,
+            label: Tr.tr("Quick Share"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Quick Share"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 6,
+            label: Tr.tr("Auto-start on launch"),
+            subtext: Tr.tr("Enable Quick Share when the shell starts"),
+            section: Tr.tr("Startup"),
+            subTitle: Tr.tr("Quick Share"),
+            kw: []
+        },
+        {
+            kind: "row",
+            page: 14,
+            sub: 6,
+            label: Tr.tr("Enable Quick Share"),
+            subtext: "",
+            section: Tr.tr("Status"),
+            subTitle: Tr.tr("Quick Share"),
             kw: []
         },
         {
@@ -4251,17 +4261,17 @@ QtObject {
             kind: "row",
             page: 15,
             sub: 4,
-            label: Tr.tr("Text Scale"),
+            label: Tr.tr("Aspect Ratio"),
             subtext: "",
             section: Tr.tr("Nexus Settings Window"),
             subTitle: Tr.tr("Window & Lock Sizes"),
-            kw: ["font", "size", "settings window"]
+            kw: []
         },
         {
             kind: "row",
             page: 15,
             sub: 4,
-            label: Tr.tr("Aspect Ratio"),
+            label: Tr.tr("Text Scale"),
             subtext: "",
             section: Tr.tr("Nexus Settings Window"),
             subTitle: Tr.tr("Window & Lock Sizes"),
@@ -4570,5 +4580,5 @@ QtObject {
     ]
 
     // Extra search keywords per page, indexed like PageRegistry.pages
-    readonly property list<var> pageKeywords: [["appearance", "background", "color", "colour", "dark mode", "font", "light mode", "scheme", "theme", "wallpaper"], [], ["bar", "dashboard", "dock", "launcher", "osd", "overview", "sidebar", "taskbar"], ["browser", "default apps", "favourites", "file manager", "hidden", "terminal"], [], ["arrangement", "extend", "external display", "hdmi", "mirror", "monitor", "projector", "refresh rate", "resolution", "rotation", "scale", "screen", "second screen"], ["connection", "ethernet", "hotspot", "internet", "password", "vpn", "wi-fi", "wifi", "wireless"], ["bluetooth", "device", "earbuds", "headphones", "keyboard", "mouse", "pairing"], ["headphones", "input", "mic", "microphone", "output", "sound", "speaker", "volume"], [], [], [], ["24 hour", "celsius", "fahrenheit", "locale", "temperature", "time format", "translation", "units"], ["calendar", "lyrics", "notifications", "poll", "weather"], ["battery", "charge", "hibernate", "inhibit", "lock", "screen off", "sleep", "suspend", "timeout"], [], ["credits", "distro", "hostname", "kernel", "system information", "version"],]
+    readonly property list<var> pageKeywords: [["appearance", "background", "color", "colour", "dark mode", "font", "light mode", "scheme", "theme", "wallpaper"], [], ["bar", "dashboard", "dock", "launcher", "osd", "overview", "sidebar", "taskbar"], ["browser", "default apps", "favourites", "file manager", "hidden", "terminal"], [], ["arrangement", "extend", "external display", "hdmi", "mirror", "monitor", "projector", "refresh rate", "resolution", "rotation", "scale", "screen", "second screen"], ["headphones", "input", "mic", "microphone", "output", "sound", "speaker", "volume"], ["bluetooth", "device", "earbuds", "headphones", "keyboard", "mouse", "pairing"], ["connection", "ethernet", "hotspot", "internet", "password", "vpn", "wi-fi", "wifi", "wireless"], ["battery", "charge", "hibernate", "inhibit", "lock", "screen off", "sleep", "suspend", "timeout"], [], [], [], ["24 hour", "celsius", "fahrenheit", "locale", "temperature", "time format", "translation", "units"], ["calendar", "lyrics", "notifications", "poll", "weather"], [], ["credits", "distro", "hostname", "kernel", "system information", "version"],]
 }

@@ -540,6 +540,32 @@ PageBase {
         }
 
         SectionHeader {
+            text: Tr.tr("Volume")
+        }
+
+        StepperRow {
+            first: true
+            label: Tr.tr("Volume step")
+            subtext: Tr.tr("Amount the volume changes per scroll (%)")
+            value: Math.round(GlobalConfig.services.audioIncrement * 100)
+            from: 1
+            to: 50
+            stepSize: 1
+            onMoved: v => GlobalConfig.services.audioIncrement = v / 100
+        }
+
+        StepperRow {
+            last: true
+            label: Tr.tr("Max volume")
+            subtext: Tr.tr("Upper limit for output volume (%)")
+            value: Math.round(GlobalConfig.services.maxVolume * 100)
+            from: 50
+            to: 200
+            stepSize: 5
+            onMoved: v => GlobalConfig.services.maxVolume = v / 100
+        }
+
+        SectionHeader {
             text: Tr.tr("Bar popout")
         }
 

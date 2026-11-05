@@ -176,12 +176,37 @@ QtObject {
                 }
             }
         },
-        // Connectivity
+        // Devices
         Component {
             // Display
             StackPage {
                 Component {
                     DisplayPage {}
+                }
+            }
+        },
+        Component {
+            // Audio
+            StackPage {
+                Component {
+                    AudioPage {}
+                }
+                Component {
+                    AppVolumes {}
+                }
+            }
+        },
+        Component {
+            // Connected devices
+            StackPage {
+                Component {
+                    BluetoothPage {}
+                }
+                Component {
+                    BtDeviceInfo {}
+                }
+                Component {
+                    BluetoothPairing {}
                 }
             }
         },
@@ -215,27 +240,10 @@ QtObject {
             }
         },
         Component {
-            // Bluetooth
+            // Power & idle
             StackPage {
                 Component {
-                    BluetoothPage {}
-                }
-                Component {
-                    BtDeviceInfo {}
-                }
-                Component {
-                    BluetoothPairing {}
-                }
-            }
-        },
-        Component {
-            // Audio
-            StackPage {
-                Component {
-                    AudioPage {}
-                }
-                Component {
-                    AppVolumes {}
+                    PowerIdlePage {}
                 }
             }
         },
@@ -291,15 +299,6 @@ QtObject {
             }
         },
         Component {
-            // Power & idle
-            StackPage {
-                Component {
-                    PowerIdlePage {}
-                }
-            }
-        },
-        // Advanced
-        Component {
             // Shell Tokens
             StackPage {
                 Component {
@@ -322,7 +321,6 @@ QtObject {
                 }
             }
         },
-        // About
         Component {
             StackPage {
                 Component {

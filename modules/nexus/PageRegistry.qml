@@ -6,7 +6,11 @@ import Aether.I18n
 QtObject {
     id: root
 
-    // The order here must match PageCompRegistry.pageComps
+    // The order here must match PageCompRegistry.pageComps.
+    //
+    // Categories are contiguous: the sidebar draws a heading whenever this field changes, so a
+    // page that is moved must be moved within its block, not appended somewhere else with the
+    // same category.
     readonly property list<var> pages: [
         // Appearance
         {
@@ -36,42 +40,50 @@ QtObject {
             description: Tr.tr("Default apps, favourites, hidden apps"),
             category: "desktop"
         },
+
+        // Window
         {
             label: Tr.tr("Hyprland"),
             icon: "layers",
             description: Tr.tr("Window manager configuration"),
-            category: "desktop",
+            category: "window",
             key: "hyprland"
         },
 
-        // Connectivity
+        // Devices
         {
             label: Tr.tr("Display"),
             icon: "monitor",
-            description: Tr.tr("Output configuration"),
-            category: "connectivity"
+            description: Tr.tr("Monitors, scaling and brightness"),
+            category: "devices"
         },
         {
-            label: Tr.tr("Network"),
-            icon: "wifi",
-            description: Tr.tr("Wi-Fi, ethernet, VPN"),
-            category: "connectivity",
-            mode: "network"
+            label: Tr.tr("Audio"),
+            icon: "volume_up",
+            description: Tr.tr("Outputs, app volumes and sound effects"),
+            category: "devices",
+            mode: "audio"
         },
         {
             label: Tr.tr("Connected devices"),
             icon: "devices_other",
             description: Tr.tr("Bluetooth, pairing"),
-            category: "connectivity",
+            category: "devices",
             mode: "bluetooth",
             noFill: true
         },
         {
-            label: Tr.tr("Audio"),
-            icon: "volume_up",
-            description: Tr.tr("App volumes, sound devices"),
-            category: "connectivity",
-            mode: "audio"
+            label: Tr.tr("Network"),
+            icon: "wifi",
+            description: Tr.tr("Wi-Fi, ethernet, VPN"),
+            category: "devices",
+            mode: "network"
+        },
+        {
+            label: Tr.tr("Power & idle"),
+            icon: "power_settings_new",
+            description: Tr.tr("Idle timeouts, sleep and screen-off behaviour"),
+            category: "devices"
         },
 
         // System
@@ -102,31 +114,37 @@ QtObject {
         {
             label: Tr.tr("Services"),
             icon: "build",
-            description: Tr.tr("Poll intervals, integrations, lyrics backend"),
+            description: Tr.tr("Poll intervals, integrations, media backend"),
             category: "system"
         },
-        {
-            label: Tr.tr("Power & idle"),
-            icon: "power_settings_new",
-            description: Tr.tr("Idle timeouts, sleep and screen-off behaviour"),
-            category: "system"
-        },
-
-        // Advanced
         {
             label: Tr.tr("Shell Tokens"),
             icon: "tune",
             description: Tr.tr("Modify interface spacing, rounding, and sizing"),
-            category: "advanced",
+            category: "system",
             developerOnly: true
         },
-        // About
         {
             label: Tr.tr("About"),
             icon: "info",
             description: Tr.tr("System information, preset, credits"),
-            category: "about",
+            category: "system",
             key: "about"
         },
     ]
+
+    // Sidebar headings. The keys are the `category` values above; anything missing falls back to
+    // the raw key rather than an empty heading, so a new category is visible even before it is
+    // translated.
+    readonly property var categoryLabels: ({
+            appearance: Tr.tr("Appearance"),
+            desktop: Tr.tr("Desktop"),
+            window: Tr.tr("Window"),
+            devices: Tr.tr("Devices"),
+            system: Tr.tr("System")
+        })
+
+    function categoryLabel(category: string): string {
+        return root.categoryLabels[category] ?? category;
+    }
 }
