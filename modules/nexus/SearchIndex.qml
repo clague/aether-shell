@@ -2260,9 +2260,9 @@ QtObject {
         {
             kind: "row",
             page: 4,
-            sub: 0,
+            sub: 4,
             label: Tr.tr("Keybinds"),
-            subtext: Tr.tr("Manage your hyprland keybinds"),
+            subtext: Tr.tr("Workspaces, window actions and app shortcuts"),
             section: "",
             subTitle: Tr.tr("Hyprland"),
             kw: []
@@ -2411,6 +2411,26 @@ QtObject {
             kind: "page",
             page: 4,
             sub: 3,
+            label: Tr.tr("Input"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Input"),
+            kw: []
+        },
+        {
+            kind: "page",
+            page: 4,
+            sub: 4,
+            label: Tr.tr("Keybinds"),
+            subtext: "",
+            section: "",
+            subTitle: Tr.tr("Keybinds"),
+            kw: []
+        },
+        {
+            kind: "page",
+            page: 4,
+            sub: 5,
             label: Tr.tr("Variables"),
             subtext: "",
             section: "",
@@ -2420,7 +2440,7 @@ QtObject {
         {
             kind: "page",
             page: 4,
-            sub: 5,
+            sub: 6,
             label: Tr.tr("User configuration"),
             subtext: "",
             section: "",

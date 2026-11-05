@@ -2954,8 +2954,8 @@ msgid "Window effects"
 msgstr "窗口效果"
 
 #: modules/nexus/pages/hyprland/HyprlandPage.qml
-msgid "Opacity, blur, shadows and window borders"
-msgstr "不透明度、模糊、阴影与窗口边框"
+msgid "Opacity, blur, shadows and window styling"
+msgstr "透明度、模糊、阴影与窗口样式"
 
 #: modules/nexus/pages/hyprland/HyprlandPage.qml
 #: modules/nexus/pages/hyprland/HyprSpacingPage.qml
@@ -2964,8 +2964,8 @@ msgid "Spacing & animations"
 msgstr "间距与动画"
 
 #: modules/nexus/pages/hyprland/HyprlandPage.qml
-msgid "Window gaps and shared motion timing"
-msgstr "窗口间距与统一的动效时长"
+msgid "Gaps, window behaviour, layout and motion"
+msgstr "间距、窗口行为、布局与动效"
 
 #: modules/nexus/pages/hyprland/HyprlandPage.qml
 #: modules/nexus/pages/hyprland/HyprVariablesPage.qml
@@ -2974,12 +2974,12 @@ msgid "Variables"
 msgstr "变量"
 
 #: modules/nexus/pages/hyprland/HyprlandPage.qml
-msgid "Keybind apps, touchpad and misc variables"
-msgstr "快捷键应用、触摸板与杂项变量"
+msgid "Launcher apps, cursor and misc variables"
+msgstr "启动应用、光标与其他变量"
 
 #: modules/nexus/pages/hyprland/HyprlandPage.qml modules/nexus/SearchIndex.qml
-msgid "Manage your hyprland keybinds"
-msgstr "管理你的 Hyprland 快捷键"
+msgid "Workspaces, window actions and app shortcuts"
+msgstr "工作区、窗口操作与应用快捷键"
 
 #: modules/nexus/pages/hyprland/HyprlandPage.qml
 #: modules/nexus/pages/hyprland/UserConfigPage.qml

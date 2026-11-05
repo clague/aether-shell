@@ -163,16 +163,16 @@ QtObject {
                     HyprSpacingPage {}
                 }
                 Component {
-                    HyprVariablesPage {}
+                    HyprInputPage {}
                 }
                 Component {
                     HyprKeybindsPage {}
                 }
                 Component {
-                    UserConfigPage {}
+                    HyprVariablesPage {}
                 }
                 Component {
-                    HyprInputPage {}
+                    UserConfigPage {}
                 }
             }
         },

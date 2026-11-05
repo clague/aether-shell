@@ -19,36 +19,36 @@ PageBase {
             first: true
             icon: "blur_on"
             text: Tr.tr("Window effects")
-            subtext: Tr.tr("Opacity, blur, shadows and window borders")
+            subtext: Tr.tr("Opacity, blur, shadows and window styling")
             onClicked: root.nState.openSubPage(1)
         }
 
         NavRow {
             icon: "space_dashboard"
             text: Tr.tr("Spacing & animations")
-            subtext: Tr.tr("Window gaps and shared motion timing")
+            subtext: Tr.tr("Gaps, window behaviour, layout and motion")
             onClicked: root.nState.openSubPage(2)
-        }
-
-        NavRow {
-            icon: "data_object"
-            text: Tr.tr("Variables")
-            subtext: Tr.tr("Keybind apps, touchpad and misc variables")
-            onClicked: root.nState.openSubPage(3)
         }
 
         NavRow {
             icon: "mouse"
             text: Tr.tr("Input")
             subtext: Tr.tr("Keyboard, mouse, touchpad and gestures")
-            onClicked: root.nState.openSubPage(6)
+            onClicked: root.nState.openSubPage(3)
         }
 
         NavRow {
             icon: "keyboard"
             text: Tr.tr("Keybinds")
-            subtext: Tr.tr("Manage your hyprland keybinds")
+            subtext: Tr.tr("Workspaces, window actions and app shortcuts")
             onClicked: root.nState.openSubPage(4)
+        }
+
+        NavRow {
+            icon: "data_object"
+            text: Tr.tr("Variables")
+            subtext: Tr.tr("Launcher apps, cursor and misc variables")
+            onClicked: root.nState.openSubPage(5)
         }
 
         NavRow {
@@ -56,7 +56,7 @@ PageBase {
             icon: "settings_suggest"
             text: Tr.tr("User configuration")
             subtext: Tr.tr("Advanced configuration options")
-            onClicked: root.nState.openSubPage(5)
+            onClicked: root.nState.openSubPage(6)
         }
 
         // One note for the whole category instead of repeating it inside each sub-page. Every
