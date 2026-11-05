@@ -189,6 +189,14 @@ dispatcher arguments are checked, and `hl` is not an undefined global even thoug
 API only exists at runtime. `assets/lua/hyprland-api.lua` is a smaller fallback for installs that
 lack the generated stub; the language server sees exactly one of the two.
 
+The editor owns its own interaction layer. The TextEdit lives inside a Flickable, so an overlay
+`MouseArea` supplies the I-beam over the text (and an arrow over the line-number gutter), closes
+the completion popup on press rather than release, and opens a right-click menu (undo/redo,
+cut/copy/paste, select all). Tab/Shift+Tab indent or dedent the selected lines, Ctrl+Z,
+Ctrl+Shift+Z / Ctrl+Y undo and redo, Ctrl+Backspace/Delete remove a word, and the footer shows the
+caret line and column. Shift+wheel scrolls horizontally, plain wheel scrolls vertically even when
+the pointer is over the gutter.
+
 A few options need variables upstream's dotfiles do not define: overview blur, solid-text windows,
 and the animation speed / match-shell pair. `hybrid/hypr/` holds the complete config side — the
 entry that merges `hypr-vars`, `variables.lua`, every module that consumes a Nexus-written key

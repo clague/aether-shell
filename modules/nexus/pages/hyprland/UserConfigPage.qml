@@ -44,9 +44,17 @@ PageBase {
     property real completionX: 0
     property real completionY: 0
     readonly property real completionHeight: Math.min(220, Math.max(24, completionList.contentHeight + 8))
+    readonly property real completionWidth: flick ? Math.min(340, Math.max(180, flick.width - 16)) : 340
+    property bool contextMenuOpen: false
+    property real contextMenuX: 0
+    property real contextMenuY: 0
+    property int caretLine: 0
+    property int caretColumn: 0
 
     function save(): bool {
         root.completionOpen = false;
+        root.contextMenuOpen = false;
+        root.diagnosticTip = "";
         if (!CUtils.writeFile(root.filePath, editor.text)) {
             root.notice = Tr.tr("Could not write the file");
             noticeTimer.restart();
@@ -64,6 +72,8 @@ PageBase {
         flick.contentX = 0;
         flick.contentY = 0;
         root.completionOpen = false;
+        root.contextMenuOpen = false;
+        root.diagnosticTip = "";
     }
 
     function insertNewline(): void {
@@ -224,8 +234,9 @@ PageBase {
         const caretTop = editor.y + rect.y - flick.contentY;
         const below = caretTop + rect.height + 2;
         const above = caretTop - height - 2;
+        const maxX = Math.max(8, gutter.width + flick.width - root.completionWidth - 8);
 
-        root.completionX = Math.max(8, Math.min(gutter.width + editor.x + rect.x - flick.contentX, Math.max(8, flick.width - 340)));
+        root.completionX = Math.max(8, Math.min(gutter.width + editor.x + rect.x - flick.contentX, maxX));
         root.completionY = below + height > flick.height && above >= 0 ? above : Math.max(0, Math.min(below, flick.height - height));
     }
 
@@ -296,6 +307,7 @@ PageBase {
 
     function jumpTo(line: int, character: int): void {
         root.completionOpen = false;
+        root.contextMenuOpen = false;
         root.diagnosticTip = "";
         const lines = editor.text.split("\n");
         let offset = 0;
@@ -457,7 +469,148 @@ PageBase {
     function closePopupsOnScroll(): void {
         if (root.completionOpen)
             root.completionOpen = false;
+        root.contextMenuOpen = false;
         root.diagnosticTip = "";
+    }
+
+    function refreshCaret(): void {
+        const before = editor.text.slice(0, Math.max(0, editor.cursorPosition));
+        root.caretLine = before.split("\n").length - 1;
+        root.caretColumn = before.length - before.lastIndexOf("\n") - 1;
+    }
+
+    function undoEdit(): void {
+        root.completionOpen = false;
+        root.diagnosticTip = "";
+        // Undoing changes the text, which would otherwise reopen the completion popup on the
+        // character that has just been restored.
+        root.suppressCompletion = true;
+        editor.undo();
+        root.suppressCompletion = false;
+        root.ensureCursorVisible();
+    }
+
+    function redoEdit(): void {
+        root.completionOpen = false;
+        root.diagnosticTip = "";
+        root.suppressCompletion = true;
+        editor.redo();
+        root.suppressCompletion = false;
+        root.ensureCursorVisible();
+    }
+
+    // Ctrl+Backspace / Ctrl+Delete. TextEdit does not implement word deletion itself.
+    function deleteWord(forward: bool): void {
+        const selectedStart = editor.selectionStart;
+        const selectedEnd = editor.selectionEnd;
+        if (selectedStart !== selectedEnd) {
+            editor.remove(selectedStart, selectedEnd);
+            editor.cursorPosition = selectedStart;
+            return;
+        }
+
+        const text = editor.text;
+        const position = editor.cursorPosition;
+        let target = position;
+        if (forward) {
+            while (target < text.length && !/[A-Za-z0-9_]/.test(text[target]))
+                target++;
+            while (target < text.length && /[A-Za-z0-9_]/.test(text[target]))
+                target++;
+        } else {
+            while (target > 0 && !/[A-Za-z0-9_]/.test(text[target - 1]))
+                target--;
+            while (target > 0 && /[A-Za-z0-9_]/.test(text[target - 1]))
+                target--;
+        }
+        if (target === position)
+            return;
+
+        editor.remove(Math.min(position, target), Math.max(position, target));
+        editor.cursorPosition = Math.min(position, target);
+    }
+
+    function placeCaret(panelX: real, panelY: real): void {
+        editor.forceActiveFocus();
+        // The catcher is in panel coordinates; the editor lives at (editor.x, editor.y) inside
+        // the flick's scrollable content, one gutter to the right of the panel's origin.
+        const textX = panelX - gutter.width + flick.contentX - editor.x;
+        const textY = panelY + flick.contentY - editor.y;
+        const position = editor.positionAt(textX, textY);
+        const from = Math.min(editor.selectionStart, editor.selectionEnd);
+        const to = Math.max(editor.selectionStart, editor.selectionEnd);
+        // Right-clicking inside a selection keeps it; anywhere else moves the caret there, so
+        // Paste and Undo act where the user clicked (as editors do).
+        if (position < from || position > to)
+            editor.cursorPosition = position;
+    }
+
+    function openContextMenu(x: real, y: real): void {
+        root.completionOpen = false;
+        root.diagnosticTip = "";
+        root.contextMenuX = x;
+        root.contextMenuY = y;
+        root.contextMenuOpen = true;
+    }
+
+    function contextActionLabel(action: string): string {
+        switch (action) {
+        case "undo":
+            return Tr.tr("Undo");
+        case "redo":
+            return Tr.tr("Redo");
+        case "cut":
+            return Tr.tr("Cut");
+        case "copy":
+            return Tr.tr("Copy");
+        case "paste":
+            return Tr.tr("Paste");
+        case "selectAll":
+            return Tr.tr("Select all");
+        }
+        return "";
+    }
+
+    function contextActionEnabled(action: string): bool {
+        switch (action) {
+        case "undo":
+            return editor.canUndo;
+        case "redo":
+            return editor.canRedo;
+        case "cut":
+        case "copy":
+            return editor.selectedText.length > 0;
+        case "paste":
+            return editor.canPaste;
+        case "selectAll":
+            return editor.length > 0;
+        }
+        return false;
+    }
+
+    function runContextAction(action: string): void {
+        root.contextMenuOpen = false;
+        switch (action) {
+        case "undo":
+            root.undoEdit();
+            break;
+        case "redo":
+            root.redoEdit();
+            break;
+        case "cut":
+            editor.cut();
+            break;
+        case "copy":
+            editor.copy();
+            break;
+        case "paste":
+            editor.paste();
+            break;
+        case "selectAll":
+            editor.selectAll();
+            break;
+        }
+        editor.forceActiveFocus();
     }
 
     function animateScrollX(target: real): void {
@@ -537,6 +690,7 @@ PageBase {
             onCompletionsChanged: {
                 if (completions.length > 0) {
                     root.diagnosticTip = "";
+                    root.contextMenuOpen = false;
                     root.completionIndex = 0;
                     root.completionOpen = true;
                     root.updateCompletionPosition();
@@ -640,6 +794,7 @@ PageBase {
                 type: TextButton.Tonal
                 onClicked: {
                     root.completionOpen = false;
+                    root.contextMenuOpen = false;
                     if (root.dirty && !root.save())
                         return;
                     reloadProc.running = true;
@@ -809,7 +964,9 @@ PageBase {
                     x: 12
                     y: 10
                     width: Math.max(flick.width - 24, contentWidth)
-                    height: contentHeight
+                    // Fill the viewport even when the file is shorter, so a click below the last
+                    // line still places the caret (at the end) instead of doing nothing.
+                    height: Math.max(contentHeight, flick.height)
 
                     color: Colours.palette.m3onSurface
                     selectionColor: Qt.alpha(Colours.palette.m3primary, 0.35)
@@ -823,6 +980,7 @@ PageBase {
                         root.diagnosticTip = "";
                         root.recomputeLineRects();
                         root.rebuildSquiggles();
+                        root.refreshCaret();
                         Qt.callLater(root.recomputeLineRects);
                         Qt.callLater(root.rebuildSquiggles);
                         if (lsp.status === "ready")
@@ -851,6 +1009,7 @@ PageBase {
                     }
 
                     onCursorPositionChanged: {
+                        root.refreshCaret();
                         if (root.completionOpen)
                             root.updateCompletionPosition();
                         root.ensureCursorVisible();
@@ -860,6 +1019,12 @@ PageBase {
                     }
 
                     Keys.onPressed: event => {
+                        if (root.contextMenuOpen && event.key === Qt.Key_Escape) {
+                            root.contextMenuOpen = false;
+                            event.accepted = true;
+                            return;
+                        }
+
                         if (root.completionOpen) {
                             if (event.key === Qt.Key_Down) {
                                 root.completionIndex = Math.min(root.completionIndex + 1, lsp.completions.length - 1);
@@ -883,6 +1048,12 @@ PageBase {
                             }
                         }
 
+                        if (event.key === Qt.Key_Escape) {
+                            root.diagnosticTip = "";
+                            event.accepted = true;
+                            return;
+                        }
+
                         if (event.modifiers & Qt.ControlModifier) {
                             if (event.key === Qt.Key_S) {
                                 root.save();
@@ -891,6 +1062,24 @@ PageBase {
                             }
                             if (event.key === Qt.Key_Space) {
                                 root.requestCompletion();
+                                event.accepted = true;
+                                return;
+                            }
+                            if (event.key === Qt.Key_Z) {
+                                if (event.modifiers & Qt.ShiftModifier)
+                                    root.redoEdit();
+                                else
+                                    root.undoEdit();
+                                event.accepted = true;
+                                return;
+                            }
+                            if (event.key === Qt.Key_Y) {
+                                root.redoEdit();
+                                event.accepted = true;
+                                return;
+                            }
+                            if (event.key === Qt.Key_Backspace || event.key === Qt.Key_Delete) {
+                                root.deleteWord(event.key === Qt.Key_Delete);
                                 event.accepted = true;
                                 return;
                             }
@@ -941,6 +1130,7 @@ PageBase {
                     onActiveFocusChanged: {
                         if (!activeFocus) {
                             root.completionOpen = false;
+                            root.contextMenuOpen = false;
                             root.diagnosticTip = "";
                         }
                     }
@@ -963,14 +1153,60 @@ PageBase {
 
                 anchors.fill: parent
                 acceptedButtons: Qt.AllButtons
+                // The catcher sits above the TextEdit, so it has to supply the I-beam itself.
+                // A plain cursorShape (no hoverEnabled) leaves the TextEdit's HoverHandler free
+                // for the diagnostic tooltips.
+                cursorShape: Qt.IBeamCursor
 
                 // Close popups on press, not release, and let the press reach the TextEdit so
                 // caret placement and drag-selection still work.
                 onPressed: mouse => {
                     root.completionOpen = false;
                     root.diagnosticTip = "";
+
+                    if (mouse.button === Qt.RightButton) {
+                        root.placeCaret(mouse.x, mouse.y);
+                        root.openContextMenu(mouse.x, mouse.y);
+                        mouse.accepted = true;
+                        return;
+                    }
+
+                    root.contextMenuOpen = false;
                     mouse.accepted = false;
                 }
+
+                onWheel: wheel => {
+                    scrollXAnimation.stop();
+                    scrollYAnimation.stop();
+
+                    const delta = wheel.pixelDelta.y !== 0 ? wheel.pixelDelta.y : wheel.angleDelta.y / 120 * 60;
+                    if (delta === 0) {
+                        wheel.accepted = false;
+                        return;
+                    }
+
+                    if (wheel.modifiers & Qt.ShiftModifier) {
+                        const maxX = Math.max(0, flick.contentWidth - flick.width);
+                        flick.contentX = Math.max(0, Math.min(flick.contentX - delta, maxX));
+                    } else {
+                        const maxY = Math.max(0, flick.contentHeight - flick.height);
+                        flick.contentY = Math.max(0, Math.min(flick.contentY - delta, maxY));
+                    }
+                    wheel.accepted = true;
+                }
+            }
+
+            // Line numbers get the normal arrow, not the text I-beam. The area accepts no
+            // buttons, so presses still reach the catcher below and wheels still scroll.
+            MouseArea {
+                id: gutterCursor
+
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                width: gutter.width
+                acceptedButtons: Qt.NoButton
+                cursorShape: Qt.ArrowCursor
 
                 onWheel: wheel => wheel.accepted = false
             }
@@ -1026,6 +1262,7 @@ PageBase {
 
                     onPressed: mouse => {
                         root.completionOpen = false;
+                        root.contextMenuOpen = false;
                         root.diagnosticTip = "";
                         scrollXAnimation.stop();
                         const thumb = horizontalThumb;
@@ -1133,6 +1370,7 @@ PageBase {
 
                     onPressed: mouse => {
                         root.completionOpen = false;
+                        root.contextMenuOpen = false;
                         root.diagnosticTip = "";
                         scrollYAnimation.stop();
                         const box = minimapViewport;
@@ -1177,12 +1415,22 @@ PageBase {
 
                 x: root.completionX
                 y: root.completionY
-                width: 340
+                width: root.completionWidth
                 height: root.completionHeight
                 visible: root.completionOpen && lsp.completions.length > 0
                 z: 10
                 radius: Tokens.rounding.medium
                 color: Colours.palette.m3surfaceContainerHigh
+
+                // The editor's I-beam would otherwise show through the popup; keep the normal
+                // arrow here and let the ListView still receive the wheel.
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.NoButton
+                    cursorShape: Qt.ArrowCursor
+
+                    onWheel: wheel => wheel.accepted = false
+                }
 
                 ListView {
                     id: completionList
@@ -1196,6 +1444,12 @@ PageBase {
                     onContentHeightChanged: {
                         if (root.completionOpen)
                             root.updateCompletionPosition();
+                    }
+
+                    // Keep the keyboard selection visible in long completion lists.
+                    onCurrentIndexChanged: {
+                        if (root.completionOpen && currentIndex >= 0)
+                            positionViewAtIndex(currentIndex, ListView.Contain);
                     }
 
                     highlight: StyledRect {
@@ -1236,6 +1490,11 @@ PageBase {
 
                         MouseArea {
                             anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+
+                            onEntered: root.completionIndex = completionItem.index
+
                             onClicked: {
                                 root.completionIndex = completionItem.index;
                                 root.acceptCompletion();
@@ -1271,6 +1530,86 @@ PageBase {
                     text: root.diagnosticTip
                     wrapMode: Text.Wrap
                     font: Tokens.font.label.small
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.NoButton
+                    cursorShape: Qt.ArrowCursor
+
+                    onWheel: wheel => wheel.accepted = false
+                }
+            }
+
+            Rectangle {
+                id: contextMenu
+
+                readonly property int rowHeight: 30
+
+                x: Math.max(8, Math.min(root.contextMenuX, parent.width - width - 8))
+                y: Math.max(8, Math.min(root.contextMenuY, parent.height - height - 8))
+                width: 180
+                height: contextColumn.implicitHeight + Tokens.padding.extraSmall * 2
+                visible: root.contextMenuOpen
+                z: 20
+                radius: Tokens.rounding.medium
+                color: Colours.palette.m3surfaceContainerHigh
+                border.width: 1
+                border.color: Qt.alpha(Colours.palette.m3outlineVariant, 0.6)
+
+                // Swallow presses and wheels: the editor underneath must not move the caret or
+                // close the menu while one of its rows is being used.
+                MouseArea {
+                    anchors.fill: parent
+
+                    onPressed: mouse => mouse.accepted = true
+                    onWheel: wheel => wheel.accepted = true
+                }
+
+                Column {
+                    id: contextColumn
+
+                    x: Tokens.padding.extraSmall
+                    y: Tokens.padding.extraSmall
+                    width: parent.width - Tokens.padding.extraSmall * 2
+                    spacing: 0
+
+                    Repeater {
+                        model: ["undo", "redo", "cut", "copy", "paste", "selectAll"]
+
+                        Rectangle {
+                            id: contextRow
+
+                            required property string modelData
+                            readonly property bool available: root.contextActionEnabled(modelData)
+
+                            width: contextColumn.width
+                            height: contextMenu.rowHeight
+                            radius: Tokens.rounding.small
+                            color: contextHover.hovered && contextRow.available ? Qt.alpha(Colours.palette.m3onSurface, 0.08) : "transparent"
+
+                            HoverHandler {
+                                id: contextHover
+                            }
+
+                            StyledText {
+                                anchors.left: parent.left
+                                anchors.leftMargin: Tokens.padding.medium
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: root.contextActionLabel(contextRow.modelData)
+                                opacity: contextRow.available ? 1 : 0.38
+                                font: Tokens.font.label.medium
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                enabled: contextRow.available
+                                cursorShape: enabled ? Qt.PointingHandCursor : Qt.ArrowCursor
+
+                                onClicked: root.runContextAction(contextRow.modelData)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -1355,9 +1694,11 @@ PageBase {
 
                 MouseArea {
                     anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
 
                     onPressed: {
                         root.completionOpen = false;
+                        root.contextMenuOpen = false;
                         root.diagnosticTip = "";
                     }
 
@@ -1366,12 +1707,31 @@ PageBase {
             }
         }
 
-        StyledText {
+        RowLayout {
             Layout.fillWidth: true
-            text: Tr.tr("Ctrl+S saves · completion opens as you type · Tab indents · the language server shows problems")
-            color: Qt.alpha(Colours.palette.m3onSurfaceVariant, 0.6)
-            font: Tokens.font.label.small
-            elide: Text.ElideRight
+            spacing: Tokens.spacing.small
+
+            StyledText {
+                text: Tr.tr("Line %1, Column %2").arg(root.caretLine + 1).arg(root.caretColumn + 1)
+                color: Qt.alpha(Colours.palette.m3onSurfaceVariant, 0.6)
+                font: Tokens.font.label.small
+            }
+
+            StyledText {
+                visible: editor.selectionStart !== editor.selectionEnd
+                text: Tr.tr("%1 selected").arg(Math.abs(editor.selectionEnd - editor.selectionStart))
+                color: Qt.alpha(Colours.palette.m3onSurfaceVariant, 0.6)
+                font: Tokens.font.label.small
+            }
+
+            StyledText {
+                Layout.fillWidth: true
+                text: Tr.tr("Ctrl+S saves · Ctrl+Z undo · Tab indents · right-click for edit actions")
+                color: Qt.alpha(Colours.palette.m3onSurfaceVariant, 0.6)
+                font: Tokens.font.label.small
+                elide: Text.ElideRight
+                horizontalAlignment: Text.AlignRight
+            }
         }
     }
 }

@@ -8593,8 +8593,42 @@ msgid "Apply to Hyprland"
 msgstr "应用到 Hyprland"
 
 #: modules/nexus/pages/hyprland/UserConfigPage.qml
-msgid "Ctrl+S saves · completion opens as you type · Tab indents · the language server shows problems"
-msgstr "Ctrl+S 保存 · 输入时自动补全 · Tab 缩进 · 语言服务器会标出问题"
+msgid "Ctrl+S saves · Ctrl+Z undo · Tab indents · right-click for edit actions"
+msgstr "Ctrl+S 保存 · Ctrl+Z 撤销 · Tab 缩进 · 右键编辑操作"
+
+#: modules/nexus/pages/hyprland/UserConfigPage.qml
+#, qt-format
+msgid "Line %1, Column %2"
+msgstr "第 %1 行，第 %2 列"
+
+#: modules/nexus/pages/hyprland/UserConfigPage.qml
+#, qt-format
+msgid "%1 selected"
+msgstr "已选择 %1 个字符"
+
+#: modules/nexus/pages/hyprland/UserConfigPage.qml
+msgid "Undo"
+msgstr "撤销"
+
+#: modules/nexus/pages/hyprland/UserConfigPage.qml
+msgid "Redo"
+msgstr "重做"
+
+#: modules/nexus/pages/hyprland/UserConfigPage.qml
+msgid "Cut"
+msgstr "剪切"
+
+#: modules/nexus/pages/hyprland/UserConfigPage.qml
+msgid "Copy"
+msgstr "复制"
+
+#: modules/nexus/pages/hyprland/UserConfigPage.qml
+msgid "Paste"
+msgstr "粘贴"
+
+#: modules/nexus/pages/hyprland/UserConfigPage.qml
+msgid "Select all"
+msgstr "全选"
 
 
 #. Hybrid shell additions
