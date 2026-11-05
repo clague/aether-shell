@@ -65,6 +65,27 @@ QString kdeglobalsPath() {
     return QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/kdeglobals"_s;
 }
 
+// The KDE colour scheme file KColorScheme should read: the CLI's copy first (regenerated on every
+// scheme change), then whatever kdeglobals names, then nothing.
+QString colorSchemePath(const QByteArray& kdeglobals) {
+    QString generated =
+        QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/qtengine/caelestia.colors"_s;
+    if (QFileInfo::exists(generated))
+        return generated;
+
+    const QString name = kdeglobals.isEmpty() ? QString() : iniValue(kdeglobals, u"General"_s, u"ColorScheme"_s);
+    if (name.isEmpty())
+        return {};
+
+    const QString share = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+    for (const QString& dir : { share + u"/color-schemes"_s, u"/usr/share/color-schemes"_s }) {
+        const QString candidate = dir + u'/' + name + u".colors"_s;
+        if (QFileInfo::exists(candidate))
+            return candidate;
+    }
+    return {};
+}
+
 QString kvantumConfigPath() {
     return QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/Kvantum/kvantum.kvconfig"_s;
 }
@@ -226,6 +247,16 @@ void AetherTheme::reload() {
     QFile kdeglobals(m_kdeglobalsPath);
     if (kdeglobals.open(QIODevice::ReadOnly))
         kde = kdeglobals.readAll();
+
+    // KDE applications paint through KColorScheme rather than QPalette -- Dolphin's places panel
+    // is one -- and KColorScheme reads this application property when it is set. KDE's own
+    // platform theme sets it; without it those applications fall back to a scheme of their own,
+    // which is how the sidebar ended up with dark text on a dark background.
+    //
+    // The CLI rewrites qtengine/caelestia.colors from the current scheme on every colour change,
+    // so it is the only copy that cannot go stale. A scheme named in kdeglobals is the fallback.
+    m_colorSchemePath = colorSchemePath(kde);
+    qApp->setProperty("KDE_COLOR_SCHEME_PATH", m_colorSchemePath.isEmpty() ? QVariant() : m_colorSchemePath);
 
     QFile shellConfig(m_shellConfigPath);
     if (shellConfig.open(QIODevice::ReadOnly))

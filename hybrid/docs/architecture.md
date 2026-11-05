@@ -235,6 +235,14 @@ follows — the session's own setting first, the CLI's generated template last:
 | widget style | `appearance.qtStyle` in `shell.json`, then Kvantum if a theme is configured, then the CLI's style, then Fusion |
 | icon theme | `[Icons] Theme` in `kdeglobals`, then the CLI's `iconTheme`, then `Papirus-<mode>` |
 | font | **none** — `font()` returns nullptr, so Qt takes it from fontconfig, which is where the shell's "App fonts" page writes |
+| KDE applications | `qApp->setProperty("KDE_COLOR_SCHEME_PATH", …)` pointing at the CLI's `qtengine/caelestia.colors` |
+
+That last row is not a detail. KDE applications do not paint from `QPalette` — Dolphin's places
+panel asks `KColorScheme`, which prefers the `KDE_COLOR_SCHEME_PATH` application property and
+otherwise falls back to a scheme of its own. With the property unset, that fallback gave dark text
+on a dark background while every probe of `QApplication::palette()` reported the correct colours,
+which is why the first three attempts at this looked like a Kvantum problem. Measured on the
+sidebar: `#606069` before, `#AFB4BD` after, `#B5BAC3` under KDE.
 
 The icon theme and the font were both wrong at first: they were read from the CLI's
 `qtengine/config.json`, which is generated from a template (`Papirus-Dark`, `Sans Serif 12`) on

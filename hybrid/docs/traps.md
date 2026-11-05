@@ -3148,3 +3148,21 @@ wrong look:
   placeholder colours (`#3d3d3e`) — which looks like "the plugin is half working" rather than
   "the theme was not found". The engine therefore requires `<theme>/<theme>.kvconfig` to exist
   before handing the style over.
+
+A third fact about the same plugin, and the one that cost the most: **KDE applications do not paint
+from `QPalette`**. Dolphin's places panel asks `KColorScheme`, which prefers the
+`KDE_COLOR_SCHEME_PATH` application property and otherwise falls back to a scheme of its own. Our
+theme set a correct palette and never set that property, so the sidebar drew dark text on a dark
+background while every probe of `QApplication::palette()` — and every pixel of the window
+background — said the colours were right. `KDE_COLOR_SCHEME_PATH` now points at the CLI's
+`qtengine/caelestia.colors`, which is the only copy regenerated on every scheme change.
+
+Two wrong turns are worth recording. The first was blaming Kvantum: a paired screenshot showed the
+two windows differing, and the palette probe said they could not, so one of the two was measuring
+the wrong thing — it was the probe. The second was blaming translucency: with the theme's
+`translucent_windows` off, both windows rendered identically at peak white, which looked like
+proof until the same test ran with it on and the difference came back. A metric that moves when
+you change an unrelated setting is not the cause.
+
+The lesson is the one the rest of this file keeps repeating: measure the thing the user is looking
+at, in the widget that draws it, not a proxy that is convenient to print.
