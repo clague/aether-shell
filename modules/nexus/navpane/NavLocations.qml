@@ -67,6 +67,9 @@ VerticalFadeFlickable {
         // Always visible: the pill this replaced was a permanent cue, and a bar that only appears
         // while scrolling would leave nothing to say the list continues below.
         policy: ScrollBar.AlwaysOn
+        // Indicator only. Dragging here would compete with the divider just outside the pane,
+        // which is what resizes it; wheel scrolling still works through the list beneath.
+        enabled: false
         flickable: root
     }
 
