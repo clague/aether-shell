@@ -129,7 +129,6 @@ hybrid/                                                ← ours. Upstream will n
   ├── hypr/       reference copy of the Hyprland config the shell depends on
   ├── presets/    smoke-matrix configs (all-on, all-off, variants-flipped, theme-nebula)
   └── tools/      build/lint/smoke verification, upstream drift, dead-code audits
-.claude/                                               ← ours (skills + agents)
 ```
 
 ## Reference checkouts
