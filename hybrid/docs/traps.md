@@ -458,7 +458,7 @@ Component.onCompleted: root.requestReloadHyprRules()
 
 and the first call is not debounced, so on a Lua setup it sent
 `keyword layerrule blur ..., match:namespace caelestia-drawers` — which Hyprland rejects.
-Blur and `ignore_alpha` for the drawers, polkit and desktop-lyrics layer surfaces were
+Blur and `ignore_alpha` for the drawers, polkit/askpass and desktop-lyrics layer surfaces were
 silently never applied.
 
 Fixed by resending from `onUsingLuaChanged` on the `Hypr` singleton. Verified by

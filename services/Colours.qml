@@ -114,6 +114,10 @@ Singleton {
             messages.push(rule.arg("caelestia-quicknote").arg("ignore_alpha").arg(ignoreAlpha));
             messages.push(rule.arg("caelestia-polkit").arg("blur").arg(trEnabled));
             messages.push(rule.arg("caelestia-polkit").arg("ignore_alpha").arg(ignoreAlpha));
+            // The askpass prompt is the polkit dialog under another namespace; it needs the
+            // same blur and alpha threshold or the shared background renders unblurred.
+            messages.push(rule.arg("caelestia-askpass").arg("blur").arg(trEnabled));
+            messages.push(rule.arg("caelestia-askpass").arg("ignore_alpha").arg(ignoreAlpha));
             messages.push(rule.arg("caelestia-desktopLyricsOverlay").arg("blur").arg(trEnabled));
             messages.push(rule.arg("caelestia-desktopLyricsOverlay").arg("ignore_alpha").arg(ignoreAlpha));
             messages.push(`eval hl.layer_rule({ match = { namespace = "caelestia-shimeji" }, no_anim = true })`);
@@ -126,6 +130,10 @@ Singleton {
             messages.push(rule.arg("caelestia-quicknote").arg("ignore_alpha").arg(ignoreAlpha));
             messages.push(rule.arg("caelestia-polkit").arg("blur").arg(trEnabled));
             messages.push(rule.arg("caelestia-polkit").arg("ignore_alpha").arg(ignoreAlpha));
+            // The askpass prompt is the polkit dialog under another namespace; it needs the
+            // same blur and alpha threshold or the shared background renders unblurred.
+            messages.push(rule.arg("caelestia-askpass").arg("blur").arg(trEnabled));
+            messages.push(rule.arg("caelestia-askpass").arg("ignore_alpha").arg(ignoreAlpha));
             messages.push(rule.arg("caelestia-desktopLyricsOverlay").arg("blur").arg(trEnabled));
             messages.push(rule.arg("caelestia-desktopLyricsOverlay").arg("ignore_alpha").arg(ignoreAlpha));
             messages.push("keyword layerrule noanim, match:namespace caelestia-shimeji");
