@@ -10,16 +10,24 @@ buys a guaranteed future conflict for no benefit.
 ```
 hybrid/
 ├── docs/
-│   ├── architecture.md   decision record — read this first
-│   ├── traps.md          T1-T15, the known landmines, with source evidence
-│   └── provenance.md     import ledger + asset licensing watchlist
-├── presets/              smoke-matrix configs; picked up automatically
+│   ├── architecture.md            decision record — read this first
+│   ├── traps.md                   the known landmines, with source evidence
+│   ├── provenance.md              import ledger + asset licensing watchlist
+│   ├── askpass.md                 askpass helper and its security notes
+│   ├── ideas.md                   parked ideas, not built yet
+│   ├── phase2-upstream-catchup.md the Phase 2 config rewrite, decision by decision
+│   └── plugins.md                 the on-disk QML plugin contract
+├── hypr/                          reference copy of the Hyprland config the shell writes
+├── presets/                       smoke-matrix configs; picked up automatically
 └── tools/
     ├── bootstrap.sh          Phase 0 — remotes, rerere, main branch, reference worktrees
     ├── upstream-status.sh    drift report across all three upstreams
     ├── smoke-matrix.sh       the verification gate: headless boot under every smoke config
     ├── dev-shell.sh          isolated dev instance; never touches the installed shell
-    └── smoke-ignore.txt      reviewed noise filter for smoke-matrix
+    ├── verify.sh             build + lint + format drift + smoke presets
+    ├── qml-lint.sh           qmllint over every QML file
+    ├── smoke-ignore.txt      reviewed noise filter for smoke-matrix
+    └── …                     focused audits (dead code, config paths, hardware)
 ```
 
 ## First run

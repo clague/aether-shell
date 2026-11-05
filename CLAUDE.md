@@ -125,10 +125,10 @@ These were settled by source audit on 2026-09-02. Do not re-litigate without new
 modules/  components/  services/  plugin/  shell.qml   ← upstream-shaped. Merge target. Edit minimally.
 scripts/  assets/  .github/                            ← upstream-shaped. Same rule.
 hybrid/                                                ← ours. Upstream will never touch it.
-  ├── docs/       architecture, traps, provenance ledger
+  ├── docs/       architecture, traps, provenance, plugin contract, parked ideas
   ├── hypr/       reference copy of the Hyprland config the shell depends on
   ├── presets/    smoke-matrix configs (all-on, all-off, variants-flipped, theme-nebula)
-  └── tools/      bootstrap, upstream-status, smoke-matrix, dev-shell
+  └── tools/      build/lint/smoke verification, upstream drift, dead-code audits
 .claude/                                               ← ours (skills + agents)
 ```
 
