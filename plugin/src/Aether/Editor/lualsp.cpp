@@ -301,7 +301,8 @@ void LuaLsp::onData() {
 
         int contentLength = -1;
         const QByteArray header = m_buffer.left(headerEnd);
-        for (const QByteArray& line : header.split('\n')) {
+        const QList<QByteArray> headerLines = header.split('\n');
+        for (const QByteArray& line : headerLines) {
             const QByteArray trimmed = line.trimmed();
             if (trimmed.startsWith("Content-Length:"))
                 contentLength = trimmed.mid(static_cast<int>(qstrlen("Content-Length:"))).trimmed().toInt();
@@ -337,7 +338,8 @@ void LuaLsp::dispatch(const QJsonObject& message) {
             const int requestId = message.value(u"id"_s).toInt(-1);
             if (requestId >= 0) {
                 QJsonArray result;
-                for (const QJsonValue& value : message.value(u"params"_s).toObject().value(u"items"_s).toArray()) {
+                const QJsonArray requestItems = message.value(u"params"_s).toObject().value(u"items"_s).toArray();
+                for (const auto& value : requestItems) {
                     const QString section = value.toObject().value(u"section"_s).toString();
                     if (section == u"Lua"_s)
                         result.append(luaSettings(libraries()));
@@ -382,7 +384,8 @@ void LuaLsp::parseDiagnostics(const QJsonObject& params) {
         return;
 
     QVariantList list;
-    for (const QJsonValue& value : params.value(u"diagnostics"_s).toArray()) {
+    const QJsonArray diagnostics = params.value(u"diagnostics"_s).toArray();
+    for (const auto& value : diagnostics) {
         const QJsonObject diagnostic = value.toObject();
         list.append(diagnosticMap(diagnostic));
     }
@@ -401,7 +404,7 @@ void LuaLsp::parseCompletion(const QJsonValue& result) {
     QVariantList list;
     list.reserve(qMin(items.size(), 200));
 
-    for (const QJsonValue& value : items) {
+    for (const auto& value : std::as_const(items)) {
         if (list.size() >= 200)
             break;
 
