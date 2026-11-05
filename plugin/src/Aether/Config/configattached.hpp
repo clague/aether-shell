@@ -32,7 +32,6 @@ class Config : public QQuickAttachedPropertyPropagator, public QQmlParserStatus 
     Q_PROPERTY(const aether::shell::config::SidebarConfig* sidebar READ sidebar NOTIFY sourceChanged)
     Q_PROPERTY(const aether::shell::config::UtilitiesConfig* utilities READ utilities NOTIFY sourceChanged)
     Q_PROPERTY(const aether::shell::config::UserPaths* paths READ paths NOTIFY sourceChanged)
-    Q_PROPERTY(const aether::shell::config::ShimejiConfig* shimeji READ shimeji NOTIFY sourceChanged)
     Q_PROPERTY(const aether::shell::config::AudioConfig* audio READ audio NOTIFY sourceChanged)
     Q_PROPERTY(const aether::shell::config::AiConfig* ai READ ai NOTIFY sourceChanged)
 
