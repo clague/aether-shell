@@ -17,10 +17,10 @@ PageBase {
     // Ordered to match config::HybridVariant (Midnight, Op)
     readonly property list<MenuItem> variantItems: [
         MenuItem {
-            text: "MiDnight"
+            text: Tr.tr("MiDnight implementation")
         },
         MenuItem {
-            text: "OP"
+            text: Tr.tr("OP implementation")
         }
     ]
 

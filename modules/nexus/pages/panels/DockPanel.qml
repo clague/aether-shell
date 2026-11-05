@@ -16,10 +16,10 @@ PageBase {
     // Ordered to match config::HybridVariant (Midnight, Op)
     readonly property list<MenuItem> variantItems: [
         MenuItem {
-            text: "MiDnight"
+            text: Tr.tr("MiDnight implementation")
         },
         MenuItem {
-            text: "OP"
+            text: Tr.tr("OP implementation")
         }
     ]
 
@@ -96,7 +96,7 @@ PageBase {
             first: true
             last: true
             label: Tr.tr("Dock implementation")
-            subtext: Tr.tr("MiDnight's bar section, or OP's auto-hiding panel")
+            subtext: Tr.tr("A dock section inside the bar, or a separate auto-hiding panel")
             configNode: GlobalConfig.hybrid.variants
             propertyName: "dock"
             menuItems: root.variantItems

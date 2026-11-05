@@ -77,7 +77,7 @@ PageBase {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
             last: true
-            text: Tr.tr("Broadcast MiDnight info")
+            text: Tr.tr("Broadcast Aether info")
             subtext: Tr.tr("Broadcast shell uptime and system info")
             checked: GlobalConfig.services.arpcAetherInfo
             onToggled: GlobalConfig.services.arpcAetherInfo = checked

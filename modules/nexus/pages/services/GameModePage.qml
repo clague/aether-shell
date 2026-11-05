@@ -96,7 +96,7 @@ PageBase {
         }
 
         SectionHeader {
-            text: Tr.tr("MiDnight feature overrides")
+            text: Tr.tr("Feature overrides")
         }
 
         ToggleRow {

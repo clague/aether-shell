@@ -259,7 +259,7 @@ msgstr "性能已降低"
 #: modules/nexus/pages/panels/taskbar/BarStatusIcons.qml
 #: modules/nexus/pages/panels/UtilitiesPanel.qml modules/nexus/SearchIndex.qml
 msgid "Bluetooth"
-msgstr "Bluetooth"
+msgstr "蓝牙"
 
 #: modules/bar/popouts/Bluetooth.qml
 msgctxt "toggle label"
@@ -4279,8 +4279,8 @@ msgid "Dock implementation"
 msgstr "程序坞实现"
 
 #: modules/nexus/pages/panels/DockPanel.qml modules/nexus/SearchIndex.qml
-msgid "MiDnight's bar section, or OP's auto-hiding panel"
-msgstr "MiDnight 的状态栏区块，或 OP 的自动隐藏面板"
+msgid "A dock section inside the bar, or a separate auto-hiding panel"
+msgstr "任务栏内的 dock 区块，或独立的自动隐藏面板"
 
 #: modules/nexus/pages/panels/DockPanel.qml modules/nexus/SearchIndex.qml
 msgid "Behaviour & Sizing"
@@ -4456,8 +4456,8 @@ msgid "Taskview implementation"
 msgstr "任务视图实现"
 
 #: modules/nexus/pages/panels/OverviewPanel.qml modules/nexus/SearchIndex.qml
-msgid "MiDnight's drawer, or OP's carousel and window grid"
-msgstr "MiDnight 的抽屉，或 OP 的轮播与窗口网格"
+msgid "A drawer of workspace thumbnails, or a carousel with a window grid"
+msgstr "工作区缩略图抽屉，或轮播加窗口网格"
 
 #: modules/nexus/pages/panels/OverviewPanel.qml
 msgid "Shortcuts & Gestures"
@@ -5196,8 +5196,8 @@ msgid "Automatically broadcast running Steam games"
 msgstr "自动广播正在运行的 Steam 游戏"
 
 #: modules/nexus/pages/services/ArpcPage.qml modules/nexus/SearchIndex.qml
-msgid "Broadcast MiDnight info"
-msgstr "广播 MiDnight 信息"
+msgid "Broadcast Aether info"
+msgstr "广播 Aether 信息"
 
 #: modules/nexus/pages/services/ArpcPage.qml modules/nexus/SearchIndex.qml
 msgid "Broadcast shell uptime and system info"
@@ -5299,8 +5299,8 @@ msgid "Disable window transparency"
 msgstr "禁用窗口透明"
 
 #: modules/nexus/pages/services/GameModePage.qml modules/nexus/SearchIndex.qml
-msgid "MiDnight feature overrides"
-msgstr "MiDnight 功能覆盖"
+msgid "Feature overrides"
+msgstr "功能覆盖"
 
 #: modules/nexus/pages/services/GameModePage.qml modules/nexus/SearchIndex.qml
 msgid "Disable shell transparency"
@@ -5710,8 +5710,8 @@ msgid "Integrations"
 msgstr "集成"
 
 #: modules/nexus/pages/ServicesPage.qml
-msgid "Manage how MiDnight behaves while gaming"
-msgstr "管理 MiDnight 在游戏时的行为"
+msgid "Manage how the shell behaves while gaming"
+msgstr "设置游戏时 shell 的行为"
 
 #: modules/nexus/pages/ServicesPage.qml
 msgid "Broadcast your status to Vesktop"
@@ -9248,3 +9248,11 @@ msgstr "Shell 外观、字体与 Qt 应用"
 #: modules/nexus/PageRegistry.qml
 msgid "Check Wi-Fi, Bluetooth, audio, displays and the session environment"
 msgstr "检查 Wi-Fi、蓝牙、音频、显示器与本次登录的环境变量"
+
+#: modules/nexus/pages/panels/AudioPage.qml
+msgid "MiDnight implementation"
+msgstr "MiDnight 实现"
+
+#: modules/nexus/pages/panels/AudioPage.qml
+msgid "OP implementation"
+msgstr "OP 实现"

@@ -149,7 +149,7 @@ PageBase {
         NavRow {
             icon: "sports_esports"
             text: Tr.tr("Game mode")
-            subtext: Tr.tr("Manage how MiDnight behaves while gaming")
+            subtext: Tr.tr("Manage how the shell behaves while gaming")
             onClicked: root.nState.openSubPage(2)
         }
 

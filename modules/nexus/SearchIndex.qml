@@ -1822,7 +1822,7 @@ QtObject {
             page: 2,
             sub: 7,
             label: Tr.tr("Taskview implementation"),
-            subtext: Tr.tr("MiDnight's drawer, or OP's carousel and window grid"),
+            subtext: Tr.tr("A drawer of workspace thumbnails, or a carousel with a window grid"),
             section: Tr.tr("Implementation"),
             subTitle: Tr.tr("Taskview"),
             kw: []
@@ -1872,7 +1872,7 @@ QtObject {
             page: 2,
             sub: 8,
             label: Tr.tr("Dock implementation"),
-            subtext: Tr.tr("MiDnight's bar section, or OP's auto-hiding panel"),
+            subtext: Tr.tr("A dock section inside the bar, or a separate auto-hiding panel"),
             section: Tr.tr("Implementation"),
             subTitle: Tr.tr("Dock"),
             kw: []
@@ -3663,7 +3663,7 @@ QtObject {
             sub: 2,
             label: Tr.tr("Disable shell transparency"),
             subtext: "",
-            section: Tr.tr("MiDnight feature overrides"),
+            section: Tr.tr("Feature overrides"),
             subTitle: Tr.tr("Game mode"),
             kw: []
         },
@@ -3673,7 +3673,7 @@ QtObject {
             sub: 2,
             label: Tr.tr("Disable toast notifications transparency"),
             subtext: "",
-            section: Tr.tr("MiDnight feature overrides"),
+            section: Tr.tr("Feature overrides"),
             subTitle: Tr.tr("Game mode"),
             kw: []
         },
@@ -3683,7 +3683,7 @@ QtObject {
             sub: 2,
             label: Tr.tr("Disable desktop lyrics"),
             subtext: "",
-            section: Tr.tr("MiDnight feature overrides"),
+            section: Tr.tr("Feature overrides"),
             subTitle: Tr.tr("Game mode"),
             kw: []
         },
@@ -3693,7 +3693,7 @@ QtObject {
             sub: 2,
             label: Tr.tr("Disable visualizer"),
             subtext: "",
-            section: Tr.tr("MiDnight feature overrides"),
+            section: Tr.tr("Feature overrides"),
             subTitle: Tr.tr("Game mode"),
             kw: []
         },
@@ -3703,7 +3703,7 @@ QtObject {
             sub: 2,
             label: Tr.tr("Disable shimeji pets"),
             subtext: "",
-            section: Tr.tr("MiDnight feature overrides"),
+            section: Tr.tr("Feature overrides"),
             subTitle: Tr.tr("Game mode"),
             kw: []
         },
@@ -3751,7 +3751,7 @@ QtObject {
             kind: "row",
             page: 14,
             sub: 4,
-            label: Tr.tr("Broadcast MiDnight info"),
+            label: Tr.tr("Broadcast Aether info"),
             subtext: Tr.tr("Broadcast shell uptime and system info"),
             section: Tr.tr("Broadcast settings"),
             subTitle: Tr.tr("Discord Rich Presence"),

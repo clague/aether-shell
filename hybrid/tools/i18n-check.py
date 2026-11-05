@@ -105,6 +105,30 @@ def used_strings(roots) -> tuple[Counter, Counter, int]:
     return plain, contextual, dynamic
 
 
+# Proper nouns and units that are meant to stay in English. Everything else whose translation is
+# identical to the source is a string someone forgot to translate, which "missing" cannot see.
+KEPT_IN_ENGLISH = {
+    "CLI", "CPU", "Discord Rich Presence", "Dwindle", "Emoji", "Enter", "Esc", "GPU", "GitHub",
+    "Hyprland", "IPv4", "IPv6", "K", "Logo", "Master", "NetworkManager", "Nexus — %1",
+    "OpenClaw", "OpenRouter", "PIN", "REC", "Scrolling", "Shell", "Spotify", "VPN", "WS",
+    "Wallhaven", "Wallpaper Engine", "Wi-Fi", "%1 Hz", "%1 MHz", "%1 Gbps", "%1 Mbps",
+    "%1 km/h", "2.4 GHz", "5 GHz", "null",
+}
+
+
+def untranslated(entries: dict[tuple[str, str], str]) -> list[str]:
+    """Entries whose translation is exactly the source, minus the ones meant to stay English."""
+    out = []
+    for (_, msgid), msgstr in entries.items():
+        if not msgid or msgstr != msgid or msgid in KEPT_IN_ENGLISH:
+            continue
+        # Only real words: a capitalised string containing a run of lowercase letters. Units
+        # ("%1 TiB/s", "%1 ms"), symbols and shell commands are not translatable text.
+        if msgid[0].isupper() and re.search(r"[a-z]{3,}", msgid):
+            out.append(msgid)
+    return sorted(out)
+
+
 def check(roots, catalog: Path) -> tuple[list, list, int]:
     plain, contextual, dynamic = used_strings(roots)
     entries = po_entries(catalog.read_text())
@@ -138,6 +162,14 @@ msgstr "过期"
 msgctxt "verb"
 msgid "Close"
 msgstr "关闭"
+
+#: b.qml
+msgid "Bluetooth"
+msgstr "Bluetooth"
+
+#: b.qml
+msgid "%1 ms"
+msgstr "%1 ms"
 """
 
 FIXTURE_QML = """\
@@ -163,8 +195,9 @@ def self_test() -> int:
         missing, unused, dynamic = check([root], catalog)
         missing_ids = sorted(m[0] for m in missing)
         assert missing_ids == ["Close", "Untranslated"], missing_ids
-        assert [u[1] for u in unused] == ["Stale"], unused
+        assert "Stale" in [u[1] for u in unused], unused
         assert dynamic == 1, dynamic
+        assert untranslated(po_entries(FIXTURE_PO)) == ["Bluetooth"], "untranslated"
 
     print(
         "PASS self-test: finds the untranslated string, the wrong context and the stale entry"
@@ -187,10 +220,15 @@ def main() -> int:
             where = f' (context "{context}")' if context else ""
             print(f"unused   {msgid!r}{where}")
 
+    english = untranslated(po_entries(CATALOG.read_text()))
+    for msgid in english:
+        print(f"english  {msgid!r}")
+
     print(
-        f"{len(missing)} missing, {len(unused)} unused, {dynamic} dynamic call(s) not checked"
+        f"{len(missing)} missing, {len(english)} untranslated, {len(unused)} unused, "
+        f"{dynamic} dynamic call(s) not checked"
     )
-    return 1 if missing else 0
+    return 1 if missing or english else 0
 
 
 if __name__ == "__main__":

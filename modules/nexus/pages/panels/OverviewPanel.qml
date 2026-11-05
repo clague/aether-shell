@@ -16,10 +16,10 @@ PageBase {
     // Ordered to match config::HybridVariant (Midnight, Op)
     readonly property list<MenuItem> variantItems: [
         MenuItem {
-            text: "MiDnight"
+            text: Tr.tr("MiDnight implementation")
         },
         MenuItem {
-            text: "OP"
+            text: Tr.tr("OP implementation")
         }
     ]
 
@@ -86,7 +86,7 @@ PageBase {
             first: true
             last: true
             label: Tr.tr("Taskview implementation")
-            subtext: Tr.tr("MiDnight's drawer, or OP's carousel and window grid")
+            subtext: Tr.tr("A drawer of workspace thumbnails, or a carousel with a window grid")
             configNode: GlobalConfig.hybrid.variants
             propertyName: "overview"
             menuItems: root.variantItems
