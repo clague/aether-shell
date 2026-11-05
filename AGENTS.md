@@ -202,8 +202,8 @@ that test on inspection, and two of them only failed once someone diffed the act
 
 `hybrid/tools/smoke-matrix.sh` is the gate. It boots the shell headless
 (`QT_QPA_PLATFORM=offscreen qs -p .`) under every smoke config and fails on QML errors.
-Run it plus `qmllint` and `clang-format` before calling any change done — see the
-`shell-verify` skill.
+Run `./hybrid/tools/verify.sh` before calling any change done; it wraps the smoke matrix,
+`qmllint`, `clang-format` and the rest of the CI gates.
 
 **This project only builds and runs on Linux** (Quickshell + Qt6 + Wayland/Hyprland).
 Scaffolding may be authored anywhere; verification must happen on the Linux machine.

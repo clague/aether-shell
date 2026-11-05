@@ -66,7 +66,7 @@ if git rev-parse --verify -q main >/dev/null; then
 else
     say "creating 'main' from midnight/main (baseline, decision D1)"
 
-    # Refuse to clobber untracked scaffolding. MiDnight has no CLAUDE.md or hybrid/,
+    # Refuse to clobber untracked scaffolding. MiDnight has no AGENTS.md or hybrid/,
     # so this should never trigger — but check rather than trust.
     collisions=$(git ls-tree -r --name-only midnight/main \
         | while read -r f; do [ -e "$ROOT/$f" ] && echo "$f"; done || true)
@@ -152,7 +152,7 @@ Bootstrap complete.
 Next (Phase 0):
   1. git remote add origin <your fork url>
   2. Re-enable CI workflows and repoint the container image  (trap T9)
-  3. Commit the hybrid/ + CLAUDE.md scaffold as the first hybrid commit
+  3. Commit the hybrid/ + AGENTS.md scaffold as the first hybrid commit
   4. Run  hybrid/tools/upstream-status.sh  to see current drift
   5. Build, then  hybrid/tools/smoke-matrix.sh  to establish the noise baseline
 

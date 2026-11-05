@@ -1,7 +1,7 @@
 # Architecture
 
 Decision record for Aether. Written 2026-09-02 from a source audit of all three
-upstreams at the commits recorded in `CLAUDE.md`.
+upstreams at the commits recorded in `AGENTS.md`.
 
 ---
 

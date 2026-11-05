@@ -1776,7 +1776,7 @@ holds it. That needs a real device and a person watching, like the QuickShare re
 
 ## T44 — The component audit missed a dual implementation, and the flag already gated it
 
-`CLAUDE.md`'s "Component reality" table is the evidence behind D3 — feature flags rather than
+`AGENTS.md`'s "Component reality" table is the evidence behind D3 — feature flags rather than
 implementation selectors — because the forks were found to be ~90% disjoint, with only four
 components implemented by both. One row was wrong:
 
@@ -1816,7 +1816,7 @@ for f in <flags>; do grep -rl "features\.$f\b" --include='*.qml' modules/ servic
 
 **A locked decision is only as good as the audit under it, and audits are checkable.** D3's
 conclusion survives — the forks really are mostly disjoint, and four-versus-five dual sites does
-not change the design. The table under it needed a correction, and CLAUDE.md's "do not
+not change the design. The table under it needed a correction, and AGENTS.md's "do not
 re-litigate without new evidence" is a bar to clear, not a door that is closed.
 
 ### The same question found a larger error in the work plan
