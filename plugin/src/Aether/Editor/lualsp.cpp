@@ -295,7 +295,7 @@ void LuaLsp::onData() {
     m_buffer.append(m_process.readAllStandardOutput());
 
     while (true) {
-        const int headerEnd = m_buffer.indexOf("\r\n\r\n");
+        const int headerEnd = static_cast<int>(m_buffer.indexOf("\r\n\r\n"));
         if (headerEnd < 0)
             return;
 

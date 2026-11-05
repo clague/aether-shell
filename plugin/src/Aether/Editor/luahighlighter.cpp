@@ -85,7 +85,7 @@ bool longBracket(const QString& text, int index, int& level, int& length) {
 }
 
 int findLongClose(const QString& text, int from, int level) {
-    return text.indexOf(u']' + QString(level, u'=') + u']', from);
+    return static_cast<int>(text.indexOf(u']' + QString(level, u'=') + u']', from));
 }
 
 constexpr int stringStateBase = 1;    // 1 + level
@@ -112,7 +112,7 @@ public:
 protected:
     void highlightBlock(const QString& text) override {
         int i = 0;
-        const int n = text.size();
+        const int n = static_cast<int>(text.size());
 
         // Continue a long string/comment from the previous line.
         const int state = previousBlockState();

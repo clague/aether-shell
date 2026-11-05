@@ -46,6 +46,10 @@ Item {
     signal close
 
     function loadNavWidth(): void {
+        // readFile() logs a warning for a missing path, and the smoke matrix treats warnings
+        // as failures; a fresh state dir simply has no saved width yet.
+        if (!CUtils.fileExists(root.navStatePath))
+            return;
         const content = CUtils.readFile(root.navStatePath);
         if (!content)
             return;
