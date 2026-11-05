@@ -51,6 +51,10 @@ public:
     // index.theme, in the three places the icon spec searches.
     Q_INVOKABLE static QStringList availableIconThemes();
 
+    // The icon theme the session itself is using (kdeglobals [Icons] Theme), so the settings page
+    // can show what "follow the desktop" resolves to instead of leaving it a guess.
+    Q_INVOKABLE static QString desktopIconTheme();
+
     [[nodiscard]] static QString version();
     [[nodiscard]] static QString qtVersion();
     Q_INVOKABLE static bool mkdirp(const QString& path);

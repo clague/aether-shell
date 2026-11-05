@@ -85,7 +85,7 @@ PageBase {
         SelectRow {
             Layout.fillWidth: true
             label: Tr.tr("Icon theme")
-            subtext: Tr.tr("Follow the desktop's own icon setting, or name one here")
+            subtext: GlobalConfig.qt.iconTheme === "" && CUtils.desktopIconTheme() !== "" ? Tr.tr("Following the desktop: %1").arg(CUtils.desktopIconTheme()) : Tr.tr("Name one here, or leave it to the desktop")
             configNode: GlobalConfig.qt
             propertyName: "iconTheme"
             menuItems: root.iconThemeItems

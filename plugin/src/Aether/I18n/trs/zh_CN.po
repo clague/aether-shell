@@ -9200,3 +9200,11 @@ msgstr "双击间隔"
 #: modules/nexus/pages/LookAndFeelPage.qml
 msgid "Milliseconds between two clicks that count as one"
 msgstr "两次点击被视为双击的毫秒间隔"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Following the desktop: %1"
+msgstr "跟随桌面：%1"
+
+#: modules/nexus/pages/LookAndFeelPage.qml
+msgid "Name one here, or leave it to the desktop"
+msgstr "在此指定一个，或交给桌面决定"

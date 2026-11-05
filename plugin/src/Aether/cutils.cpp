@@ -15,6 +15,7 @@
 #include <qquickitemgrabresult.h>
 #include <qquickwindow.h>
 #include <qregularexpression.h>
+#include <qsettings.h>
 #include <qstandardpaths.h>
 #include <qtconcurrentrun.h>
 #include <qtenvironmentvariables.h>
@@ -351,6 +352,13 @@ QStringList CUtils::availableIconThemes() {
             themes.removeAt(i);
     }
     return themes;
+}
+
+QString CUtils::desktopIconTheme() {
+    const QString path = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/kdeglobals"_s;
+    // [Icons] is a real section, unlike the bare [General] section QSettings maps onto the root.
+    const QSettings settings(path, QSettings::IniFormat);
+    return settings.value(u"Icons/Theme"_s).toString();
 }
 
 QString CUtils::qtVersion() {
