@@ -9,6 +9,8 @@
 
 #include "entrypoint.hpp"
 
+class QJsonDocument;
+
 namespace aether::plugins {
 
 class SettingsObject;
@@ -57,7 +59,7 @@ class PluginManifest : public QObject {
     Q_PROPERTY(aether::plugins::SettingsObject* settings READ settings NOTIFY settingsChanged)
 
 public:
-    PluginManifest(const QString& dir, const QString& path, QObject* parent = nullptr);
+    PluginManifest(QString dir, QString path, QObject* parent = nullptr);
 
     [[nodiscard]] QString id() const;
     [[nodiscard]] QString moduleUri() const;
@@ -145,6 +147,9 @@ signals:
 
 private:
     void parse();
+    [[nodiscard]] QString readJson(QJsonDocument& doc) const;
+    [[nodiscard]] static QString validateFields(
+        const QString& name, const QString& author, const QString& entryPointError, const QString& requirement);
 
     // Drops the settings object so the next access rebuilds it from the current generation,
     // keeping the live values so a reload does not discard unsaved edits.

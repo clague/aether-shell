@@ -10,7 +10,7 @@ using Qt::StringLiterals::operator""_s;
 namespace {
 
 const QSet<QString>& keywords() {
-    static const QSet<QString> set = {
+    static const QSet<QString> k_luaKeywords = {
         u"and"_s,
         u"break"_s,
         u"do"_s,
@@ -34,11 +34,11 @@ const QSet<QString>& keywords() {
         u"until"_s,
         u"while"_s,
     };
-    return set;
+    return k_luaKeywords;
 }
 
 const QSet<QString>& builtins() {
-    static const QSet<QString> set = {
+    static const QSet<QString> k_luaBuiltins = {
         u"print"_s,
         u"pairs"_s,
         u"ipairs"_s,
@@ -64,7 +64,7 @@ const QSet<QString>& builtins() {
         u"debug"_s,
         u"coroutine"_s,
     };
-    return set;
+    return k_luaBuiltins;
 }
 
 // `[`, zero or more `=`, `[`. `length` includes both brackets.
@@ -88,9 +88,9 @@ int findLongClose(const QString& text, int from, int level) {
     return static_cast<int>(text.indexOf(u']' + QString(level, u'=') + u']', from));
 }
 
-constexpr int stringStateBase = 1;    // 1 + level
-constexpr int commentStateBase = 101; // 101 + level
-constexpr int maxLevel = 20;
+constexpr int k_stringStateBase = 1;    // 1 + level
+constexpr int k_commentStateBase = 101; // 101 + level
+constexpr int k_maxLevel = 20;
 
 } // namespace
 
@@ -111,121 +111,143 @@ public:
 
 protected:
     void highlightBlock(const QString& text) override {
-        int i = 0;
         const int n = static_cast<int>(text.size());
-
-        // Continue a long string/comment from the previous line.
-        const int state = previousBlockState();
-        if (state >= stringStateBase && state <= stringStateBase + maxLevel) {
-            const int level = state - stringStateBase;
-            const int end = findLongClose(text, 0, level);
-            const int closeLength = level + 2;
-            if (end < 0) {
-                setFormat(0, n, m_formats->string);
-                setCurrentBlockState(state);
-                return;
-            }
-            setFormat(0, end + closeLength, m_formats->string);
-            i = end + closeLength;
-        } else if (state >= commentStateBase && state <= commentStateBase + maxLevel) {
-            const int level = state - commentStateBase;
-            const int end = findLongClose(text, 0, level);
-            const int closeLength = level + 2;
-            if (end < 0) {
-                setFormat(0, n, m_formats->comment);
-                setCurrentBlockState(state);
-                return;
-            }
-            setFormat(0, end + closeLength, m_formats->comment);
-            i = end + closeLength;
-        }
+        int i = 0;
+        if (continueLongBlock(text, i, n))
+            return;
 
         setCurrentBlockState(0);
 
         while (i < n) {
-            const QChar c = text[i];
-
-            if (c == u'-' && i + 1 < n && text[i + 1] == u'-') {
-                int level = 0;
-                int length = 0;
-                if (longBracket(text, i + 2, level, length)) {
-                    const int end = findLongClose(text, i + 2 + length, level);
-                    const int closeLength = level + 2;
-                    if (end < 0) {
-                        setFormat(i, n - i, m_formats->comment);
-                        setCurrentBlockState(commentStateBase + qMin(level, maxLevel));
-                        return;
-                    }
-                    setFormat(i, end + closeLength - i, m_formats->comment);
-                    i = end + closeLength;
-                    continue;
-                }
-                setFormat(i, n - i, m_formats->comment);
+            const int next = highlightToken(text, i, n);
+            if (next < 0)
                 return;
-            }
-
-            if (c == u'[') {
-                int level = 0;
-                int length = 0;
-                if (longBracket(text, i, level, length)) {
-                    const int end = findLongClose(text, i + length, level);
-                    const int closeLength = level + 2;
-                    if (end < 0) {
-                        setFormat(i, n - i, m_formats->string);
-                        setCurrentBlockState(stringStateBase + qMin(level, maxLevel));
-                        return;
-                    }
-                    setFormat(i, end + closeLength - i, m_formats->string);
-                    i = end + closeLength;
-                    continue;
-                }
-            }
-
-            if (c == u'"' || c == u'\'') {
-                int j = i + 1;
-                while (j < n) {
-                    if (text[j] == u'\\') {
-                        j += 2;
-                        continue;
-                    }
-                    if (text[j] == c) {
-                        ++j;
-                        break;
-                    }
-                    ++j;
-                }
-                setFormat(i, qMin(j, n) - i, m_formats->string);
-                i = j;
-                continue;
-            }
-
-            if (c.isDigit() || (c == u'.' && i + 1 < n && text[i + 1].isDigit())) {
-                int j = i;
-                while (j < n && (text[j].isLetterOrNumber() || text[j] == u'.' || text[j] == u'_'))
-                    ++j;
-                setFormat(i, j - i, m_formats->number);
-                i = j;
-                continue;
-            }
-
-            if (c.isLetter() || c == u'_') {
-                int j = i;
-                while (j < n && (text[j].isLetterOrNumber() || text[j] == u'_'))
-                    ++j;
-                const QString word = text.mid(i, j - i);
-                if (keywords().contains(word))
-                    setFormat(i, j - i, m_formats->keyword);
-                else if (builtins().contains(word))
-                    setFormat(i, j - i, m_formats->builtin);
-                i = j;
-                continue;
-            }
-
-            ++i;
+            i = next;
         }
     }
 
 private:
+    // A long string or comment that started on a previous line. Returns true when the block is
+    // still inside it, so the caller does not scan for other tokens.
+    bool continueLongBlock(const QString& text, int& i, int n) {
+        const int state = previousBlockState();
+        const bool isString = state >= k_stringStateBase && state <= k_stringStateBase + k_maxLevel;
+        const bool isComment = state >= k_commentStateBase && state <= k_commentStateBase + k_maxLevel;
+        if (!isString && !isComment)
+            return false;
+
+        const int level = state - (isString ? k_stringStateBase : k_commentStateBase);
+        const int end = findLongClose(text, 0, level);
+        const int closeLength = level + 2;
+        const QTextCharFormat& format = isString ? m_formats->string : m_formats->comment;
+        if (end < 0) {
+            setFormat(0, n, format);
+            setCurrentBlockState(state);
+            return true;
+        }
+
+        setFormat(0, end + closeLength, format);
+        i = end + closeLength;
+        return false;
+    }
+
+    // Returns the next position to look at, or -1 when the rest of the block is consumed.
+    int highlightToken(const QString& text, int i, int n) {
+        const QChar c = text[i];
+        if (c == u'-' && i + 1 < n && text[i + 1] == u'-')
+            return highlightComment(text, i, n);
+        if (c == u'[') {
+            const int next = highlightLongString(text, i, n);
+            if (next != i)
+                return next;
+        }
+        if (c == u'"' || c == u'\'')
+            return highlightQuotedString(text, i, n);
+        if (c.isDigit() || (c == u'.' && i + 1 < n && text[i + 1].isDigit()))
+            return highlightNumber(text, i, n);
+        if (c.isLetter() || c == u'_')
+            return highlightWord(text, i, n);
+        return i + 1;
+    }
+
+    int highlightComment(const QString& text, int i, int n) {
+        int level = 0;
+        int length = 0;
+        if (!longBracket(text, i + 2, level, length)) {
+            setFormat(i, n - i, m_formats->comment);
+            return -1;
+        }
+
+        const int end = findLongClose(text, i + 2 + length, level);
+        const int closeLength = level + 2;
+        if (end < 0) {
+            setFormat(i, n - i, m_formats->comment);
+            setCurrentBlockState(k_commentStateBase + qMin(level, k_maxLevel));
+            return -1;
+        }
+
+        setFormat(i, end + closeLength - i, m_formats->comment);
+        return end + closeLength;
+    }
+
+    int highlightLongString(const QString& text, int i, int n) {
+        int level = 0;
+        int length = 0;
+        if (!longBracket(text, i, level, length))
+            return i;
+
+        const int end = findLongClose(text, i + length, level);
+        const int closeLength = level + 2;
+        if (end < 0) {
+            setFormat(i, n - i, m_formats->string);
+            setCurrentBlockState(k_stringStateBase + qMin(level, k_maxLevel));
+            return -1;
+        }
+
+        setFormat(i, end + closeLength - i, m_formats->string);
+        return end + closeLength;
+    }
+
+    int highlightQuotedString(const QString& text, int i, int n) {
+        const QChar quote = text[i];
+        int j = i + 1;
+        while (j < n) {
+            if (text[j] == u'\\') {
+                j += 2;
+                continue;
+            }
+            if (text[j] == quote) {
+                ++j;
+                break;
+            }
+            ++j;
+        }
+
+        setFormat(i, qMin(j, n) - i, m_formats->string);
+        return j;
+    }
+
+    int highlightNumber(const QString& text, int i, int n) {
+        int j = i;
+        while (j < n && (text[j].isLetterOrNumber() || text[j] == u'.' || text[j] == u'_'))
+            ++j;
+        setFormat(i, j - i, m_formats->number);
+        return j;
+    }
+
+    int highlightWord(const QString& text, int i, int n) {
+        int j = i;
+        while (j < n && (text[j].isLetterOrNumber() || text[j] == u'_'))
+            ++j;
+
+        const QString word = text.mid(i, j - i);
+        if (keywords().contains(word))
+            setFormat(i, j - i, m_formats->keyword);
+        else if (builtins().contains(word))
+            setFormat(i, j - i, m_formats->builtin);
+        return j;
+    }
+
     const Formats* m_formats;
 };
 

@@ -29,7 +29,7 @@ QVariantMap SettingsObject::toMap() const {
         auto value = prop.read(this);
 
         if (value.canView<SettingsObject*>()) {
-            auto* const sub = value.view<SettingsObject*>();
+            const auto* const sub = value.view<SettingsObject*>();
             map.insert(key, sub ? sub->toMap() : QVariantMap());
             continue;
         }
@@ -110,7 +110,7 @@ void SettingsObject::connectNotifiers() {
 
         // Bubble changes from nested objects
         if (current.canView<SettingsObject*>()) {
-            if (auto* sub = current.view<SettingsObject*>())
+            if (const auto* sub = current.view<SettingsObject*>())
                 connect(sub, &SettingsObject::changed, this, &SettingsObject::onPropertyChanged, Qt::UniqueConnection);
             continue;
         }

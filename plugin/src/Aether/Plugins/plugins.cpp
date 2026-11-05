@@ -15,7 +15,11 @@
 #define AETHER_VERSION ""
 #endif
 
+namespace {
+
 Q_LOGGING_CATEGORY(lcPlugins, "aether.plugins", QtInfoMsg)
+
+} // namespace
 
 namespace aether::plugins {
 
@@ -76,7 +80,7 @@ void Plugins::componentComplete() {
     rescan();
 }
 
-QString Plugins::shellVersion() const {
+QString Plugins::shellVersion() {
     return QStringLiteral(AETHER_VERSION);
 }
 
@@ -133,7 +137,7 @@ void Plugins::setPluginEnabled(const QString& pluginId, bool enabled) {
     setEnabled(next);
 }
 
-QList<EntryPoint> Plugins::__entryPoints(EntryPointType::Type type) const {
+QList<EntryPoint> Plugins::entryPointsForType(EntryPointType::Type type) const {
     QList<EntryPoint> result;
 
     for (const auto* plugin : std::as_const(m_plugins)) {
@@ -260,7 +264,7 @@ QStringList Plugins::discoverPluginDirs() const {
 
     const auto roots = searchRoots();
     for (const auto& root : roots) {
-        QDir dir(root);
+        const QDir dir(root);
         if (!dir.exists())
             continue;
 
@@ -288,7 +292,33 @@ void Plugins::rescan(bool force) {
     if (m_interceptor)
         m_interceptor->setRoots(dirs);
 
-    // Reuse manifests instead of remaking all on rescan
+    auto manifests = syncManifests(dirs);
+    pruneRecords(dirs);
+
+    // Computed before m_plugins is replaced: setting the conflicts emits the validity signals.
+    auto conflicting = markConflicts(manifests);
+
+    m_plugins = std::move(manifests);
+    m_conflictingPlugins = std::move(conflicting);
+
+    // After the id grouping, so a plugin caught in a clash registers nothing
+    updateModules(force);
+
+    if (m_plugins != previousPlugins) {
+        emit pluginsChanged();
+        bumpEntryPointsRevision();
+    }
+    if (m_conflictingPlugins != previousConflicting)
+        emit conflictingPluginsChanged();
+    if (loadedManifests() != previousLoaded)
+        emit loadedPluginsChanged();
+
+    emit loaded();
+
+    updateWatches();
+}
+
+QList<PluginManifest*> Plugins::syncManifests(const QStringList& dirs) {
     QList<PluginManifest*> result;
     for (const auto& pluginDir : dirs) {
         auto& record = m_records[pluginDir];
@@ -320,7 +350,10 @@ void Plugins::rescan(bool force) {
 
         result.append(manifest);
     }
+    return result;
+}
 
+void Plugins::pruneRecords(const QStringList& dirs) {
     // Drop records whose directory no longer holds a manifest.json. This leaks, but Qt does not have a
     // public unregister API so we have to deal with it.
     for (auto it = m_records.begin(); it != m_records.end();) {
@@ -332,16 +365,18 @@ void Plugins::rescan(bool force) {
         it.value().manifest->deleteLater();
         it = m_records.erase(it);
     }
+}
 
+QList<PluginManifest*> Plugins::markConflicts(const QList<PluginManifest*>& manifests) {
     // Conflicting ids will disable all plugins with the contested id
     QHash<QString, QList<PluginManifest*>> byId;
-    for (auto* const plugin : result)
+    for (auto* const plugin : manifests)
         if (!plugin->hasParseError())
             byId[plugin->id()].append(plugin);
 
     // Recomputed from scratch every pass, since removing a claimant revalidates the rest.
     QList<PluginManifest*> conflicting;
-    for (auto* const plugin : result) {
+    for (auto* const plugin : manifests) {
         const auto claimants = plugin->hasParseError() ? QList<PluginManifest*>() : byId.value(plugin->id());
         if (claimants.size() < 2) {
             plugin->setConflicts({});
@@ -359,25 +394,7 @@ void Plugins::rescan(bool force) {
         plugin->setConflicts(others);
         conflicting.append(plugin);
     }
-
-    m_plugins = result;
-    m_conflictingPlugins = conflicting;
-
-    // After the id grouping, so a plugin caught in a clash registers nothing
-    updateModules(force);
-
-    if (m_plugins != previousPlugins) {
-        emit pluginsChanged();
-        bumpEntryPointsRevision();
-    }
-    if (m_conflictingPlugins != previousConflicting)
-        emit conflictingPluginsChanged();
-    if (loadedManifests() != previousLoaded)
-        emit loadedPluginsChanged();
-
-    emit loaded();
-
-    updateWatches();
+    return conflicting;
 }
 
 void Plugins::updateModules(bool force) {

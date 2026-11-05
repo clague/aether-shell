@@ -29,17 +29,17 @@ namespace {
 // file: 34MB for an 8K wallpaper, and cachePathFor is called more than once per request.
 // Size and mtime identify a version just as well and cost a stat.
 QString sha256sum(const QString& path) {
-    static QMutex cacheMutex;
-    static QHash<QString, QString> stamps;
-    static QHash<QString, QString> hashes;
+    static QMutex s_cacheMutex;
+    static QHash<QString, QString> s_stamps;
+    static QHash<QString, QString> s_hashes;
 
     const QFileInfo info(path);
     const QString stamp = u"%1:%2"_s.arg(info.size()).arg(info.lastModified().toMSecsSinceEpoch());
 
     {
-        const QMutexLocker locker(&cacheMutex);
-        if (stamps.value(path) == stamp && hashes.contains(path))
-            return hashes.value(path);
+        const QMutexLocker locker(&s_cacheMutex);
+        if (s_stamps.value(path) == stamp && s_hashes.contains(path))
+            return s_hashes.value(path);
     }
 
     QFile file(path);
@@ -54,9 +54,9 @@ QString sha256sum(const QString& path) {
 
     const QString result = QString::fromLatin1(hash.result().toHex());
     {
-        const QMutexLocker locker(&cacheMutex);
-        stamps.insert(path, stamp);
-        hashes.insert(path, result);
+        const QMutexLocker locker(&s_cacheMutex);
+        s_stamps.insert(path, stamp);
+        s_hashes.insert(path, result);
     }
     return result;
 }

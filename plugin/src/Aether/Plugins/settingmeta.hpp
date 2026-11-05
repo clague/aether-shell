@@ -6,6 +6,8 @@
 #include <qqmlproperty.h>
 #include <qqmlpropertyvaluesource.h>
 
+#include <cstdint>
+
 namespace aether::plugins {
 
 Q_DECLARE_LOGGING_CATEGORY(lcPluginSettings)
@@ -36,7 +38,7 @@ class SettingMeta : public QObject, public QQmlPropertyValueSource {
     Q_PROPERTY(QStringList optionIcons MEMBER m_optionIcons NOTIFY changed)
 
 public:
-    enum InputType {
+    enum InputType : std::uint8_t {
         Default,
 
         // Boolean

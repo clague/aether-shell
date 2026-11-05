@@ -9,7 +9,11 @@
 #include "pluginmanifest.hpp"
 #include "settingsobject.hpp"
 
+namespace {
+
 Q_LOGGING_CATEGORY(lcEntryPointLoader, "aether.plugins.loader", QtInfoMsg)
+
+} // namespace
 
 namespace aether::plugins {
 
@@ -97,13 +101,14 @@ void EntryPointLoader::onComponentStatusChanged(QQmlComponent::Status status) {
     if (status == QQmlComponent::Loading)
         return;
 
-    if (status == QQmlComponent::Ready)
+    if (status == QQmlComponent::Ready) {
         create();
-    else if (status == QQmlComponent::Error) {
+    } else if (status == QQmlComponent::Error) {
         warnComponentErrors();
         setStatus(Error);
-    } else
+    } else {
         setStatus(Null);
+    }
 }
 
 void EntryPointLoader::updateSize() {
@@ -135,7 +140,7 @@ void EntryPointLoader::reload() {
         return;
     }
 
-    auto* const context = qmlContext(this);
+    const QQmlContext* const context = qmlContext(this);
     if (!context) {
         qCWarning(lcEntryPointLoader) << "Cannot load" << src << "without a QML context";
         setStatus(Error);
@@ -153,8 +158,9 @@ void EntryPointLoader::reload() {
     if (m_component->isLoading()) {
         setStatus(Loading);
         QObject::connect(m_component, &QQmlComponent::statusChanged, this, &EntryPointLoader::onComponentStatusChanged);
-    } else
+    } else {
         onComponentStatusChanged(m_component->status());
+    }
 }
 
 void EntryPointLoader::clear() {

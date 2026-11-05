@@ -9,6 +9,8 @@
 #include <qurl.h>
 #include <qversionnumber.h>
 
+#include <utility>
+
 #include "pluginmodule.hpp"
 #include "settingmeta.hpp"
 #include "settingsobject.hpp"
@@ -59,10 +61,10 @@ bool satisfiesRequirement(const QString& requirement, const QVersionNumber& shel
 
 } // namespace
 
-PluginManifest::PluginManifest(const QString& dir, const QString& path, QObject* parent)
+PluginManifest::PluginManifest(QString dir, QString path, QObject* parent)
     : QObject(parent)
-    , m_dir(dir)
-    , m_path(path) {
+    , m_dir(std::move(dir))
+    , m_path(std::move(path)) {
     parse();
 }
 
@@ -82,19 +84,8 @@ void PluginManifest::parse() {
     QList<EntryPoint> entryPoints;
     QString parseError;
 
-    QFile file(m_path);
-    QJsonParseError jsonError{};
     QJsonDocument doc;
-
-    if (!file.open(QIODevice::ReadOnly)) {
-        parseError = QStringLiteral("Failed to open manifest");
-    } else {
-        doc = QJsonDocument::fromJson(file.readAll(), &jsonError);
-        file.close();
-
-        if (jsonError.error != QJsonParseError::NoError)
-            parseError = QStringLiteral("Invalid manifest JSON: ") + jsonError.errorString();
-    }
+    parseError = readJson(doc);
 
     if (parseError.isEmpty()) {
         const auto obj = doc.object();
@@ -125,28 +116,12 @@ void PluginManifest::parse() {
             entryPoints.append(entryPoint);
         }
 
-        // Both halves of the id become module URI segments, so they inherit QML's constraint on
-        // them: anything else is a parse error at the author's import, not at registration.
-        if (name.isEmpty())
-            parseError = QStringLiteral("Manifest is missing 'name'");
-        else if (!PluginModule::isValidUriSegment(name))
-            parseError = QStringLiteral("Plugin name '%1' may only contain letters, digits or '_', and "
-                                        "may not start with a digit")
-                             .arg(name);
-        else if (!PluginModule::isValidUriSegment(author))
-            parseError = QStringLiteral("Plugin author '%1' may only contain letters, digits or '_', and "
-                                        "may not start with a digit")
-                             .arg(author);
-        else if (!entryPointError.isEmpty())
-            parseError = entryPointError;
-        else if (!satisfiesRequirement(requirement, parseVersion(QStringLiteral(AETHER_VERSION))))
-            parseError =
-                QStringLiteral("Requires Aether %1 (current is %2)").arg(requirement, QStringLiteral(AETHER_VERSION));
+        parseError = validateFields(name, author, entryPointError, requirement);
     }
 
     // Set before the field assignments so anything reacting to those signals already observes
     // the new validity rather than the previous pass's.
-    m_parseError = parseError;
+    m_parseError = std::move(parseError);
 
     // Assign values to fields
 #define ASSIGN(field, value, sig)                                                                                      \
@@ -156,7 +131,7 @@ void PluginManifest::parse() {
     }
 
     if (m_id != id) {
-        m_id = id;
+        m_id = std::move(id);
         emit idChanged();
         emit moduleUriChanged();
     }
@@ -164,27 +139,27 @@ void PluginManifest::parse() {
     // Spelled out rather than through ASSIGN: the dead-signal checker reads for a literal
     // `emit nameChanged()`, and a macro hides the name from it (T21).
     if (m_name != name) {
-        m_name = name;
+        m_name = std::move(name);
         emit nameChanged();
     }
     if (m_version != version) {
-        m_version = version;
+        m_version = std::move(version);
         emit versionChanged();
     }
     if (m_icon != icon) {
-        m_icon = icon;
+        m_icon = std::move(icon);
         emit iconChanged();
     }
     if (m_description != description) {
-        m_description = description;
+        m_description = std::move(description);
         emit descriptionChanged();
     }
     if (m_author != author) {
-        m_author = author;
+        m_author = std::move(author);
         emit authorChanged();
     }
     if (m_requires != requirement) {
-        m_requires = requirement;
+        m_requires = std::move(requirement);
         emit requirementChanged();
     }
     ASSIGN(m_settingsSource, settingsSource, settingsSourceChanged)
@@ -197,6 +172,41 @@ void PluginManifest::parse() {
         emit errorChanged();
     if (valid() != wasValid)
         emit validChanged();
+}
+
+QString PluginManifest::readJson(QJsonDocument& doc) const {
+    QFile file(m_path);
+    if (!file.open(QIODevice::ReadOnly))
+        return QStringLiteral("Failed to open manifest");
+
+    QJsonParseError jsonError{};
+    doc = QJsonDocument::fromJson(file.readAll(), &jsonError);
+    file.close();
+
+    if (jsonError.error != QJsonParseError::NoError)
+        return QStringLiteral("Invalid manifest JSON: ") + jsonError.errorString();
+    return {};
+}
+
+QString PluginManifest::validateFields(
+    const QString& name, const QString& author, const QString& entryPointError, const QString& requirement) {
+    // Both halves of the id become module URI segments, so they inherit QML's constraint on them:
+    // anything else is a parse error at the author's import, not at registration.
+    if (name.isEmpty())
+        return QStringLiteral("Manifest is missing 'name'");
+    if (!PluginModule::isValidUriSegment(name))
+        return QStringLiteral(
+            "Plugin name '%1' may only contain letters, digits or '_', and may not start with a digit")
+            .arg(name);
+    if (!PluginModule::isValidUriSegment(author))
+        return QStringLiteral(
+            "Plugin author '%1' may only contain letters, digits or '_', and may not start with a digit")
+            .arg(author);
+    if (!entryPointError.isEmpty())
+        return entryPointError;
+    if (!satisfiesRequirement(requirement, parseVersion(QStringLiteral(AETHER_VERSION))))
+        return QStringLiteral("Requires Aether %1 (current is %2)").arg(requirement, QStringLiteral(AETHER_VERSION));
+    return {};
 }
 
 void PluginManifest::reparse() {

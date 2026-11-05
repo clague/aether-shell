@@ -13,7 +13,7 @@ namespace {
 
 // Declares no types, so serving it for any directory is safe and it can live outside the tree
 // it seals. A qmldir that did declare types would have to be served from its own directory.
-constexpr auto kSealModule = "AetherSealedPlugin";
+constexpr auto k_sealModule = "AetherSealedPlugin";
 
 } // namespace
 
@@ -31,7 +31,7 @@ QUrl PluginUrlInterceptor::createSeal() {
         return {};
     }
 
-    const auto content = QStringLiteral("module %1\nprefer %2/\n").arg(QLatin1String(kSealModule), emptyDir).toUtf8();
+    const auto content = QStringLiteral("module %1\nprefer %2/\n").arg(QLatin1String(k_sealModule), emptyDir).toUtf8();
     const auto path = dir + QStringLiteral("/qmldir");
 
     QFile file(path);
@@ -69,7 +69,7 @@ void PluginUrlInterceptor::setRoots(const QStringList& roots) {
 
     next.removeDuplicates();
 
-    QMutexLocker locker(&m_mutex);
+    const QMutexLocker locker(&m_mutex);
     m_roots = std::move(next);
 }
 
@@ -79,7 +79,7 @@ QUrl PluginUrlInterceptor::intercept(const QUrl& url, DataType type) {
 
     const auto path = url.toLocalFile();
 
-    QMutexLocker locker(&m_mutex);
+    const QMutexLocker locker(&m_mutex);
     for (const auto& root : std::as_const(m_roots))
         if (path.startsWith(root))
             return m_seal;

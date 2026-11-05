@@ -6,6 +6,8 @@
 #include <qstring.h>
 #include <qvariant.h>
 
+#include <cstdint>
+
 namespace aether::plugins {
 
 class PluginManifest;
@@ -16,7 +18,7 @@ class EntryPointType : public QObject {
     QML_SINGLETON
 
 public:
-    enum Type {
+    enum Type : std::uint8_t {
         Custom,       // Custom unparented component
         BarEntry,     // Entry in the bar
         BarPopout,    // Popout attached to a bar entry

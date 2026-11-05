@@ -53,7 +53,7 @@ public:
     // can look up a plugin qmldir before the singleton that finds the plugins exists.
     void componentComplete() override;
 
-    [[nodiscard]] QString shellVersion() const;
+    [[nodiscard]] static QString shellVersion();
 
     [[nodiscard]] QVariantList plugins() const;
 
@@ -70,7 +70,7 @@ public:
     [[nodiscard]] int entryPointsRevision() const;
 
     // Flattened entry points of the given type across all enabled + valid plugins.
-    Q_INVOKABLE QList<EntryPoint> __entryPoints(aether::plugins::EntryPointType::Type type) const;
+    [[nodiscard]] Q_INVOKABLE QList<EntryPoint> entryPointsForType(aether::plugins::EntryPointType::Type type) const;
 
     Q_INVOKABLE void setPluginEnabled(const QString& pluginId, bool enabled);
     Q_INVOKABLE void reload();
@@ -111,6 +111,12 @@ private:
     // generation of each one whose fingerprint moved. A plugin that is invalid or disabled has its
     // record cleared instead, so it is neither registered nor watched until it comes back.
     void updateModules(bool force = false);
+
+    // The three passes rescan() runs, in order: build the manifest list, drop records for vanished
+    // directories, then mark id clashes.
+    [[nodiscard]] QList<PluginManifest*> syncManifests(const QStringList& dirs);
+    void pruneRecords(const QStringList& dirs);
+    [[nodiscard]] static QList<PluginManifest*> markConflicts(const QList<PluginManifest*>& manifests);
 
     void onWatchEvent(const QString& path);
     void updateWatches();

@@ -62,6 +62,9 @@ private:
     void notify(const QString& method, const QJsonObject& params);
     void onData();
     void dispatch(const QJsonObject& message);
+    void dispatchRequest(const QString& method, const QJsonObject& message);
+    void replyConfiguration(const QJsonObject& message);
+    void handleInitializeResponse(const QJsonObject& message);
     void sendInitialized();
     [[nodiscard]] QStringList libraries() const;
     void parseDiagnostics(const QJsonObject& params);

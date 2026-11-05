@@ -13,19 +13,19 @@ namespace aether::plugins {
 namespace {
 
 // The max recursion depth to scan for QML files. Plugins should not ever go this deep.
-constexpr int kMaxDepth = 16;
+constexpr int k_maxDepth = 16;
 
 // Qt resolves module names to the most recently registered type no matter its version, so
 // we simply re-register types at the same version to reload.
-constexpr int kModuleMajor = 1;
-constexpr int kModuleMinor = 0;
+constexpr int k_moduleMajor = 1;
+constexpr int k_moduleMinor = 0;
 
 // qmlRegisterSingletonType refuses a file without the pragma, so the pragma is what decides,
 // not anything the manifest could declare.
 bool hasSingletonPragma(const QString& content) {
-    static const QRegularExpression re(
+    static const QRegularExpression k_re(
         QStringLiteral("^[ \t]*pragma[ \t]+Singleton[ \t]*;?[ \t]*$"), QRegularExpression::MultilineOption);
-    return re.match(content).hasMatch();
+    return k_re.match(content).hasMatch();
 }
 
 // Matches `import <uri>` at the start of a line, whether or not the author wrote a version after
@@ -50,8 +50,8 @@ QString PluginModule::uriFor(const QString& id) {
 }
 
 bool PluginModule::isValidUriSegment(const QString& name) {
-    static const QRegularExpression re(QStringLiteral("^[A-Za-z_][A-Za-z0-9_]*$"));
-    return re.match(name).hasMatch();
+    static const QRegularExpression k_re(QStringLiteral("^[A-Za-z_][A-Za-z0-9_]*$"));
+    return k_re.match(name).hasMatch();
 }
 
 QString PluginModule::dir() const {
@@ -96,27 +96,8 @@ void PluginModule::scanDir(const QString& path, const QString& uri, const QStrin
 
     // Resolving to nothing means a broken or unreadable link, which has no contents to contribute
     const auto canonical = QFileInfo(path).canonicalFilePath();
-    if (canonical.isEmpty()) {
-        m_warnings.append(QStringLiteral("%1: cannot be resolved; likely a broken symlink or unreadable file, skipped.")
-                .arg(relativeDir));
+    if (!acceptDir(relativeDir, canonical, visited, depth))
         return;
-    }
-
-    // Checked before anything is recorded, so a directory skipped for depth is not also claimed
-    if (depth > kMaxDepth) {
-        m_warnings.append(
-            QStringLiteral("%1: nested more than %2 directories deep; skipped.").arg(relativeDir).arg(kMaxDepth));
-        return;
-    }
-
-    // Stop walking if we find a visited directory (e.g. due to looped symlinks)
-    if (visited.contains(canonical)) {
-        // The canonical path rather than a relative one, since a link out of the tree has no
-        // sensible relative form and the absolute target is what points at the culprit anyway.
-        m_warnings.append(
-            QStringLiteral("%1: already scanned as '%2'; likely a symlink loop, skipped.").arg(relativeDir, canonical));
-        return;
-    }
 
     visited.insert(canonical);
 
@@ -133,57 +114,8 @@ void PluginModule::scanDir(const QString& path, const QString& uri, const QStrin
         if (file.endsWith(QStringLiteral(".qml")) && !file.startsWith(u'.'))
             siblings.append(QFileInfo(file).completeBaseName());
 
-    for (const auto& file : files) {
-        if (file.startsWith(u'.')) // Skip hidden files
-            continue;
-
-        const auto filePath = dir.absoluteFilePath(file);
-        const auto relative = QDir(m_dir).relativeFilePath(filePath);
-
-        if (file == QStringLiteral("qmldir")) {
-            m_warnings.append(
-                QStringLiteral("%1: qmldirs are generated; manually specified ones are ignored.").arg(relative));
-            continue;
-        }
-
-        if (file.endsWith(QStringLiteral(".js"))) {
-            m_warnings.append(QStringLiteral(
-                "%1: hot reloading is not supported for JavaScript files; put the logic in a QML singleton instead.")
-                    .arg(relative));
-            continue;
-        }
-
-        if (!file.endsWith(QStringLiteral(".qml"))) // Only QML files are tracked
-            continue;
-
-        QFile qml(filePath);
-        if (!qml.open(QIODevice::ReadOnly)) {
-            m_warnings.append(QStringLiteral("%1: failed to read file; %2").arg(relative, qml.errorString()));
-            continue;
-        }
-
-        const auto bytes = qml.readAll();
-        qml.close();
-
-        // Entry points are loaded by URL, so even a file that is not a type has to reload
-        m_watchPaths.append(filePath);
-        data.append(relative.toUtf8());
-        data.append('\0');
-        data.append(QCryptographicHash::hash(bytes, QCryptographicHash::Sha1));
-        data.append('\0');
-
-        const auto content = QString::fromUtf8(bytes);
-        const auto name = QFileInfo(file).completeBaseName();
-
-        checkImports(filePath, uri, content, siblings, otherUris);
-
-        // Qt only treats an uppercase base name as a type name; everything else can still be an
-        // entry point or a Qt.createComponent target, but it cannot be registered.
-        if (name.isEmpty() || !name.front().isUpper())
-            continue;
-
-        m_types.append({ uri, name, filePath, hasSingletonPragma(content) });
-    }
+    for (const auto& file : files)
+        scanFile(dir, file, uri, otherUris, siblings, data);
 
     const auto subdirs = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
     for (const auto& subdir : subdirs) {
@@ -201,6 +133,85 @@ void PluginModule::scanDir(const QString& path, const QString& uri, const QStrin
 
         scanDir(dir.absoluteFilePath(subdir), uri + u'.' + subdir, otherUris, data, visited, depth + 1);
     }
+}
+
+bool PluginModule::acceptDir(const QString& relativeDir, const QString& canonical, QSet<QString>& visited, int depth) {
+    if (canonical.isEmpty()) {
+        m_warnings.append(QStringLiteral("%1: cannot be resolved; likely a broken symlink or unreadable file, skipped.")
+                .arg(relativeDir));
+        return false;
+    }
+
+    // Checked before anything is recorded, so a directory skipped for depth is not also claimed
+    if (depth > k_maxDepth) {
+        m_warnings.append(
+            QStringLiteral("%1: nested more than %2 directories deep; skipped.").arg(relativeDir).arg(k_maxDepth));
+        return false;
+    }
+
+    // Stop walking if we find a visited directory (e.g. due to looped symlinks)
+    if (visited.contains(canonical)) {
+        // The canonical path rather than a relative one, since a link out of the tree has no
+        // sensible relative form and the absolute target is what points at the culprit anyway.
+        m_warnings.append(
+            QStringLiteral("%1: already scanned as '%2'; likely a symlink loop, skipped.").arg(relativeDir, canonical));
+        return false;
+    }
+
+    return true;
+}
+
+void PluginModule::scanFile(const QDir& dir, const QString& file, const QString& uri, const QStringList& otherUris,
+    const QStringList& siblings, QByteArray& data) {
+    if (file.startsWith(u'.')) // Skip hidden files
+        return;
+
+    const auto filePath = dir.absoluteFilePath(file);
+    const auto relative = QDir(m_dir).relativeFilePath(filePath);
+
+    if (file == QStringLiteral("qmldir")) {
+        m_warnings.append(
+            QStringLiteral("%1: qmldirs are generated; manually specified ones are ignored.").arg(relative));
+        return;
+    }
+
+    if (file.endsWith(QStringLiteral(".js"))) {
+        m_warnings.append(QStringLiteral(
+            "%1: hot reloading is not supported for JavaScript files; put the logic in a QML singleton instead.")
+                .arg(relative));
+        return;
+    }
+
+    if (!file.endsWith(QStringLiteral(".qml"))) // Only QML files are tracked
+        return;
+
+    QFile qml(filePath);
+    if (!qml.open(QIODevice::ReadOnly)) {
+        m_warnings.append(QStringLiteral("%1: failed to read file; %2").arg(relative, qml.errorString()));
+        return;
+    }
+
+    const auto bytes = qml.readAll();
+    qml.close();
+
+    // Entry points are loaded by URL, so even a file that is not a type has to reload
+    m_watchPaths.append(filePath);
+    data.append(relative.toUtf8());
+    data.append('\0');
+    data.append(QCryptographicHash::hash(bytes, QCryptographicHash::Sha1));
+    data.append('\0');
+
+    const auto content = QString::fromUtf8(bytes);
+    const auto name = QFileInfo(file).completeBaseName();
+
+    checkImports(filePath, uri, content, siblings, otherUris);
+
+    // Qt only treats an uppercase base name as a type name; everything else can still be an
+    // entry point or a Qt.createComponent target, but it cannot be registered.
+    if (name.isEmpty() || !name.front().isUpper())
+        return;
+
+    m_types.append({ .uri = uri, .name = name, .path = filePath, .singleton = hasSingletonPragma(content) });
 }
 
 void PluginModule::checkImports(const QString& path, const QString& uri, const QString& content,
@@ -225,8 +236,8 @@ void PluginModule::checkImports(const QString& path, const QString& uri, const Q
         if (sibling == QFileInfo(path).completeBaseName() || sibling.isEmpty() || !sibling.front().isUpper())
             continue;
 
-        static const QString pattern = QStringLiteral("\\b%1\\b");
-        if (QRegularExpression(pattern.arg(QRegularExpression::escape(sibling))).match(content).hasMatch())
+        static const QString k_pattern = QStringLiteral("\\b%1\\b");
+        if (QRegularExpression(k_pattern.arg(QRegularExpression::escape(sibling))).match(content).hasMatch())
             used.append(sibling);
     }
 
@@ -244,9 +255,9 @@ void PluginModule::registerTypes(int generation) const {
         const auto name = type.name.toUtf8();
 
         if (type.singleton)
-            qmlRegisterSingletonType(url, uri.constData(), kModuleMajor, kModuleMinor, name.constData());
+            qmlRegisterSingletonType(url, uri.constData(), k_moduleMajor, k_moduleMinor, name.constData());
         else
-            qmlRegisterType(url, uri.constData(), kModuleMajor, kModuleMinor, name.constData());
+            qmlRegisterType(url, uri.constData(), k_moduleMajor, k_moduleMinor, name.constData());
     }
 }
 

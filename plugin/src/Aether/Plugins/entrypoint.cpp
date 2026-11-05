@@ -4,7 +4,7 @@ namespace aether::plugins {
 
 namespace {
 
-constexpr std::pair<EntryPointType::Type, QLatin1String> kTypeNames[] = {
+constexpr std::pair<EntryPointType::Type, QLatin1String> k_typeNames[] = {
     { EntryPointType::Custom, QLatin1String("custom") },
     { EntryPointType::BarEntry, QLatin1String("bar-entry") },
     { EntryPointType::BarPopout, QLatin1String("bar-popout") },
@@ -16,14 +16,14 @@ constexpr std::pair<EntryPointType::Type, QLatin1String> kTypeNames[] = {
 } // namespace
 
 std::optional<EntryPointType::Type> EntryPointType::fromString(const QString& str) {
-    for (const auto& [type, name] : kTypeNames)
+    for (const auto& [type, name] : k_typeNames)
         if (str == name)
             return type;
     return std::nullopt;
 }
 
 QString EntryPointType::toString(Type type) {
-    for (const auto& [t, name] : kTypeNames)
+    for (const auto& [t, name] : k_typeNames)
         if (t == type)
             return name;
     return {};

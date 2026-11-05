@@ -1,6 +1,7 @@
 #pragma once
 
 #include <qbytearray.h>
+#include <qdir.h>
 #include <qlist.h>
 #include <qset.h>
 #include <qstring.h>
@@ -59,6 +60,10 @@ public:
 private:
     void scanDir(const QString& path, const QString& uri, const QStringList& otherUris, QByteArray& data,
         QSet<QString>& visited, int depth);
+    [[nodiscard]] bool acceptDir(
+        const QString& relativeDir, const QString& canonical, QSet<QString>& visited, int depth);
+    void scanFile(const QDir& dir, const QString& file, const QString& uri, const QStringList& otherUris,
+        const QStringList& siblings, QByteArray& data);
     void checkImports(const QString& path, const QString& uri, const QString& content, const QStringList& siblings,
         const QStringList& otherUris);
 

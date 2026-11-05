@@ -69,9 +69,9 @@ LuaLsp::LuaLsp(QObject* parent)
             qCDebug(lcLsp).noquote() << error.trimmed();
     });
     QObject::connect(&m_process, &QProcess::errorOccurred, this, [this](QProcess::ProcessError error) {
-        if (error == QProcess::FailedToStart)
+        if (error == QProcess::FailedToStart) {
             setStatus(u"unavailable"_s);
-        else {
+        } else {
             qCWarning(lcLsp) << "lua-language-server error" << error;
             setStatus(u"error"_s);
         }
@@ -186,25 +186,40 @@ void LuaLsp::start() {
         { u"jsonrpc"_s, u"2.0"_s },
         { u"id"_s, m_initializeId },
         { u"method"_s, u"initialize"_s },
-        { u"params"_s,
+        {
+            u"params"_s,
             QJsonObject{
                 { u"processId"_s, QJsonValue::Null },
                 { u"clientInfo"_s, QJsonObject{ { u"name"_s, u"aether"_s } } },
                 { u"rootUri"_s, rootUri },
-                { u"workspaceFolders"_s,
-                    QJsonArray{ QJsonObject{ { u"uri"_s, rootUri }, { u"name"_s, u"caelestia"_s } } } },
-                { u"capabilities"_s,
+                {
+                    u"workspaceFolders"_s,
+                    QJsonArray{ QJsonObject{ { u"uri"_s, rootUri }, { u"name"_s, u"caelestia"_s } } },
+                },
+                {
+                    u"capabilities"_s,
                     QJsonObject{
-                        { u"textDocument"_s,
+                        {
+                            u"textDocument"_s,
                             QJsonObject{
                                 { u"publishDiagnostics"_s, QJsonObject{} },
-                                { u"completion"_s, QJsonObject{ { u"completionItem"_s,
-                                                       QJsonObject{ { u"snippetSupport"_s, false } } } } },
-                            } },
+                                {
+                                    u"completion"_s,
+                                    QJsonObject{
+                                        {
+                                            u"completionItem"_s,
+                                            QJsonObject{ { u"snippetSupport"_s, false } },
+                                        },
+                                    },
+                                },
+                            },
+                        },
                         { u"workspace"_s, QJsonObject{ { u"configuration"_s, true } } },
-                    } },
+                    },
+                },
                 { u"initializationOptions"_s, wrappedSettings(libraries()) },
-            } },
+            },
+        },
     });
 }
 
@@ -231,13 +246,15 @@ void LuaLsp::open(const QString& text) {
         return;
 
     notify(u"textDocument/didOpen"_s, {
-                                          { u"textDocument"_s,
+                                          {
+                                              u"textDocument"_s,
                                               QJsonObject{
                                                   { u"uri"_s, m_uri },
                                                   { u"languageId"_s, u"lua"_s },
                                                   { u"version"_s, m_version },
                                                   { u"text"_s, text },
-                                              } },
+                                              },
+                                          },
                                       });
     m_open = true;
 }
@@ -263,12 +280,14 @@ void LuaLsp::requestCompletion(int line, int character) {
         { u"jsonrpc"_s, u"2.0"_s },
         { u"id"_s, m_completionId },
         { u"method"_s, u"textDocument/completion"_s },
-        { u"params"_s,
+        {
+            u"params"_s,
             QJsonObject{
                 { u"textDocument"_s, QJsonObject{ { u"uri"_s, m_uri } } },
                 { u"position"_s, QJsonObject{ { u"line"_s, line }, { u"character"_s, character } } },
                 { u"context"_s, QJsonObject{ { u"triggerKind"_s, 1 } } },
-            } },
+            },
+        },
     });
 }
 
@@ -328,55 +347,66 @@ void LuaLsp::onData() {
 
 void LuaLsp::dispatch(const QJsonObject& message) {
     const QString method = message.value(u"method"_s).toString();
-
     if (!method.isEmpty()) {
-        if (method == u"workspace/configuration"_s) {
-            // lua-language-server ignores initializationOptions and didChangeConfiguration's
-            // payload; it asks for each section instead. The reply must be the section's value,
-            // not another `{ Lua: ... }` wrapper, or its settings land under Lua.Lua and none of
-            // them (workspace.library included) take effect.
-            const int requestId = message.value(u"id"_s).toInt(-1);
-            if (requestId >= 0) {
-                QJsonArray result;
-                const QJsonArray requestItems = message.value(u"params"_s).toObject().value(u"items"_s).toArray();
-                for (const auto& value : requestItems) {
-                    const QString section = value.toObject().value(u"section"_s).toString();
-                    if (section == u"Lua"_s)
-                        result.append(luaSettings(libraries()));
-                    else
-                        result.append(QJsonValue::Null);
-                }
-                send({ { u"jsonrpc"_s, u"2.0"_s }, { u"id"_s, requestId }, { u"result"_s, result } });
-            }
-            return;
-        }
-        if (method == u"textDocument/publishDiagnostics"_s) {
-            parseDiagnostics(message.value(u"params"_s).toObject());
-        } else if (method == u"window/logMessage"_s || method == u"window/showMessage"_s) {
-            qCInfo(lcLsp).noquote() << message.value(u"params"_s).toObject().value(u"message"_s).toString();
-        }
+        dispatchRequest(method, message);
         return;
     }
 
     const int id = message.value(u"id"_s).toInt(-1);
-
     if (id == m_initializeId) {
-        if (message.contains(u"error"_s)) {
-            setStatus(u"error"_s);
-            return;
-        }
-        setStatus(u"ready"_s);
-        send({ { u"jsonrpc"_s, u"2.0"_s }, { u"method"_s, u"initialized"_s }, { u"params"_s, QJsonObject{} } });
-        notify(u"workspace/didChangeConfiguration"_s, { { u"settings"_s, wrappedSettings(libraries()) } });
-        if (!m_text.isEmpty())
-            open(m_text);
+        handleInitializeResponse(message);
         return;
     }
-
     if (id == m_completionId) {
         m_completionId = -1;
         parseCompletion(message.value(u"result"_s));
     }
+}
+
+void LuaLsp::dispatchRequest(const QString& method, const QJsonObject& message) {
+    if (method == u"workspace/configuration"_s) {
+        replyConfiguration(message);
+        return;
+    }
+
+    if (method == u"textDocument/publishDiagnostics"_s)
+        parseDiagnostics(message.value(u"params"_s).toObject());
+    else if (method == u"window/logMessage"_s || method == u"window/showMessage"_s)
+        qCInfo(lcLsp).noquote() << message.value(u"params"_s).toObject().value(u"message"_s).toString();
+}
+
+void LuaLsp::replyConfiguration(const QJsonObject& message) {
+    // lua-language-server ignores initializationOptions and didChangeConfiguration's payload; it
+    // asks for each section instead. The reply must be the section's value, not another
+    // `{ Lua: ... }` wrapper, or its settings land under Lua.Lua and none of them
+    // (workspace.library included) take effect.
+    const int requestId = message.value(u"id"_s).toInt(-1);
+    if (requestId < 0)
+        return;
+
+    QJsonArray result;
+    const QJsonArray requestItems = message.value(u"params"_s).toObject().value(u"items"_s).toArray();
+    for (const auto& value : requestItems) {
+        const QString section = value.toObject().value(u"section"_s).toString();
+        if (section == u"Lua"_s)
+            result.append(luaSettings(libraries()));
+        else
+            result.append(QJsonValue::Null);
+    }
+    send({ { u"jsonrpc"_s, u"2.0"_s }, { u"id"_s, requestId }, { u"result"_s, result } });
+}
+
+void LuaLsp::handleInitializeResponse(const QJsonObject& message) {
+    if (message.contains(u"error"_s)) {
+        setStatus(u"error"_s);
+        return;
+    }
+
+    setStatus(u"ready"_s);
+    send({ { u"jsonrpc"_s, u"2.0"_s }, { u"method"_s, u"initialized"_s }, { u"params"_s, QJsonObject{} } });
+    notify(u"workspace/didChangeConfiguration"_s, { { u"settings"_s, wrappedSettings(libraries()) } });
+    if (!m_text.isEmpty())
+        open(m_text);
 }
 
 void LuaLsp::parseDiagnostics(const QJsonObject& params) {

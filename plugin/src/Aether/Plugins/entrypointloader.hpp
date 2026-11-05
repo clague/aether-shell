@@ -8,6 +8,8 @@
 #include <qstring.h>
 #include <qvariant.h>
 
+#include <cstdint>
+
 #include "entrypoint.hpp"
 
 namespace aether::plugins {
@@ -29,7 +31,7 @@ class EntryPointLoader : public QQuickItem {
     Q_PROPERTY(aether::plugins::EntryPointLoader::Status status READ status NOTIFY statusChanged)
 
 public:
-    enum Status {
+    enum Status : std::uint8_t {
         Null,    // Nothing to load
         Loading, // Waiting for the component to compile
         Ready,   // Object created successfully
@@ -38,8 +40,6 @@ public:
     Q_ENUM(Status)
 
     explicit EntryPointLoader(QQuickItem* parent = nullptr);
-
-    void componentComplete() override;
 
     [[nodiscard]] EntryPoint entryPoint() const;
     void setEntryPoint(const EntryPoint& entryPoint);
@@ -50,6 +50,9 @@ public:
 
     [[nodiscard]] QObject* item() const;
     [[nodiscard]] Status status() const;
+
+protected:
+    void componentComplete() override;
 
 signals:
     void entryPointChanged();
