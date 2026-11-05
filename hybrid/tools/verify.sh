@@ -91,6 +91,10 @@ step "shell-safety self-test"; ./hybrid/tools/shell-safety.py --self-test | tail
 step "shell safety";  ./hybrid/tools/shell-safety.py      | tail -1; ./hybrid/tools/shell-safety.py      >/dev/null || fail=1
 step "dead-config self-test"; ./hybrid/tools/dead-config.py --self-test | tail -1; ./hybrid/tools/dead-config.py --self-test >/dev/null || fail=1
 step "dead config";   ./hybrid/tools/dead-config.py       | tail -1; ./hybrid/tools/dead-config.py       >/dev/null || fail=1
+step "cli deps self-test"; ./hybrid/tools/cli-deps.py --self-test | tail -1; ./hybrid/tools/cli-deps.py --self-test >/dev/null || fail=1
+# The in-tree command surface replaced caelestia-cli; a stray argv would keep the old dependency
+# alive on exactly the machines that have the package installed.
+step "cli deps";      ./hybrid/tools/cli-deps.py           | tail -1; ./hybrid/tools/cli-deps.py           >/dev/null || fail=1
 step "singleton self-test"
 ./hybrid/tools/singleton-members.py --self-test | tail -1; ./hybrid/tools/singleton-members.py --self-test >/dev/null || fail=1
 step "singletons";    ./hybrid/tools/singleton-members.py | tail -1; ./hybrid/tools/singleton-members.py >/dev/null || fail=1

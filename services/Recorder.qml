@@ -64,18 +64,18 @@ Singleton {
 
             // All CLI invocations are detached (midnight fix): an attached child
             // inherits the shell's stdin pipe (which made slurp hang invisibly
-            // forever) and `caelestia record` blocks on its toasts / region
+            // forever) and `aether record` blocks on its toasts / region
             // selection, which would serialize every later command behind it.
             if (running && root.needsStop) {
-                Quickshell.execDetached(["caelestia", "record"]);
+                Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "record"]);
                 props.running = false;
                 props.paused = false;
                 Audio.playVideoStop();
             } else if (running && root.needsPause) {
-                Quickshell.execDetached(["caelestia", "record", "-p"]);
+                Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "record", "-p"]);
                 props.paused = !props.paused;
             } else if (!running && root.needsStart) {
-                Quickshell.execDetached(["caelestia", "record", ...root.startArgs]);
+                Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "record", ...root.startArgs]);
                 props.running = true;
                 props.paused = false;
                 props.elapsed = 0;

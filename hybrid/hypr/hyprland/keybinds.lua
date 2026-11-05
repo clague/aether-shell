@@ -70,13 +70,13 @@ create_bind(vars.kbLock, hl.dsp.global("caelestia:lock"))
 
 -- Restore lock
 create_bind(vars.kbRestoreLock, function()
-    hl.dispatch(hl.dsp.exec_cmd("caelestia shell -d"))
+    hl.dispatch(hl.dsp.exec_cmd("aether shell -d"))
     hl.dispatch(hl.dsp.global("caelestia:lock"))
 end, locked)
 
 -- Kill/restart
-create_bind("CTRL + SUPER + SHIFT + R", hl.dsp.exec_cmd("caelestia shell -k"), release)
-create_bind("CTRL + SUPER + ALT + R", hl.dsp.exec_cmd("caelestia shell -r -d"), release)
+create_bind("CTRL + SUPER + SHIFT + R", hl.dsp.exec_cmd("aether shell -k"), release)
+create_bind("CTRL + SUPER + ALT + R", hl.dsp.exec_cmd("aether shell -r -d"), release)
 
 for i = 1, 10 do
     local key = i % 10 -- 10 maps to key 0
@@ -163,12 +163,12 @@ create_bind(vars.kbFileExplorer, hl.dsp.exec_cmd(vars.fileExplorer))
 create_bind(vars.kbAudioSettings, hl.dsp.exec_cmd(vars.audioSettings))
 
 -- Utilities
-create_bind(vars.kbScreenshot, hl.dsp.exec_cmd("caelestia screenshot"), locked)
+create_bind(vars.kbScreenshot, hl.dsp.exec_cmd("aether screenshot"), locked)
 create_bind(vars.kbScreenshotFreeze, hl.dsp.global("caelestia:screenshotFreeze"))
 create_bind(vars.kbScreenshotRegion, hl.dsp.global("caelestia:screenshot"))
-create_bind(vars.kbRecord, hl.dsp.exec_cmd("caelestia record"))
-create_bind(vars.kbRecordSound, hl.dsp.exec_cmd("caelestia record -s"))
-create_bind(vars.kbRecordRegion, hl.dsp.exec_cmd("caelestia record -r"))
+create_bind(vars.kbRecord, hl.dsp.exec_cmd("aether record"))
+create_bind(vars.kbRecordSound, hl.dsp.exec_cmd("aether record -s"))
+create_bind(vars.kbRecordRegion, hl.dsp.exec_cmd("aether record -r"))
 create_bind(vars.kbColorPicker, hl.dsp.exec_cmd("hyprpicker -a"))
 
 -- Brightness
@@ -204,9 +204,9 @@ create_bind(
 create_bind(vars.kbSleep, hl.dsp.exec_cmd(vars.sleepGestureCmd), locked)
 
 -- Clipboard and emoji picker
-create_bind(vars.kbClipboard, hl.dsp.exec_cmd("pkill fuzzel || caelestia clipboard"))
-create_bind(vars.kbClipboardDel, hl.dsp.exec_cmd("pkill fuzzel || caelestia clipboard -d"))
-create_bind(vars.kbEmoji, hl.dsp.exec_cmd("pkill fuzzel || caelestia emoji -p"))
+create_bind(vars.kbClipboard, hl.dsp.exec_cmd("aether ipc launcher openClipboard"))
+create_bind(vars.kbClipboardDel, hl.dsp.exec_cmd("aether clipboard -d"))
+create_bind(vars.kbEmoji, hl.dsp.exec_cmd("aether ipc launcher openEmoji"))
 create_bind(
     vars.kbClipboardPasteLatest,
     hl.dsp.exec_cmd('sleep 0.5s && ydotool type -d 1 "$(cliphist list | head -1 | cliphist decode)"'),

@@ -10,7 +10,7 @@ QtObject {
 
     property var items: []
 
-    readonly property string imageCacheDir: "/tmp/aether-clipboard"
+    readonly property string imageCacheDir: `${Quickshell.env("XDG_RUNTIME_DIR") || "/tmp"}/caelestia/clipboard`
 
     property Component waitTimer: Component {
         Timer {

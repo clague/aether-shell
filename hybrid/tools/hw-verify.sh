@@ -19,7 +19,7 @@ export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}
 export HYPRLAND_INSTANCE_SIGNATURE
 
 ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
-QS_SEL=(-c caelestia)
+QS_SEL=(-p "$ROOT")
 [ -n "${HW_VERIFY_PATH:-}" ] && QS_SEL=(-p "$HW_VERIFY_PATH")
 
 PASS=0; FAIL=0; SKIP=0

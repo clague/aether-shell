@@ -14,6 +14,7 @@ satisfies that; squashing an import into an anonymous commit does not.
 | `caelestia` | `caelestia-dots/shell` | `750e67d9` (2026-09-02) |
 | `op` | `OVERxPOWERED/op-caelestia-shell` | `621339cf` (2026-08-25) |
 | `midnight` | `dim-ghub/midnight-shell` | `bb7b5657` (2026-08-22) |
+| `cli` | `caelestia-dots/cli` | `68d1c64` (caelestia-cli-git 1.1.3.r48) |
 | `hybrid` | this repository | — |
 
 ## Import kinds
@@ -238,3 +239,22 @@ Gates at the end: 411 QML files `qmllint`-clean, conventions 0, `verify --quick`
 | union adoptions: lockconfig `session` default `true`, serviceconfig comments, aiconfig OpenRouter/OpenClaw, Players Fastpotify entry | both | `adapted` | Keys merged where both forks added disjoint members to the same config nodes. |
 | `bar.github.recolourIcons` toggle (Nexus taskbar page) | **removed** | *(none)* | MiDnight added the setting and the GithubActivity consumer together; ours' GithubActivity has no recolour support, so the toggle pointed at a schema path with no reader. Delete the toggle, not the schema key. |
 | `plugin/src/Aether/Config/barconfig.hpp` `BarSections` subobject | fixup | `adapted` | The `CONFIG_SUBOBJECT(BarSections, entries)` macro had been glued onto the tail of a comment line during conflict resolution, silently disabling it; restored on its own line. |
+
+## In-tree command surface — `cli` `68d1c64`
+
+The shell used to spawn the installed `caelestia` binary for its own scheme, wallpaper, record,
+screenshot and lifecycle work. That binary is now named `aether`, lives in `hybrid/bin/aether`
+and imports `hybrid/cli/aether_cli`. The upstream modules are copied so behaviour and state files
+do not change; only the paths that tied them to the installed package were rewritten.
+
+| Feature | Source | Source commit | Original path | Local path | Kind | Notes |
+|---|---|---|---|---|---|---|
+| command surface | `cli` | `68d1c64` | `caelestia/utils/{paths,io,notify,hypr,colour,colourfulness}.py` | `hybrid/cli/aether_cli/utils/` | `copied` | Import path only (`caelestia.` -> `aether_cli.`). `paths.py` drops the dots/install/update locations and adds `shell_root`, `qml_import_path` and `hypr_scheme_path`. |
+| command surface | `cli` | `68d1c64` | `caelestia/utils/scheme.py`, `utils/theme.py`, `utils/wallpaper.py`, `utils/material/` (3 files) | `hybrid/cli/aether_cli/utils/` | `adapted` | `theme.apply_hypr` writes `$XDG_STATE_HOME/caelestia/scheme/current.lua` instead of `~/.config/hypr/scheme/`, and `apply_qt` is gone: the `aether` platform theme replaced qtengine, so that target had no reader. Everything else is unchanged, including the post-hook contract from `cli.json`. |
+| command surface | `cli` | `68d1c64` | `caelestia/subcommands/{scheme,wallpaper,record,screenshot}.py` | `hybrid/cli/aether_cli/subcommands/` | `copied` | Unchanged apart from imports. |
+| command surface | `cli` | `68d1c64` | `caelestia/subcommands/shell.py` | `hybrid/cli/aether_cli/subcommands/shell.py` | `adapted` | `qs -p <checkout>` replaces `qs -c caelestia`, which resolved by name and could drive a packaged shell instead of this tree (T53). Instance listing filters on the resolved `config_path` so `-r` also stops instances started by name, and the start path adds `build/qml` to `QML2_IMPORT_PATH` for a dev checkout. |
+| command surface | `cli` | `68d1c64` | `caelestia/subcommands/clipboard.py` | `hybrid/cli/aether_cli/subcommands/clipboard.py` | `adapted` | Only the delete prompt is kept: searching and copying the history is the launcher's `openClipboard`. Searching would have been a second fuzzel UI. |
+| command surface | _(ours)_ | — | — | `hybrid/bin/aether`, `hybrid/cli/aether_cli/parser.py` | `reimplemented` | Trimmed argument parser (no install/update/toggle/resizer/emoji) plus an `ipc` passthrough so keybinds can reach the running shell without knowing how it was started. |
+| command surface | `cli` | `68d1c64` | `caelestia/data/schemes/` (29 files) | `hybrid/cli/aether_cli/data/schemes/` | `copied` | Plain `key value` colour files, one per name/flavour/mode. `dynamic` is generated from the wallpaper instead. |
+| command surface | `cli` | `68d1c64` | `caelestia/data/templates/` (13 of 16 files) | `hybrid/cli/aether_cli/data/templates/` | `copied` | The three `qtengine` templates (`qtengine.json`, `qtdark.colors`, `qtlight.colors`) are not imported: nothing reads them since the platform theme change. |
+| command surface | `cli` | `68d1c64` | `caelestia/data/emojis.txt` | `hybrid/cli/aether_cli/data/emojis.txt` | `copied` | 394 KB. Also fixes a hidden dependency: `modules/launcher/services/Emojis.qml` read this file through the absolute `site-packages` path, which pinned the launcher to one Python version. |

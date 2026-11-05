@@ -105,12 +105,6 @@ Searcher {
         return grp;
     }
 
-    property bool _refreshing: false
-
-    property bool restoreWallpaperMode: false
-
-    property var itemBusters: ({})
-
     property alias weVolume: weAdapter.volume
 
     property alias weSilent: weAdapter.silent
@@ -171,7 +165,7 @@ Searcher {
     }
 
     function setRandom(): void {
-        Quickshell.execDetached(["caelestia", "wallpaper", "-r", ...smartArg]);
+        Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "wallpaper", "-r", ...smartArg]);
     }
 
     function setWallpaper(path: string): void {
@@ -212,7 +206,7 @@ Searcher {
 
         stopPreview();
 
-        Quickshell.execDetached(["caelestia", "wallpaper", "-f", targetPath, ...smartArg]);
+        Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "wallpaper", "-f", targetPath, ...smartArg]);
     }
 
     function preview(path: string): void {
@@ -249,7 +243,7 @@ Searcher {
             actualCurrent = rollbackPath;
             isTrackingRollback = false;
 
-            Quickshell.execDetached(["caelestia", "wallpaper", "-f", rollbackPath, ...smartArg]);
+            Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "wallpaper", "-f", rollbackPath, ...smartArg]);
         }
 
         if (previewColourLock) {
@@ -290,14 +284,6 @@ Searcher {
         root.list = arr;
     }
 
-    function refreshAnimatedThumbs() {
-        if (_refreshing)
-            return;
-        itemBusters = {};
-        _refreshing = true;
-        _extractThumbsProc.running = true;
-    }
-
     onWeVolumeChanged: weStore.writeAdapter()
 
     onWeSilentChanged: weStore.writeAdapter()
@@ -317,7 +303,7 @@ Searcher {
                     }
                 }
             } else {
-                Quickshell.execDetached(["caelestia", "wallpaper", "-f", target, ...smartArg]);
+                Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "wallpaper", "-f", target, ...smartArg]);
             }
         }
     }
@@ -403,7 +389,7 @@ Searcher {
             let wall = text().trim();
             if (!wall) {
                 wall = root.fallback;
-                Quickshell.execDetached(["caelestia", "wallpaper", "-f", root.fallback, ...root.smartArg]);
+                Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "wallpaper", "-f", root.fallback, ...root.smartArg]);
             }
             root.actualCurrent = wall;
             root.previewColourLock = false;
@@ -422,7 +408,7 @@ Searcher {
         onLoadFailed: {
             root.actualCurrent = root.fallback;
             root.previewColourLock = false;
-            Quickshell.execDetached(["caelestia", "wallpaper", "-f", root.fallback, ...root.smartArg]);
+            Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "wallpaper", "-f", root.fallback, ...root.smartArg]);
         }
     }
 
@@ -510,7 +496,7 @@ Searcher {
             running = true;
         }
 
-        command: ["caelestia", "wallpaper", "-p", currentProcessingPath, ...root.smartArg]
+        command: [Quickshell.shellPath("hybrid/bin/aether"), "wallpaper", "-p", currentProcessingPath, ...root.smartArg]
 
         stdout: StdioCollector {
             onStreamFinished: {
@@ -532,51 +518,6 @@ Searcher {
                     getPreviewColoursProc.startFor(root.previewPath);
                 }
             }
-        }
-    }
-
-    FileView {
-        path: "/tmp/caelestia_thumb_ready.txt"
-
-        watchChanges: true
-
-        printErrors: false
-
-        onLoaded: {
-            const raw = text().trim();
-            if (!raw)
-                return;
-
-            const lines = raw.split("\n");
-            let busters = Object.assign({}, root.itemBusters);
-            let changed = false;
-            const now = Date.now().toString();
-
-            for (let i = 0; i < lines.length; i++) {
-                let line = lines[i].trim();
-                if (line.indexOf("file://") === 0)
-                    line = line.substring(7);
-                if (line && !busters[line]) {
-                    busters[line] = now;
-                    busters["file://" + line] = now;
-                    changed = true;
-                }
-            }
-            if (changed) {
-                root.itemBusters = busters;
-            }
-        }
-    }
-
-    Process {
-        id: _extractThumbsProc
-
-        command: ["caelestia", "wallpaper", "--extract-thumbs"]
-
-        onExited: (exitCode, exitStatus) => { // qmllint disable signal-handler-parameters
-            root._refreshing = false;
-            root.cacheBuster = Date.now().toString();
-            root.restoreWallpaperMode = true;
         }
     }
 }

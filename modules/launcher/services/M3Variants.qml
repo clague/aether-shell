@@ -100,7 +100,7 @@ Searcher {
 
         function onClicked(list: AppList): void {
             list.screenState.launcher = false;
-            Quickshell.execDetached(["caelestia", "scheme", "set", "-v", variant]);
+            Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "scheme", "set", "-v", variant]);
         }
     }
 }

@@ -57,8 +57,8 @@ shell addition:
 
 Leave the user-owned files alone: `~/.config/caelestia/hypr-user.lua` (loaded by `hyprland.lua`
 after the modules) and `~/.config/hypr/hyprmoncfg-monitors.lua` (generated per machine, also
-loaded by the entry). `hyprland/env.lua` keeps this machine's `QML2_IMPORT_PATH` line for the
-development checkout; drop it when installing a packaged shell.
+loaded by the entry). `hyprland/env.lua` carries no `QML2_IMPORT_PATH`: `aether shell` adds the checkout's
+`build/qml` itself, so the same config works from any path.
 
 ## What writes what
 

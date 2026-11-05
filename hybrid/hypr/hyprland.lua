@@ -1,6 +1,9 @@
 local home   = os.getenv("HOME")
 local hypr   = home .. "/.config/hypr"
-package.path = package.path .. ";" .. home .. "/.config/caelestia/?.lua"
+-- The generated colour scheme lives with the shell's state, not in the dotfiles: the shell is
+-- the only writer, and ~/.config/hypr stays user-owned (D11).
+local state  = (os.getenv("XDG_STATE_HOME") or home .. "/.local/state") .. "/caelestia"
+package.path = package.path .. ";" .. home .. "/.config/caelestia/?.lua;" .. state .. "/?.lua"
 
 -- Create a file if it doesn't exist, optionally with initial content
 local function maybe_create(file, content)
@@ -39,7 +42,8 @@ local function maybe_copy(src, dst)
 end
 
 -- Maybe set current colours to defaults
-maybe_copy(hypr .. "/scheme/default.lua", hypr .. "/scheme/current.lua")
+os.execute('mkdir -p "' .. state .. '/scheme"')
+maybe_copy(hypr .. "/scheme/default.lua", state .. "/scheme/current.lua")
 
 -- User variables
 local overrides = maybe_create(

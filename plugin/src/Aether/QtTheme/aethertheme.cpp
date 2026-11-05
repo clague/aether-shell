@@ -21,6 +21,8 @@
 #include <qtenvironmentvariables.h>
 #include <qtimer.h>
 
+#include <algorithm>
+#include <array>
 #include <utility>
 
 #include "aetherpalette.hpp"
@@ -97,11 +99,10 @@ QString colorSchemePath(const QByteArray& kdeglobals) {
 // that is not on the machine.
 bool iconThemeInstalled(const QString& name) {
     const QString home = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
-    for (const QString& dir : { QDir::homePath() + u"/.icons"_s, home + u"/icons"_s, u"/usr/share/icons"_s }) {
-        if (QFileInfo::exists(dir + u'/' + name + u"/index.theme"_s))
-            return true;
-    }
-    return false;
+    const std::array dirs = { QDir::homePath() + u"/.icons"_s, home + u"/icons"_s, u"/usr/share/icons"_s };
+    return std::ranges::any_of(dirs, [&name](const QString& dir) {
+        return QFileInfo::exists(dir + u'/' + name + u"/index.theme"_s);
+    });
 }
 
 QString kvantumConfigPath() {
@@ -200,8 +201,8 @@ const QFont* AetherTheme::font(Font type) const {
         // nullptr here does not mean "ask fontconfig": Qt falls back to the general font, so code
         // and terminals would be drawn in the proportional face. The generic name is resolved
         // through fontconfig when it is used.
-        static const QFont monospace(QStringLiteral("monospace"));
-        return &monospace;
+        static const QFont k_monospaceFont(QStringLiteral("monospace"));
+        return &k_monospaceFont;
     }
 
     return nullptr;

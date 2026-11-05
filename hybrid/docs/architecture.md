@@ -145,6 +145,13 @@ You therefore cannot install both. Fork `caelestia-dots/cli`, apply MiDnight's d
 and `--extract-thumbs`, extended `screenshot`, `record --fps`, `search`, astra scheme), ship as
 `caelestia-hybrid-cli` providing `/usr/bin/caelestia`. Upstream the genuinely general parts.
 
+**Superseded 2026-11-06 (D6).** The shell no longer spawns that binary. Every subcommand it used
+now lives in this checkout as `hybrid/bin/aether` (`hybrid/cli/aether_cli/`), so the fork has no
+consumer left; `caelestia` remains only as an IPC target namespace and a config path. The separate
+`caelestia-hybrid-cli` repository is therefore no longer required to run this shell. The one
+behaviour the move changes: the scheme's Hyprland file is written to
+`$XDG_STATE_HOME/caelestia/scheme/current.lua`, not `~/.config/hypr/scheme/`, keeping D11 intact.
+
 ### D8 — Superseded: there are no presets
 
 Presets were planned as config layers beneath the user's layer, with the preset *name* stored so

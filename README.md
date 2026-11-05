@@ -99,12 +99,11 @@ scheme change, so a choice written there survives only until the next one.
 > source. The instructions below are the upstream ones and are the only supported path.
 <details><summary id="dependencies">Dependencies</summary>
 
--   [`caelestia-cli`](https://github.com/caelestia-dots/cli) — required; the shell's IPC and
-    most of its shortcuts go through it.
-    MiDnight ships a fork of it (`dim-ghub/midnight-cli`, +849 lines) that some of its
-    features expect — video wallpaper control among them. Both install their binary as
-    `caelestia`, so you cannot have both, and the merged CLI does not exist yet. Until it
-    does, install upstream's and expect those specific extras to be inert.
+-   `python-materialyoucolor` and `python-pillow` — the in-tree command surface
+    (`hybrid/bin/aether`) uses them for the dynamic palette and wallpaper thumbnails. No
+    `caelestia` binary is needed; the subcommands this shell uses live in the checkout.
+-   `fuzzel` and `cliphist` — only for deleting one clipboard entry. Searching and copying
+    the history is the launcher's own view.
 -   [`quickshell-git`](https://quickshell.outfoxxed.me) - this has to be the git version, not the latest tagged version
 -   [`hyprmoncfg`](https://github.com/crmne/hyprmoncfg) — optional; the Display page uses it to
     save and apply monitor layouts. Without it, live layout changes still work, but nothing is
@@ -151,6 +150,9 @@ cd caelestia
 cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/
 cmake --build build
 sudo cmake --install build
+
+# Put the command surface on PATH: Hyprland can only call a name.
+./hybrid/tools/install-cli.sh
 ```
 
 > [!NOTE]
