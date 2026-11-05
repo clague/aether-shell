@@ -473,6 +473,23 @@ PageBase {
         root.diagnosticTip = "";
     }
 
+    // One wheel notch is three lines in Qt Quick (QStyleHints::wheelScrollLines() * 24 px).
+    // A Wayland mouse wheel also reports a much smaller pixelDelta; preferring that moved only
+    // a fraction of a line per notch. Touchpads report pixelDelta only, so they stay smooth.
+    function wheelDelta(wheel: var): real {
+        return wheel.angleDelta.y !== 0 ? wheel.angleDelta.y / 120 * 72 : wheel.pixelDelta.y;
+    }
+
+    function scrollEditorBy(pixels: real, horizontal: bool): void {
+        if (horizontal) {
+            const maxX = Math.max(0, flick.contentWidth - flick.width);
+            flick.contentX = Math.max(0, Math.min(flick.contentX - pixels, maxX));
+        } else {
+            const maxY = Math.max(0, flick.contentHeight - flick.height);
+            flick.contentY = Math.max(0, Math.min(flick.contentY - pixels, maxY));
+        }
+    }
+
     function refreshCaret(): void {
         const before = editor.text.slice(0, Math.max(0, editor.cursorPosition));
         root.caretLine = before.split("\n").length - 1;
@@ -1176,22 +1193,14 @@ PageBase {
                 }
 
                 onWheel: wheel => {
-                    scrollXAnimation.stop();
-                    scrollYAnimation.stop();
-
-                    const delta = wheel.pixelDelta.y !== 0 ? wheel.pixelDelta.y : wheel.angleDelta.y / 120 * 60;
+                    const delta = root.wheelDelta(wheel);
                     if (delta === 0) {
                         wheel.accepted = false;
                         return;
                     }
-
-                    if (wheel.modifiers & Qt.ShiftModifier) {
-                        const maxX = Math.max(0, flick.contentWidth - flick.width);
-                        flick.contentX = Math.max(0, Math.min(flick.contentX - delta, maxX));
-                    } else {
-                        const maxY = Math.max(0, flick.contentHeight - flick.height);
-                        flick.contentY = Math.max(0, Math.min(flick.contentY - delta, maxY));
-                    }
+                    scrollXAnimation.stop();
+                    scrollYAnimation.stop();
+                    root.scrollEditorBy(delta, (wheel.modifiers & Qt.ShiftModifier) !== 0);
                     wheel.accepted = true;
                 }
             }
@@ -1208,7 +1217,17 @@ PageBase {
                 acceptedButtons: Qt.NoButton
                 cursorShape: Qt.ArrowCursor
 
-                onWheel: wheel => wheel.accepted = false
+                onWheel: wheel => {
+                    const delta = root.wheelDelta(wheel);
+                    if (delta === 0) {
+                        wheel.accepted = false;
+                        return;
+                    }
+                    scrollXAnimation.stop();
+                    scrollYAnimation.stop();
+                    root.scrollEditorBy(delta, (wheel.modifiers & Qt.ShiftModifier) !== 0);
+                    wheel.accepted = true;
+                }
             }
 
             Item {
