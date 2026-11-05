@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Shapes
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
@@ -314,18 +315,14 @@ PageBase {
         root.lineHeight = Math.max(1, rects.length > 0 ? rects[0].height : 1);
     }
 
-    function cssColour(colour: color): string {
-        return `rgba(${Math.round(colour.r * 255)}, ${Math.round(colour.g * 255)}, ${Math.round(colour.b * 255)}, ${colour.a})`;
-    }
-
-    // Exact per-line segments for the diagnostic waves, built from the text layout. A Canvas
-    // draws them below the text with a 2px stroke; the syntax highlighter no longer owns them.
+    // Exact per-line segments for the diagnostic waves, built from the text layout. Each segment
+    // becomes a small Shape below the text (2px stroke); the syntax highlighter only colours text.
     function rebuildSquiggles(): void {
         const lines = editor.text.split("\n");
         const result = [];
         for (let i = 0; i < lsp.diagnostics.length; i++) {
             const diagnostic = lsp.diagnostics[i];
-            const colour = root.cssColour(root.severityColour(diagnostic.severity));
+            const colour = root.severityColour(diagnostic.severity);
             for (let line = diagnostic.line; line <= diagnostic.endLine; line++) {
                 if (line < 0 || line >= lines.length)
                     continue;
@@ -339,11 +336,14 @@ PageBase {
                 if (to <= from)
                     continue;
                 const startRect = editor.positionToRectangle(root.offsetAt(line, from));
-                const endRect = editor.positionToRectangle(root.offsetAt(line, to - 1));
+                // positionToRectangle() returns a caret rect, so use the position *after* the
+                // last character; caret width would cut the final glyph off.
+                const endRect = editor.positionToRectangle(root.offsetAt(line, to));
                 const x1 = startRect.x;
-                const x2 = endRect.x + endRect.width;
+                const x2 = endRect.x;
                 if (x2 <= x1)
                     continue;
+
                 result.push({
                     x1: x1,
                     x2: x2,
@@ -461,8 +461,6 @@ PageBase {
         // The window opens with the settings search focused; the editor should have the caret.
         Qt.callLater(() => editor.forceActiveFocus());
     }
-
-    onSquigglesChanged: squiggleCanvas.requestPaint()
 
     onDirtyChanged: {
         if (lsp.status === "ready")
@@ -720,39 +718,38 @@ PageBase {
                     color: Qt.alpha(Colours.palette.m3primary, 0.05)
                 }
 
-                Canvas {
-                    id: squiggleCanvas
+                Repeater {
+                    model: root.squiggles
 
-                    x: editor.x
-                    y: editor.y
-                    width: editor.width
-                    height: editor.height
+                    Shape {
+                        id: waveShape
 
-                    onPaint: {
-                        const ctx = getContext("2d");
-                        ctx.clearRect(0, 0, width, height);
-                        ctx.lineWidth = 2;
-                        ctx.lineCap = "round";
-                        ctx.lineJoin = "round";
-                        const amplitude = 1.6;
-                        const period = 6;
-                        for (const squiggle of root.squiggles) {
-                            ctx.strokeStyle = squiggle.colour;
-                            ctx.beginPath();
-                            for (let x = squiggle.x1; x <= squiggle.x2; x += 0.5) {
-                                const y = squiggle.y + Math.sin((x - squiggle.x1) / period * Math.PI * 2) * amplitude;
-                                if (x === squiggle.x1)
-                                    ctx.moveTo(x, y);
-                                else
-                                    ctx.lineTo(x, y);
+                        required property var modelData
+
+                        x: editor.x + modelData.x1
+                        y: editor.y + modelData.y - 2
+                        width: modelData.x2 - modelData.x1
+                        height: 5
+                        z: -1
+
+                        ShapePath {
+                            strokeColor: waveShape.modelData.colour
+                            strokeWidth: 2
+                            fillColor: "transparent"
+                            capStyle: ShapePath.RoundCap
+                            joinStyle: ShapePath.RoundJoin
+
+                            PathPolyline {
+                                path: {
+                                    const points = [];
+                                    const width = waveShape.modelData.x2 - waveShape.modelData.x1;
+                                    for (let x = 0; x <= width; x += 0.5)
+                                        points.push(Qt.point(x, 2 + Math.sin((x / 6) * Math.PI * 2) * 1.6));
+                                    return points;
+                                }
                             }
-                            ctx.stroke();
                         }
                     }
-
-                    onWidthChanged: requestPaint()
-
-                    onHeightChanged: requestPaint()
                 }
 
                 TextEdit {
