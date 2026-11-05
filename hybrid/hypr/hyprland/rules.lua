@@ -98,7 +98,6 @@ tagged_rule(float_tag, {
 tagged_rule(float_60_70_tag, {
     "(Select|Open)( a)? (File|Folder)(s)?", -- File dialogs
     "Save As",                              -- Save dialogs
-    "Library",                              -- * I don't remember what this matches...
 }, "title")
 tagged_rule(float_60_70_tag, {
     { title = "(Save|Export) Image", class = "gimp" }, -- GIMP export/save
