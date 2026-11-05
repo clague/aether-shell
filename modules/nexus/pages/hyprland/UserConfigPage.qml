@@ -46,6 +46,7 @@ PageBase {
     readonly property real completionHeight: Math.min(220, Math.max(24, completionList.contentHeight + 8))
 
     function save(): bool {
+        root.completionOpen = false;
         if (!CUtils.writeFile(root.filePath, editor.text)) {
             root.notice = Tr.tr("Could not write the file");
             noticeTimer.restart();
@@ -294,6 +295,8 @@ PageBase {
     }
 
     function jumpTo(line: int, character: int): void {
+        root.completionOpen = false;
+        root.diagnosticTip = "";
         const lines = editor.text.split("\n");
         let offset = 0;
         for (let i = 0; i < line && i < lines.length; i++)
@@ -636,6 +639,7 @@ PageBase {
                 text: Tr.tr("Apply to Hyprland")
                 type: TextButton.Tonal
                 onClicked: {
+                    root.completionOpen = false;
                     if (root.dirty && !root.save())
                         return;
                     reloadProc.running = true;
@@ -735,7 +739,6 @@ PageBase {
 
                 anchors.left: gutter.right
                 anchors.right: minimap.left
-                anchors.rightMargin: Tokens.padding.small
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 clip: true
@@ -935,6 +938,20 @@ PageBase {
                         }
                     }
 
+                    onActiveFocusChanged: {
+                        if (!activeFocus) {
+                            root.completionOpen = false;
+                            root.diagnosticTip = "";
+                        }
+                    }
+
+                    TapHandler {
+                        onTapped: {
+                            root.completionOpen = false;
+                            root.diagnosticTip = "";
+                        }
+                    }
+
                     HoverHandler {
                         id: editorHover
 
@@ -998,6 +1015,8 @@ PageBase {
                     property bool draggingThumb: false
 
                     onPressed: mouse => {
+                        root.completionOpen = false;
+                        root.diagnosticTip = "";
                         scrollXAnimation.stop();
                         const thumb = horizontalThumb;
                         if (mouse.x >= thumb.x && mouse.x <= thumb.x + thumb.width) {
@@ -1104,6 +1123,8 @@ PageBase {
                     property bool draggingBox: false
 
                     onPressed: mouse => {
+                        root.completionOpen = false;
+                        root.diagnosticTip = "";
                         scrollYAnimation.stop();
                         const box = minimapViewport;
                         if (mouse.y >= box.y && mouse.y <= box.y + box.height) {
