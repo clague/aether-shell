@@ -49,9 +49,11 @@ private:
     void reload();
     void applyConfig(const QByteArray& json);
     void apply();
+    [[nodiscard]] QStringList resolveStyle() const;
 
     QString m_schemePath;
     QString m_configPath;
+    QString m_kvantumConfigPath;
     QFileSystemWatcher* m_watcher = nullptr;
     QTimer* m_debounce = nullptr;
 
@@ -59,6 +61,7 @@ private:
     std::optional<QFont> m_font;
     std::optional<QFont> m_fixedFont;
     QStringList m_styleNames;
+    QString m_configuredStyle;
     QString m_iconTheme;
     QString m_configuredIconTheme;
     bool m_light = true;

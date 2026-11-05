@@ -12,6 +12,8 @@ add_library(aether-qt-theme MODULE
     aethertheme.cpp
     aetherpalette.hpp
     aetherpalette.cpp
+    aetherstyle.hpp
+    aetherstyle.cpp
     thememain.cpp
     aether.json
 )

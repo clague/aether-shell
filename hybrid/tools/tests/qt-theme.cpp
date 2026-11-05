@@ -1,6 +1,6 @@
-// Pins the scheme.json -> QPalette mapping. The whole platform theme is only as good as this
-// one function, and it has no UI of its own: a wrong role here shows up as "Dolphin looks odd",
-// three processes away. Feeding it a synthetic scheme makes each role assertable.
+// Pins the two decisions the Qt platform theme makes without a UI: how scheme.json maps onto a
+// QPalette, and which widget style it hands Qt. A wrong role shows up as "Dolphin looks odd" three
+// processes away; a wrong style shows up as "my widgets are the wrong shape" with no error at all.
 //
 // QPalette's default constructor reads the application palette, so the test needs a
 // QGuiApplication even though it never shows a window.
@@ -11,7 +11,9 @@
 #include <cstdio>
 
 #include "Aether/QtTheme/aetherpalette.hpp"
+#include "Aether/QtTheme/aetherstyle.hpp"
 
+using aether::theme::kvantumThemeName;
 using aether::theme::schemeFromJson;
 
 namespace {
@@ -73,6 +75,17 @@ int main(int argc, char** argv) {
     check(!schemeFromJson(QByteArray("not json")).has_value(), "garbage is rejected");
     check(!schemeFromJson(QByteArray("{}")).has_value(), "an object without colours is rejected");
     check(!schemeFromJson(QByteArray("{\"colours\":{}}")).has_value(), "colours without a background are rejected");
+
+    // kvantummanager writes [General] and nothing else. QSettings reads a bare [General] as the
+    // root, which is why this is parsed by hand -- and why the section must not throw it off.
+    check(kvantumThemeName("[General]\ntheme=Gradient-Dark-Kvantum\n") == "Gradient-Dark-Kvantum",
+        "theme under [General]");
+    check(kvantumThemeName("theme=Breeze\n") == "Breeze", "theme without a section");
+    check(kvantumThemeName("[General]\ntheme=  \"Quoted Name\"  \n") == "Quoted Name", "quoted theme");
+    check(kvantumThemeName("[General]\n#theme=Commented\n") == "", "commented key is ignored");
+    check(kvantumThemeName("[General]\ntheme=First\ntheme=Second\n") == "First", "the first theme wins");
+    check(kvantumThemeName("[General]\ncolors=#fff\n").isEmpty(), "no theme key");
+    check(kvantumThemeName(QByteArray()).isEmpty(), "empty file");
 
     if (failures == 0)
         std::printf("PASS: 0 failure(s)\n");

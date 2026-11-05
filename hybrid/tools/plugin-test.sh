@@ -70,9 +70,9 @@ TESTS=(
     # payload-frame also #includes its subject, so QuickShareConnection.cpp is absent here
     # too. It drags in the crypto and six generated protobuf units by reference.
     "payload-frame:$SVC/QuickShare/QuickShareCrypto.cpp $(moc moc_QuickShareConnection.cpp) $GEN/device_to_device_messages.pb.cc $GEN/offline_wire_formats.pb.cc $GEN/securegcm.pb.cc $GEN/securemessage.pb.cc $GEN/ukey.pb.cc $GEN/wire_format.pb.cc:protobuf libcrypto Qt6Network"
-    # The Qt platform theme's palette mapping. No moc and no service sources: it is one
-    # pure function over scheme.json, which is exactly why it is worth pinning.
-    "qt-palette:$ROOT/plugin/src/Aether/QtTheme/aetherpalette.cpp:Qt6Gui"
+    # The Qt platform theme's two pure decisions: scheme.json to QPalette, and which style
+    # name to hand Qt. No moc and no service sources.
+    "qt-theme:$ROOT/plugin/src/Aether/QtTheme/aetherpalette.cpp $ROOT/plugin/src/Aether/QtTheme/aetherstyle.cpp:Qt6Gui"
 )
 
 rc=0

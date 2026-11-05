@@ -1,6 +1,7 @@
 #include "aethertheme.hpp"
 
 #include <qapplication.h>
+#include <qdir.h>
 #include <qfile.h>
 #include <qfileinfo.h>
 #include <qfilesystemwatcher.h>
@@ -12,12 +13,15 @@
 #include <qloggingcategory.h>
 #include <qpa/qwindowsysteminterface.h>
 #include <qstandardpaths.h>
+#include <qstyle.h>
 #include <qstylefactory.h>
+#include <qtenvironmentvariables.h>
 #include <qtimer.h>
 
 #include <utility>
 
 #include "aetherpalette.hpp"
+#include "aetherstyle.hpp"
 
 namespace aether::theme {
 
@@ -43,6 +47,40 @@ QString configPath() {
     return QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/qtengine/config.json"_s;
 }
 
+// kvantummanager writes this. Its [General] theme is the only signal in the tree that a person
+// chose a widget style by hand -- the style named in the CLI's config is regenerated from a
+// template on every scheme change, so it is a default, not a preference.
+QString kvantumConfigPath() {
+    return QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/Kvantum/kvantum.kvconfig"_s;
+}
+
+// Kvantum keeps themes in the config dir and in its system share dir, and nowhere else: a theme
+// under $XDG_DATA_HOME/Kvantum is silently ignored and the style falls back to its built-in
+// colours. Confirming the theme resolves is what separates "Kvantum is set up" from "the plugin
+// is installed".
+QString kvantumTheme(const QString& configPath) {
+    if (!QFileInfo::exists(configPath))
+        return {};
+
+    QFile file(configPath);
+    if (!file.open(QIODevice::ReadOnly))
+        return {};
+
+    QString theme = kvantumThemeName(file.readAll());
+    if (theme.isEmpty())
+        return {};
+
+    // The theme file, not just the directory: a half-written or half-deleted theme still has a
+    // folder, and Kvantum answers that with its built-in placeholder colours.
+    const QString userTheme = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/Kvantum/"_s +
+                              theme + u'/' + theme + u".kvconfig"_s;
+    if (QFileInfo::exists(userTheme))
+        return theme;
+
+    const QString sharedTheme = u"/usr/share/Kvantum/"_s + theme + u'/' + theme + u".kvconfig"_s;
+    return QFileInfo::exists(sharedTheme) ? theme : QString();
+}
+
 std::optional<QFont> readFont(const QJsonObject& theme, const QString& key) {
     const QJsonObject spec = theme.value(key).toObject();
     const QString family = spec.value(u"family"_s).toString();
@@ -60,11 +98,24 @@ std::optional<QFont> readFont(const QJsonObject& theme, const QString& key) {
     return font;
 }
 
+// Kvantum paints from its own theme file and replaces the application palette in polish(), so
+// pushing ours into a running application afterwards would fight it and win: backgrounds from its
+// SVG, text from ours. While it is the style, the palette belongs to it. Asked of the running style
+// rather than of the hint, because QT_STYLE_OVERRIDE can replace the hint at the last moment.
+bool kvantumIsActive() {
+    if (qobject_cast<QApplication*>(QCoreApplication::instance()) == nullptr)
+        return false;
+
+    const QStyle* style = QApplication::style();
+    return style != nullptr && style->objectName().compare(u"kvantum"_s, Qt::CaseInsensitive) == 0;
+}
+
 } // namespace
 
 AetherTheme::AetherTheme()
     : m_schemePath(stateDir() + u"/scheme.json"_s)
-    , m_configPath(configPath()) {
+    , m_configPath(configPath())
+    , m_kvantumConfigPath(kvantumConfigPath()) {
     // Qt reads palette() and font() synchronously, while the application object is still being
     // built, so the first read cannot wait for the event loop.
     reload();
@@ -171,6 +222,8 @@ void AetherTheme::reload() {
     if (config.open(QIODevice::ReadOnly))
         applyConfig(config.readAll());
 
+    m_styleNames = resolveStyle();
+
     m_iconTheme = m_configuredIconTheme;
     if (m_iconTheme.isEmpty())
         m_iconTheme = m_light ? u"Papirus-Light"_s : u"Papirus-Dark"_s;
@@ -196,15 +249,31 @@ void AetherTheme::applyConfig(const QByteArray& json) {
     m_font = readFont(theme, u"font"_s);
     m_fixedFont = readFont(theme, u"fontFixed"_s);
 
-    // A style the config names but the system does not have would leave Qt with no style at all,
-    // so it only becomes the hint when the factory can actually create it.
-    const QString style = theme.value(u"style"_s).toString();
-    m_styleNames = !style.isEmpty() && QStyleFactory::keys().contains(style, Qt::CaseInsensitive) ? QStringList{ style }
-                                                                                                  : QStringList();
+    m_configuredStyle = theme.value(u"style"_s).toString();
 
     const QJsonObject misc = root.value(u"misc"_s).toObject();
     m_showIconsInMenus = misc.value(u"menusHaveIcons"_s).toBool(true);
     m_showShortcutsInMenus = misc.value(u"shortcutsForContextMenus"_s).toBool(true);
+}
+
+QStringList AetherTheme::resolveStyle() const {
+    // An override is the user speaking last, and Qt applies it after this hint anyway.
+    if (!qEnvironmentVariableIsEmpty("QT_STYLE_OVERRIDE"))
+        return {};
+
+    // Kvantum is the one style that brings a palette of its own, so it is only chosen when the user
+    // has actually configured it: without a theme it paints with built-in placeholder colours, and
+    // that looks worse than the Fusion fallback.
+    if (!kvantumTheme(m_kvantumConfigPath).isEmpty() &&
+        QStyleFactory::keys().contains(u"kvantum"_s, Qt::CaseInsensitive))
+        return { u"kvantum"_s };
+
+    // Anything else the config names has to exist, or Qt would be left with no style at all.
+    if (!m_configuredStyle.isEmpty() && QStyleFactory::keys().contains(m_configuredStyle, Qt::CaseInsensitive))
+        return { m_configuredStyle };
+
+    // Empty means "ask QGenericUnixTheme", which answers Fusion on a session that is not KDE.
+    return {};
 }
 
 void AetherTheme::apply() {
@@ -218,7 +287,7 @@ void AetherTheme::apply() {
     // again unless it is told. setPalette posts PaletteChange to every widget that has not set
     // its own palette; handleThemeChange is what QtQuick listens to.
     if (qobject_cast<QApplication*>(QCoreApplication::instance()) != nullptr) {
-        if (m_palette)
+        if (m_palette && !kvantumIsActive())
             QApplication::setPalette(*m_palette);
         if (m_font)
             QApplication::setFont(*m_font);

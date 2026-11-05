@@ -234,6 +234,30 @@ deliberately does not do:
 - **No KDE `.colors` parser.** `scheme.json` already holds the M3 tokens, in the file the shell
   reads; parsing the KDE format would be a second copy of the same colours.
 
+#### Kvantum is a style, not a palette source
+
+Kvantum is the one widget style that ships a palette of its own: it paints from its theme SVG and
+replaces the application palette in `polish()`. Measured: `QT_QPA_PLATFORMTHEME=aether` with
+`QT_STYLE_OVERRIDE=kvantum` reported the Kvantum theme's `#1c202f`/`#008080`, not the scheme's
+`#130d09`/`#f2bc90`. Two ways out were considered and rejected:
+
+- **Recolouring the theme.** Rewriting `[GeneralColors]` and every matching literal in the SVG does
+  produce the right palette (verified against a copy of the active theme), but it writes a
+  generated theme into `~/.config/Kvantum`, goes stale whenever the user picks a different Kvantum
+  theme, and inherits gradients designed around the original colours.
+- **Wrapping it in a `QProxyStyle`.** Restoring our palette after Kvantum's `polish()` only moves
+  the mismatch: backgrounds still come from the theme SVG, so text and surfaces disagree.
+
+So the engine selects Kvantum when the user has configured one — `kvantummanager` writing
+`~/.config/Kvantum/kvantum.kvconfig` is the only signal in the tree that a person chose a style by
+hand, while the style named in the CLI's config is regenerated from a template on every scheme
+change — and then stops pushing the palette, because the palette is Kvantum's. That is the whole
+feature: widgets keep the shape the user picked, and the engine does not fight it. Qt Quick
+applications create no `QStyle`, so the shell and its surfaces stay on the scheme either way.
+
+The hint is only a hint: `QT_STYLE_OVERRIDE` still wins, and when it does, palette ownership follows
+the style that actually loaded rather than the name the engine asked for.
+
 Installation is two paths because the theme has to be visible to processes the shell never
 starts: `make install` puts it in `${prefix}/lib/qt6/plugins/platformthemes`, and
 `hybrid/tools/install-qt-theme.sh` copies the build output to `~/.local/lib/qt6/plugins` for a

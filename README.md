@@ -63,6 +63,27 @@ It is a plugin, so it is rebuilt with the shell and must be rebuilt after a Qt u
 `install-qt-theme.sh` re-copies the fresh build, and a system install is redone by the package
 manager. See D12 in `hybrid/docs/architecture.md`.
 
+#### Kvantum
+
+If Kvantum is installed and a theme has been chosen with `kvantummanager`, the engine selects it as
+the widget style. Kvantum paints from its own theme file and replaces the application palette
+during `polish()`, so **its colours win while it is active** — that is deliberate: forcing the
+Aether palette back on top leaves Kvantum's backgrounds with text that belongs to a different
+theme, which is worse than either.
+
+Qt Quick applications create no `QStyle` and keep the Aether palette, so the shell and its
+surfaces stay on the scheme either way.
+
+Style precedence, first match wins:
+
+1. `QT_STYLE_OVERRIDE` — Qt applies it last, and the engine then leaves the palette to you.
+2. Kvantum, when `~/.config/Kvantum/kvantum.kvconfig` names a theme that resolves.
+3. The style named in the CLI's `~/.config/qtengine/config.json`, when that style is installed.
+4. Fusion, via the default Qt behaviour.
+
+To stay on Aether's colours with Kvantum installed, set `QT_STYLE_OVERRIDE=fusion` in
+`hypr-user.lua`; to pin Kvantum on a machine that also has Darkly, set `QT_STYLE_OVERRIDE=kvantum`.
+
 ## Installation
 
 > [!IMPORTANT]

@@ -3135,3 +3135,16 @@ with the watcher, the debounce timer and the `m_started` flag created there, fol
 Verified by running a Qt Widgets probe application under `QT_QPA_PLATFORMTHEME=aether`, rewriting
 `scheme.json` while it ran, and watching it print the new palette — and by screenshotting Dolphin,
 which is the only check that shows the theme reached a real application rather than a probe.
+
+Two smaller facts about the same plugin, both of which produced a working build and a silently
+wrong look:
+
+- `QSettings` maps a bare `[General]` section onto the root, so `value("General/theme")` returns an
+  empty string from a file that contains `[General]\ntheme=…`. Kvantum's config is read with a
+  four-line parser instead, and `hybrid/tools/tests/qt-theme.cpp` pins the section handling: point
+  the parser at the wrong key and four of its cases fail.
+- Kvantum looks for themes in `~/.config/Kvantum` and `/usr/share/Kvantum` and nowhere else. A theme
+  under `$XDG_DATA_HOME/Kvantum` is ignored, and the style silently falls back to built-in
+  placeholder colours (`#3d3d3e`) — which looks like "the plugin is half working" rather than
+  "the theme was not found". The engine therefore requires `<theme>/<theme>.kvconfig` to exist
+  before handing the style over.
