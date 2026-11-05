@@ -256,6 +256,7 @@ PageBase {
             last: true
             icon: "music_note"
             text: Tr.tr("Lyrics backend")
+            trailingIcon: "north_east"
             subtext: Tr.tr("Which service supplies the synced lyrics, and the default player")
             onClicked: root.nState.openPageByKey("services", 0, "Lyrics backend")
         }

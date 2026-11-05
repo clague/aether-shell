@@ -71,6 +71,7 @@ PageBase {
             last: true
             icon: "palette"
             text: Tr.tr("Colour scheme")
+            trailingIcon: "north_east"
             subtext: Tr.tr("Dynamic or static colours, and the mode")
             onClicked: root.nState.openPageByKey("wallpaper", 3)
         }
@@ -358,6 +359,7 @@ PageBase {
             last: true
             icon: "layers"
             text: Tr.tr("Hyprland settings")
+            trailingIcon: "north_east"
             subtext: Tr.tr("Window effects, spacing and animations now live under Hyprland")
             onClicked: root.nState.openPageByKey("hyprland", 0)
         }

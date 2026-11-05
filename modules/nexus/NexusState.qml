@@ -9,9 +9,18 @@ QtObject {
     property int currentPageIdx
     property list<int> subPageIdxStack
     // Top-level page history, browser style: `historyIndex` is the entry being shown, so
-    // back/forward move through it instead of appending again.
-    property list<int> pageHistory
+    // back/forward move through it instead of appending again. An entry records the sub-page
+    // stack it was left in, so a link that lands on a sub-page is still one step: Back returns to
+    // the page and sub-page the user came from, not to the target's own parent page.
+    property list<var> pageHistory
     property int historyIndex: -1
+
+    // Sub-pages opened *after* arriving on a page, as opposed to the ones a link arrived with.
+    // Only these are unwound one at a time by Back; the rest belong to the history step.
+    property int inPageDepth: 0
+
+    // Set while history is being replayed, so the change handlers do not record it again.
+    property bool navigatingHistory: false
     readonly property bool canGoBack: historyIndex > 0
     readonly property bool canGoForward: historyIndex >= 0 && historyIndex < pageHistory.length - 1
     property bool searchOpen
@@ -42,12 +51,14 @@ QtObject {
 
     function openSubPage(idx: int): void {
         subPageIdxStack.push(idx);
+        inPageDepth++;
         subPageOpened(idx);
     }
 
     function closeSubPage(): void {
         subPageClosed();
         subPageIdxStack.pop();
+        inPageDepth = Math.max(0, inPageDepth - 1);
     }
 
     // Opens a page (and sub-page) found through search; for a row, its label is
@@ -82,8 +93,9 @@ QtObject {
     }
 
     function goBack(): void {
-        // A sub-page is the innermost history: leave it before changing the top-level page.
-        if (subPageIdxStack.length > 0) {
+        // A sub-page opened after arriving is the innermost history: leave it first. A sub-page
+        // that came with a link is part of that step and is undone below.
+        if (inPageDepth > 0) {
             closeSubPage();
             return;
         }
@@ -91,7 +103,7 @@ QtObject {
             return;
 
         historyIndex--;
-        currentPageIdx = pageHistory[historyIndex];
+        restore(pageHistory[historyIndex]);
     }
 
     function goForward(): void {
@@ -99,27 +111,56 @@ QtObject {
             return;
 
         historyIndex++;
-        currentPageIdx = pageHistory[historyIndex];
+        restore(pageHistory[historyIndex]);
+    }
+
+    function restore(entry: var): void {
+        navigatingHistory = true;
+        currentPageIdx = entry.page;
+        subPageIdxStack = entry.stack.slice();
+        inPageDepth = 0;
+        navigatingHistory = false;
     }
 
     onCurrentPageIdxChanged: {
+        // Replaying a history entry sets its own stack right after this.
+        if (navigatingHistory)
+            return;
+
         subPageIdxStack.length = 0;
+        inPageDepth = 0;
 
         // Already pointing at this entry because back/forward moved here.
-        if (historyIndex >= 0 && pageHistory[historyIndex] === currentPageIdx)
+        if (historyIndex >= 0 && pageHistory[historyIndex].page === currentPageIdx)
             return;
 
         // A new destination drops the entries that were ahead of it.
         pageHistory = pageHistory.slice(0, historyIndex + 1);
-        pageHistory.push(currentPageIdx);
+        pageHistory.push({
+            page: currentPageIdx,
+            stack: []
+        });
         historyIndex = pageHistory.length - 1;
+    }
+
+    // Keeps the entry being shown in step with the sub-page the user has open, so leaving the
+    // page and coming back restores what was actually on screen.
+    onSubPageIdxStackChanged: {
+        if (navigatingHistory || historyIndex < 0)
+            return;
+        pageHistory[historyIndex].stack = subPageIdxStack.slice();
     }
 
     Component.onCompleted: {
         // `currentPageIdx` may still be at its default when the window binds a starting page, in
         // which case no change signal ever arrived to seed the history.
         if (pageHistory.length === 0) {
-            pageHistory = [currentPageIdx];
+            pageHistory = [
+                {
+                    page: currentPageIdx,
+                    stack: []
+                }
+            ];
             historyIndex = 0;
         }
     }

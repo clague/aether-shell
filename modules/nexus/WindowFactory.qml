@@ -31,6 +31,18 @@ Singleton {
             });
     }
 
+    // The same destination the in-app cross-links use: a page, one of its sub-pages, and
+    // optionally a row to scroll to and flash. Exposed over IPC so a script or a keybind can
+    // land on a setting instead of opening the window at its front page.
+    function openPageAt(page: int, sub: int, row: string): void {
+        if (!root.current)
+            root.create(null, {
+                page
+            });
+        if (root.current)
+            root.current.jump(page, sub, row);
+    }
+
     QtObject {
         id: dummy
     }
@@ -49,6 +61,10 @@ Singleton {
             // navigation, so a later openPage() has to address the state directly.
             function openPage(p: int): void {
                 nexus.nState.currentPageIdx = p;
+            }
+
+            function jump(p: int, sub: int, row: string): void {
+                nexus.nState.openSearchResult(p, sub, row, row !== "");
             }
 
             color: Colours.tPalette.m3surface

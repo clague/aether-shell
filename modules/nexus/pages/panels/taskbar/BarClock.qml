@@ -70,6 +70,7 @@ PageBase {
             last: true
             icon: "desktop_windows"
             text: Tr.tr("Desktop clock")
+            trailingIcon: "north_east"
             subtext: Tr.tr("The free-floating clock on the wallpaper")
             onClicked: root.nState.openPageByKey("wallpaper", 7)
         }

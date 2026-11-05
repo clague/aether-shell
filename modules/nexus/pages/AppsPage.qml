@@ -69,6 +69,7 @@ PageBase {
             last: true
             icon: "keyboard"
             text: Tr.tr("Hyprland keybind apps")
+            trailingIcon: "north_east"
             subtext: Tr.tr("Terminal, browser, editor and file manager used by Hyprland keybinds")
             onClicked: root.nState.openPageByKey("hyprland", 3)
         }

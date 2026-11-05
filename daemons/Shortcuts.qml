@@ -345,6 +345,10 @@ Scope {
             WindowFactory.openPage(page);
         }
 
+        function openPageAt(page: int, sub: int, row: string): void {
+            WindowFactory.openPageAt(page, sub, row);
+        }
+
         target: "nexus"
     }
 

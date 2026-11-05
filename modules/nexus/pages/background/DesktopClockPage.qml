@@ -212,6 +212,7 @@ PageBase {
             last: true
             icon: "schedule"
             text: Tr.tr("Taskbar clock")
+            trailingIcon: "north_east"
             subtext: Tr.tr("Date, icon and background of the bar clock")
             onClicked: root.nState.openPageByKey("panels", 14)
         }

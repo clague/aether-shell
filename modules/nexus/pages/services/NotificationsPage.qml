@@ -290,6 +290,7 @@ PageBase {
             last: true
             icon: "volume_off"
             text: Tr.tr("Notification silencing")
+            trailingIcon: "north_east"
             subtext: Tr.tr("Mute notification sounds for individual apps")
             onClicked: root.nState.openPageByKey("audio", 0, "Notification silencing")
         }
