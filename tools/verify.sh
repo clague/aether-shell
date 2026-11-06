@@ -98,6 +98,8 @@ step "cli deps";      ./tools/cli-deps.py           | tail -1; ./tools/cli-deps.
 step "cli tests";     ./tests/cli-test.sh            | tail -1; ./tests/cli-test.sh            >/dev/null || fail=1
 step "ai endpoints"
 QT_QPA_PLATFORM=offscreen /usr/lib/qt6/bin/qml tests/ai-endpoints.qml >/dev/null 2>&1 && echo clean || { echo FAILED; fail=1; }
+step "hypr-vars parser"
+QT_QPA_PLATFORM=offscreen /usr/lib/qt6/bin/qml tests/hypr-vars.qml >/dev/null 2>&1 && echo clean || { echo FAILED; fail=1; }
 step "singleton self-test"
 ./tools/singleton-members.py --self-test | tail -1; ./tools/singleton-members.py --self-test >/dev/null || fail=1
 step "singletons";    ./tools/singleton-members.py | tail -1; ./tools/singleton-members.py >/dev/null || fail=1

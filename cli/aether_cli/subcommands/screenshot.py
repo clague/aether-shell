@@ -83,7 +83,9 @@ class Command:
 
         subprocess.run(["wl-copy"], input=sc_data, check=False)
 
-        dest = screenshots_cache_dir / datetime.now().strftime("%Y%m%d%H%M%S")
+        # Microseconds: two captures in the same second used to share a name, and the second
+        # one silently replaced the first on save. The suffix also lets swappy see a PNG.
+        dest = screenshots_cache_dir / f"{datetime.now().strftime('%Y%m%d%H%M%S%f')}.png"
         screenshots_cache_dir.mkdir(exist_ok=True, parents=True)
         dest.write_bytes(sc_data)
 
@@ -101,7 +103,7 @@ class Command:
         if action == "open":
             subprocess.Popen(["swappy", "-f", dest], start_new_session=True)
         elif action == "save":
-            new_dest = (screenshots_dir / dest.name).with_suffix(".png")
+            new_dest = screenshots_dir / dest.name
             new_dest.parent.mkdir(exist_ok=True, parents=True)
             dest.rename(new_dest)
             notify(f"{label} saved", f"Saved to {new_dest}")

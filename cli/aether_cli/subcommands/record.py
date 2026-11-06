@@ -56,7 +56,7 @@ class Command:
 
     def run(self) -> None:
         if self.args.pause:
-            subprocess.run(["pkill", "-USR2", "-f", RECORDER], stdout=subprocess.DEVNULL)
+            subprocess.run(["pkill", "-USR2", "-x", RECORDER], stdout=subprocess.DEVNULL)
         elif self.proc_running():
             self.stop()
         else:
@@ -140,7 +140,7 @@ class Command:
 
     def stop(self) -> None:
         # Start killing recording process
-        subprocess.run(["pkill", "-f", RECORDER], stdout=subprocess.DEVNULL)
+        subprocess.run(["pkill", "-x", RECORDER], stdout=subprocess.DEVNULL)
 
         # Wait for recording to finish to avoid corrupted video file
         while self.proc_running():

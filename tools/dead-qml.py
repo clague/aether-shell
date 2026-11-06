@@ -42,6 +42,7 @@ ALLOWED = {
     "engine swap is expected to reach for it; allowlist rather than delete.",
     "tests/ai-endpoints.qml": "a test entry point, run directly by tools/verify.sh with the Qt qml runtime. "
     "Nothing imports it, which is the point.",
+    "tests/hypr-vars.qml": "the same, for services/hyprvars.js.",
 }
 
 
