@@ -239,6 +239,15 @@ if("shell" IN_LIST ENABLE_MODULES)
     # gives it 0644; PROGRAMS sets the executable bit back.
     install(PROGRAMS scripts/wifi-connect.sh scripts/askpass.sh DESTINATION "${INSTALL_QSCONFDIR}/scripts")
 
+    # A stable name on PATH, so the environment reads `SSH_ASKPASS=aether-askpass` instead of
+    # the full path into this package. askpass.sh resolves its own location with readlink -f,
+    # so the link still finds the shell it belongs to.
+    install(CODE "
+        file(CREATE_LINK
+            \"${AETHER_QSCONFDIR_ABS}/scripts/askpass.sh\"
+            \"\$ENV{DESTDIR}${CMAKE_INSTALL_FULL_BINDIR}/aether-askpass\"
+            SYMBOLIC)")
+
     install(PROGRAMS assets/wrap_term_launch.sh DESTINATION "${INSTALL_QSCONFDIR}/assets")
 
     file(READ shell.qml SHELL_QML)

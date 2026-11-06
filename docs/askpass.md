@@ -10,12 +10,18 @@ ssh / sudo ──> scripts/askpass.sh ──> aether:askpass IPC ──> dialog 
 
 ## Setup
 
+The package puts the helper on `PATH` as `aether-askpass`, a symlink to
+`/etc/xdg/quickshell/aether/scripts/askpass.sh`, so the environment does not need the path into
+the package tree:
+
 ```sh
-# Package install. A source checkout has the same file under its own tree.
-export SSH_ASKPASS=/etc/xdg/quickshell/aether/scripts/askpass.sh
+export SSH_ASKPASS=aether-askpass
 export SSH_ASKPASS_REQUIRE=force          # ssh ignores the helper when it still has a TTY
-export SUDO_ASKPASS=/etc/xdg/quickshell/aether/scripts/askpass.sh
+export SUDO_ASKPASS=aether-askpass
 ```
+
+A source checkout gets the same name from `./tools/install-cli.sh`, which links it into
+`~/.local/bin` next to `aether`.
 
 Then `sudo -A systemctl restart something`, `ssh-add`, or any `ssh` connection whose passphrase
 is not in the agent will prompt in the shell. Programs that start `ssh` without a terminal (a GUI
@@ -25,14 +31,10 @@ without `SSH_ASKPASS_REQUIRE`.
 `SUDO_ASKPASS` only applies to `sudo -A`; plain `sudo` keeps using the terminal. If you want it
 everywhere, wrap it (`alias sudo='sudo -A'`) or configure the terminal's own askpass.
 
-The helper is installed next to the shell, at
+The script itself lives next to the shell, at
 `/etc/xdg/quickshell/aether/scripts/askpass.sh` (a package install) or in the repository's
-`scripts/` for a source build. A symlink into `~/.local/bin` is convenient:
-
-```sh
-ln -sf /etc/xdg/quickshell/aether/scripts/askpass.sh ~/.local/bin/aether-askpass
-export SSH_ASKPASS=aether-askpass SUDO_ASKPASS=aether-askpass
-```
+`scripts/` for a source build. It resolves that tree through `readlink -f`, so the symlink is
+enough -- moving or renaming the file breaks it.
 
 `QS=/path/to/qs` overrides the binary the helper calls, if `qs` is not on `PATH`.
 
