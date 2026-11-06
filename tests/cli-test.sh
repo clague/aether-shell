@@ -123,4 +123,37 @@ esac
 [ -n "$("$AETHER" --version)" ]
 checks=$((checks + 1))
 
+# Window capture: explicit stableId skips the Hyprland socket, and the fakes keep grim,
+# wl-copy and notify-send from touching the real desktop. The point is the argv and the
+# raw bytes, not a valid PNG.
+mkdir -p "$work/bin"
+cat >"$work/bin/grim" <<'EOF'
+#!/bin/sh
+printf '%s' "$*" >"$GRIM_ARGS"
+printf 'RAW-PNG'
+EOF
+cat >"$work/bin/wl-copy" <<'EOF'
+#!/bin/sh
+cat >"$WL_COPY_OUT"
+EOF
+cat >"$work/bin/notify-send" <<'EOF'
+#!/bin/sh
+exit 0
+EOF
+chmod +x "$work/bin/grim" "$work/bin/wl-copy" "$work/bin/notify-send"
+
+GRIM_ARGS=$work/grim.args WL_COPY_OUT=$work/wl-copy.out PATH="$work/bin:$PATH" \
+    "$AETHER" screenshot -w 180001e3
+check "window capture uses grim -T" "-T 180001e3 -" "$(cat "$work/grim.args")"
+check "window capture copies the raw bytes" "RAW-PNG" "$(cat "$work/wl-copy.out")"
+shot=$(find "$XDG_CACHE_HOME/aether/screenshots" -type f | head -1)
+check "window capture writes the cache file" "RAW-PNG" "$(cat "$shot")"
+
+if "$AETHER" screenshot -w 1 -r >"$work/window-region.out" 2>&1; then
+    echo "FAIL: --window and --region were accepted together" >&2
+    exit 1
+fi
+grep -q "cannot be used together" "$work/window-region.out"
+checks=$((checks + 1))
+
 printf 'PASS: %d check(s)\n' "$checks"

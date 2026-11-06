@@ -14,7 +14,11 @@ class Command:
         self.args = args
 
     def run(self) -> None:
-        if self.args.region:
+        if self.args.window is not None and self.args.region:
+            raise ValueError("--window and --region cannot be used together")
+        if self.args.window is not None:
+            self.window()
+        elif self.args.region:
             self.region()
         else:
             self.fullscreen()
@@ -25,13 +29,7 @@ class Command:
                 ["qs", "-p", str(shell_root), "ipc", "call", "picker", "openFreeze" if self.args.freeze else "open"]
             )
         else:
-            sc_data = subprocess.check_output(["grim", "-l", "0", "-g", self.args.region.strip(), "-"])
-            swappy = subprocess.Popen(["swappy", "-f", "-"], stdin=subprocess.PIPE, start_new_session=True)
-
-            # Ensure stdin is not None for the type checker
-            if swappy.stdin:
-                swappy.stdin.write(sc_data)
-                swappy.stdin.close()
+            self._capture_editor(["grim", "-l", "0", "-g", self.args.region.strip(), "-"])
 
     def fullscreen(self) -> None:
         cmd = ["grim"]
@@ -39,9 +37,32 @@ class Command:
         if focused_monitor:
             cmd += ["-o", focused_monitor["name"]]
         cmd += ["-"]
-        sc_data = subprocess.check_output(cmd)
+        self.capture(cmd, "Screenshot")
 
-        subprocess.run(["wl-copy"], input=sc_data)
+    def window(self) -> None:
+        stable = self.args.window
+        if stable == "active":
+            active = hypr.message("activewindow")
+            stable = active.get("stableId", "") if isinstance(active, dict) else ""
+
+        if not stable:
+            raise ValueError("no focused window to capture")
+
+        self.capture(["grim", "-T", str(stable), "-"], "Window screenshot")
+
+    def _capture_editor(self, cmd: list[str]) -> None:
+        sc_data = self._output(cmd)
+        swappy = subprocess.Popen(["swappy", "-f", "-"], stdin=subprocess.PIPE, start_new_session=True)
+
+        # Ensure stdin is not None for the type checker
+        if swappy.stdin:
+            swappy.stdin.write(sc_data)
+            swappy.stdin.close()
+
+    def capture(self, cmd: list[str], label: str) -> None:
+        sc_data = self._output(cmd)
+
+        subprocess.run(["wl-copy"], input=sc_data, check=False)
 
         dest = screenshots_cache_dir / datetime.now().strftime("%Y%m%d%H%M%S")
         screenshots_cache_dir.mkdir(exist_ok=True, parents=True)
@@ -54,8 +75,8 @@ class Command:
             f"STRING:image-path:{dest}",
             "--action=open=Open",
             "--action=save=Save",
-            "Screenshot taken",
-            f"Screenshot stored in {dest} and copied to clipboard",
+            f"{label} taken",
+            f"{label} stored in {dest} and copied to clipboard",
         )
 
         if action == "open":
@@ -64,4 +85,11 @@ class Command:
             new_dest = (screenshots_dir / dest.name).with_suffix(".png")
             new_dest.parent.mkdir(exist_ok=True, parents=True)
             dest.rename(new_dest)
-            notify("Screenshot saved", f"Saved to {new_dest}")
+            notify(f"{label} saved", f"Saved to {new_dest}")
+
+    @staticmethod
+    def _output(cmd: list[str]) -> bytes:
+        try:
+            return subprocess.check_output(cmd)
+        except subprocess.CalledProcessError as e:
+            raise ValueError(f"{cmd[0]} failed with exit code {e.returncode}") from e

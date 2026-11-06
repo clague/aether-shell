@@ -143,4 +143,12 @@ Scope {
             root.activeAsync = true;
         }
     }
+
+    // qmllint disable unresolved-type
+    CustomShortcut {
+        // qmllint enable unresolved-type
+        name: "screenshotWindow"
+        description: "Capture the active window's own surface"
+        onPressed: Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "screenshot", "-w"])
+    }
 }

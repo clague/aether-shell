@@ -103,6 +103,14 @@ def parse_args() -> tuple[ArgumentParser, Namespace]:
     shot = command.add_parser("screenshot", help="take a screenshot")
     shot.set_defaults(cls=screenshot.Command)
     shot.add_argument(
+        "-w",
+        "--window",
+        nargs="?",
+        const="active",
+        metavar="STABLE_ID",
+        help="capture a window's own surface (default: the active window)",
+    )
+    shot.add_argument(
         "-r", "--region", nargs="?", const="slurp", help="take a screenshot of a region"
     )
     shot.add_argument(
