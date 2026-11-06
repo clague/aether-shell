@@ -4,7 +4,7 @@ from datetime import datetime
 
 from aether_cli.utils import hypr
 from aether_cli.utils.notify import notify
-from aether_cli.utils.paths import screenshots_cache_dir, screenshots_dir
+from aether_cli.utils.paths import screenshots_cache_dir, screenshots_dir, shell_root
 
 
 class Command:
