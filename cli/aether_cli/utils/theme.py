@@ -115,27 +115,58 @@ def gen_sequences(colours: dict[str, str]) -> str:
     )
 
 
+SHELLS = {"sh", "bash", "zsh", "fish", "dash", "ksh", "mksh", "nu", "elvish", "xonsh", "csh", "tcsh"}
+
+
+def _comm(pid: int) -> str:
+    try:
+        return Path(f"/proc/{pid}/comm").read_text().strip()
+    except OSError:
+        return ""
+
+
+def _foreground_shell(fd: int) -> bool:
+    try:
+        return _comm(os.tcgetpgrp(fd)) in SHELLS
+    except OSError:
+        return False
+
+
 @log_exception
 def apply_terms(sequences: str) -> None:
     state = c_state_dir / "sequences.txt"
     state.parent.mkdir(parents=True, exist_ok=True)
     state.write_text(sequences)
 
+    try:
+        own_tty = os.ttyname(0)
+    except OSError:
+        own_tty = ""
+
+    # The palette belongs in shell sessions. Writing it into a TUI's pty makes that program read
+    # the OSC sequence as input; OpenCode turned it into a desktop notification. `own_tty` is the
+    # terminal the command was typed into, where the foreground process is the CLI instead of the
+    # shell; only include it when a shell is the parent.
+    own_is_shell = bool(own_tty) and _comm(os.getppid()) in SHELLS
+
     pts_path = Path("/dev/pts")
     for pt in pts_path.iterdir():
-        if pt.name.isdigit():
-            try:
-                # Use non-blocking write with timeout to prevent hangs
-                import os
-
-                fd = os.open(str(pt), os.O_WRONLY | os.O_NONBLOCK | os.O_NOCTTY)
-                try:
-                    os.write(fd, sequences.encode())
-                finally:
-                    os.close(fd)
-            except (PermissionError, OSError, BlockingIOError):
-                # Skip terminals that are busy, closed, or inaccessible
-                pass
+        if not pt.name.isdigit():
+            continue
+        try:
+            # Use non-blocking write with timeout to prevent hangs
+            fd = os.open(str(pt), os.O_WRONLY | os.O_NONBLOCK | os.O_NOCTTY)
+        except (PermissionError, OSError, BlockingIOError):
+            # Skip terminals that are busy, closed, or inaccessible
+            continue
+        try:
+            if not ((str(pt) == own_tty and own_is_shell) or _foreground_shell(fd)):
+                continue
+            os.write(fd, sequences.encode())
+        except (PermissionError, OSError, BlockingIOError):
+            pass
+        finally:
+            os.close(fd)
 
 
 @log_exception
