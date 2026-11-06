@@ -150,6 +150,7 @@ from PIL import Image
 im = Image.open(sys.argv[1])
 assert im.mode == "RGBA", im.mode
 assert im.size[0] > 20 and im.size[1] > 10, im.size
+assert im.getpixel((0, 0)) == (255, 255, 255, 255), im.getpixel((0, 0))
 print("framed")' "$1"
 }
 

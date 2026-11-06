@@ -222,10 +222,12 @@ def render(raw: bytes, style: WindowStyle | None = None) -> bytes:
 
     offset_x, offset_y = style.shadow_offset
     padding = extent + max(abs(offset_x), abs(offset_y)) if extent else 0
+    # White, not transparent: a shadow is invisible against a viewer's dark or checkered
+    # background. The result is an opaque presentation image.
     canvas = Image.new(
         "RGBA",
         (outer_width + padding * 2, outer_height + padding * 2),
-        (0, 0, 0, 0),
+        (255, 255, 255, 255),
     )
 
     if extent:

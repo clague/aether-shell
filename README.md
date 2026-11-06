@@ -278,10 +278,11 @@ bind = SUPER, M, global, aether:utilities
   `general:col.active_border`, `decoration:shadow:range`, `decoration:shadow:render_power`,
   `decoration:shadow:offset` and `decoration:shadow:color`. Padding follows the shadow extent.
   When Hyprland cannot be queried (tests, scripts outside the session), built-in defaults are
-  used. **Nexus → Desktop → Screenshots** controls this: *Follow the window manager* is on
-  by default; switching it off exposes rounding, border width/colour, shadow enabled/range/
-  power/offset/colour. The CLI reads the same `aether.windowFrame` block from `shell.json`.
-  Region and full-screen captures are not framed.
+  used. The frame is composited on a **white background**, so the shadow is visible in any
+  viewer; the result is opaque. **Nexus → Desktop → Screenshots** controls this: *Follow the
+  window manager* is on by default; switching it off exposes rounding, border width/colour,
+  shadow enabled/range/power/offset/colour. The CLI reads the same `aether.windowFrame` block
+  from `shell.json`. Region and full-screen captures are not framed.
 
   Hyprland has no API that renders a window *with its server-side decorations* into an alpha
   buffer: toplevel export explicitly excludes decorations, and workspace/output capture
