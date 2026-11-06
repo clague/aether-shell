@@ -15,7 +15,8 @@ QString iniValue(const QByteArray& ini, const QString& section, const QString& k
     const QString text = QString::fromUtf8(ini);
     QString current;
 
-    for (QStringView line : QStringView(text).split(u'\n', Qt::SkipEmptyParts)) {
+    const QList<QStringView> lines = QStringView(text).split(u'\n', Qt::SkipEmptyParts);
+    for (QStringView line : lines) {
         line = line.trimmed();
         if (line.isEmpty() || line.startsWith(u'#') || line.startsWith(u';'))
             continue;
