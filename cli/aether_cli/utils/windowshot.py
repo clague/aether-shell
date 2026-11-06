@@ -194,6 +194,48 @@ def style_from_config(config: dict | None = None) -> WindowStyle:
     )
 
 
+def _supersample(width: int, height: int) -> int:
+    """Enough headroom to antialias edges without exploding memory on 4K/8K surfaces."""
+    area = width * height
+    if area <= 1_500_000:
+        return 4
+    if area <= 10_000_000:
+        return 2
+    return 1
+
+
+def _rounded_mask(size: tuple[int, int], radius: int, scale: int) -> Image.Image:
+    width, height = size
+    if scale <= 1:
+        mask = Image.new("L", (width, height), 0)
+        ImageDraw.Draw(mask).rounded_rectangle(
+            (0, 0, width - 1, height - 1), radius=radius, fill=255
+        )
+        return mask
+
+    big = Image.new("L", (width * scale, height * scale), 0)
+    ImageDraw.Draw(big).rounded_rectangle(
+        (0, 0, width * scale - 1, height * scale - 1), radius=radius * scale, fill=255
+    )
+    return big.resize((width, height), Image.Resampling.LANCZOS)
+
+
+def _rect_mask(
+    size: tuple[int, int], rect: tuple[int, int, int, int], radius: int, scale: int
+) -> Image.Image:
+    width, height = size
+    if scale <= 1:
+        mask = Image.new("L", (width, height), 0)
+        ImageDraw.Draw(mask).rounded_rectangle(rect, radius=radius, fill=255)
+        return mask
+
+    big = Image.new("L", (width * scale, height * scale), 0)
+    ImageDraw.Draw(big).rounded_rectangle(
+        tuple(value * scale for value in rect), radius=radius * scale, fill=255
+    )
+    return big.resize((width, height), Image.Resampling.LANCZOS)
+
+
 def render(raw: bytes, style: WindowStyle | None = None) -> bytes:
     if style is None:
         style = WindowStyle()
@@ -247,31 +289,30 @@ def render(raw: bytes, style: WindowStyle | None = None) -> bytes:
         canvas.alpha_composite(shadow)
 
     # The border is painted outside the surface; the content keeps its full size and is
-    # clipped by the inner radius, like a compositor border ring.
-    mask = Image.new("L", (width, height), 0)
-    ImageDraw.Draw(mask).rounded_rectangle(
-        (0, 0, width - 1, height - 1), radius=inner_rounding, fill=255
-    )
-    window.putalpha(ImageChops.multiply(window.getchannel("A"), mask))
+    # clipped by the inner radius, like a compositor border ring. Both masks are drawn
+    # supersampled and reduced, because Pillow's rounded_rectangle has no antialiasing.
+    content_mask = _rounded_mask((width, height), inner_rounding, _supersample(width, height))
+    window.putalpha(ImageChops.multiply(window.getchannel("A"), content_mask))
     canvas.alpha_composite(window, (padding + border, padding + border))
 
     if border and style.border_color[3]:
-        outer_mask = Image.new("L", canvas.size, 0)
-        ImageDraw.Draw(outer_mask).rounded_rectangle(
+        scale = _supersample(*canvas.size)
+        outer_mask = _rect_mask(
+            canvas.size,
             (padding, padding, padding + outer_width - 1, padding + outer_height - 1),
-            radius=rounding,
-            fill=255,
+            rounding,
+            scale,
         )
-        inner_mask = Image.new("L", canvas.size, 0)
-        ImageDraw.Draw(inner_mask).rounded_rectangle(
+        inner_mask = _rect_mask(
+            canvas.size,
             (
                 padding + border,
                 padding + border,
                 padding + border + width - 1,
                 padding + border + height - 1,
             ),
-            radius=inner_rounding,
-            fill=255,
+            inner_rounding,
+            scale,
         )
         ring = ImageChops.subtract(outer_mask, inner_mask)
         border_layer = Image.new("RGBA", canvas.size, (*style.border_color[:3], 0))
