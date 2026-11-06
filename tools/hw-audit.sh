@@ -185,8 +185,18 @@ if [ "${errs:-0}" -gt 0 ]; then
 else
     ok "all $PAGES pages render" "$opened opened, 0 errors"
 fi
-# Close whatever those opened.
-for _ in $(seq 1 "$PAGES"); do hyprctl dispatch 'hl.dsp.window.close()' >/dev/null 2>&1; sleep 0.2; done
+# Close only the Nexus window these probes opened. The previous loop closed the *active*
+# window once per page: when Nexus did not take focus (or failed to open), that was the
+# user's terminal or browser, and it was closed instead.
+while IFS= read -r addr; do
+    [ -n "$addr" ] || continue
+    hyprctl dispatch "hl.dsp.window.close({ window = \"address:${addr}\" })" >/dev/null 2>&1
+done < <(hyprctl clients -j 2>/dev/null | python3 -c '
+import json, sys
+for client in json.load(sys.stdin):
+    if client.get("class") == "org.quickshell" and str(client.get("title", "")).startswith("Nexus"):
+        print(client.get("address", ""))
+')
 
 # --- every feature flag, flipped and put back ------------------------------
 # The smoke matrix boots presets, so it proves a *combination* loads. It cannot
