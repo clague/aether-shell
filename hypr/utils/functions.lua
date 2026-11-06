@@ -208,7 +208,7 @@ end
 local function load_toggle_config()
     local config = default_config()
 
-    local user_file = io.open(config_dir .. "/caelestia/cli.json", "r") -- CLI config
+    local user_file = io.open(config_dir .. "/aether/cli.json", "r") -- CLI config
     if not user_file then
         return config
     end

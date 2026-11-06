@@ -10,7 +10,7 @@ QtObject {
 
     property var items: []
 
-    readonly property string imageCacheDir: `${Quickshell.env("XDG_RUNTIME_DIR") || "/tmp"}/caelestia/clipboard`
+    readonly property string imageCacheDir: `${Quickshell.env("XDG_RUNTIME_DIR") || "/tmp"}/aether/clipboard`
 
     property Process fetcher: Process {
         running: false

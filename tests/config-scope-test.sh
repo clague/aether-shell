@@ -22,7 +22,7 @@ trap 'rm -rf "$tmp"' EXIT
 result=$tmp/result.txt
 
 # A fresh config dir, so the shell starts from compiled defaults and writes nowhere real.
-mkdir -p "$tmp/config/caelestia"
+mkdir -p "$tmp/config/aether"
 
 out=$tmp/run.log
 QT_QPA_PLATFORM=offscreen \
@@ -31,7 +31,7 @@ XDG_STATE_HOME="$tmp/state" \
 XDG_CACHE_HOME="$tmp/cache" \
 CONFIG_SCOPE_RESULT="$result" \
 QML2_IMPORT_PATH="$BUILD_DIR/qml${QML2_IMPORT_PATH:+:$QML2_IMPORT_PATH}" \
-CAELESTIA_LIB_DIR="$BUILD_DIR/lib" \
+AETHER_LIB_DIR="$BUILD_DIR/lib" \
     "$QS" -p "$ROOT/tests/config-scope" >"$out" 2>&1 &
 qs_pid=$!
 # Quickshell has no quit method, so wait for the file and stop the process.

@@ -17,7 +17,7 @@ PageBase {
     property Process readTokenProc: Process {
         id: readTokenProc
 
-        command: ["secret-tool", "lookup", "service", "caelestia-shell", "account", "github"]
+        command: ["sh", "-c", "secret-tool lookup service aether-shell account github 2>/dev/null || secret-tool lookup service aether-shell account github 2>/dev/null"]
         stdout: StdioCollector {
             onStreamFinished: {
                 tokenInput.text = text.trim();
@@ -27,9 +27,9 @@ PageBase {
 
     function saveToken(token) {
         if (!token) {
-            Quickshell.execDetached(["secret-tool", "clear", "service", "caelestia-shell", "account", "github"]);
+            Quickshell.execDetached(["sh", "-c", "secret-tool clear service aether-shell account github; secret-tool clear service aether-shell account github"]);
         } else {
-            Quickshell.execDetached(["bash", "-c", "secret-tool store --label=\"Aether GitHub Token\" service caelestia-shell account github <<< \"$1\"", "--", token]);
+            Quickshell.execDetached(["bash", "-c", "secret-tool store --label=\"Aether GitHub Token\" service aether-shell account github <<< \"$1\"", "--", token]);
         }
     }
 

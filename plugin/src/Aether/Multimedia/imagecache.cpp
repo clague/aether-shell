@@ -19,7 +19,7 @@ constexpr int k_bucket = 256;
 constexpr QStringView k_version = u"1";
 
 QString cacheDir() {
-    return QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation) + u"/caelestia/multimedia/image"_s;
+    return QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation) + u"/aether/multimedia/image"_s;
 }
 
 int roundUp(int value) {

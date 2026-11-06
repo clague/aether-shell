@@ -2,7 +2,7 @@
 
 local home = os.getenv("HOME") or ""
 local hypr = home .. "/.config/hypr"
-local config_dir = home .. "/.config/caelestia"
+local config_dir = home .. "/.config/aether"
 
 package.path = hypr .. "/?.lua;" .. hypr .. "/?/init.lua;" ..
                config_dir .. "/?.lua;" .. config_dir .. "/?/init.lua;" ..
@@ -525,20 +525,20 @@ end
 
 -- Friendly description mappings
 local description_mappings = {
-    ["global caelestia:launcher"] = "Toggle Launcher",
-    ["global caelestia:session"] = "Session Menu",
-    ["global caelestia:sidebar"] = "Toggle Sidebar",
-    ["global caelestia:clearNotifs"] = "Clear Notifications",
-    ["global caelestia:showall"] = "Toggle All Panels",
-    ["global caelestia:lock"] = "Lock Screen",
-    ["global caelestia:screenshotFreeze"] = "Screenshot Freeze",
-    ["global caelestia:screenshot"] = "Screenshot Region",
-    ["global caelestia:mediaToggle"] = "Media: Play / Pause",
-    ["global caelestia:mediaNext"] = "Media: Next Track",
-    ["global caelestia:mediaPrev"] = "Media: Previous Track",
-    ["global caelestia:mediaStop"] = "Media: Stop",
-    ["global caelestia:brightnessUp"] = "Brightness Up",
-    ["global caelestia:brightnessDown"] = "Brightness Down",
+    ["global aether:launcher"] = "Toggle Launcher",
+    ["global aether:session"] = "Session Menu",
+    ["global aether:sidebar"] = "Toggle Sidebar",
+    ["global aether:clearNotifs"] = "Clear Notifications",
+    ["global aether:showall"] = "Toggle All Panels",
+    ["global aether:lock"] = "Lock Screen",
+    ["global aether:screenshotFreeze"] = "Screenshot Freeze",
+    ["global aether:screenshot"] = "Screenshot Region",
+    ["global aether:mediaToggle"] = "Media: Play / Pause",
+    ["global aether:mediaNext"] = "Media: Next Track",
+    ["global aether:mediaPrev"] = "Media: Previous Track",
+    ["global aether:mediaStop"] = "Media: Stop",
+    ["global aether:brightnessUp"] = "Brightness Up",
+    ["global aether:brightnessDown"] = "Brightness Down",
     ["exec aether screenshot"] = "Screenshot",
     ["exec aether record"] = "Record Screen",
     ["exec aether record -s"] = "Record Screen (Sound)",

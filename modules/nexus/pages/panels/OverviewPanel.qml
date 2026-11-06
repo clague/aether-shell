@@ -132,7 +132,7 @@ PageBase {
 
                 StyledText {
                     Layout.fillWidth: true
-                    text: Tr.tr("Press your configured overview hotkey or run `caelestia ipc overview toggle` to open the taskview at any time.")
+                    text: Tr.tr("Press your configured overview hotkey or run `aether ipc overview toggle` to open the taskview at any time.")
                     color: Colours.palette.m3onSurfaceVariant
                     font: Tokens.font.body.small
                     wrapMode: Text.WordWrap

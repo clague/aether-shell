@@ -27,7 +27,7 @@ QT_QPA_PLATFORM=offscreen \
 XDG_CONFIG_HOME="$tmp/config" XDG_STATE_HOME="$tmp/state" XDG_CACHE_HOME="$tmp/cache" \
 CONFIG_PATHS_OUT="$dump" \
 QML2_IMPORT_PATH="$BUILD_DIR/qml${QML2_IMPORT_PATH:+:$QML2_IMPORT_PATH}" \
-CAELESTIA_LIB_DIR="$BUILD_DIR/lib" \
+AETHER_LIB_DIR="$BUILD_DIR/lib" \
     "$QS" -p "$ROOT/tests/config-paths" >"$tmp/run.log" 2>&1 &
 qs_pid=$!
 # Quickshell has no quit method, so wait for the file and stop the process.

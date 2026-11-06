@@ -106,7 +106,7 @@ PageBase {
             Layout.fillWidth: true
             Layout.topMargin: Tokens.spacing.small
             visible: root.plugins.length === 0
-            text: Tr.tr("No plugins installed. A plugin is a folder holding a manifest.json, placed in %1").arg(`~/.local/share/caelestia/plugins`)
+            text: Tr.tr("No plugins installed. A plugin is a folder holding a manifest.json, placed in %1").arg(`~/.local/share/aether/plugins`)
             color: Colours.palette.m3outline
             font: Tokens.font.body.small
             wrapMode: Text.WordWrap
@@ -117,7 +117,7 @@ PageBase {
             icon: "folder_open"
             text: Tr.tr("Open plugins folder")
             subtext: Tr.tr("Shell version %1").arg(Plugins.shellVersion)
-            onClicked: Quickshell.execDetached(["xdg-open", `${Quickshell.env("HOME")}/.local/share/caelestia/plugins`])
+            onClicked: Quickshell.execDetached(["xdg-open", `${Quickshell.env("HOME")}/.local/share/aether/plugins`])
         }
 
         RowButton {

@@ -88,7 +88,7 @@ Singleton {
         // Game mode turns blur off on purpose and restores itself through a reload
         if (GameMode.enabled || !Hypr.usingLua || (isDefault && !touched))
             return;
-        const ns = "caelestia-overview";
+        const ns = "aether-overview";
         const op = (effectivePercent / 100).toFixed(2);
         const rules = [`eval hl.layer_rule({ match = { namespace = "${ns}" }, blur = ${overviewBlur} })`, `eval hl.layer_rule({ match = { namespace = "${ns}" }, ignore_alpha = 0.2 })`, `eval hl.window_rule({ match = { fullscreen = false }, opacity = "${op} override" })`,
             // Later rules win, so this must come after the general one; off puts them back

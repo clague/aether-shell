@@ -26,7 +26,7 @@ failed to register listener on path "/org/quickshell/PolkitAgent"
 
 # Fresh isolated XDG_STATE_HOME genuinely has no colour scheme yet. Writing one is
 # the CLI's job and the shell falls back correctly.
-Read of .*/state/caelestia/scheme\.json failed: File does not exist
+Read of .*/state/aether/scheme\.json failed: File does not exist
 
 # Qt Quick's own image-loading thread, not ours. The full message names the participants:
 #

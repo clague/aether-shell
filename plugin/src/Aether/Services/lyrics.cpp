@@ -39,7 +39,7 @@ constexpr qreal k_indexFudge = 0.1;
 
 [[nodiscard]] const QHash<QByteArray, QByteArray>& lrclibHeaders() {
     static const QHash<QByteArray, QByteArray> k_h = {
-        { "User-Agent"_ba, "caelestia-shell (https://github.com/caelestia-dots/shell)"_ba },
+        { "User-Agent"_ba, "aether-shell (https://github.com/clague/aether-shell)"_ba },
     };
     return k_h;
 }
@@ -913,7 +913,7 @@ const QString& Lyrics::stateDir() {
         if (state.isEmpty()) {
             state = QDir::homePath() + u"/.local/state"_s;
         }
-        return state + u"/caelestia/lyrics"_s;
+        return state + u"/aether/lyrics"_s;
     }();
     return k_dir;
 }
@@ -924,7 +924,7 @@ const QString& Lyrics::cacheDir() {
         if (cache.isEmpty()) {
             cache = QDir::homePath() + u"/.cache"_s;
         }
-        return cache + u"/caelestia/lyrics"_s;
+        return cache + u"/aether/lyrics"_s;
     }();
     return k_dir;
 }

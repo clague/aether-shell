@@ -3,7 +3,7 @@ pragma ComponentBehavior: Bound
 import qs.services
 import qs.modules.nexus.common
 
-// A SliderRow bound to one key of ~/.config/caelestia/hypr-vars.lua. The slider itself works in
+// A SliderRow bound to one key of ~/.config/aether/hypr-vars.lua. The slider itself works in
 // 0-1 while the variable uses the from-to range, so the value is mapped on the way in and out.
 SliderRow {
     id: root

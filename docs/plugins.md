@@ -8,12 +8,12 @@ in `plugin/src/Aether/Plugins/` implements; read it for anything this page does 
 
 A plugin is one directory with a `manifest.json` in it. The loader scans, in order:
 
-1. `~/.local/share/caelestia/plugins/<dir>/`
-2. `~/.config/caelestia/plugins/<dir>/`
+1. `~/.local/share/aether/plugins/<dir>/`
+2. `~/.config/aether/plugins/<dir>/`
 3. every directory in `$CAELESTIA_PLUGIN_PATH` (colon separated)
 
 The directory name does not matter; the id comes from the manifest. Which plugins are enabled,
-and every plugin's saved settings, live in `~/.config/caelestia/plugins.json`.
+and every plugin's saved settings, live in `~/.config/aether/plugins.json`.
 
 Enabling a plugin registers its QML module and seals its directory (a plugin resolves its own
 files by name and cannot reach into another plugin's). A change on disk is picked up by the file

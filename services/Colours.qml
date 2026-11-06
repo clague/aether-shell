@@ -108,35 +108,35 @@ Singleton {
         if (Hypr.usingLua) {
             rule = `eval hl.layer_rule({ match = { namespace = "%1" }, %2 = %3 })`;
             trEnabled = transparency.enabled;
-            messages.push(rule.arg("caelestia-drawers").arg("blur").arg(trEnabled));
-            messages.push(rule.arg("caelestia-drawers").arg("ignore_alpha").arg(ignoreAlpha));
-            messages.push(rule.arg("caelestia-quicknote").arg("blur").arg(trEnabled));
-            messages.push(rule.arg("caelestia-quicknote").arg("ignore_alpha").arg(ignoreAlpha));
-            messages.push(rule.arg("caelestia-polkit").arg("blur").arg(trEnabled));
-            messages.push(rule.arg("caelestia-polkit").arg("ignore_alpha").arg(ignoreAlpha));
+            messages.push(rule.arg("aether-drawers").arg("blur").arg(trEnabled));
+            messages.push(rule.arg("aether-drawers").arg("ignore_alpha").arg(ignoreAlpha));
+            messages.push(rule.arg("aether-quicknote").arg("blur").arg(trEnabled));
+            messages.push(rule.arg("aether-quicknote").arg("ignore_alpha").arg(ignoreAlpha));
+            messages.push(rule.arg("aether-polkit").arg("blur").arg(trEnabled));
+            messages.push(rule.arg("aether-polkit").arg("ignore_alpha").arg(ignoreAlpha));
             // The askpass prompt is the polkit dialog under another namespace; it needs the
             // same blur and alpha threshold or the shared background renders unblurred.
-            messages.push(rule.arg("caelestia-askpass").arg("blur").arg(trEnabled));
-            messages.push(rule.arg("caelestia-askpass").arg("ignore_alpha").arg(ignoreAlpha));
-            messages.push(rule.arg("caelestia-desktopLyricsOverlay").arg("blur").arg(trEnabled));
-            messages.push(rule.arg("caelestia-desktopLyricsOverlay").arg("ignore_alpha").arg(ignoreAlpha));
-            messages.push(`eval hl.layer_rule({ match = { namespace = "caelestia-shimeji" }, no_anim = true })`);
+            messages.push(rule.arg("aether-askpass").arg("blur").arg(trEnabled));
+            messages.push(rule.arg("aether-askpass").arg("ignore_alpha").arg(ignoreAlpha));
+            messages.push(rule.arg("aether-desktopLyricsOverlay").arg("blur").arg(trEnabled));
+            messages.push(rule.arg("aether-desktopLyricsOverlay").arg("ignore_alpha").arg(ignoreAlpha));
+            messages.push(`eval hl.layer_rule({ match = { namespace = "aether-shimeji" }, no_anim = true })`);
         } else {
             rule = "keyword layerrule %2 %3, match:namespace %1";
             trEnabled = transparency.enabled ? 1 : 0;
-            messages.push(rule.arg("caelestia-drawers").arg("blur").arg(trEnabled));
-            messages.push(rule.arg("caelestia-drawers").arg("ignore_alpha").arg(ignoreAlpha));
-            messages.push(rule.arg("caelestia-quicknote").arg("blur").arg(trEnabled));
-            messages.push(rule.arg("caelestia-quicknote").arg("ignore_alpha").arg(ignoreAlpha));
-            messages.push(rule.arg("caelestia-polkit").arg("blur").arg(trEnabled));
-            messages.push(rule.arg("caelestia-polkit").arg("ignore_alpha").arg(ignoreAlpha));
+            messages.push(rule.arg("aether-drawers").arg("blur").arg(trEnabled));
+            messages.push(rule.arg("aether-drawers").arg("ignore_alpha").arg(ignoreAlpha));
+            messages.push(rule.arg("aether-quicknote").arg("blur").arg(trEnabled));
+            messages.push(rule.arg("aether-quicknote").arg("ignore_alpha").arg(ignoreAlpha));
+            messages.push(rule.arg("aether-polkit").arg("blur").arg(trEnabled));
+            messages.push(rule.arg("aether-polkit").arg("ignore_alpha").arg(ignoreAlpha));
             // The askpass prompt is the polkit dialog under another namespace; it needs the
             // same blur and alpha threshold or the shared background renders unblurred.
-            messages.push(rule.arg("caelestia-askpass").arg("blur").arg(trEnabled));
-            messages.push(rule.arg("caelestia-askpass").arg("ignore_alpha").arg(ignoreAlpha));
-            messages.push(rule.arg("caelestia-desktopLyricsOverlay").arg("blur").arg(trEnabled));
-            messages.push(rule.arg("caelestia-desktopLyricsOverlay").arg("ignore_alpha").arg(ignoreAlpha));
-            messages.push("keyword layerrule noanim, match:namespace caelestia-shimeji");
+            messages.push(rule.arg("aether-askpass").arg("blur").arg(trEnabled));
+            messages.push(rule.arg("aether-askpass").arg("ignore_alpha").arg(ignoreAlpha));
+            messages.push(rule.arg("aether-desktopLyricsOverlay").arg("blur").arg(trEnabled));
+            messages.push(rule.arg("aether-desktopLyricsOverlay").arg("ignore_alpha").arg(ignoreAlpha));
+            messages.push("keyword layerrule noanim, match:namespace aether-shimeji");
         }
         Hypr.extras.batchMessage(messages);
     }

@@ -59,7 +59,7 @@ MouseArea {
 
     // Screenshots are handed to other processes, but they belong to this session: a fixed name in
     // /tmp is shared with every local user and survives the logout it was made in.
-    readonly property string tmpDir: `${Quickshell.env("XDG_RUNTIME_DIR") || "/tmp"}/caelestia`
+    readonly property string tmpDir: `${Quickshell.env("XDG_RUNTIME_DIR") || "/tmp"}/aether`
 
     function checkClientRects(x: real, y: real): void {
         for (const client of clients) {

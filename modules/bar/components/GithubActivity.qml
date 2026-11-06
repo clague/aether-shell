@@ -112,7 +112,7 @@ StyledRect {
 
         command: ["bash", "-c", `
         set -Eeuo pipefail
-        export GITHUB_TOKEN="$(secret-tool lookup service caelestia-shell account github 2>/dev/null || echo '')"
+        export GITHUB_TOKEN="$(secret-tool lookup service aether-shell account github 2>/dev/null || secret-tool lookup service caelestia-shell account github 2>/dev/null || echo '')"
         # Not configured is a normal state: exit quietly and let the widget show nothing.
         [ -n "\${GITHUB_TOKEN:-}" ] || exit 0
 

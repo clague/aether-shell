@@ -1,10 +1,10 @@
 #pragma once
 
-#include <qloggingcategory.h>
 #include <qstring.h>
 
 #include "settings/macros.hpp"
 #include "settings/objectnode.hpp"
+#include "paths.hpp"
 
 #define CONFIG_NODE_NO_CTOR SETTINGS_NODE_NO_CTOR
 #define CONFIG_NODE SETTINGS_NODE
@@ -26,11 +26,6 @@
     SETTINGS_GLOBAL_LIST(aether::shell::config::Type, name, DEFAULT_ARG(defaultVal), __VA_ARGS__)
 
 namespace aether::shell::config {
-
-Q_DECLARE_LOGGING_CATEGORY(lcConfig)
-
-QString configDir();
-QString monitorConfigDir();
 
 class ListEntry : public settings::ObjectNode {
     CONFIG_NODE(ListEntry, settings::ObjectNode)

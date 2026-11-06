@@ -194,7 +194,7 @@ void LuaLsp::start() {
                 { u"rootUri"_s, rootUri },
                 {
                     u"workspaceFolders"_s,
-                    QJsonArray{ QJsonObject{ { u"uri"_s, rootUri }, { u"name"_s, u"caelestia"_s } } },
+                    QJsonArray{ QJsonObject{ { u"uri"_s, rootUri }, { u"name"_s, u"aether"_s } } },
                 },
                 {
                     u"capabilities"_s,

@@ -21,7 +21,7 @@ Scope {
     function applyBlurRule(): void {
         const enabled = Colours.transparency.enabled;
         const ignoreAlpha = Math.min(0.57, Math.max(0, Colours.transparency.base - 0.03));
-        const ns = "caelestia-display-confirm";
+        const ns = "aether-display-confirm";
         Hypr.extras.batchMessage(Hypr.usingLua ? [`eval hl.layer_rule({ match = { namespace = "${ns}" }, blur = ${enabled} })`, `eval hl.layer_rule({ match = { namespace = "${ns}" }, ignore_alpha = ${ignoreAlpha} })`] : [`keyword layerrule blur ${enabled ? 1 : 0}, match:namespace ${ns}`, `keyword layerrule ignore_alpha ${ignoreAlpha}, match:namespace ${ns}`]);
     }
 

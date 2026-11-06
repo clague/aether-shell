@@ -830,10 +830,10 @@ msgstr "没有匹配的快捷键"
 #: modules/launcher/ContentList.qml
 msgid ""
 "Try adding .lua files to\n"
-"~/.config/caelestia/animations/"
+"~/.config/aether/animations/"
 msgstr ""
 "尝试将 .lua 文件添加到\n"
-"~/.config/caelestia/animations/"
+"~/.config/aether/animations/"
 
 #: modules/launcher/items/CalcItem.qml
 msgid "Calculating..."
@@ -4464,10 +4464,10 @@ msgstr "快捷键切换"
 
 #: modules/nexus/pages/panels/OverviewPanel.qml
 msgid ""
-"Press your configured overview hotkey or run `caelestia ipc overview toggle` "
+"Press your configured overview hotkey or run `aether ipc overview toggle` "
 "to open the taskview at any time."
 msgstr ""
-"按下你配置的概览热键，或运行 `caelestia ipc overview toggle`，随时打开任务视"
+"按下你配置的概览热键，或运行 `aether ipc overview toggle`，随时打开任务视"
 "图。"
 
 #: modules/nexus/pages/panels/SidebarPanel.qml
@@ -6216,14 +6216,14 @@ msgstr "主题包指南"
 
 #: modules/nexus/pages/wallandstyle/ThemeSelect.qml
 msgid ""
-"<b>1.</b> Create a folder in <b>~/.local/share/caelestia/themes/[ThemeName]/"
+"<b>1.</b> Create a folder in <b>~/.local/share/aether/themes/[ThemeName]/"
 "</b><br><b>2.</b> Add your wallpaper: <b>wallpaper.jpg</b> (or "
 "<b>wallpaper.png</b>)<br><b>3.</b> <i>(Optional)</i> Add <b>lock.gif</b>, "
 "<b>media.gif</b>, <b>session.gif</b> and <b>notif.png</b> in the same "
 "folder<br><b>4.</b> Your theme appears automatically here and via <b>:theme</"
 "b> in the launcher!"
 msgstr ""
-"<b>1.</b> 在 <b>~/.local/share/caelestia/themes/[ThemeName]/</b> 中创建一个文"
+"<b>1.</b> 在 <b>~/.local/share/aether/themes/[ThemeName]/</b> 中创建一个文"
 "件夹<br><b>2.</b> 添加你的壁纸：<b>wallpaper.jpg</b>（或 <b>wallpaper.png</"
 "b>）<br><b>3.</b> <i>（可选）</i> 在同一文件夹中添加 <b>lock.gif</b>、"
 "<b>media.gif</b>、<b>session.gif</b> 和 <b>notif.png</b><br><b>4.</b> 你的主"
@@ -8243,8 +8243,8 @@ msgstr "渲染器"
 msgid "Rescan Notes"
 msgstr "重新扫描笔记"
 #: modules/
-msgid "Run `caelestia ipc quicknote toggle` or bind it in Hyprland to pop up your scratchpad with tags from anywhere."
-msgstr "运行 `caelestia ipc quicknote toggle`，或在 Hyprland 中绑定它，即可在任意位置弹出带标签的草稿本。"
+msgid "Run `aether ipc quicknote toggle` or bind it in Hyprland to pop up your scratchpad with tags from anywhere."
+msgstr "运行 `aether ipc quicknote toggle`，或在 Hyprland 中绑定它，即可在任意位置弹出带标签的草稿本。"
 #: modules/
 msgid "Score: %1"
 msgstr "得分：%1"
@@ -9107,8 +9107,8 @@ msgid "Install it with ./tools/install-qt-theme.sh, then log out and back in"
 msgstr "运行 ./tools/install-qt-theme.sh 安装，然后重新登录"
 
 #: modules/nexus/common/DoctorText.qml
-msgid "Set QT_QPA_PLATFORMTHEME=aether in ~/.config/caelestia/hypr-user.lua"
-msgstr "在 ~/.config/caelestia/hypr-user.lua 里设置 QT_QPA_PLATFORMTHEME=aether"
+msgid "Set QT_QPA_PLATFORMTHEME=aether in ~/.config/aether/hypr-user.lua"
+msgstr "在 ~/.config/aether/hypr-user.lua 里设置 QT_QPA_PLATFORMTHEME=aether"
 
 #: modules/nexus/common/DoctorText.qml
 msgid "Point XCURSOR_THEME at a theme in ~/.icons or ~/.local/share/icons"

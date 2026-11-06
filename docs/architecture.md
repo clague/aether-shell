@@ -147,10 +147,11 @@ and `--extract-thumbs`, extended `screenshot`, `record --fps`, `search`, astra s
 
 **Superseded 2026-11-06 (D6).** The shell no longer spawns that binary. Every subcommand it used
 now lives in this checkout as `bin/aether` (`cli/aether_cli/`), so the fork has no
-consumer left; `caelestia` remains only as an IPC target namespace and a config path. The separate
+consumer left; `aether` is now the IPC namespace and config path, and `caelestia` is only a
+legacy directory that the shell copies once on first start. The separate
 `caelestia-hybrid-cli` repository is therefore no longer required to run this shell. The one
 behaviour the move changes: the scheme's Hyprland file is written to
-`$XDG_STATE_HOME/caelestia/scheme/current.lua`, not `~/.config/hypr/scheme/`, keeping D11 intact.
+`$XDG_STATE_HOME/aether/scheme/current.lua`, not `~/.config/hypr/scheme/`, keeping D11 intact.
 
 ### D8 — Superseded: there are no presets
 
@@ -184,7 +185,7 @@ never a PR, never an automatic merge into `main`.
 
 ### D11 — Hyprland settings persist through hypr-vars.lua
 
-The shell writes exactly one Hyprland file: `~/.config/caelestia/hypr-vars.lua`, the override table
+The shell writes exactly one Hyprland file: `~/.config/aether/hypr-vars.lua`, the override table
 that the dotfiles' `hyprland.lua` merges into `variables`. Every compositor setting the shell owns
 is written there as an override; clearing the key restores the user's `variables.lua` value. The
 live `hyprctl eval` pushes stay, but only as an immediate preview — persistence is the config, not
@@ -242,7 +243,7 @@ follows — the session's own setting first, the CLI's generated template last:
 | widget style | `appearance.qtStyle` in `shell.json`, then Kvantum if a theme is configured, then the CLI's style, then Fusion |
 | icon theme | `[Icons] Theme` in `kdeglobals`, then the CLI's `iconTheme`, then `Papirus-<mode>` |
 | font | **none** — `font()` returns nullptr, so Qt takes it from fontconfig, which is where the shell's "App fonts" page writes |
-| KDE applications | `qApp->setProperty("KDE_COLOR_SCHEME_PATH", …)` pointing at `~/.local/state/caelestia/aether.colors`, which `scripts/aether-colors.py` writes when the shell applies a scheme |
+| KDE applications | `qApp->setProperty("KDE_COLOR_SCHEME_PATH", …)` pointing at `~/.local/state/aether/aether.colors`, which `scripts/aether-colors.py` writes when the shell applies a scheme |
 
 That last row is not a detail. KDE applications do not paint from `QPalette` — Dolphin's places
 panel asks `KColorScheme`, which prefers the `KDE_COLOR_SCHEME_PATH` application property and
@@ -305,7 +306,7 @@ feature: widgets keep the shape the user picked, and the engine does not fight i
 applications create no `QStyle`, so the shell and its surfaces stay on the scheme either way.
 
 The choice itself is a setting, not an environment variable: `appearance.qtStyle` in
-`~/.config/caelestia/shell.json`, exposed as **Look & feel → Qt applications → Widget style**, with
+`~/.config/aether/shell.json`, exposed as **Look & feel → Qt applications → Widget style**, with
 `Automatic` as the first entry and every style Qt can create after it. It cannot live where qt6ct
 and qtengine keep theirs — the caelestia CLI regenerates `~/.config/qtengine/config.json` from a
 template on every scheme change (`utils/theme.py: apply_qt`), so a value written there survives only
@@ -324,7 +325,7 @@ silently rewrite the setting.
 Installation is two paths because the theme has to be visible to processes the shell never
 starts: `make install` puts it in `${prefix}/lib/qt6/plugins/platformthemes`, and
 `tools/install-qt-theme.sh` copies the build output to `~/.local/lib/qt6/plugins` for a
-checkout. `QT_PLUGIN_PATH` and `QT_QPA_PLATFORMTHEME=aether` go in `~/.config/caelestia/hypr-user.lua`,
+checkout. `QT_PLUGIN_PATH` and `QT_QPA_PLATFORMTHEME=aether` go in `~/.config/aether/hypr-user.lua`,
 never in `hypr/` — that tree is shared, and an absolute checkout path in it breaks every
 other machine (which is why the same rule removed a hardcoded `QML2_IMPORT_PATH`).
 

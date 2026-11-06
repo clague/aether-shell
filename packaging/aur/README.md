@@ -45,5 +45,5 @@ After the first import, bump `pkgver` (or leave `pkgver()` to regenerate it) and
 - Ships the Hyprland reference config to `/usr/share/aether-shell/hypr` and prints the autostart
   line and keybind location after install. It never writes `~/.config/hypr`.
 - Does not conflict with `caelestia-shell-git`: the system files use `aether` paths, so both
-  packages can be installed. Only run one of them at a time (both answer on the `caelestia:*`
-  IPC names and draw a bar). Existing `~/.config/caelestia` settings are reused.
+  packages can be installed. Only run one of them at a time (both answer on the `aether:*`
+  IPC names and draw a bar). An existing `~/.config/caelestia` is copied once to `~/.config/aether` on first start; the old directory is left alone.

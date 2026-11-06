@@ -42,7 +42,7 @@ Q_LOGGING_CATEGORY(lcTheme, "aether.qt.theme", QtInfoMsg)
 constexpr int k_reloadDelayMs = 150;
 
 QString stateDir() {
-    return QStandardPaths::writableLocation(QStandardPaths::GenericStateLocation) + u"/caelestia"_s;
+    return QStandardPaths::writableLocation(QStandardPaths::GenericStateLocation) + u"/aether"_s;
 }
 
 // qtengine writes this when the user has it installed. Reading it keeps Aether's engine a
@@ -58,7 +58,7 @@ QString configPath() {
 // The shell's own settings. This is the only place a style choice can live: a generated
 // qtengine config is replaced on theme changes, so a value written there does not survive.
 QString shellConfigPath() {
-    return QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/caelestia/shell.json"_s;
+    return QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/aether/shell.json"_s;
 }
 
 // The desktop's own icon theme. KDE writes it here and every Plasma tool reads it, so a session
@@ -72,7 +72,7 @@ QString kdeglobalsPath() {
 // scheme change), then whatever kdeglobals names, then nothing.
 QString colorSchemePath(const QByteArray& kdeglobals) {
     QString generated =
-        QStandardPaths::writableLocation(QStandardPaths::GenericStateLocation) + u"/caelestia/aether.colors"_s;
+        QStandardPaths::writableLocation(QStandardPaths::GenericStateLocation) + u"/aether/aether.colors"_s;
     if (QFileInfo::exists(generated))
         return generated;
 

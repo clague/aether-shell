@@ -129,10 +129,14 @@ QString CUtils::toLocalFile(const QUrl& url) {
         QString relative = QDir::current().absoluteFilePath(path);
         if (QFile::exists(relative))
             return relative;
-        QString xdgConfig = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) +
-                            QStringLiteral("/quickshell/caelestia/") + path;
-        if (QFile::exists(xdgConfig))
-            return xdgConfig;
+        const QString configBase = QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation);
+        // aether is the current name; the caelestia fallback keeps a source checkout that has not
+        // been renamed yet working.
+        for (const QString& dir : { QStringLiteral("/quickshell/aether/"), QStringLiteral("/quickshell/caelestia/") }) {
+            const QString candidate = configBase + dir + path;
+            if (QFile::exists(candidate))
+                return candidate;
+        }
         return relative;
     }
 

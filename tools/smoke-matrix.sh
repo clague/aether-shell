@@ -497,8 +497,8 @@ run_preset() {
     name=$(basename "$preset" .json)
     log=$LOG_DIR/${name}${label:+.$label}.log
     cfg=$(mktemp -d)
-    mkdir -p "$cfg/caelestia"
-    cp "$preset" "$cfg/caelestia/shell.json"
+    mkdir -p "$cfg/aether"
+    cp "$preset" "$cfg/aether/shell.json"
     runs=$((runs + 1))
 
     printf '  %-16s ' "$name"

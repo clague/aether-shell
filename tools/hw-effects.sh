@@ -25,7 +25,7 @@ export XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}
 : "${HYPRLAND_INSTANCE_SIGNATURE:=$(ls -t "$XDG_RUNTIME_DIR/hypr" 2>/dev/null | head -1)}"
 export HYPRLAND_INSTANCE_SIGNATURE
 
-CFG=${AETHER_CONFIG:-$HOME/.config/caelestia/shell.json}
+CFG=${AETHER_CONFIG:-$HOME/.config/aether/shell.json}
 SETTLE=${SETTLE:-3}
 
 G=$'\033[1;32m'; R=$'\033[1;31m'; Y=$'\033[0;33m'; N=$'\033[0m'
@@ -42,9 +42,9 @@ bar.persistent|false|reserved|[10, 10, 10, 10]|a non-persistent bar reserves not
 border.thickness|24|reserved|[24, 88, 24, 24]|border thickness scales every edge
 appearance.islands|true|reserved|[10, 88, 10, 10]|islands widens the bar's reserved zone
 bar.excludedScreens|["LVDS-1"]|reserved|[10, 10, 10, 10]|an excluded screen gets no bar
-background.wallpaperEnabled|false|layer:caelestia-background|level=1|no wallpaper drops the background out of the wallpaper layer
-background.desktopLyrics.enabled|false|layer:caelestia-desktopLyricsOverlay|absent|the lyrics overlay is not mapped when lyrics are off
-background.desktopLyrics.enabled|true|layer:caelestia-desktopLyricsOverlay|level=3|and is mapped when they are on
+background.wallpaperEnabled|false|layer:aether-background|level=1|no wallpaper drops the background out of the wallpaper layer
+background.desktopLyrics.enabled|false|layer:aether-desktopLyricsOverlay|absent|the lyrics overlay is not mapped when lyrics are off
+background.desktopLyrics.enabled|true|layer:aether-desktopLyricsOverlay|level=3|and is mapped when they are on
 EOP
 )
 

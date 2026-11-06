@@ -15,7 +15,7 @@ import qs.services
 import qs.utils
 import qs.modules.nexus.common
 
-// A small code editor for ~/.config/caelestia/hypr-user.lua: Lua syntax highlighting, line
+// A small code editor for ~/.config/aether/hypr-user.lua: Lua syntax highlighting, line
 // numbers, auto-indent, save/reload, and diagnostics + completion from lua-language-server.
 PageBase {
     id: root

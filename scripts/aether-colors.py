@@ -19,7 +19,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-STATE = Path(os.getenv("XDG_STATE_HOME", Path.home() / ".local/state")) / "caelestia"
+STATE = Path(os.getenv("XDG_STATE_HOME", Path.home() / ".local/state")) / "aether"
 
 
 def colour(colours: dict, key: str, fallback: str = "") -> str:

@@ -14,9 +14,9 @@ QString themeAsset(const settings::Node* self, const QString& file, const QStrin
     const QString theme = self ? self->value(u"themeName"_s).toString() : QString();
     if (theme.isEmpty())
         return fallback;
-    // Themes the user added (~/.local/share/caelestia/themes/<name>/) win over the bundled ones,
+    // Themes the user added (~/.local/share/aether/themes/<name>/) win over the bundled ones,
     // so a packaged read-only install can still have themes.
-    QString userPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + u"/caelestia/themes/"_s +
+    QString userPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + u"/aether/themes/"_s +
                        theme + u'/' + file;
     if (QFileInfo::exists(userPath))
         return userPath;

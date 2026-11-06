@@ -31,7 +31,7 @@ case ${1:-} in
     --remove)
         rm -f "$DEST/libaethertheme.so"
         printf '%s removed %s\n' "$(blue ==\>)" "$DEST/libaethertheme.so"
-        printf '     drop QT_QPA_PLATFORMTHEME=aether from ~/.config/caelestia/hypr-user.lua\n'
+        printf '     drop QT_QPA_PLATFORMTHEME=aether from ~/.config/aether/hypr-user.lua\n'
         exit 0
         ;;
 esac
@@ -47,4 +47,4 @@ mkdir -p "$DEST"
 install -m 0755 "$SRC" "$DEST/libaethertheme.so"
 printf '%s %s\n' "$(blue ==\>)" "$DEST/libaethertheme.so"
 printf '     set QT_QPA_PLATFORMTHEME=aether and QT_PLUGIN_PATH=%s\n' "${DEST%/platformthemes}"
-printf '     in ~/.config/caelestia/hypr-user.lua, not in the shared hypr config\n'
+printf '     in ~/.config/aether/hypr-user.lua, not in the shared hypr config\n'

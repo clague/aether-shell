@@ -49,7 +49,7 @@ ok()   { PASS=$((PASS+1)); printf "  %-34s ${G}ok${N} %s\n" "$1" "${2:-}"; }
 bad()  { FAIL=$((FAIL+1)); printf "  %-34s ${R}FAIL${N} %s\n" "$1" "${2:-}"; }
 skip() { SKIP=$((SKIP+1)); printf "  %-34s ${Y}skip${N} %s\n" "$1" "${2:-}"; }
 
-CFG=$HOME/.config/caelestia/shell.json
+CFG=$HOME/.config/aether/shell.json
 CFG_BACKUP=""
 cleanup() {
     ipc gameMode disable >/dev/null 2>&1

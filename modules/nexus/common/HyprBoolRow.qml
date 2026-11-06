@@ -3,7 +3,7 @@ pragma ComponentBehavior: Bound
 import qs.services
 import qs.modules.nexus.common
 
-// A ToggleRow bound to one key of ~/.config/caelestia/hypr-vars.lua
+// A ToggleRow bound to one key of ~/.config/aether/hypr-vars.lua
 ToggleRow {
     id: root
 

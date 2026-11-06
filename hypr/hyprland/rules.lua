@@ -221,7 +221,7 @@ hl.layer_rule({ match = { namespace = "wayfreeze" }, animation = "fade" })      
 hl.layer_rule({ match = { namespace = "launcher" }, animation = "popin 80%", blur = true }) -- Fuzzel
 
 -- Shell
-hl.layer_rule({ match = { namespace = "caelestia-(border-exclusion|area-picker)" }, no_anim = true })
-hl.layer_rule({ match = { namespace = "caelestia-(drawers|background)" }, animation = "fade" })
+hl.layer_rule({ match = { namespace = "aether-(border-exclusion|area-picker)" }, no_anim = true })
+hl.layer_rule({ match = { namespace = "aether-(drawers|background)" }, animation = "fade" })
 -- Overview blur (toggled from Settings)
-hl.layer_rule({ match = { namespace = "caelestia-overview" }, blur = vars.overviewBlur, ignore_alpha = 0.2 })
+hl.layer_rule({ match = { namespace = "aether-overview" }, blur = vars.overviewBlur, ignore_alpha = 0.2 })

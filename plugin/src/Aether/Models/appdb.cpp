@@ -165,7 +165,7 @@ void AppDb::setPath(const QString& path) {
     db.setDatabaseName(newPath);
 
     // SQLite will not create the containing directory, and on a fresh install
-    // $XDG_STATE_HOME/caelestia does not exist yet. Without this, open() fails, its
+    // $XDG_STATE_HOME/aether does not exist yet. Without this, open() fails, its
     // return value was ignored, and the first query reported "QSqlQuery::exec: database
     // not open" with nothing to say which database or why -- so app launch frequencies
     // silently never recorded.

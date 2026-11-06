@@ -57,7 +57,7 @@ move_for_real() {
         warp "$x" "$y"
     fi
 }
-global() { hyprctl dispatch "hl.dsp.global(\"caelestia:$1\")" >/dev/null 2>&1; }
+global() { hyprctl dispatch "hl.dsp.global(\"aether:$1\")" >/dev/null 2>&1; }
 
 ok()   { PASS=$((PASS+1)); printf "  %-34s ${G}ok${N} %s\n" "$1" "${2:-}"; }
 bad()  { FAIL=$((FAIL+1)); printf "  %-34s ${R}FAIL${N} %s\n" "$1" "${2:-}"; }
@@ -106,7 +106,7 @@ else bad "owns org.freedesktop.Notifications" "owned by pid $owner, not $me -- T
 # every hover and turns this whole file red for a reason that has nothing to do
 # with the shell. Restart it as a child of the compositor instead:
 #
-#   hyprctl dispatch 'hl.dsp.exec_cmd("qs -c caelestia -n -d")'
+#   hyprctl dispatch 'hl.dsp.exec_cmd("qs -c aether -n -d")'
 #
 qs_pid=$(pgrep -x qs | head -1)
 if [ -n "$qs_pid" ] && [ -r "/proc/$qs_pid/environ" ]; then
@@ -143,7 +143,7 @@ HOVER_BLOCKED=0
 
 # showOnHover decides whether a panel responds to hover at all. Read the compiled
 # default so this tracks the source, and let a user shell.json win.
-CFG=$HOME/.config/caelestia/shell.json
+CFG=$HOME/.config/aether/shell.json
 hover_enabled() {
     local mod=$1 hpp="$ROOT/plugin/src/Aether/Config/${mod}config.hpp" def user
     def=$(grep -oP 'CONFIG_PROPERTY\(bool, showOnHover, \K(true|false)' "$hpp" 2>/dev/null | head -1)

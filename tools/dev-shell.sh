@@ -7,9 +7,9 @@
 #   ./tools/dev-shell.sh --offscreen         # headless, for a quick sanity boot
 #   ./tools/dev-shell.sh --reset             # wipe the DEV config only, then run
 #
-# Why this exists: configDir() is hardcoded to $XDG_CONFIG_HOME/caelestia (trap T4), so
+# Why this exists: configDir() writes to $XDG_CONFIG_HOME/aether (trap T4), so
 # installing to a differently-named quickshell directory does NOT isolate settings. This
-# script overrides XDG_CONFIG_HOME so the dev instance cannot touch ~/.config/caelestia.
+# script overrides XDG_CONFIG_HOME so the dev instance cannot touch ~/.config/aether.
 #
 # This script never kills, installs, or overwrites anything outside its own dev directory.
 
@@ -49,7 +49,7 @@ command -v "$QS" >/dev/null || { printf '%s %s not found on PATH\n' "$(red fail)
 }
 
 CFG_HOME=$DEV_HOME/config
-CFG_FILE=$CFG_HOME/caelestia/shell.json
+CFG_FILE=$CFG_HOME/aether/shell.json
 
 if [ "$RESET" = 1 ]; then
     # Scoped to DEV_HOME only. Guard against a mis-set env var pointing at something real.
@@ -59,7 +59,7 @@ if [ "$RESET" = 1 ]; then
     esac
 fi
 
-mkdir -p "$CFG_HOME/caelestia" "$DEV_HOME/cache" "$DEV_HOME/state"
+mkdir -p "$CFG_HOME/aether" "$DEV_HOME/cache" "$DEV_HOME/state"
 
 if [ ! -f "$CFG_FILE" ]; then
     if [ -n "$CONFIG_SRC" ]; then

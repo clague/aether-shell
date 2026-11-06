@@ -20,7 +20,7 @@ namespace aether::plugins {
 class PluginUrlInterceptor;
 
 // Discovers plugins on disk, parses their manifests and exposes their entry points.
-// Backed by a single ~/.config/caelestia/plugins.json holding enabled + path + settings.
+// Backed by a single ~/.config/aether/plugins.json holding enabled + path + settings.
 //
 // Also owns hot reloading: it seals every plugin directory, registers each plugin's QML module,
 // and hands out the generation numbers that make a re-registration visible to a running engine.

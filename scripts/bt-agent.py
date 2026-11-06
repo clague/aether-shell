@@ -33,11 +33,11 @@ import dbus.mainloop.glib
 import dbus.service
 from gi.repository import GLib
 
-AGENT_PATH = "/caelestia/bluetooth/agent"
+AGENT_PATH = "/aether/bluetooth/agent"
 AGENT_CAPABILITY = "KeyboardDisplay"
 SOCKET_PATH = os.path.join(
     os.environ.get("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}"),
-    "caelestia-bt-agent.sock",
+    "aether-bt-agent.sock",
 )
 RESPONSE_TIMEOUT = 30  # seconds
 

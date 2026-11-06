@@ -18,7 +18,7 @@ Item {
     property string steamGridDbKey: ""
 
     property Process readTokenProc: Process {
-        command: ["secret-tool", "lookup", "service", "caelestia-shell", "account", "steamgriddb"]
+        command: ["sh", "-c", "secret-tool lookup service aether-shell account steamgriddb 2>/dev/null || secret-tool lookup service caelestia-shell account steamgriddb 2>/dev/null"]
         stdout: StdioCollector {
             onStreamFinished: {
                 root.steamGridDbKey = text.trim();

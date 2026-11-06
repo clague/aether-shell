@@ -125,7 +125,7 @@ function hl.dsp.focus(args) end
 ---@return any
 function hl.dsp.exec_cmd(command) end
 
----@param name string e.g. "caelestia:launcher"
+---@param name string e.g. "aether:launcher"
 ---@return any
 function hl.dsp.global(name) end
 

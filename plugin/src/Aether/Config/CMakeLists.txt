@@ -2,7 +2,9 @@ qml_module(aether-config
     URI Aether.Config
     INCLUDE_PREFIX config
     SOURCES
-        common.cpp
+        paths.cpp
+        paths.hpp
+        common.hpp
         migrate.cpp
         appidentity.cpp
         rootnodes.cpp

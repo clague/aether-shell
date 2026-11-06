@@ -180,7 +180,7 @@ Singleton {
 
         const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=geocodejson&accept-language=${lang}`;
         const nominatimHeaders = {
-            "User-Agent": `caelestia-shell/${CUtils.version} (+https://github.com/caelestia-dots/shell)`
+            "User-Agent": `aether-shell/${CUtils.version} (+https://github.com/clague/aether-shell)`
         };
 
         Requests.get(nominatimUrl, text => {
@@ -253,7 +253,7 @@ Singleton {
         const lang = Tr.locale.name.replace("_", "-") || "en";
         const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(trimmed)}&format=geojson&addressdetails=1&limit=8&accept-language=${lang}`;
         const headers = {
-            "User-Agent": `caelestia-shell/${CUtils.version} (+https://github.com/caelestia-dots/shell)`
+            "User-Agent": `aether-shell/${CUtils.version} (+https://github.com/clague/aether-shell)`
         };
 
         Requests.get(url, text => {

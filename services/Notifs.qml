@@ -129,7 +129,7 @@ Singleton {
             });
             root.list = [comp, ...root.list];
 
-            if (!PersistentState.doNotDisturb && notif.appName !== "caelestia-cli" && !GlobalConfig.audio.sounds.disabledNotifApps.includes(notif.appName))
+            if (!PersistentState.doNotDisturb && notif.appName !== "aether" && !GlobalConfig.audio.sounds.disabledNotifApps.includes(notif.appName))
                 Audio.playNotification();
         }
     }

@@ -433,7 +433,7 @@ Item {
                     if (root.state === "keybinds")
                         return Tr.tr("No keybinds match your search");
                     if (root.state === "animations")
-                        return Tr.tr("Try adding .lua files to\n~/.config/caelestia/animations/");
+                        return Tr.tr("Try adding .lua files to\n~/.config/aether/animations/");
                     return Tr.tr("Try searching for something else");
                 }
                 color: Colours.palette.m3onSurfaceVariant

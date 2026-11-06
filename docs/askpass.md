@@ -5,7 +5,7 @@ program instead of a terminal. The shell provides that program: a small helper t
 same kind of dialog as the polkit agent, and prints what was typed on stdout.
 
 ```
-ssh / sudo ──> scripts/askpass.sh ──> caelestia:askpass IPC ──> dialog ──> stdout
+ssh / sudo ──> scripts/askpass.sh ──> aether:askpass IPC ──> dialog ──> stdout
 ```
 
 ## Setup
@@ -52,10 +52,10 @@ cancels itself after two minutes, so a helper that is killed does not leave a pr
 The IPC surface is the shell's usual one, so any script can use it:
 
 ```
-caelestia:askpass request <prompt>  -> id
-caelestia:askpass poll <id>         -> pending | ok:<password> | cancel | unknown
-caelestia:askpass cancel <id>
-caelestia:askpass cancelCurrent
+aether:askpass request <prompt>  -> id
+aether:askpass poll <id>         -> pending | ok:<password> | cancel | unknown
+aether:askpass cancel <id>
+aether:askpass cancelCurrent
 ```
 
 ## Why the shell and not a standalone dialog

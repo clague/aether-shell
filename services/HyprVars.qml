@@ -5,7 +5,7 @@ import Quickshell
 import Quickshell.Io
 import Aether
 
-// Read/write access to ~/.config/caelestia/hypr-vars.lua, the override table that the Hyprland
+// Read/write access to ~/.config/aether/hypr-vars.lua, the override table that the Hyprland
 // config requires next to its own variables. Nexus uses it from Hyprland > Variables (apps and
 // misc) and from Hyprland > Window effects / Spacing & animations; the shell's own Glass, Motion
 // and Density services write their preferences here too, so they survive a restart instead of
@@ -20,7 +20,7 @@ Singleton {
     property var defaults: ({})
     property bool loaded: false
 
-    readonly property string configPath: Quickshell.env("HOME") + "/.config/caelestia/hypr-vars.lua"
+    readonly property string configPath: Quickshell.env("HOME") + "/.config/aether/hypr-vars.lua"
     readonly property string defaultsPath: Quickshell.env("HOME") + "/.config/hypr/variables.lua"
 
     // Order in which keys are written back, grouped the way the config file reads

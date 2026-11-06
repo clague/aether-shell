@@ -21,7 +21,7 @@ PageBase {
     property Process readTokenProc: Process {
         id: readTokenProc
 
-        command: ["secret-tool", "lookup", "service", "caelestia-shell", "account", "steamgriddb"]
+        command: ["sh", "-c", "secret-tool lookup service aether-shell account steamgriddb 2>/dev/null || secret-tool lookup service aether-shell account steamgriddb 2>/dev/null"]
         stdout: StdioCollector {
             onStreamFinished: {
                 tokenInput.text = text.trim();
@@ -31,9 +31,9 @@ PageBase {
 
     function saveToken(token) {
         if (!token) {
-            Quickshell.execDetached(["secret-tool", "clear", "service", "caelestia-shell", "account", "steamgriddb"]);
+            Quickshell.execDetached(["sh", "-c", "secret-tool clear service aether-shell account steamgriddb; secret-tool clear service aether-shell account steamgriddb"]);
         } else {
-            Quickshell.execDetached(["bash", "-c", "secret-tool store --label=\"Aether SteamGridDB Key\" service caelestia-shell account steamgriddb <<< \"$1\"", "--", token]);
+            Quickshell.execDetached(["bash", "-c", "secret-tool store --label=\"Aether SteamGridDB Key\" service aether-shell account steamgriddb <<< \"$1\"", "--", token]);
         }
     }
 

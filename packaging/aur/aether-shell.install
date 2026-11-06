@@ -3,6 +3,10 @@ post_install() {
 Aether is installed under /etc/xdg/quickshell/aether. It can coexist with
 caelestia-shell-git; only one of the two shells should be running.
 
+On first start, ~/.config/caelestia, ~/.local/state/caelestia and
+~/.local/share/caelestia are copied once to the aether names. The old
+directories are left alone, so a caelestia-shell install keeps its own.
+
 Nothing else is needed to build or start it.
 
 Start the shell now:
@@ -31,7 +35,15 @@ pages write, is at:
 
 Compare its hyprland/keybinds.lua and variables.lua with your own setup. Do not
 copy the whole tree over ~/.config/hypr without reading it: it is a full config,
-not a fragment. Until then, these still work from a terminal:
+not a fragment.
+
+If you copied an older reference config, it still points at caelestia names.
+Update ~/.config/hypr before restarting the shell:
+  * global shortcuts are aether:* now, not caelestia:*
+  * the overrides file is ~/.config/aether/hypr-vars.lua
+  * the user file is ~/.config/aether/hypr-user.lua
+
+Until then, these still work from a terminal:
 
     aether ipc call nexus open      # open the settings window
     aether ipc call drawers toggle launcher
@@ -43,11 +55,11 @@ Optional extras:
     xdg-desktop-portal-hyprland  screen sharing and file pickers
 
 Qt application theming (optional): the Qt platform theme is installed. Add this
-to ~/.config/caelestia/hypr-user.lua and log back in:
+to ~/.config/aether/hypr-user.lua and log back in:
 
     hl.env("QT_QPA_PLATFORMTHEME", "aether")
 
-The shell writes only ~/.config/caelestia/. It never edits ~/.config/hypr.
+The shell writes only ~/.config/aether/. It never edits ~/.config/hypr.
 EOF
 }
 
@@ -57,7 +69,7 @@ post_upgrade() {
 
 pre_remove() {
     cat <<'EOF'
-Aether's configuration is kept in ~/.config/caelestia/ and is not removed by
+Aether's configuration is kept in ~/.config/aether/ and is not removed by
 this package. Delete it yourself if you also want to drop your settings.
 EOF
 }

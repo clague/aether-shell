@@ -8,7 +8,7 @@ import qs.components.controls
 import qs.services
 import qs.modules.nexus.common
 
-// A text row that only accepts a number, bound to one key of ~/.config/caelestia/hypr-vars.lua.
+// A text row that only accepts a number, bound to one key of ~/.config/aether/hypr-vars.lua.
 // Used for values Hyprland reads as a float, such as the touchpad scroll factor.
 ConnectedRect {
     id: root

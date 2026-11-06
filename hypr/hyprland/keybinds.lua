@@ -53,25 +53,25 @@ end
 local launcher_default = normalise_keybind("SUPER + SUPER_L")
 create_bind(
     vars.kbLauncher,
-    hl.dsp.global("caelestia:launcher"),
+    hl.dsp.global("aether:launcher"),
     function(key)
         return normalise_keybind(key) == launcher_default and release or nil
     end
 )
-create_bind("SUPER + mouse_up", hl.dsp.global("caelestia:launcherInterrupt"))
-create_bind("SUPER + mouse_down", hl.dsp.global("caelestia:launcherInterrupt"))
+create_bind("SUPER + mouse_up", hl.dsp.global("aether:launcherInterrupt"))
+create_bind("SUPER + mouse_down", hl.dsp.global("aether:launcherInterrupt"))
 
 -- Misc
-create_bind(vars.kbSession, hl.dsp.global("caelestia:session"))
-create_bind(vars.kbShowSidebar, hl.dsp.global("caelestia:sidebar"))
-create_bind(vars.kbClearNotifs, hl.dsp.global("caelestia:clearNotifs"), locked)
-create_bind(vars.kbShowPanels, hl.dsp.global("caelestia:showall"))
-create_bind(vars.kbLock, hl.dsp.global("caelestia:lock"))
+create_bind(vars.kbSession, hl.dsp.global("aether:session"))
+create_bind(vars.kbShowSidebar, hl.dsp.global("aether:sidebar"))
+create_bind(vars.kbClearNotifs, hl.dsp.global("aether:clearNotifs"), locked)
+create_bind(vars.kbShowPanels, hl.dsp.global("aether:showall"))
+create_bind(vars.kbLock, hl.dsp.global("aether:lock"))
 
 -- Restore lock
 create_bind(vars.kbRestoreLock, function()
     hl.dispatch(hl.dsp.exec_cmd("aether shell -d"))
-    hl.dispatch(hl.dsp.global("caelestia:lock"))
+    hl.dispatch(hl.dsp.global("aether:lock"))
 end, locked)
 
 -- Kill/restart
@@ -164,22 +164,22 @@ create_bind(vars.kbAudioSettings, hl.dsp.exec_cmd(vars.audioSettings))
 
 -- Utilities
 create_bind(vars.kbScreenshot, hl.dsp.exec_cmd("aether screenshot"), locked)
-create_bind(vars.kbScreenshotFreeze, hl.dsp.global("caelestia:screenshotFreeze"))
-create_bind(vars.kbScreenshotRegion, hl.dsp.global("caelestia:screenshot"))
+create_bind(vars.kbScreenshotFreeze, hl.dsp.global("aether:screenshotFreeze"))
+create_bind(vars.kbScreenshotRegion, hl.dsp.global("aether:screenshot"))
 create_bind(vars.kbRecord, hl.dsp.exec_cmd("aether record"))
 create_bind(vars.kbRecordSound, hl.dsp.exec_cmd("aether record -s"))
 create_bind(vars.kbRecordRegion, hl.dsp.exec_cmd("aether record -r"))
 create_bind(vars.kbColorPicker, hl.dsp.exec_cmd("hyprpicker -a"))
 
 -- Brightness
-create_bind("XF86MonBrightnessUp", hl.dsp.global("caelestia:brightnessUp"), locked)
-create_bind("XF86MonBrightnessDown", hl.dsp.global("caelestia:brightnessDown"), locked)
+create_bind("XF86MonBrightnessUp", hl.dsp.global("aether:brightnessUp"), locked)
+create_bind("XF86MonBrightnessDown", hl.dsp.global("aether:brightnessDown"), locked)
 
 -- Media
-create_bind({ vars.kbMediaToggle, "XF86AudioPlay", "XF86AudioPause" }, hl.dsp.global("caelestia:mediaToggle"), locked)
-create_bind({ vars.kbMediaNext, "XF86AudioNext" }, hl.dsp.global("caelestia:mediaNext"), locked)
-create_bind({ vars.kbMediaPrev, "XF86AudioPrev" }, hl.dsp.global("caelestia:mediaPrev"), locked)
-create_bind({ vars.kbMediaStop, "XF86AudioStop" }, hl.dsp.global("caelestia:mediaStop"), locked)
+create_bind({ vars.kbMediaToggle, "XF86AudioPlay", "XF86AudioPause" }, hl.dsp.global("aether:mediaToggle"), locked)
+create_bind({ vars.kbMediaNext, "XF86AudioNext" }, hl.dsp.global("aether:mediaNext"), locked)
+create_bind({ vars.kbMediaPrev, "XF86AudioPrev" }, hl.dsp.global("aether:mediaPrev"), locked)
+create_bind({ vars.kbMediaStop, "XF86AudioStop" }, hl.dsp.global("aether:mediaStop"), locked)
 
 -- Volume
 create_bind({ vars.kbVolumeMute, "XF86AudioMute" }, hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), locked)
@@ -230,5 +230,5 @@ create_bind(
 -- buttons working in apps that do understand them; the shell only acts while a settings window
 -- has focus.
 
-hl.bind("mouse:278", hl.dsp.global("caelestia:nexusBack"), { non_consuming = true })
-hl.bind("mouse:277", hl.dsp.global("caelestia:nexusForward"), { non_consuming = true })
+hl.bind("mouse:278", hl.dsp.global("aether:nexusBack"), { non_consuming = true })
+hl.bind("mouse:277", hl.dsp.global("aether:nexusForward"), { non_consuming = true })

@@ -2,8 +2,8 @@ local home   = os.getenv("HOME")
 local hypr   = home .. "/.config/hypr"
 -- The generated colour scheme lives with the shell's state, not in the dotfiles: the shell is
 -- the only writer, and ~/.config/hypr stays user-owned (D11).
-local state  = (os.getenv("XDG_STATE_HOME") or home .. "/.local/state") .. "/caelestia"
-package.path = package.path .. ";" .. home .. "/.config/caelestia/?.lua;" .. state .. "/?.lua"
+local state  = (os.getenv("XDG_STATE_HOME") or home .. "/.local/state") .. "/aether"
+package.path = package.path .. ";" .. home .. "/.config/aether/?.lua;" .. state .. "/?.lua"
 
 -- Create a file if it doesn't exist, optionally with initial content
 local function maybe_create(file, content)
@@ -49,7 +49,7 @@ maybe_copy(hypr .. "/scheme/default.lua", state .. "/scheme/current.lua")
 
 -- User variables
 local overrides = maybe_create(
-    home .. "/.config/caelestia/hypr-vars.lua",
+    home .. "/.config/aether/hypr-vars.lua",
     "return {}\n"
 ) and require("hypr-vars") or {}
 
@@ -82,7 +82,7 @@ require("hyprland.gestures")
 require("hyprland.keybinds")
 
 -- User configs
-if maybe_create(home .. "/.config/caelestia/hypr-user.lua") then
+if maybe_create(home .. "/.config/aether/hypr-user.lua") then
     require("hypr-user")
 end
 

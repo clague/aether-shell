@@ -1,7 +1,7 @@
 # Hyprland config the shell expects
 
 The shell never edits `~/.config/hypr` itself. The one file it writes is
-`~/.config/caelestia/hypr-vars.lua`, the override table that the dotfiles' `hyprland.lua` merges
+`~/.config/aether/hypr-vars.lua`, the override table that the dotfiles' `hyprland.lua` merges
 into `variables`:
 
 ```lua
@@ -55,7 +55,7 @@ shell addition:
 `hyprland/keybinds.lua` and `hyprland/execs.lua` require `utils/functions.lua`, which requires
 `utils/json.lua`; `variables.lua` requires `scheme.current`. That is the whole dependency set.
 
-Leave the user-owned files alone: `~/.config/caelestia/hypr-user.lua` (loaded by `hyprland.lua`
+Leave the user-owned files alone: `~/.config/aether/hypr-user.lua` (loaded by `hyprland.lua`
 after the modules) and `~/.config/hypr/hyprmoncfg-monitors.lua` (generated per machine, also
 loaded by the entry). `hyprland/env.lua` carries no `QML2_IMPORT_PATH`: `aether shell` adds the checkout's
 `build/qml` itself, so the same config works from any path.
@@ -91,7 +91,7 @@ Qt only turns `BTN_SIDE`/`BTN_EXTRA` (275/276, what most mice send) into
 `Qt.BackButton`/`Qt.ForwardButton`; `BTN_BACK`/`BTN_FORWARD` (278/277) never reach QML. The Nexus window
 handles the first pair directly, and the two `mouse:278`/`mouse:277` binds at the end of
 `hyprland/keybinds.lua` route the second pair through the shell's global shortcuts
-(`caelestia:nexusBack`/`caelestia:nexusForward`, registered in `daemons/Shortcuts.qml`). The binds
+(`aether:nexusBack`/`aether:nexusForward`, registered in `daemons/Shortcuts.qml`). The binds
 are `non_consuming`, so apps that do understand the buttons keep working, and the shell only acts
 while a settings window is focused.
 

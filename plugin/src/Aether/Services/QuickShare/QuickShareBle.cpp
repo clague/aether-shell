@@ -60,7 +60,7 @@ void QuickShareBleAdvertisementAdaptor::Release() {
 
 QuickShareBleAdvertiser::QuickShareBleAdvertiser(QObject* parent)
     : QObject(parent)
-    , m_objectPath(u"/org/caelestia/QuickShareBleAdvertisement"_s)
+    , m_objectPath(u"/org/aether/QuickShareBleAdvertisement"_s)
     , m_isAdvertising(false) {
     new QuickShareBleAdvertisementAdaptor(this);
     QDBusConnection::systemBus().registerObject(m_objectPath, this);

@@ -91,7 +91,7 @@ Singleton {
         if (root._loaded) {
             // $1 is the decoder name, which comes from config. $HOME replaces ~ because ~
             // does not expand inside the quoted redirect target.
-            saveHwDecoderProcess.command = ["sh", "-c", 'printf "%s\\n" "$1" > "$HOME/.cache/caelestia/hwDecoder.txt" && nohup sh -c "sleep 0.5 && caelestia shell -d" >/dev/null 2>&1 & caelestia shell -k', "sh", root.hwDecoder];
+            saveHwDecoderProcess.command = ["sh", "-c", 'printf "%s\\n" "$1" > "$HOME/.cache/aether/hwDecoder.txt" && nohup sh -c "sleep 0.5 && aether shell -d" >/dev/null 2>&1 & aether shell -k', "sh", root.hwDecoder];
             saveHwDecoderProcess.running = true;
         }
     }

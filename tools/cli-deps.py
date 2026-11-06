@@ -5,7 +5,7 @@ The shell now ships its own command surface at `bin/aether`. A stray `["caelesti
 compiles, lints and works on a machine that has caelestia-cli installed, so nothing else notices
 that the checkout has grown a dependency it no longer declares.
 
-caelestia:launcher and friends are IPC target names, not commands; ~/.config/caelestia and
+aether:launcher and friends are IPC target names, not commands; ~/.config/aether and
 caelestia-dots are paths; only an argv element or an executed command counts.
 """
 
@@ -39,7 +39,9 @@ CASES = [
     ("cat /usr/lib/python3.14/site-packages/caelestia/data/emojis.txt", True),
     ("exec pkill fuzzel || caelestia clipboard", True),
     ('hl.dsp.global("caelestia:launcher")', False),
+    ('hl.dsp.global("aether:launcher")', False),
     ("~/.config/caelestia/scheme.json", False),
+    ("~/.config/aether/scheme.json", False),
     ("install caelestia-dots/cli", False),
     ("the caelestia CLI writes it", False),
     ('config_dir / "caelestia/cli.json"', False),

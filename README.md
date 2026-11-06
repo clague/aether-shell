@@ -47,12 +47,12 @@ to change it.
 
 `plugin/src/Aether/QtTheme/` builds a Qt platform theme, so Qt Widgets applications use the
 scheme the shell is displaying instead of a separate palette from KDE or `qtengine`. It reads
-`~/.local/state/caelestia/scheme.json` and re-applies while the apps are running, so a scheme
+`~/.local/state/aether/scheme.json` and re-applies while the apps are running, so a scheme
 change reaches them without a restart.
 
 It is opt-in. A system install lands in `${prefix}/lib/qt6/plugins/platformthemes`; for a checkout,
 run `./tools/install-qt-theme.sh`, then set the two environment variables in
-`~/.config/caelestia/hypr-user.lua` (not in the shared Hyprland config):
+`~/.config/aether/hypr-user.lua` (not in the shared Hyprland config):
 
 ```sh
 hl.env("QT_QPA_PLATFORMTHEME", "aether")
@@ -75,7 +75,7 @@ Qt Quick applications create no `QStyle` and keep the Aether palette, so the she
 surfaces stay on the scheme either way.
 
 The style is a setting, not an environment variable: **Look & feel → Qt applications → Widget
-style**, stored as `qt.style` in `~/.config/caelestia/shell.json`. The list is every style
+style**, stored as `qt.style` in `~/.config/aether/shell.json`. The list is every style
 Qt can create on the machine, plus **Automatic**.
 
 Resolution order:
@@ -144,12 +144,12 @@ scheme change, so a choice written there survives only until the next one.
 > The commands below (and in the "Updating" section) assume `$XDG_CONFIG_HOME` is set.
 > If it is unset, substitute it with the path to your config folder (typically `~/.config`).
 
-Clone into `$XDG_CONFIG_HOME/quickshell/caelestia`, then build and install with `cmake`:
+Clone into `$XDG_CONFIG_HOME/quickshell/aether`, then build and install with `cmake`:
 ```sh
 cd $XDG_CONFIG_HOME/quickshell
-git clone <this repository> caelestia
+git clone <this repository> aether
 
-cd caelestia
+cd aether
 cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/
 cmake --build build
 sudo cmake --install build
@@ -172,14 +172,14 @@ shell with `aether`, and the keybinds use the same name.
 > respectively. If you set the `INSTALL_LIBDIR` flag, the `AETHER_LIB_DIR` variable must also be set to
 > the same directory in your system's environment.
 >
-> For example, installing to `~/.config/quickshell/caelestia` for easy local changes:
+> For example, installing to `~/.config/quickshell/aether` for easy local changes:
 >
 > ```sh
-> mkdir -p ~/.config/quickshell/caelestia
-> cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/ -DINSTALL_QSCONFDIR="$HOME/.config/quickshell/caelestia"
+> mkdir -p ~/.config/quickshell/aether
+> cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/ -DINSTALL_QSCONFDIR="$HOME/.config/quickshell/aether"
 > cmake --build build
 > sudo cmake --install build
-> sudo chown -R $USER ~/.config/quickshell/caelestia
+> sudo chown -R $USER ~/.config/quickshell/aether
 > ```
 
 ### Nix
@@ -217,19 +217,19 @@ All keybinds are accessible via Hyprland [global shortcuts](https://wiki.hypr.la
 
 | Shortcut Name | Description |
 |---------------|-------------|
-| `caelestia:controlCenter` | Open control center |
-| `caelestia:launcher` | Toggle launcher |
-| `caelestia:dashboard` | Toggle dashboard |
-| `caelestia:session` | Toggle session menu |
-| `caelestia:sidebar` | Toggle sidebar |
-| `caelestia:utilities` | Toggle utilities panel |
-| `caelestia:emoji` | Open emoji picker |
-| `caelestia:clipboard` | Open clipboard history |
-| `caelestia:windowSwitcher` | Open window switcher |
-| `caelestia:keybinds` | Open keybinds list |
-| `caelestia:wallpaper` | Open wallpaper picker |
-| `caelestia:showall` | Toggle all UI elements |
-| `caelestia:terminal` | Toggle terminal drawer |
+| `aether:controlCenter` | Open control center |
+| `aether:launcher` | Toggle launcher |
+| `aether:dashboard` | Toggle dashboard |
+| `aether:session` | Toggle session menu |
+| `aether:sidebar` | Toggle sidebar |
+| `aether:utilities` | Toggle utilities panel |
+| `aether:emoji` | Open emoji picker |
+| `aether:clipboard` | Open clipboard history |
+| `aether:windowSwitcher` | Open window switcher |
+| `aether:keybinds` | Open keybinds list |
+| `aether:wallpaper` | Open wallpaper picker |
+| `aether:showall` | Toggle all UI elements |
+| `aether:terminal` | Toggle terminal drawer |
 
 ### Hyprland Keybind Examples
 
@@ -237,28 +237,34 @@ To bind these shortcuts in Hyprland, add to your config:
 
 ```conf
 # Launcher and UI elements
-bind = SUPER, SPACE, global, caelestia:launcher
-bind = SUPER, RETURN, global, caelestia:launcher
-bind = SUPER, S, global, caelestia:controlCenter
+bind = SUPER, SPACE, global, aether:launcher
+bind = SUPER, RETURN, global, aether:launcher
+bind = SUPER, S, global, aether:controlCenter
 
 # Added by the forks
-bind = SUPER, E, global, caelestia:emoji
-bind = SUPER, V, global, caelestia:clipboard
-bind = SUPER, W, global, caelestia:windowSwitcher
-bind = SUPER, K, global, caelestia:keybinds
-bind = SUPER, B, global, caelestia:wallpaper
-bind = SUPER, T, global, caelestia:terminal
+bind = SUPER, E, global, aether:emoji
+bind = SUPER, V, global, aether:clipboard
+bind = SUPER, W, global, aether:windowSwitcher
+bind = SUPER, K, global, aether:keybinds
+bind = SUPER, B, global, aether:wallpaper
+bind = SUPER, T, global, aether:terminal
 
 # Other toggles
-bind = SUPER, D, global, caelestia:dashboard
-bind = SUPER, N, global, caelestia:sidebar
-bind = SUPER, M, global, caelestia:utilities
+bind = SUPER, D, global, aether:dashboard
+bind = SUPER, N, global, aether:sidebar
+bind = SUPER, M, global, aether:utilities
 ```
 
 ## Migration from upstream Caelestia
 
 Coming from upstream `caelestia-dots/shell`, your `shell.json` keeps working — every key
-below is additive and every one of them has a default. Add them only if you want to set them
+below is additive and every one of them has a default. On first start the shell copies
+`~/.config/caelestia`, `~/.local/state/caelestia` and `~/.local/share/caelestia` to the
+matching `aether` directories once, and leaves the old ones in place.
+
+The Hyprland config is yours and is never rewritten. If it still uses `caelestia:*` global
+shortcuts or `~/.config/caelestia/hypr-vars.lua`, update it with the values in
+`hypr/` — otherwise the new shell starts but your keybinds and Nexus settings do not reach it. Add them only if you want to set them
 to something other than that default:
 
 ```json
@@ -321,7 +327,7 @@ via a `hl.on("hyprland.start", ...)` function in the Hyprland config.
 ### Shortcuts/IPC
 
 All keybinds are accessible via Hyprland [global shortcuts](https://wiki.hypr.land/Configuring/Basics/Binds#dbus-global-shortcuts).
-If using the entire caelestia dots, the keybinds are already configured for you.
+If you copied the Hyprland config from this repository, the keybinds are already configured for you.
 Otherwise, [this file](https://github.com/caelestia-dots/caelestia/blob/main/hypr/hyprland/keybinds.lua#L52-L67)
 contains an example on how to use global shortcuts.
 
@@ -339,7 +345,7 @@ The profile picture for the dashboard is read from the file `~/.face`. You can s
 or by manually copying or symlinking your image to the path.
 
 The wallpapers for the wallpaper switcher are read from `~/Pictures/Wallpapers`
-by default. To change it, modify `paths.wallpaperDir` in `~/.config/caelestia/shell.json`.
+by default. To change it, modify `paths.wallpaperDir` in `~/.config/aether/shell.json`.
 
 To set the wallpaper, you can type `>wallpaper` in the launcher to open the wallpaper switcher.
 Alternatively, you can also use `aether wallpaper -f <path_to_wallpaper>` to set the wallpaper directly.
@@ -349,7 +355,7 @@ Use `aether wallpaper -h` for more info about this command.
 
 There is no package yet, so updating means pulling and rebuilding:
 ```sh
-cd $XDG_CONFIG_HOME/quickshell/caelestia
+cd $XDG_CONFIG_HOME/quickshell/aether
 git pull
 cmake --build build
 sudo cmake --install build
@@ -361,18 +367,18 @@ one is already running).
 ## Uninstalling
 
 `cmake --install` writes no manifest that can be replayed, so removal is manual: delete the
-clone at `$XDG_CONFIG_HOME/quickshell/caelestia` and the files listed in
+clone at `$XDG_CONFIG_HOME/quickshell/aether` and the files listed in
 `build/install_manifest.txt`.
 
 > [!CAUTION]
 > Do not run any script that offers to "clean" the install by removing a config directory or
-> killing every Quickshell process. `~/.config/caelestia` holds *your* settings, not the
+> killing every Quickshell process. `~/.config/aether` holds *your* settings, not the
 > shell's code, and a blanket kill takes down whatever else you are running. Nothing in this
 > repository does either, and nothing added to it should.
 
 ## Configuring
 
-All configuration options belong in `~/.config/caelestia/shell.json`. This file is _not_ created by
+All configuration options belong in `~/.config/aether/shell.json`. This file is _not_ created by
 default; you must create it manually. Options that you omit from the config file will use their default
 values.
 
@@ -420,7 +426,7 @@ section covers endpoints that do not expose a model list.
 
 ### Per-monitor configuration
 
-You can configure per-monitor options in `~/.config/caelestia/monitors/<monitor_name>/shell.json`.
+You can configure per-monitor options in `~/.config/aether/monitors/<monitor_name>/shell.json`.
 List the names of your available monitors by running:
 
 ```sh
@@ -433,7 +439,7 @@ per-monitor configs will inherit their values from the global config.
 
 For example, to automatically hide the bar on the monitor named `DP-1`:
 
-**`~/.config/caelestia/monitors/DP-1/shell.json`**
+**`~/.config/aether/monitors/DP-1/shell.json`**
 
 ```json
 {
@@ -469,7 +475,7 @@ For example, to automatically hide the bar on the monitor named `DP-1`:
 
 ### Hyprland config
 
-The shell keeps the Hyprland-side settings it owns in `~/.config/caelestia/hypr-vars.lua`, the
+The shell keeps the Hyprland-side settings it owns in `~/.config/aether/hypr-vars.lua`, the
 override table that the dotfiles' `hyprland.lua` merges into `variables`. Nexus writes only the
 keys you changed; clearing a key (the trash icon on a row) restores the value from
 `~/.config/hypr/variables.lua`.
@@ -1083,7 +1089,7 @@ setting still applies live, it just does not survive a Hyprland restart.
             },
             {
                 "command": [
-                    "caelestia",
+                    "aether",
                     "wallpaper",
                     "-r"
                 ],
@@ -1160,7 +1166,7 @@ setting still applies live, it just does not survive a Hyprland restart.
             },
             {
                 "command": [
-                    "caelestia",
+                    "aether",
                     "shell",
                     "nexus",
                     "open"
@@ -1260,7 +1266,7 @@ setting still applies live, it just does not survive a Hyprland restart.
         "hideDelay": 2000
     },
     "paths": {
-        "cacheDir": "/home/dim/.cache/caelestia",
+        "cacheDir": "/home/dim/.cache/aether",
         "lockNoNotifsPic": "root:/assets/dino.png",
         "lyricsDir": "/home/dim/Music/Lyrics/",
         "mediaGif": "root:/assets/bongocat.gif",
@@ -1415,14 +1421,14 @@ setting still applies live, it just does not survive a Hyprland restart.
 > tokens used internally within the shell, and can cause visual issues if modified incorrectly.
 > The available options may change or be removed without notice across versions.
 
-A separate `~/.config/caelestia/shell-tokens.json` file allows editing the internal tokens without
+A separate `~/.config/aether/shell-tokens.json` file allows editing the internal tokens without
 touching the source code of the shell. These tokens affect the dimensions and appearance of visual elements,
 including individual rounding, spacing, padding, font size, animation durations and curves, and the sizes of
 certain components. The appearance scale values in `shell.json` are multiplied against these base
 token values to produce the final computed values.
 
 Per-monitor token overrides are also available at
-`~/.config/caelestia/monitors/<monitor_name>/shell-tokens.json`.
+`~/.config/aether/monitors/<monitor_name>/shell-tokens.json`.
 
 ### Home Manager Module
 
@@ -1448,7 +1454,7 @@ programs.caelestia = {
     paths.wallpaperDir = "~/Images";
   };
   cli = {
-    enable = true; # Also add caelestia-cli to path
+    enable = true; # Also puts the aether command on PATH
     settings = {
       theme.enableGtk = false;
     };
@@ -1468,7 +1474,7 @@ You can join the Caelestia Discord server for assistance and discussion [here][d
 
 ### The shell stutters or tears!
 
-Try disabling VRR in the hyprland config. You can do this by adding the following to `~/.config/caelestia/hypr-user.conf`:
+Try disabling VRR in the hyprland config. You can do this by adding the following to `~/.config/aether/hypr-user.conf`:
 
 ```conf
 misc {
@@ -1478,15 +1484,15 @@ misc {
 
 ### How do I enable blur for the Polkit dialog?
 
-Add the following layer rule to your `~/.config/caelestia/hypr-user.conf`:
+Add the following layer rule to your `~/.config/aether/hypr-user.conf`:
 
 ```conf
-layerrule = no_anim true, match:namespace caelestia-polkit, blur true, ignore_alpha 0.1
+layerrule = no_anim true, match:namespace aether-polkit, blur true, ignore_alpha 0.1
 ```
 
 ### I want to make my own changes to the hyprland config!
 
-You can add your custom hyprland configs to `~/.config/caelestia/hypr-user.conf`.
+You can add your custom hyprland configs to `~/.config/aether/hypr-user.conf`.
 
 ### I want to make my own changes to other stuff!
 

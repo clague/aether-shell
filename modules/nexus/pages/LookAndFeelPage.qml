@@ -363,7 +363,7 @@ PageBase {
 
                     StyledText {
                         Layout.fillWidth: true
-                        text: Tr.tr("It writes %1 and sets the GTK font, so every application uses these fonts, not only the shell. Fonts you add are copied to %2. Turning it off removes the file and puts the previous GTK fonts back.").arg("~/.config/fontconfig/conf.d/60-caelestia-app-fonts.conf").arg("~/.local/share/fonts/caelestia")
+                        text: Tr.tr("It writes %1 and sets the GTK font, so every application uses these fonts, not only the shell. Fonts you add are copied to %2. Turning it off removes the file and puts the previous GTK fonts back.").arg("~/.config/fontconfig/conf.d/60-aether-app-fonts.conf").arg("~/.local/share/fonts/aether")
                         color: Colours.palette.m3onSurfaceVariant
                         font: Tokens.font.body.small
                         wrapMode: Text.WordWrap

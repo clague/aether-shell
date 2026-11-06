@@ -218,7 +218,7 @@ Singleton {
     Socket {
         id: sock
 
-        path: (Quickshell.env("XDG_RUNTIME_DIR") ?? ("/run/user/" + Quickshell.env("UID"))) + "/caelestia-bt-agent.sock"
+        path: (Quickshell.env("XDG_RUNTIME_DIR") ?? ("/run/user/" + Quickshell.env("UID"))) + "/aether-bt-agent.sock"
         connected: false // Will be set to true by socketConnectTimer
 
         parser: SplitParser {

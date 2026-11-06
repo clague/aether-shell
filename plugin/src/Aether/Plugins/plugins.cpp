@@ -26,11 +26,11 @@ namespace aether::plugins {
 namespace {
 
 QString configDir() {
-    return QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + QStringLiteral("/caelestia/");
+    return QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + QStringLiteral("/aether/");
 }
 
 QString pluginDataDir() {
-    return QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/caelestia/plugins");
+    return QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + QStringLiteral("/aether/plugins");
 }
 
 } // namespace
@@ -493,9 +493,12 @@ QStringList Plugins::searchRoots() const {
     roots.append(pluginDataDir());
     roots.append(configDir() + QStringLiteral("plugins"));
 
-    const auto envPath = qEnvironmentVariable("CAELESTIA_PLUGIN_PATH");
+    const auto envPath = qEnvironmentVariable("AETHER_PLUGIN_PATH");
+    const auto legacyEnvPath = qEnvironmentVariable("CAELESTIA_PLUGIN_PATH");
     if (!envPath.isEmpty())
         roots.append(envPath.split(QLatin1Char(':'), Qt::SkipEmptyParts));
+    if (!legacyEnvPath.isEmpty())
+        roots.append(legacyEnvPath.split(QLatin1Char(':'), Qt::SkipEmptyParts));
 
     roots.append(m_extraPaths);
     roots.removeDuplicates();

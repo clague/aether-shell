@@ -198,7 +198,7 @@ def c_shell_copies():
 
 KEPT = (
     Path(os.environ.get("XDG_STATE_HOME", HOME / ".local/state"))
-    / "caelestia/doctor-wifi-kept.json"
+    / "aether/doctor-wifi-kept.json"
 )
 
 
@@ -392,7 +392,7 @@ def c_qt_theme():
             "info",
             "No Qt platform theme is set, so Qt apps use their own defaults",
             detail_key="No Qt platform theme is set, so Qt apps use their own defaults",
-            hint="Set QT_QPA_PLATFORMTHEME=aether in ~/.config/caelestia/hypr-user.lua",
+            hint="Set QT_QPA_PLATFORMTHEME=aether in ~/.config/aether/hypr-user.lua",
         )
     return check(
         "qt_theme",
@@ -514,7 +514,7 @@ def c_monitors():
 
 DISMISS = (
     Path(os.environ.get("XDG_STATE_HOME", HOME / ".local/state"))
-    / "caelestia/doctor-crashes-dismissed"
+    / "aether/doctor-crashes-dismissed"
 )
 
 

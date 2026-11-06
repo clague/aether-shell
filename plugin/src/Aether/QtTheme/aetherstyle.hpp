@@ -16,7 +16,7 @@ namespace aether::theme {
 
 [[nodiscard]] QString kvantumThemeName(const QByteArray& ini);
 
-// Everything the Qt theme takes from the shell's own config (~/.config/caelestia/shell.json),
+// Everything the Qt theme takes from the shell's own config (~/.config/aether/shell.json),
 // under the `qt` node. Defaults match what the session would do on its own, so a machine that has
 // never opened the settings page behaves exactly as before.
 struct QtSettings {

@@ -9,9 +9,9 @@
     app-fonts.py add PATH         copy a .ttf/.otf/.ttc into our own fonts folder
     app-fonts.py remove FILE      delete a font we added (by file name, only from that folder)
 
-Files we own: ~/.config/fontconfig/conf.d/60-caelestia-app-fonts.conf (carries a marker, and
-`off` refuses to delete a file without it), ~/.local/share/fonts/caelestia/ (fonts you added),
-and ~/.local/state/caelestia/app-fonts-restore.json (the GTK fonts to put back).
+Files we own: ~/.config/fontconfig/conf.d/60-aether-app-fonts.conf (carries a marker, and
+`off` refuses to delete a file without it), ~/.local/share/fonts/aether/ (fonts you added),
+and ~/.local/state/aether/app-fonts-restore.json (the GTK fonts to put back).
 """
 import json
 import os
@@ -22,13 +22,40 @@ import shutil
 from pathlib import Path
 from xml.sax.saxutils import escape
 
-CONF = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "fontconfig/conf.d/60-caelestia-app-fonts.conf"
-FONTS = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share")) / "fonts/caelestia"
-RESTORE = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "caelestia/app-fonts-restore.json"
+CONF = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "fontconfig/conf.d/60-aether-app-fonts.conf"
+FONTS = Path(os.environ.get("XDG_DATA_HOME", Path.home() / ".local/share")) / "fonts/aether"
+RESTORE = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state")) / "aether/app-fonts-restore.json"
 EXTS = {".ttf", ".otf", ".ttc"}
-MARKER = "<!-- caelestia-app-fonts -->"
+MARKER = "<!-- aether-app-fonts -->"
 SANS = ["Adwaita Sans", "Liberation Sans", "Noto Sans"]  # built-in choices; fonts you add join them
 MONO = ["JetBrains Mono", "Adwaita Mono", "Liberation Mono", "CaskaydiaCove Nerd Font Mono"]
+
+# The old names are ours, not caelestia-shell's. Move the few files that hold user data once so
+# an existing app-fonts setup keeps working after the rename.
+OLD_CONF = CONF.with_name("60-caelestia-app-fonts.conf")
+OLD_FONTS = FONTS.with_name("caelestia")
+OLD_RESTORE = RESTORE.parent.with_name("caelestia") / RESTORE.name
+
+if not FONTS.exists() and OLD_FONTS.is_dir():
+    try:
+        OLD_FONTS.rename(FONTS)
+    except OSError:
+        pass
+if not CONF.exists() and OLD_CONF.exists():
+    try:
+        content = OLD_CONF.read_text()
+        if "caelestia-app-fonts" in content:
+            CONF.parent.mkdir(parents=True, exist_ok=True)
+            CONF.write_text(content.replace("caelestia-app-fonts", "aether-app-fonts"))
+            OLD_CONF.unlink()
+    except OSError:
+        pass
+if not RESTORE.exists() and OLD_RESTORE.exists():
+    try:
+        RESTORE.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(OLD_RESTORE, RESTORE)
+    except OSError:
+        pass
 
 
 def families_in(path):

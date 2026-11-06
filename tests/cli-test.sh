@@ -18,10 +18,10 @@ export XDG_STATE_HOME=$work/state
 export XDG_CACHE_HOME=$work/cache
 export XDG_DATA_HOME=$work/share
 export XDG_RUNTIME_DIR=$work/run
-mkdir -p "$XDG_CONFIG_HOME/caelestia" "$XDG_STATE_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME" "$XDG_RUNTIME_DIR"
+mkdir -p "$XDG_CONFIG_HOME/aether" "$XDG_STATE_HOME" "$XDG_CACHE_HOME" "$XDG_DATA_HOME" "$XDG_RUNTIME_DIR"
 chmod 700 "$XDG_RUNTIME_DIR"
 
-cat >"$XDG_CONFIG_HOME/caelestia/cli.json" <<'JSON'
+cat >"$XDG_CONFIG_HOME/aether/cli.json" <<'JSON'
 {
     "theme": {
         "enableTerm": false,
@@ -51,7 +51,7 @@ check() { # check <description> <expected> <actual>
     checks=$((checks + 1))
 }
 
-scheme_state=$XDG_STATE_HOME/caelestia/scheme.json
+scheme_state=$XDG_STATE_HOME/aether/scheme.json
 
 "$AETHER" scheme set -n catppuccin -f mocha
 read -r name flavour mode < <(python3 -c \
@@ -63,7 +63,7 @@ check "scheme mode is written" dark "$mode"
 # The compositor file must be Lua even when Hyprland cannot be reached (this test has no
 # socket): conf content in current.lua breaks the whole config at the next login.
 check "hypr scheme is Lua" "return {" \
-    "$(head -c 8 "$XDG_STATE_HOME/caelestia/scheme/current.lua")"
+    "$(head -c 8 "$XDG_STATE_HOME/aether/scheme/current.lua")"
 
 # A user-owned config is kept once before the first overwrite.
 mkdir -p "$XDG_CONFIG_HOME/fuzzel"
@@ -104,16 +104,16 @@ checks=$((checks + 2))
 checks=$((checks + 1))
 
 "$AETHER" wallpaper -f "$WALL" -N
-check "wallpaper path is written" "$WALL" "$(cat "$XDG_STATE_HOME/caelestia/wallpaper/path.txt")"
-check "current symlink resolves to the file" "$WALL" "$(readlink -f "$XDG_STATE_HOME/caelestia/wallpaper/current")"
-[ -s "$XDG_STATE_HOME/caelestia/wallpaper/thumbnail.jpg" ]
+check "wallpaper path is written" "$WALL" "$(cat "$XDG_STATE_HOME/aether/wallpaper/path.txt")"
+check "current symlink resolves to the file" "$WALL" "$(readlink -f "$XDG_STATE_HOME/aether/wallpaper/current")"
+[ -s "$XDG_STATE_HOME/aether/wallpaper/thumbnail.jpg" ]
 checks=$((checks + 1))
 
 mkdir -p "$work/walls"
 cp "$WALL" "$work/walls/only.png"
 "$AETHER" wallpaper -r "$work/walls" -N
 check "random wallpaper writes the path" "$work/walls/only.png" \
-    "$(cat "$XDG_STATE_HOME/caelestia/wallpaper/path.txt")"
+    "$(cat "$XDG_STATE_HOME/aether/wallpaper/path.txt")"
 
 case "$("$AETHER" wallpaper -p "$WALL" -N)" in
     '{"name": "dynamic"'*) checks=$((checks + 1)) ;;

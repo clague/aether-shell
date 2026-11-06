@@ -31,12 +31,12 @@ body:
   - type: textarea
     attributes:
       label: Version info
-      description: Run `caelestia -v` and paste the result below.
+      description: Run `aether -v` and paste the result below.
       value: |
         <details><summary>Version info</summary>
 
         ```
-        <!-- Run `caelestia -v` and paste the result here! -->
+        <!-- Run `aether -v` and paste the result here! -->
         ```
 
         </details>    validations:      required: true

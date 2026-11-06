@@ -315,7 +315,7 @@ PageBase {
                 StyledText {
                     Layout.fillWidth: true
 
-                    text: Tr.tr("Run `caelestia ipc quicknote toggle` or bind it in Hyprland to pop up your scratchpad with tags from anywhere.")
+                    text: Tr.tr("Run `aether ipc quicknote toggle` or bind it in Hyprland to pop up your scratchpad with tags from anywhere.")
 
                     color: Colours.palette.m3onSurfaceVariant
 

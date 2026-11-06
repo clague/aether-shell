@@ -9,7 +9,7 @@ import qs.components.controls
 import qs.services
 import qs.modules.nexus.common
 
-// A free-form text row bound to one key of ~/.config/caelestia/hypr-vars.lua. Clearing the field
+// A free-form text row bound to one key of ~/.config/aether/hypr-vars.lua. Clearing the field
 // removes the override instead of writing an empty string.
 ConnectedRect {
     id: root

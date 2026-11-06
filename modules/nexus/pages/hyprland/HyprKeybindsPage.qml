@@ -19,7 +19,7 @@ PageBase {
 
     property var defaults: ({})
 
-    readonly property string configPath: Quickshell.env("HOME") + "/.config/caelestia/hypr-vars.lua"
+    readonly property string configPath: Quickshell.env("HOME") + "/.config/aether/hypr-vars.lua"
 
     readonly property string defaultsPath: Quickshell.env("HOME") + "/.config/hypr/variables.lua"
 
