@@ -598,7 +598,7 @@ on 126 of 127 entries. Configure a fresh directory per compiler; do not reuse on
 
 That flag is not noise, incidentally: Arch's Qt6 is built with `-mno-direct-extern-access`
 and anything linking Qt must be too, or the link fails with `copy relocation against
-non-copyable protected symbol '_ZN10QByteArray6_emptyE'`. `tools/plugin-test.sh`
+non-copyable protected symbol '_ZN10QByteArray6_emptyE'`. `tests/plugin-test.sh`
 passes it for that reason.
 
 ---
@@ -628,7 +628,7 @@ different keys, both sides derive the same PIN, a payload round-trips both ways,
 party running the same exchange derives different keys, and malformed input leaves
 `isHandshakeComplete()` false rather than half-completing.
 
-`tools/plugin-test.sh` runs 50 rounds of that plus the negative cases. It is how the
+`tests/plugin-test.sh` runs 50 rounds of that plus the negative cases. It is how the
 OpenSSL 3.0 migration in T19 was verified, and it found the `-mno-direct-extern-access`
 link requirement on the way.
 
@@ -664,7 +664,7 @@ Connections {
 ```
 
 The fix is to forward it. `updateBpm` cannot stand in: it only signals when the bpm
-*changes*, and a beat happens on every beat. `tools/tests/beat-signal.cpp` measures
+*changes*, and a beat happens on every beat. `tests/beat-signal.cpp` measures
 exactly that distinction — against `HEAD` before the fix it reports `beat fired 0/3`, and
 after it reports `beat fired 3/3 at 128.0 bpm, bpmChanged fired 1/1`.
 
@@ -988,7 +988,7 @@ merge carried it over faithfully.
 equivalent state in QML), a decision about where the prompt lives in the panel graph (T1),
 and dismissal and timeout behaviour. None of that can be exercised from here: the only
 trigger is a real phone sending a real file, and the loopback in
-`tools/tests/ukey2-loopback.cpp` cannot stand in, because it drives the crypto rather
+`tests/ukey2-loopback.cpp` cannot stand in, because it drives the crypto rather
 than the transport. Shipping an untested modal into the notification layer is worse than the
 present state, which at least fails visibly as "nothing happens".
 
@@ -2560,7 +2560,7 @@ The second half was learned the hard way a few hours after the first. `verify.sh
 checker *twice* -- once for its output, once for its exit code:
 
 ```sh
-step "settings paths"; ./tools/settings-paths.sh | tail -1; ./tools/settings-paths.sh >/dev/null || fail=1
+step "settings paths"; ./tests/settings-paths.sh | tail -1; ./tests/settings-paths.sh >/dev/null || fail=1
 ```
 
 Editing `settings-paths.sh` between those two calls produced a run where every step printed a
@@ -2723,7 +2723,7 @@ manage, and it survived because **a merge can drop an invariant that neither sid
 cover**: upstream has no test needing the empty case, and MiDnight's code that needed it was
 replaced wholesale.
 
-`tools/config-scope-test.sh` now asserts the resolver's semantics against the real
+`tests/config-scope-test.sh` now asserts the resolver's semantics against the real
 plugin, in an isolated `XDG_CONFIG_HOME`. Six invariants, and the important property is that
 they are about the **resolver**, not about any key -- so one test covers all 372 config keys at
 once, which is the only tractable way to answer "does every setting actually apply". Validated
@@ -3141,7 +3141,7 @@ wrong look:
 
 - `QSettings` maps a bare `[General]` section onto the root, so `value("General/theme")` returns an
   empty string from a file that contains `[General]\ntheme=…`. Kvantum's config is read with a
-  four-line parser instead, and `tools/tests/qt-theme.cpp` pins the section handling: point
+  four-line parser instead, and `tests/qt-theme.cpp` pins the section handling: point
   the parser at the wrong key and four of its cases fail.
 - Kvantum looks for themes in `~/.config/Kvantum` and `/usr/share/Kvantum` and nowhere else. A theme
   under `$XDG_DATA_HOME/Kvantum` is ignored, and the style silently falls back to built-in

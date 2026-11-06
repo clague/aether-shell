@@ -9,7 +9,7 @@
 # index. Nothing complains -- the file runs locally, `git status` stays clean -- and it fails
 # only in a fresh clone or in CI, with "Permission denied".
 #
-# That is not hypothetical: qml-lint.sh, qml-section-order.py, plugin-test.sh and
+# That is not hypothetical: qml-lint.sh, qml-section-order.py, tests/plugin-test.sh and
 # dead-signals.py were all committed 100644, and the shell-verify gate invokes all four as
 # `./tools/...`. See trap T22.
 #

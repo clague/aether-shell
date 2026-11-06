@@ -28,7 +28,7 @@ XDG_CONFIG_HOME="$tmp/config" XDG_STATE_HOME="$tmp/state" XDG_CACHE_HOME="$tmp/c
 CONFIG_PATHS_OUT="$dump" \
 QML2_IMPORT_PATH="$BUILD_DIR/qml${QML2_IMPORT_PATH:+:$QML2_IMPORT_PATH}" \
 CAELESTIA_LIB_DIR="$BUILD_DIR/lib" \
-    "$QS" -p "$ROOT/tools/tests/config-paths" >"$tmp/run.log" 2>&1 &
+    "$QS" -p "$ROOT/tests/config-paths" >"$tmp/run.log" 2>&1 &
 qs_pid=$!
 # Quickshell has no quit method, so wait for the file and stop the process.
 for _ in $(seq 1 90); do [ -s "$dump" ] && break; sleep 1; done

@@ -8,7 +8,7 @@
 // 372 config keys at once, because it is a property of the resolver rather than
 // of any key.
 //
-// Run through tools/config-scope-test.sh, which isolates XDG_CONFIG_HOME
+// Run through tests/config-scope-test.sh, which isolates XDG_CONFIG_HOME
 // so this never touches a real config, and reads the verdict from $RESULT_FILE
 // rather than from stdout.
 

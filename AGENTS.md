@@ -47,7 +47,7 @@ Every gate upstream enforces is green on a tree that arrived with all of them fa
 | `g++ -Werror` (`build.yml`) | 11, never run | 0 |
 | `clazy -Werror` (`build.yml`) | 9+, never run | 0 |
 | smoke matrix | did not run at all | 4 presets, x2 compositor configs |
-| `tools/plugin-test.sh` | no test of any kind existed | 4 tests, 0 failures |
+| `tests/plugin-test.sh` | no test of any kind existed | 4 tests, 0 failures |
 | `tools/dead-signals.py` | didn't exist; 1 dead signal | 0 of 209 |
 | `tools/dead-qml.py` | didn't exist; 5 dead files | 0 of 367 |
 | `tools/shell-safety.py` | didn't exist; 15 injectable sites | 0 of 33 |
@@ -60,7 +60,7 @@ Every gate upstream enforces is green on a tree that arrived with all of them fa
 `./tools/verify.sh` runs every row of that table in one go and prints GREEN or RED.
 CI runs them too (`.github/workflows/smoke.yml` carries the last two, on headless sway).
 `tools/qml-section-order.py` is ours — the `section-order` fixer upstream's checker
-lacks. `tools/plugin-test.sh` is ours too, and runs the only executable tests in the
+lacks. `tests/plugin-test.sh` is ours too, and runs the only executable tests in the
 tree: the UKEY2 handshake, the `BeatTracker::beat` forward, the mDNS name decode and the
 QuickShare payload frames.
 
@@ -125,15 +125,17 @@ These were settled by source audit on 2026-09-02. Do not re-litigate without new
 ## Repository layout and ownership
 
 ```
-modules/  components/  services/  plugin/  shell.qml   ← upstream-shaped. Merge target. Edit minimally.
-scripts/  assets/  .github/                            ← upstream-shaped. Same rule.
+modules/  components/  services/  daemons/  utils/  plugin/  shell.qml   ← upstream-shaped. Merge target. Edit minimally.
+scripts/  assets/  .github/  extras/                                      ← upstream-shaped. Same rule.
+nix/  flake.nix  flake.lock                                               ← packaging, inherited and adapted.
 
-bin/  cli/  docs/  hypr/  presets/  tools/             ← ours. Upstream will never touch them.
+bin/  cli/  docs/  hypr/  presets/  tests/  tools/     ← ours. Upstream will never touch them.
   bin/            the `aether` command entry point
   cli/            in-tree command surface (scheme, wallpaper, record, …)
   docs/           architecture, traps, provenance, plugin contract, parked ideas, layout
   hypr/           reference copy of the Hyprland config the shell depends on
   presets/        smoke-matrix configs (all-on, all-off, variants-flipped, theme-nebula)
+  tests/          C++ unit tests, CLI/config harnesses, fixtures
   tools/          build/lint/smoke verification, upstream drift, dead-code audits
 ```
 

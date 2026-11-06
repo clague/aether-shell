@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Build and run the C++ plugin tests in tools/tests/.
+# Build and run the C++ plugin tests in tests/.
 #
-#   ./tools/plugin-test.sh              # all of them
-#   ./tools/plugin-test.sh ukey2        # just the ones whose name matches
-#   BUILD_DIR=/path/to/build ./tools/plugin-test.sh
+#   ./tests/plugin-test.sh              # all of them
+#   ./tests/plugin-test.sh ukey2        # just the ones whose name matches
+#   BUILD_DIR=/path/to/build ./tests/plugin-test.sh
 #
 # The plugin has no test target -- upstream ships none, and adding one would put
 # project-owned code in an upstream-shaped path (rule 5). These live in  instead and
@@ -92,7 +92,7 @@ for spec in "${TESTS[@]}"; do
 
     out=$BUILD_DIR/aether-test-$name
     # shellcheck disable=SC2086,SC2046  # srcs and pkg-config output are flag lists
-    if ! g++ "${COMMON[@]}" -o "$out" "$ROOT/tools/tests/$name.cpp" $srcs \
+    if ! g++ "${COMMON[@]}" -o "$out" "$ROOT/tests/$name.cpp" $srcs \
         -I"$GEN" $QTFLAGS $(pkg-config --cflags --libs $pkgs); then
         echo "  $name: BUILD FAILED"
         rc=1

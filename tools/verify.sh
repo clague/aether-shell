@@ -95,7 +95,7 @@ step "cli deps self-test"; ./tools/cli-deps.py --self-test | tail -1; ./tools/cl
 # The in-tree command surface replaced caelestia-cli; a stray argv would keep the old dependency
 # alive on exactly the machines that have the package installed.
 step "cli deps";      ./tools/cli-deps.py           | tail -1; ./tools/cli-deps.py           >/dev/null || fail=1
-step "cli tests";     ./tools/cli-test.sh            | tail -1; ./tools/cli-test.sh            >/dev/null || fail=1
+step "cli tests";     ./tests/cli-test.sh            | tail -1; ./tests/cli-test.sh            >/dev/null || fail=1
 step "singleton self-test"
 ./tools/singleton-members.py --self-test | tail -1; ./tools/singleton-members.py --self-test >/dev/null || fail=1
 step "singletons";    ./tools/singleton-members.py | tail -1; ./tools/singleton-members.py >/dev/null || fail=1
@@ -108,12 +108,12 @@ step "subpage index self-test"
 # A row that opens the wrong sub-page compiles, lints and renders; only this compares the
 # index it pushes with the page it names.
 step "subpage index";  ./tools/subpage-index.py | tail -1; ./tools/subpage-index.py >/dev/null || fail=1
-step "config scope";  ./tools/config-scope-test.sh | tail -1; ./tools/config-scope-test.sh >/dev/null 2>&1 || fail=1
-step "settings paths"; ./tools/settings-paths.sh | tail -1; ./tools/settings-paths.sh >/dev/null 2>&1 || fail=1
+step "config scope";  ./tests/config-scope-test.sh | tail -1; ./tests/config-scope-test.sh >/dev/null 2>&1 || fail=1
+step "settings paths"; ./tests/settings-paths.sh | tail -1; ./tests/settings-paths.sh >/dev/null 2>&1 || fail=1
 step "index modes";   ./tools/check-index-modes.sh || fail=1
 
 step "plugin tests"
-./tools/plugin-test.sh || fail=1
+./tests/plugin-test.sh || fail=1
 
 if [ "$QUICK" = 0 ]; then
     step "clang-tidy"
