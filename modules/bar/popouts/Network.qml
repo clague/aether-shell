@@ -46,8 +46,68 @@ ColumnLayout {
         font.weight: 500
     }
 
+    RowLayout {
+        // The popout used to show only the connection that was active, which hid Wi-Fi
+        // entirely on an Ethernet machine. Keep both reachable.
+        visible: Nmcli.ethernetDevices.length > 0
+
+        Layout.preferredHeight: visible ? implicitHeight : 0
+        Layout.leftMargin: Tokens.padding.small
+        Layout.rightMargin: Tokens.padding.small
+        spacing: Tokens.spacing.extraSmall
+
+        TextButton {
+            Layout.fillWidth: true
+            type: TextButton.Tonal
+            isToggle: true
+            checked: root.view === "wireless"
+            text: Tr.tr("Wi-Fi")
+            onClicked: root.view = "wireless"
+        }
+
+        TextButton {
+            Layout.fillWidth: true
+            type: TextButton.Tonal
+            isToggle: true
+            checked: root.view === "ethernet"
+            text: Tr.tr("Ethernet")
+            onClicked: root.view = "ethernet"
+        }
+    }
+
+    RowLayout {
+        visible: root.view === "wireless"
+
+        Layout.preferredHeight: visible ? implicitHeight : 0
+        Layout.leftMargin: Tokens.padding.small
+        Layout.rightMargin: Tokens.padding.extraSmall
+        spacing: Tokens.spacing.medium
+
+        MaterialIcon {
+            text: "wifi"
+
+            color: Nmcli.wifiEnabled ? Colours.palette.m3primary : Colours.palette.m3onSurfaceVariant
+        }
+
+        StyledText {
+            Layout.fillWidth: true
+
+            text: Tr.tr("Wi-Fi")
+            font: Tokens.font.body.medium
+        }
+
+        StyledSwitch {
+            checked: Nmcli.wifiEnabled
+
+            onToggled: Nmcli.enableWifi(checked, () => {
+                if (checked)
+                    Nmcli.rescanWifi();
+            })
+        }
+    }
+
     StyledText {
-        visible: root.view === "wireless" && Nmcli.wifiEnabled && Nmcli.networks.length === 0
+        visible: root.view === "wireless" && (Nmcli.networks.length === 0 || !Nmcli.wifiEnabled)
 
         Layout.preferredHeight: visible ? implicitHeight : 0
 
@@ -57,7 +117,7 @@ ColumnLayout {
 
         Layout.alignment: Qt.AlignHCenter
 
-        text: Nmcli.scanning ? Tr.tr("Scanning for networks...") : Tr.tr("No networks found")
+        text: !Nmcli.wifiEnabled ? Tr.tr("Wi-Fi disabled") : Nmcli.scanning ? Tr.tr("Scanning for networks...") : Tr.tr("No networks found")
 
         color: Colours.palette.m3onSurfaceVariant
 
@@ -225,7 +285,7 @@ ColumnLayout {
     }
 
     StyledRect {
-        visible: root.view === "wireless"
+        visible: root.view === "wireless" && Nmcli.wifiEnabled
 
         Layout.preferredHeight: visible ? implicitHeight : 0
 
@@ -461,6 +521,17 @@ ColumnLayout {
                 }
             }
         }
+    }
+
+    IconTextButton {
+        Layout.fillWidth: true
+        inactiveColour: Colours.palette.m3primaryContainer
+        inactiveOnColour: Colours.palette.m3onPrimaryContainer
+        verticalPadding: Tokens.padding.small
+        text: Tr.tr("Open settings")
+        icon: "settings"
+
+        onClicked: root.popouts.detachRequested("network")
     }
 
     Connections {
