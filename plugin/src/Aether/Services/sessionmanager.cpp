@@ -7,6 +7,7 @@
 #include <qdbuspendingreply.h>
 #include <qdbusreply.h>
 #include <qloggingcategory.h>
+#include <qprocess.h>
 
 #include "core/toaster.hpp"
 #include "util/i18n.hpp"
@@ -94,6 +95,18 @@ bool SessionManager::exec(const QStringList& command) {
 }
 
 void SessionManager::logout() {
+    // SDDM 0.21's X11 greeter often fails to come back when a Wayland session is
+    // terminated through logind: the greeter's X server keeps the stale VT and the
+    // next greeter has no input. uwsm stops the whole session envelope and hands the
+    // VT back cleanly; fall back to login1 when the session is not uwsm-managed.
+    if (qEnvironmentVariableIsSet("UWSM_WAIT_VARNAMES")) {
+        if (QProcess::startDetached(u"uwsm"_s, QStringList{ u"stop"_s })) {
+            qCInfo(lcSessionManager) << "Logging out through uwsm";
+            return;
+        }
+        qCWarning(lcSessionManager) << "uwsm stop failed to start; falling back to login1";
+    }
+
     callSession(u"Terminate"_s);
 }
 
