@@ -1,6 +1,6 @@
 pkgbase = aether-shell-git
 	pkgdesc = Quickshell desktop shell for Hyprland, merging MiDnight Shell and OP-Caelestia
-	pkgver = 2.5.0.r1117.gd2e1c76
+	pkgver = 2.5.0.r1119.g8fee4f2
 	pkgrel = 1
 	url = https://github.com/clague/aether-shell
 	install = aether-shell.install

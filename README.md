@@ -268,10 +268,9 @@ bind = SUPER, M, global, aether:utilities
   **drag** a box for an ordinary composited region. Both open swappy. `-r -f` does the same on
   a frozen frame; `-r "x,y wxh"` skips the picker for a fixed geometry.
 - `aether screenshot -w` skips the picker and captures the focused window directly; `-w
-  <stableId>` captures a specific one from `hyprctl clients -j`. This direct path uses the
-  full-screenshot behaviour (clipboard, cache, Open/Save notification), not swappy. Both
-  forms use `grim -T`, so the file is the window's own RGBA surface: no wallpaper, blur,
-  rounding or other windows.
+  <stableId>` captures a specific one from `hyprctl clients -j`. Both open swappy, like a
+  dragged region, and use `grim -T`, so the file is the window's own RGBA surface: no
+  wallpaper, blur, rounding or other windows.
 - `aether:screenshotWindow` is an alias for the picker, kept for existing binds.
 - `aether:screenshotClip` and `aether:screenshotFreezeClip` use the same picker but copy
   instead of opening swappy; a window click copies the raw surface and a drag copies the

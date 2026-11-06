@@ -48,7 +48,9 @@ class Command:
         if not stable:
             raise ValueError("no focused window to capture")
 
-        self.capture(["grim", "-T", str(stable), "-"], "Window screenshot")
+        # Window and region screenshots both open the editor; the full-screen command keeps
+        # the clipboard/cache flow.
+        self._capture_editor(["grim", "-T", str(stable), "-"])
 
     def _capture_editor(self, cmd: list[str]) -> None:
         sc_data = self._output(cmd)
