@@ -273,15 +273,16 @@ bind = SUPER, M, global, aether:utilities
   wallpaper, blur, rounding or other windows. `--clipboard` copies the framed result instead
   of opening the editor.
 - Window captures are rendered macOS-style before they reach swappy or the clipboard:
-  white padding, rounded corners, a border and a drop shadow. The values follow the running
-  Hyprland config: `decoration:rounding`, `general:border_size`,
+  transparent padding, rounded corners, a border and a drop shadow. The values follow the
+  running Hyprland config: `decoration:rounding`, `general:border_size`,
   `general:col.active_border`, `decoration:shadow:range`, `decoration:shadow:render_power`,
   `decoration:shadow:offset` and `decoration:shadow:color`. Padding follows the shadow extent.
   The shadow reproduces the compositor's own falloff, `alpha = A * (1 - d/range) **
-  render_power`, so it is as dense at the window edge as it is on screen.
+  render_power`, so it is as dense at the window edge as it is on screen; the offset stretches
+  that falloff on its side instead of shifting a solid block under the window.
   When Hyprland cannot be queried (tests, scripts outside the session), built-in defaults are
-  used. The frame is composited on a **white background**, so the shadow is visible in any
-  viewer; the result is opaque. **Nexus → Desktop → Screenshots** controls this: *Follow the
+  used. The frame is rendered **transparent**, so it drops onto any background and the shadow
+  travels in the alpha channel. **Nexus → Desktop → Screenshots** controls this: *Follow the
   window manager* is on by default; switching it off exposes rounding, border width/colour,
   shadow enabled/range/power/offset/colour. The CLI reads the same `aether.windowFrame` block
   from `shell.json`. Region and full-screen captures are not framed.

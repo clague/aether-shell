@@ -150,7 +150,7 @@ from PIL import Image
 im = Image.open(sys.argv[1])
 assert im.mode == "RGBA", im.mode
 assert im.size[0] > 20 and im.size[1] > 10, im.size
-assert im.getpixel((0, 0)) == (255, 255, 255, 255), im.getpixel((0, 0))
+assert im.getpixel((0, 0))[3] == 0, im.getpixel((0, 0))
 print("framed")' "$1"
 }
 
@@ -186,10 +186,10 @@ im = Image.open(sys.argv[1])
 x = im.size[0] // 2
 row = 12 + 10  # padding is the 12px shadow reach below; the window is 20x10 above this row
 reach = 8 + 4  # range, stretched by the vertical offset
-got = [im.getpixel((x, row + d))[0] for d in range(0, 8)]
-want = [round(255 - 128 * (1 - (d + 1) / reach) ** 2) for d in range(0, 8)]
+got = [im.getpixel((x, row + d))[3] for d in range(0, 8)]
+want = [round(128 * (1 - (d + 1) / reach) ** 2) for d in range(0, 8)]
 assert all(abs(a - b) <= 6 for a, b in zip(got, want)), (got, want)
-assert all(b > a for a, b in zip(got, got[1:])), got  # no full-alpha plateau under the window
+assert all(b < a for a, b in zip(got, got[1:])), got  # no full-alpha plateau under the window
 print("profile-ok")' "$work/swappy-shadow.png")
 check "shadow follows Hyprland falloff" "profile-ok" "$shadow"
 
