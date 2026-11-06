@@ -123,32 +123,46 @@ esac
 [ -n "$("$AETHER" --version)" ]
 checks=$((checks + 1))
 
-# Window capture: explicit stableId skips the Hyprland socket, and the fakes keep grim and
-# swappy from touching the real desktop. Window and region both go through swappy; the point
-# is the argv and the raw bytes, not a valid PNG.
+# Window capture: explicit stableId skips the Hyprland socket, and the fakes keep grim,
+# swappy and wl-copy from touching the real desktop. The fake grim returns a tiny real PNG so
+# the window renderer (padding, border, shadow) can be checked as an image, not a byte string.
 mkdir -p "$work/bin"
+python3 -c 'import sys; from PIL import Image; Image.new("RGBA", (20, 10), (180, 40, 40, 255)).save(sys.argv[1])' "$work/window.png"
 cat >"$work/bin/grim" <<'EOF'
 #!/bin/sh
 printf '%s' "$*" >"$GRIM_ARGS"
-printf 'RAW-PNG'
+cat "$FAKE_WINDOW"
 EOF
 cat >"$work/bin/swappy" <<'EOF'
 #!/bin/sh
 printf '%s' "$*" >"$SWAPPY_ARGS"
 cat >"$SWAPPY_STDIN"
 EOF
-cat >"$work/bin/notify-send" <<'EOF'
+cat >"$work/bin/wl-copy" <<'EOF'
 #!/bin/sh
-exit 0
+cat >"$WL_COPY_OUT"
 EOF
-chmod +x "$work/bin/grim" "$work/bin/swappy" "$work/bin/notify-send"
+chmod +x "$work/bin/grim" "$work/bin/swappy" "$work/bin/wl-copy"
 
-GRIM_ARGS=$work/grim.args SWAPPY_ARGS=$work/swappy.args SWAPPY_STDIN=$work/swappy.stdin \
-    PATH="$work/bin:$PATH" "$AETHER" screenshot -w 180001e3
+framed() {
+    python3 -c 'import sys
+from PIL import Image
+im = Image.open(sys.argv[1])
+assert im.mode == "RGBA", im.mode
+assert im.size[0] > 20 and im.size[1] > 10, im.size
+print("framed")' "$1"
+}
+
+GRIM_ARGS=$work/grim.args FAKE_WINDOW=$work/window.png SWAPPY_ARGS=$work/swappy.args \
+    SWAPPY_STDIN=$work/swappy.stdin PATH="$work/bin:$PATH" "$AETHER" screenshot -w 180001e3
 check "window capture uses grim -T" "-T 180001e3 -" "$(cat "$work/grim.args")"
 check "window capture opens swappy on stdin" "-f -" "$(cat "$work/swappy.args")"
 for _ in $(seq 1 20); do [ -s "$work/swappy.stdin" ] && break; sleep 0.05; done
-check "window capture feeds swappy the raw bytes" "RAW-PNG" "$(cat "$work/swappy.stdin")"
+check "window capture is rendered with padding" "framed" "$(framed "$work/swappy.stdin")"
+
+GRIM_ARGS=$work/grim.args FAKE_WINDOW=$work/window.png WL_COPY_OUT=$work/wl-copy.out \
+    PATH="$work/bin:$PATH" "$AETHER" screenshot -w 180001e3 --clipboard
+check "window clipboard is rendered too" "framed" "$(framed "$work/wl-copy.out")"
 
 if "$AETHER" screenshot -w 1 -r >"$work/window-region.out" 2>&1; then
     echo "FAIL: --window and --region were accepted together" >&2

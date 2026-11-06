@@ -270,7 +270,11 @@ bind = SUPER, M, global, aether:utilities
 - `aether screenshot -w` skips the picker and captures the focused window directly; `-w
   <stableId>` captures a specific one from `hyprctl clients -j`. Both open swappy, like a
   dragged region, and use `grim -T`, so the file is the window's own RGBA surface: no
-  wallpaper, blur, rounding or other windows.
+  wallpaper, blur, rounding or other windows. `--clipboard` copies the framed result instead
+  of opening the editor.
+- Window captures are rendered macOS-style before they reach swappy or the clipboard:
+  transparent padding, rounded corners, a one-pixel border and a soft drop shadow. Region
+  and full-screen captures are not framed.
 - `aether:screenshotWindow` is an alias for the picker, kept for existing binds.
 - `aether:screenshotClip` and `aether:screenshotFreezeClip` use the same picker but copy
   instead of opening swappy; a window click copies the raw surface and a drag copies the

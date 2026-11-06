@@ -94,16 +94,12 @@ MouseArea {
     }
 
     function captureWindow(id: string): void {
+        const args = [Quickshell.shellPath("bin/aether"), "screenshot", "-w", String(id)];
         if (root.loader.clipboardOnly) {
-            Quickshell.execDetached(["sh", "-c", 'grim -T "$1" - | wl-copy --type image/png', "sh", id]);
+            args.push("--clipboard");
             Toaster.toast(Tr.tr("Screenshot taken"), Tr.tr("Screenshot copied to clipboard"), "screenshot_monitor");
-        } else {
-            // Match a dragged region: raw window surface goes through swappy as well, not the
-            // CLI's clipboard/notification path.
-            CUtils.mkdirp(root.tmpDir);
-            const path = `${root.tmpDir}/window-${Quickshell.processId}-${Date.now()}.png`;
-            Quickshell.execDetached(["sh", "-c", 'grim -T "$1" - > "$2" && exec swappy -f "$2"', "sh", id, path]);
         }
+        Quickshell.execDetached(args);
     }
 
     function save(): void {

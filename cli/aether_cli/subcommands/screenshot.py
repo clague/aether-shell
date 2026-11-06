@@ -5,6 +5,7 @@ from datetime import datetime
 from aether_cli.utils import hypr
 from aether_cli.utils.notify import notify
 from aether_cli.utils.paths import screenshots_cache_dir, screenshots_dir, shell_root
+from aether_cli.utils.windowshot import render
 
 
 class Command:
@@ -16,6 +17,8 @@ class Command:
     def run(self) -> None:
         if self.args.window is not None and self.args.region:
             raise ValueError("--window and --region cannot be used together")
+        if self.args.clipboard and self.args.window is None:
+            raise ValueError("--clipboard requires --window")
         if self.args.window is not None:
             self.window()
         elif self.args.region:
@@ -48,17 +51,21 @@ class Command:
         if not stable:
             raise ValueError("no focused window to capture")
 
-        # Window and region screenshots both open the editor; the full-screen command keeps
-        # the clipboard/cache flow.
-        self._capture_editor(["grim", "-T", str(stable), "-"])
+        framed = render(self._output(["grim", "-T", str(stable), "-"]))
+        if self.args.clipboard:
+            subprocess.run(["wl-copy", "--type", "image/png"], input=framed, check=False)
+        else:
+            self._editor(framed)
 
     def _capture_editor(self, cmd: list[str]) -> None:
-        sc_data = self._output(cmd)
+        self._editor(self._output(cmd))
+
+    def _editor(self, data: bytes) -> None:
         swappy = subprocess.Popen(["swappy", "-f", "-"], stdin=subprocess.PIPE, start_new_session=True)
 
         # Ensure stdin is not None for the type checker
         if swappy.stdin:
-            swappy.stdin.write(sc_data)
+            swappy.stdin.write(data)
             swappy.stdin.close()
 
     def capture(self, cmd: list[str], label: str) -> None:

@@ -114,6 +114,11 @@ def parse_args() -> tuple[ArgumentParser, Namespace]:
         "-r", "--region", nargs="?", const="slurp", help="take a screenshot of a region"
     )
     shot.add_argument(
+        "--clipboard",
+        action="store_true",
+        help="copy the window to the clipboard instead of opening the editor",
+    )
+    shot.add_argument(
         "-f",
         "--freeze",
         action="store_true",
