@@ -313,12 +313,14 @@ QStringList CUtils::availableQtStyles() {
     QStringList styles{ u"Fusion"_s, u"Windows"_s };
 
     QStringList dirs{ QLibraryInfo::path(QLibraryInfo::PluginsPath) + u"/styles"_s };
-    for (const QString& root : qEnvironmentVariable("QT_PLUGIN_PATH").split(u':', Qt::SkipEmptyParts))
+    const QStringList pluginPaths = qEnvironmentVariable("QT_PLUGIN_PATH").split(u':', Qt::SkipEmptyParts);
+    for (const QString& root : pluginPaths)
         dirs << root + u"/styles"_s;
 
     for (const QString& dir : std::as_const(dirs)) {
         const QDir directory(dir);
-        for (const QString& file : directory.entryList({ u"*.so"_s }, QDir::Files)) {
+        const QStringList files = directory.entryList({ u"*.so"_s }, QDir::Files);
+        for (const QString& file : files) {
             const QPluginLoader loader(directory.filePath(file));
             const QJsonArray keys = loader.metaData().value(u"MetaData"_s).toObject().value(u"Keys"_s).toArray();
             for (const QJsonValueConstRef key : keys) {
@@ -345,7 +347,8 @@ QStringList CUtils::availableIconThemes() {
 
     for (const QString& dir : dirs) {
         const QDir directory(dir);
-        for (const QString& name : directory.entryList(QDir::Dirs | QDir::NoDotAndDotDot)) {
+        const QStringList names = directory.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+        for (const QString& name : names) {
             // An index.theme is what makes a directory a theme rather than a stray folder.
             if (QFileInfo::exists(directory.filePath(name) + u"/index.theme"_s))
                 themes << name;
