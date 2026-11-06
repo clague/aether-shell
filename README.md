@@ -273,10 +273,12 @@ bind = SUPER, M, global, aether:utilities
   wallpaper, blur, rounding or other windows. `--clipboard` copies the framed result instead
   of opening the editor.
 - Window captures are rendered macOS-style before they reach swappy or the clipboard:
-  transparent padding, rounded corners, a border and a soft drop shadow. The values follow
-  the running Hyprland config: `decoration:rounding`, `general:border_size`,
+  white padding, rounded corners, a border and a drop shadow. The values follow the running
+  Hyprland config: `decoration:rounding`, `general:border_size`,
   `general:col.active_border`, `decoration:shadow:range`, `decoration:shadow:render_power`,
   `decoration:shadow:offset` and `decoration:shadow:color`. Padding follows the shadow extent.
+  The shadow reproduces the compositor's own falloff, `alpha = A * (1 - d/range) **
+  render_power`, so it is as dense at the window edge as it is on screen.
   When Hyprland cannot be queried (tests, scripts outside the session), built-in defaults are
   used. The frame is composited on a **white background**, so the shadow is visible in any
   viewer; the result is opaque. **Nexus → Desktop → Screenshots** controls this: *Follow the
@@ -287,8 +289,7 @@ bind = SUPER, M, global, aether:utilities
   Hyprland has no API that renders a window *with its server-side decorations* into an alpha
   buffer: toplevel export explicitly excludes decorations, and workspace/output capture
   includes the desktop background. The frame above is a reconstruction from the values
-  Hyprland exposes; the shadow falloff is an approximation, not a pixel-exact compositor
-  render.
+  Hyprland exposes. Colours accept `rgba(RRGGBBAA)`, `rgba(r, g, b, a)` and `#RRGGBB[AA]`.
 - `aether:screenshotWindow` is an alias for the picker, kept for existing binds.
 - `aether:screenshotClip` and `aether:screenshotFreezeClip` use the same picker but copy
   instead of opening swappy; a window click copies the raw surface and a drag copies the

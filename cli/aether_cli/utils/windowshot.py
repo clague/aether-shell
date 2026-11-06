@@ -7,6 +7,12 @@ desktop background. The frame is therefore reconstructed from the values Hyprlan
 The values come from the running compositor: rounding, border size/colour, and shadow
 enabled/sharp/range/power/offset/colour. Each field falls back independently when hyprctl is
 unavailable (tests, scripts outside the session).
+
+The shadow uses Hyprland's own falloff from `src/render/shaders/glsl/shadow.glsl`:
+`alpha = A * (1 - d / range) ** render_power` for `d` in `[0, range]` measured outwards from
+the window's outer edge, so the shadow is at full colour alpha *at* the edge and fades to
+nothing `range` pixels out. A Gaussian blur cannot reproduce that -- it peaks at half alpha
+and spreads the same darkness over twice the distance.
 """
 
 import json
@@ -14,7 +20,7 @@ import subprocess
 from dataclasses import dataclass
 from io import BytesIO
 
-from PIL import Image, ImageChops, ImageDraw, ImageFilter
+from PIL import Image, ImageChops, ImageDraw
 
 
 @dataclass(frozen=True)
@@ -37,13 +43,25 @@ def _clamp(value: int) -> int:
 def parse_color(
     value: str | None, fallback: tuple[int, int, int, int]
 ) -> tuple[int, int, int, int]:
-    """Hyprland colours are AARRGGBB hex, or rgba(...) with hex or comma-separated channels."""
+    """Hyprland colours: `rgba(RRGGBBAA)` in config, AARRGGBB hex from hyprctl."""
+    try:
+        return _parse_color(value, fallback)
+    except (TypeError, ValueError):
+        return fallback
+
+
+def _parse_color(
+    value: str | None, fallback: tuple[int, int, int, int]
+) -> tuple[int, int, int, int]:
     if not value:
         return fallback
 
-    token = str(value).strip().split()[0].lower()
+    # A gradient option is "rgba(...) rgba(...) 45deg": cut at the first ')' so the spaces
+    # inside `rgba(0, 0, 0, 0.5)` survive. A plain hex gradient has no ')' at all.
+    text = str(value).strip().lower()
+    token = text[: text.index(")") + 1] if ")" in text else text.split()[0]
     if token.startswith("rgba(") and token.endswith(")"):
-        inner = token[5:-1]
+        inner = token[5:-1].strip()
         if "," in inner:
             parts = [float(part) for part in inner.split(",")]
             if len(parts) == 4:
@@ -53,14 +71,25 @@ def parse_color(
                 ]
                 alpha = round(parts[3] * 255) if parts[3] <= 1 else round(parts[3])
                 return _clamp(rgb[0]), _clamp(rgb[1]), _clamp(rgb[2]), _clamp(alpha)
-        elif len(inner) == 8:
-            token = inner
-    elif token.startswith("rgb(") and token.endswith(")"):
+            return fallback
+        # `rgba()` takes RRGGBBAA, unlike the bare hex hyprctl prints.
+        if len(inner) == 8:
+            return (
+                int(inner[0:2], 16),
+                int(inner[2:4], 16),
+                int(inner[4:6], 16),
+                int(inner[6:8], 16),
+            )
+        if len(inner) == 6:
+            return int(inner[0:2], 16), int(inner[2:4], 16), int(inner[4:6], 16), 255
+        return fallback
+    if token.startswith("rgb(") and token.endswith(")"):
         parts = [float(part) for part in token[4:-1].split(",")]
         if len(parts) == 3:
             rgb = [round(part * 255) if part <= 1 else round(part) for part in parts]
             return _clamp(rgb[0]), _clamp(rgb[1]), _clamp(rgb[2]), 255
 
+    token = token.lstrip("#")
     if token.startswith("0x"):
         token = token[2:]
     if len(token) == 8:
@@ -236,6 +265,58 @@ def _rect_mask(
     return big.resize((width, height), Image.Resampling.LANCZOS)
 
 
+def _shadow_mask(
+    size: tuple[int, int],
+    box: tuple[int, int, int, int],
+    radius: int,
+    range_px: int,
+    power: int,
+    alpha: int,
+    sharp: bool,
+    scale: int,
+) -> Image.Image:
+    """Hyprland's shadow profile as an L mask, drawn as nested rounded rectangles.
+
+    Each rectangle is the window box grown by `d`, so filling them from `d = range` down to
+    `d = 0` leaves every pixel with the alpha of its own distance, which is exactly the
+    shader's curve. `sharp` is the compositor's no-falloff mode: one flat rectangle.
+    """
+    x0, y0, x1, y1 = box
+    width = x1 - x0 + 1
+    height = y1 - y0 + 1
+    mask = Image.new("L", (size[0] * scale, size[1] * scale), 0)
+    draw = ImageDraw.Draw(mask)
+
+    if sharp:
+        draw.rounded_rectangle(
+            (x0 * scale, y0 * scale, (x1 + 1) * scale - 1, (y1 + 1) * scale - 1),
+            radius=radius * scale,
+            fill=alpha,
+        )
+        return mask.resize(size, Image.Resampling.LANCZOS) if scale > 1 else mask
+
+    for distance in range(range_px, -1, -1):
+        value = round(alpha * (1 - distance / range_px) ** power)
+        if value <= 0:
+            continue
+        corner = min(
+            radius + distance, (width + 2 * distance) // 2, (height + 2 * distance) // 2
+        )
+        # The +1 makes the supersampled rectangle end on the 1x pixel edge, not its centre.
+        draw.rounded_rectangle(
+            (
+                (x0 - distance) * scale,
+                (y0 - distance) * scale,
+                (x1 + distance + 1) * scale - 1,
+                (y1 + distance + 1) * scale - 1,
+            ),
+            radius=corner * scale,
+            fill=value,
+        )
+
+    return mask.resize(size, Image.Resampling.LANCZOS) if scale > 1 else mask
+
+
 def render(raw: bytes, style: WindowStyle | None = None) -> bytes:
     if style is None:
         style = WindowStyle()
@@ -250,17 +331,9 @@ def render(raw: bytes, style: WindowStyle | None = None) -> bytes:
     rounding = min(style.rounding, outer_width // 2, outer_height // 2)
     inner_rounding = max(0, rounding - border)
 
-    blur = 0
-    extent = 0
-    if style.shadow_enabled and style.shadow_range and style.shadow_color[3]:
-        # Hyprland's render_power makes the shadow crisper as it rises; the range is the
-        # configured extent. A Gaussian blur approximates the falloff, not the exact curve.
-        blur = (
-            0
-            if style.shadow_sharp
-            else max(1, round(style.shadow_range * 2 / style.shadow_power))
-        )
-        extent = max(style.shadow_range, blur)
+    extent = max(0, style.shadow_range)
+    if not (style.shadow_enabled and style.shadow_color[3]):
+        extent = 0
 
     offset_x, offset_y = style.shadow_offset
     padding = extent + max(abs(offset_x), abs(offset_y)) if extent else 0
@@ -273,25 +346,29 @@ def render(raw: bytes, style: WindowStyle | None = None) -> bytes:
     )
 
     if extent:
-        shadow = Image.new("RGBA", canvas.size, (0, 0, 0, 0))
-        ImageDraw.Draw(shadow).rounded_rectangle(
-            (
-                padding + offset_x,
-                padding + offset_y,
-                padding + offset_x + outer_width - 1,
-                padding + offset_y + outer_height - 1,
-            ),
-            radius=rounding,
-            fill=style.shadow_color,
+        x0 = padding + offset_x
+        y0 = padding + offset_y
+        box = (x0, y0, x0 + outer_width - 1, y0 + outer_height - 1)
+        mask = _shadow_mask(
+            canvas.size,
+            box,
+            rounding,
+            extent,
+            style.shadow_power,
+            style.shadow_color[3],
+            style.shadow_sharp,
+            _supersample(*canvas.size),
         )
-        if blur:
-            shadow = shadow.filter(ImageFilter.GaussianBlur(blur))
+        shadow = Image.new("RGBA", canvas.size, (*style.shadow_color[:3], 0))
+        shadow.putalpha(mask)
         canvas.alpha_composite(shadow)
 
     # The border is painted outside the surface; the content keeps its full size and is
     # clipped by the inner radius, like a compositor border ring. Both masks are drawn
     # supersampled and reduced, because Pillow's rounded_rectangle has no antialiasing.
-    content_mask = _rounded_mask((width, height), inner_rounding, _supersample(width, height))
+    content_mask = _rounded_mask(
+        (width, height), inner_rounding, _supersample(width, height)
+    )
     window.putalpha(ImageChops.multiply(window.getchannel("A"), content_mask))
     canvas.alpha_composite(window, (padding + border, padding + border))
 
