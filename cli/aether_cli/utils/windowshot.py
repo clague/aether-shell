@@ -9,10 +9,12 @@ enabled/sharp/range/power/offset/colour. Each field falls back independently whe
 unavailable (tests, scripts outside the session).
 
 The shadow uses Hyprland's own falloff from `src/render/shaders/glsl/shadow.glsl`:
-`alpha = A * (1 - d / range) ** render_power` for `d` in `[0, range]` measured outwards from
-the window's outer edge, so the shadow is at full colour alpha *at* the edge and fades to
-nothing `range` pixels out. A Gaussian blur cannot reproduce that -- it peaks at half alpha
-and spreads the same darkness over twice the distance.
+`alpha = A * (1 - d / range) ** render_power` over the shadow's reach, so it is at full
+colour alpha *at* the window edge and fades to nothing. A Gaussian blur cannot reproduce
+that -- it peaks at half alpha and spreads the same darkness over twice the distance. The
+one deliberate difference is `decoration:shadow:offset`: Hyprland moves the whole shadow box,
+which leaves a band of full alpha under the window, while here the offset stretches the
+reach on that side instead. Both look identical at offset 0.
 """
 
 import json
@@ -269,46 +271,63 @@ def _shadow_mask(
     size: tuple[int, int],
     box: tuple[int, int, int, int],
     radius: int,
-    range_px: int,
+    extents: tuple[int, int, int, int],
     power: int,
     alpha: int,
     sharp: bool,
     scale: int,
 ) -> Image.Image:
-    """Hyprland's shadow profile as an L mask, drawn as nested rounded rectangles.
+    """Hyprland's shadow falloff as an L mask, drawn as nested rounded rectangles.
 
-    Each rectangle is the window box grown by `d`, so filling them from `d = range` down to
-    `d = 0` leaves every pixel with the alpha of its own distance, which is exactly the
-    shader's curve. `sharp` is the compositor's no-falloff mode: one flat rectangle.
+    Each rectangle is the window box grown by a fraction of `extents` (left, top, right,
+    bottom), so filling them from the outside in leaves every pixel with the alpha of its own
+    distance, which is exactly the shader's curve. `sharp` is the compositor's no-falloff
+    mode: one flat rectangle.
+
+    The four extents differ on purpose. Hyprland shifts the whole shadow box by
+    `decoration:shadow:offset`, which leaves the offset's width at full alpha under the
+    window and reads as a hard-edged block once the shadow is strong. Stretching the falloff
+    instead keeps the shadow attached to the window and still drops it downwards.
     """
     x0, y0, x1, y1 = box
     width = x1 - x0 + 1
     height = y1 - y0 + 1
+    spread = max(extents)
     mask = Image.new("L", (size[0] * scale, size[1] * scale), 0)
     draw = ImageDraw.Draw(mask)
 
     if sharp:
+        left, top, right, bottom = extents
         draw.rounded_rectangle(
-            (x0 * scale, y0 * scale, (x1 + 1) * scale - 1, (y1 + 1) * scale - 1),
+            (
+                (x0 - left) * scale,
+                (y0 - top) * scale,
+                (x1 + right + 1) * scale - 1,
+                (y1 + bottom + 1) * scale - 1,
+            ),
             radius=radius * scale,
             fill=alpha,
         )
         return mask.resize(size, Image.Resampling.LANCZOS) if scale > 1 else mask
 
-    for distance in range(range_px, -1, -1):
-        value = round(alpha * (1 - distance / range_px) ** power)
+    for step in range(spread, -1, -1):
+        fraction = step / spread
+        value = round(alpha * (1 - fraction) ** power)
         if value <= 0:
             continue
+        reach = [fraction * extent for extent in extents]
         corner = min(
-            radius + distance, (width + 2 * distance) // 2, (height + 2 * distance) // 2
+            round(radius + fraction * spread),
+            (width + round(reach[0] + reach[2])) // 2,
+            (height + round(reach[1] + reach[3])) // 2,
         )
         # The +1 makes the supersampled rectangle end on the 1x pixel edge, not its centre.
         draw.rounded_rectangle(
             (
-                (x0 - distance) * scale,
-                (y0 - distance) * scale,
-                (x1 + distance + 1) * scale - 1,
-                (y1 + distance + 1) * scale - 1,
+                round((x0 - reach[0]) * scale),
+                round((y0 - reach[1]) * scale),
+                round((x1 + reach[2] + 1) * scale) - 1,
+                round((y1 + reach[3] + 1) * scale) - 1,
             ),
             radius=corner * scale,
             fill=value,
@@ -336,7 +355,13 @@ def render(raw: bytes, style: WindowStyle | None = None) -> bytes:
         extent = 0
 
     offset_x, offset_y = style.shadow_offset
-    padding = extent + max(abs(offset_x), abs(offset_y)) if extent else 0
+    extents = (
+        extent + max(0, -offset_x),
+        extent + max(0, -offset_y),
+        extent + max(0, offset_x),
+        extent + max(0, offset_y),
+    )
+    padding = max(extents) if extent else 0
     # White, not transparent: a shadow is invisible against a viewer's dark or checkered
     # background. The result is an opaque presentation image.
     canvas = Image.new(
@@ -345,15 +370,18 @@ def render(raw: bytes, style: WindowStyle | None = None) -> bytes:
         (255, 255, 255, 255),
     )
 
-    if extent:
-        x0 = padding + offset_x
-        y0 = padding + offset_y
-        box = (x0, y0, x0 + outer_width - 1, y0 + outer_height - 1)
+    if padding:
+        box = (
+            padding,
+            padding,
+            padding + outer_width - 1,
+            padding + outer_height - 1,
+        )
         mask = _shadow_mask(
             canvas.size,
             box,
             rounding,
-            extent,
+            extents,
             style.shadow_power,
             style.shadow_color[3],
             style.shadow_sharp,

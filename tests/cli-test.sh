@@ -175,7 +175,7 @@ custom_size=$(python3 -c 'import sys; from PIL import Image; im = Image.open(sys
 check "custom frame can disable the frame" "20x10" "$custom_size"
 
 cat >"$XDG_CONFIG_HOME/aether/shell.json" <<'JSON'
-{"aether":{"windowFrame":{"followWm":false,"rounding":0,"borderSize":0,"shadowEnabled":true,"shadowRange":8,"shadowPower":2,"shadowOffsetX":0,"shadowOffsetY":0,"borderColor":"rgba(0, 0, 0, 0)","shadowColor":"rgba(0, 0, 0, 0.5)"}}}
+{"aether":{"windowFrame":{"followWm":false,"rounding":0,"borderSize":0,"shadowEnabled":true,"shadowRange":8,"shadowPower":2,"shadowOffsetX":0,"shadowOffsetY":4,"borderColor":"rgba(0, 0, 0, 0)","shadowColor":"rgba(0, 0, 0, 0.5)"}}}
 JSON
 GRIM_ARGS=$work/grim.args FAKE_WINDOW=$work/window.png SWAPPY_ARGS=$work/swappy.args \
     SWAPPY_STDIN=$work/swappy-shadow.png PATH="$work/bin:$PATH" "$AETHER" screenshot -w 180001e3
@@ -184,10 +184,12 @@ shadow=$(python3 -c 'import sys
 from PIL import Image
 im = Image.open(sys.argv[1])
 x = im.size[0] // 2
-row = 8 + 10  # padding is the 8px shadow range; the window is 20x10 above this row
+row = 12 + 10  # padding is the 12px shadow reach below; the window is 20x10 above this row
+reach = 8 + 4  # range, stretched by the vertical offset
 got = [im.getpixel((x, row + d))[0] for d in range(0, 8)]
-want = [round(255 - 128 * (1 - (d + 1) / 8) ** 2) for d in range(0, 8)]
+want = [round(255 - 128 * (1 - (d + 1) / reach) ** 2) for d in range(0, 8)]
 assert all(abs(a - b) <= 6 for a, b in zip(got, want)), (got, want)
+assert all(b > a for a, b in zip(got, got[1:])), got  # no full-alpha plateau under the window
 print("profile-ok")' "$work/swappy-shadow.png")
 check "shadow follows Hyprland falloff" "profile-ok" "$shadow"
 
