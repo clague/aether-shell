@@ -234,7 +234,7 @@ All keybinds are accessible via Hyprland [global shortcuts](https://wiki.hypr.la
 | `aether:screenshotFreeze` | Select a region on a frozen frame |
 | `aether:screenshotClip` | Select a region and copy it |
 | `aether:screenshotFreezeClip` | Frozen region to the clipboard |
-| `aether:screenshotWindow` | Capture the focused window's own surface |
+| `aether:screenshotWindow` | Select a window and capture its own surface |
 
 ### Hyprland Keybind Examples
 
@@ -268,9 +268,11 @@ bind = SUPER, M, global, aether:utilities
   swappy. `-r "x,y wxh"` skips the picker and captures a fixed geometry.
 - `aether screenshot -w` captures the focused window, and `-w <stableId>` captures a specific
   one from `hyprctl clients -j`. It uses `grim -T`, so the file is the window's own RGBA
-  surface: no wallpaper, blur, rounding or other windows. The `aether:screenshotClip` and
-  `aether:screenshotFreezeClip` shortcuts copy without opening swappy; they have no default
-  bind.
+  surface: no wallpaper, blur, rounding or other windows.
+- `aether:screenshotWindow` opens a window picker instead: hover a window, click it, and the
+  same raw capture runs for its `stableId`. It has no default bind.
+- `aether:screenshotClip` and `aether:screenshotFreezeClip` copy a region without opening
+  swappy; they have no default bind either.
 
 ## Migration from upstream Caelestia
 

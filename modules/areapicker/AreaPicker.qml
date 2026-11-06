@@ -15,6 +15,7 @@ Scope {
         property bool closing
         property bool clipboardOnly
         property bool searchMode
+        property bool windowMode
 
         Variants {
             model: Screens.screens
@@ -54,6 +55,7 @@ Scope {
             root.closing = false;
             root.clipboardOnly = false;
             root.searchMode = false;
+            root.windowMode = false;
             root.activeAsync = true;
         }
 
@@ -62,6 +64,7 @@ Scope {
             root.closing = false;
             root.clipboardOnly = false;
             root.searchMode = false;
+            root.windowMode = false;
             root.activeAsync = true;
         }
 
@@ -70,6 +73,7 @@ Scope {
             root.closing = false;
             root.clipboardOnly = true;
             root.searchMode = false;
+            root.windowMode = false;
             root.activeAsync = true;
         }
 
@@ -78,6 +82,7 @@ Scope {
             root.closing = false;
             root.clipboardOnly = true;
             root.searchMode = false;
+            root.windowMode = false;
             root.activeAsync = true;
         }
 
@@ -86,6 +91,16 @@ Scope {
             root.freeze = false;
             root.closing = false;
             root.clipboardOnly = false;
+            root.windowMode = false;
+            root.activeAsync = true;
+        }
+
+        function openWindow(): void {
+            root.freeze = false;
+            root.closing = false;
+            root.clipboardOnly = false;
+            root.searchMode = false;
+            root.windowMode = true;
             root.activeAsync = true;
         }
 
@@ -101,6 +116,8 @@ Scope {
             root.freeze = false;
             root.closing = false;
             root.clipboardOnly = false;
+            root.searchMode = false;
+            root.windowMode = false;
             root.activeAsync = true;
         }
     }
@@ -114,6 +131,8 @@ Scope {
             root.freeze = true;
             root.closing = false;
             root.clipboardOnly = false;
+            root.searchMode = false;
+            root.windowMode = false;
             root.activeAsync = true;
         }
     }
@@ -127,6 +146,8 @@ Scope {
             root.freeze = false;
             root.closing = false;
             root.clipboardOnly = true;
+            root.searchMode = false;
+            root.windowMode = false;
             root.activeAsync = true;
         }
     }
@@ -140,6 +161,8 @@ Scope {
             root.freeze = true;
             root.closing = false;
             root.clipboardOnly = true;
+            root.searchMode = false;
+            root.windowMode = false;
             root.activeAsync = true;
         }
     }
@@ -148,7 +171,14 @@ Scope {
     CustomShortcut {
         // qmllint enable unresolved-type
         name: "screenshotWindow"
-        description: "Capture the active window's own surface"
-        onPressed: Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "screenshot", "-w"])
+        description: "Select a window and capture its own surface"
+        onPressed: {
+            root.freeze = false;
+            root.closing = false;
+            root.clipboardOnly = false;
+            root.searchMode = false;
+            root.windowMode = true;
+            root.activeAsync = true;
+        }
     }
 }

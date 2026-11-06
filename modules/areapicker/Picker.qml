@@ -17,6 +17,7 @@ MouseArea {
     required property ShellScreen screen
 
     property bool onClient
+    property var targetClient: null
 
     property real realBorderWidth: onClient ? (Hypr.options["general:border_size"] ?? 1) : 2
     property real realRounding: onClient ? (Hypr.options["decoration:rounding"] ?? 0) : 0
@@ -62,6 +63,9 @@ MouseArea {
     readonly property string tmpDir: `${Quickshell.env("XDG_RUNTIME_DIR") || "/tmp"}/aether`
 
     function checkClientRects(x: real, y: real): void {
+        targetClient = null;
+        onClient = false;
+
         for (const client of clients) {
             if (!client)
                 continue;
@@ -77,6 +81,7 @@ MouseArea {
             cx -= screen.x;
             cy -= screen.y;
             if (cx <= x && cy <= y && cx + cw >= x && cy + ch >= y) {
+                targetClient = client;
                 onClient = true;
                 sx = cx;
                 sy = cy;
@@ -127,6 +132,7 @@ MouseArea {
         if (ipc?.at && ipc?.size) {
             const cx = ipc.at[0] - screen.x;
             const cy = ipc.at[1] - screen.y;
+            targetClient = clients[0];
             onClient = true;
             sx = cx;
             sy = cy;
@@ -143,11 +149,21 @@ MouseArea {
     onPressed: event => {
         ssx = event.x;
         ssy = event.y;
+        if (root.loader.windowMode)
+            checkClientRects(event.x, event.y);
     }
 
     onReleased: {
         if (closeAnim.running)
             return;
+
+        if (root.loader.windowMode) {
+            const id = root.targetClient?.lastIpcObject?.stableId;
+            if (id)
+                Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "screenshot", "-w", String(id)]);
+            closeAnim.start();
+            return;
+        }
 
         if (root.loader.freeze) {
             save();
@@ -161,6 +177,11 @@ MouseArea {
     onPositionChanged: event => {
         const x = event.x;
         const y = event.y;
+
+        if (root.loader.windowMode) {
+            checkClientRects(x, y);
+            return;
+        }
 
         if (pressed) {
             onClient = false;
