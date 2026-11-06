@@ -265,14 +265,17 @@ bind = SUPER, M, global, aether:utilities
 - `aether screenshot` captures the focused monitor, copies it to the clipboard and caches
   it; the notification can **Open** it in swappy or **Save** it to `~/Pictures/Screenshots`.
 - `aether screenshot -r` opens the live picker: **click a window** for its raw surface, or
-  **drag** a box for an ordinary composited region. `-r -f` does the same on a frozen frame.
-  A dragged region opens swappy; `-r "x,y wxh"` skips the picker for a fixed geometry.
-- `aether screenshot -w` skips the picker and captures the focused window; `-w <stableId>`
-  captures a specific one from `hyprctl clients -j`. Both use `grim -T`, so the file is the
-  window's own RGBA surface: no wallpaper, blur, rounding or other windows.
+  **drag** a box for an ordinary composited region. Both open swappy. `-r -f` does the same on
+  a frozen frame; `-r "x,y wxh"` skips the picker for a fixed geometry.
+- `aether screenshot -w` skips the picker and captures the focused window directly; `-w
+  <stableId>` captures a specific one from `hyprctl clients -j`. This direct path uses the
+  full-screenshot behaviour (clipboard, cache, Open/Save notification), not swappy. Both
+  forms use `grim -T`, so the file is the window's own RGBA surface: no wallpaper, blur,
+  rounding or other windows.
 - `aether:screenshotWindow` is an alias for the picker, kept for existing binds.
 - `aether:screenshotClip` and `aether:screenshotFreezeClip` use the same picker but copy
-  instead of opening swappy; a window click copies the raw surface. They have no default bind.
+  instead of opening swappy; a window click copies the raw surface and a drag copies the
+  region. They have no default bind.
 
 ## Migration from upstream Caelestia
 
