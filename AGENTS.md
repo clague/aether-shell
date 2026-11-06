@@ -114,8 +114,8 @@ These were settled by source audit on 2026-09-02. Do not re-litigate without new
 3. **`qmllint` and `clang-format` are zero-tolerance**, as upstream has them. MiDnight disabled its CI;
    we re-enable it in Phase 0 and do not disable it again.
 4. **Every imported file gets a provenance row** in `docs/provenance.md` in the same commit.
-5. **Project-owned code lives in the root-level dirs `bin/`, `cli/`, `docs/`, `hypr/`, `tests/`,
-   `tools/`.** Never add project-owned files to `scripts/`, `modules/`, `services/`, or `components/`
+5. **Project-owned code lives in the root-level dirs `bin/`, `cli/`, `docs/`, `hypr/`, `packaging/`,
+   `tests/`, `tools/`.** Never add project-owned files to `scripts/`, `modules/`, `services/`, or `components/`
    — those are upstream-shaped paths and will collide on merge. Runtime files that QML can only
    resolve beside their consumer are the exception, listed in `docs/README.md`.
 6. **Prefer an adapter/wrapper over editing an upstream file** — but only up to the point where the
@@ -130,11 +130,12 @@ modules/  components/  services/  daemons/  utils/  plugin/  shell.qml   ← ups
 scripts/  assets/  .github/  extras/                                      ← upstream-shaped. Same rule.
 nix/  flake.nix  flake.lock                                               ← packaging, inherited and adapted.
 
-bin/  cli/  docs/  hypr/  tests/  tools/               ← ours. Upstream will never touch them.
+bin/  cli/  docs/  hypr/  packaging/  tests/  tools/  ← ours. Upstream will never touch them.
   bin/            the `aether` command entry point
   cli/            in-tree command surface (scheme, wallpaper, record, …)
   docs/           architecture, traps, provenance, plugin contract, parked ideas, layout
   hypr/           reference copy of the Hyprland config the shell depends on
+  packaging/      AUR package files (the nix/ flake stays at the root)
   tests/          C++ unit tests, CLI/config harnesses, fixtures,
                   and tests/presets/ smoke-matrix configs
   tools/          build/lint/smoke verification, upstream drift, dead-code audits

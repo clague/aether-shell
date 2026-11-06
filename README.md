@@ -95,8 +95,10 @@ scheme change, so a choice written there survives only until the next one.
 ## Installation
 
 > [!IMPORTANT]
-> There is no package for this yet — no AUR entry, no flake URL, no installer. Build it from
-> source. The instructions below are the upstream ones and are the only supported path.
+> There is no AUR entry yet, no flake URL and no installer. The package source is kept in
+> [`packaging/aur/`](packaging/aur/PKGBUILD): copy that directory into its own git repository and
+> `makepkg -si` builds, installs and prints the Hyprland autostart line. The instructions below
+> are the from-source path and are still supported.
 <details><summary id="dependencies">Dependencies</summary>
 
 -   `python-materialyoucolor` and `python-pillow` — the in-tree command surface
