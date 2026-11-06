@@ -1,13 +1,9 @@
 #include "rootnodes.hpp"
 
-#include <qfile.h>
-#include <qjsondocument.h>
-#include <qjsonobject.h>
-#include <qsavefile.h>
-
 #include "core/toaster.hpp"
 #include "util/i18n.hpp"
 #include "common.hpp"
+#include "migrate.hpp"
 
 namespace aether::shell::config {
 
@@ -19,38 +15,8 @@ using util::i18n::mark;
 using util::i18n::markN;
 
 void migrate(ConfigKind kind, const QString& path) {
-    if (kind != ConfigKind::Shell)
-        return;
-
-    QFile file(path);
-    if (!file.open(QIODevice::ReadOnly))
-        return;
-
-    const auto data = file.readAll();
-    file.close();
-
-    QJsonParseError error;
-    const auto doc = QJsonDocument::fromJson(data, &error);
-    if (error.error != QJsonParseError::NoError || !doc.isObject())
-        return;
-
-    auto obj = doc.object();
-    if (!obj.contains(u"hybrid"_s))
-        return;
-
-    // Older configs used the project's previous name for the feature block.
-    if (!obj.contains(u"aether"_s))
-        obj.insert(u"aether"_s, obj.value(u"hybrid"_s));
-    obj.remove(u"hybrid"_s);
-
-    QSaveFile out(path);
-    if (!out.open(QIODevice::WriteOnly)) {
-        qWarning("failed to open %s to migrate its feature block", qUtf8Printable(path));
-        return;
-    }
-    out.write(QJsonDocument(obj).toJson());
-    if (!out.commit())
-        qWarning("failed to migrate the feature block in %s", qUtf8Printable(path));
+    if (kind == ConfigKind::Shell)
+        migrateLegacyFeatureBlock(path);
 }
 
 void loaded(ConfigKind kind, settings::RootNode* layer, const QString& screen) {

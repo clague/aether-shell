@@ -49,7 +49,7 @@ ColumnLayout {
     RowLayout {
         // The popout used to show only the connection that was active, which hid Wi-Fi
         // entirely on an Ethernet machine. Keep both reachable.
-        visible: Nmcli.ethernetDevices.length > 0
+        visible: Nmcli.ethernetDevices.length > 0 && Nmcli.hasWifiDevice
 
         Layout.preferredHeight: visible ? implicitHeight : 0
         Layout.leftMargin: Tokens.padding.small
@@ -58,18 +58,14 @@ ColumnLayout {
 
         TextButton {
             Layout.fillWidth: true
-            type: TextButton.Tonal
-            isToggle: true
-            checked: root.view === "wireless"
+            type: root.view === "wireless" ? TextButton.Filled : TextButton.Text
             text: Tr.tr("Wi-Fi")
             onClicked: root.view = "wireless"
         }
 
         TextButton {
             Layout.fillWidth: true
-            type: TextButton.Tonal
-            isToggle: true
-            checked: root.view === "ethernet"
+            type: root.view === "ethernet" ? TextButton.Filled : TextButton.Text
             text: Tr.tr("Ethernet")
             onClicked: root.view = "ethernet"
         }

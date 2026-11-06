@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Run the development shell in an isolated config, without touching the installed one.
 #
-#   ./tools/dev-shell.sh                     # isolated, seeded from 'recommended'
-#   ./tools/dev-shell.sh --preset midnight
+#   ./tools/dev-shell.sh                     # isolated, seeded from 'theme-nebula'
+#   ./tools/dev-shell.sh --preset all-on
 #   ./tools/dev-shell.sh --config ~/some/shell.json
 #   ./tools/dev-shell.sh --offscreen         # headless, for a quick sanity boot
 #   ./tools/dev-shell.sh --reset             # wipe the DEV config only, then run
@@ -21,7 +21,7 @@ ROOT=$PWD
 DEV_HOME=${AETHER_DEV_HOME:-${XDG_DATA_HOME:-$HOME/.local/share}/aether-dev}
 BUILD_DIR=${BUILD_DIR:-$ROOT/build}
 QS=${QS:-qs}
-PRESET=recommended
+PRESET=theme-nebula
 CONFIG_SRC=
 OFFSCREEN=0
 RESET=0
@@ -76,8 +76,8 @@ elif [ -n "$CONFIG_SRC" ]; then
 fi
 
 # Report, never act. The user's running shell is theirs.
-if pgrep -x quickshell >/dev/null 2>&1; then
-    printf '%s a quickshell process is already running.\n' "$(yellow note)"
+if pgrep -x qs >/dev/null 2>&1; then
+    printf '%s a qs process is already running.\n' "$(yellow note)"
     printf '     This dev instance uses its own config and will not touch it, but the two may\n'
     printf '     compete for layer-shell surfaces and global shortcuts. That is cosmetic.\n'
     printf '     Stop this dev instance with Ctrl-C. Do not killall.\n\n'

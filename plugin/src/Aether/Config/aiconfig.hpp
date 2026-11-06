@@ -42,6 +42,12 @@ class AiConfig : public settings::ObjectNode {
     CONFIG_PROPERTY(QString, openClawToken, u""_s)
     CONFIG_PROPERTY(QString, openClawModel, u"openclaw/default"_s)
 
+    // Any OpenAI-compatible endpoint the user supplies
+    CONFIG_PROPERTY(bool, enableCustom, false)
+    CONFIG_PROPERTY(QString, customUrl, u""_s)
+    CONFIG_PROPERTY(QString, customApiKey, u""_s)
+    CONFIG_PROPERTY(QString, customModel, u""_s)
+
     // Model selector recents, stored as "provider|model" entries, newest first
     CONFIG_PROPERTY(QStringList, recentModels, {})
 };

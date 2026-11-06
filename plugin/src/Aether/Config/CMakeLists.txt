@@ -3,6 +3,7 @@ qml_module(aether-config
     INCLUDE_PREFIX config
     SOURCES
         common.cpp
+        migrate.cpp
         appidentity.cpp
         rootnodes.cpp
         configattached.cpp
@@ -18,6 +19,7 @@ qml_module(aether-config
         aiconfig.hpp
         enums.hpp
         aetherconfig.hpp
+        migrate.hpp
         qtconfig.hpp
         backgroundconfig.hpp
         barconfig.hpp

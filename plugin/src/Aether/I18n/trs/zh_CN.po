@@ -8048,6 +8048,45 @@ msgstr "编辑 Dock"
 msgid "Enable OpenClaw"
 msgstr "启用 OpenClaw"
 #: modules/
+msgid "Base URL of the Ollama server"
+msgstr "Ollama 服务的基础地址"
+#: modules/
+msgid "Base URL of the OpenAI-compatible API"
+msgstr "OpenAI 兼容 API 的基础地址"
+#: modules/
+msgid "Base URL of the OpenRouter API"
+msgstr "OpenRouter API 的基础地址"
+#: modules/
+msgid "Bearer key sent to the custom endpoint"
+msgstr "发送到自定义端点的 Bearer 密钥"
+#: modules/
+msgid "Custom API"
+msgstr "自定义 API"
+#: modules/
+msgid "Custom API URL"
+msgstr "自定义 API 地址"
+#: modules/
+msgid "Custom API key"
+msgstr "自定义 API 密钥"
+#: modules/
+msgid "Custom API model"
+msgstr "自定义 API 模型"
+#: modules/
+msgid "Enable custom API"
+msgstr "启用自定义 API"
+#: modules/
+msgid "Fallback model id when the endpoint does not list models"
+msgstr "端点不提供模型列表时使用的模型 ID"
+#: modules/
+msgid "Ollama URL"
+msgstr "Ollama 地址"
+#: modules/
+msgid "OpenRouter URL"
+msgstr "OpenRouter 地址"
+#: modules/
+msgid "Use any OpenAI-compatible endpoint with your own key"
+msgstr "使用任意 OpenAI 兼容端点和你自己的密钥"
+#: modules/
 msgid "Enable OpenRouter"
 msgstr "启用 OpenRouter"
 #: modules/

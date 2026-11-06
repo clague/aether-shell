@@ -49,6 +49,20 @@ ok()   { PASS=$((PASS+1)); printf "  %-34s ${G}ok${N} %s\n" "$1" "${2:-}"; }
 bad()  { FAIL=$((FAIL+1)); printf "  %-34s ${R}FAIL${N} %s\n" "$1" "${2:-}"; }
 skip() { SKIP=$((SKIP+1)); printf "  %-34s ${Y}skip${N} %s\n" "$1" "${2:-}"; }
 
+CFG=$HOME/.config/caelestia/shell.json
+CFG_BACKUP=""
+cleanup() {
+    ipc gameMode disable >/dev/null 2>&1
+    ipc notifs disableDnd >/dev/null 2>&1
+    ipc idleInhibitor disable >/dev/null 2>&1
+    if [ -n "$CFG_BACKUP" ] && [ -f "$CFG_BACKUP" ]; then
+        cp "$CFG_BACKUP" "$CFG" 2>/dev/null
+        rm -f "$CFG_BACKUP"
+    fi
+}
+trap cleanup EXIT
+trap 'exit 130' INT TERM
+
 # --- the checklist, derived from the source ---------------------------------
 # kind: read (no visible effect) | toggle (restored) | disruptive (needs --disruptive)
 PROBES=$(cat <<'EOP'
@@ -204,7 +218,6 @@ for client in json.load(sys.stdin):
 # actually meets it: the config file is watched, the flag changes live, and
 # whatever the flag gates has to appear or disappear without complaint. T54 is
 # the reminder that a flag can also be wired to nothing at all.
-CFG=$HOME/.config/caelestia/shell.json
 echo
 echo "${B}feature flags (flipped live, then restored)${N}"
 if [ ! -f "$CFG" ]; then
@@ -212,7 +225,6 @@ if [ ! -f "$CFG" ]; then
 else
     CFG_BACKUP=$(mktemp)
     cp "$CFG" "$CFG_BACKUP"
-    trap 'cp "$CFG_BACKUP" "$CFG" 2>/dev/null; rm -f "$CFG_BACKUP"; ipc idleInhibitor disable >/dev/null 2>&1' EXIT
 
     set_feature() {
         python3 - "$CFG" "$1" "$2" <<'PY'

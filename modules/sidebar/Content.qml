@@ -31,7 +31,7 @@ Item {
 
     property bool newsLoaded: false
 
-    readonly property bool aiAvailable: GlobalConfig.ai.enableOllama || GlobalConfig.ai.enableOpenRouter === true || GlobalConfig.ai.enableOpenClaw === true
+    readonly property bool aiAvailable: GlobalConfig.ai.enableOllama || GlobalConfig.ai.enableOpenRouter === true || GlobalConfig.ai.enableOpenClaw === true || GlobalConfig.ai.enableCustom === true
 
     function checkTabs() {
         if (!root.aiAvailable) {
@@ -65,6 +65,10 @@ Item {
         }
 
         function onEnableOpenClawChanged() {
+            checkTabs();
+        }
+
+        function onEnableCustomChanged() {
             checkTabs();
         }
 

@@ -191,8 +191,8 @@ it has to be referenced by path:
 nix run /path/to/this/repo
 ```
 
-The package is exposed as `packages.<system>.default`. The default package does not enable
-the CLI, which most functionality needs — use the `with-cli` package instead.
+The package is exposed as `packages.<system>.default` and includes the in-tree command
+surface (`bin/aether`); there is no separate CLI package.
 
 ### Development
 
@@ -408,6 +408,13 @@ visibility, where nothing separate exists to create.
 `aether` is global. Per-monitor overrides do not apply to it, because a feature flag per monitor is
 meaningless.
 
+### AI assistant
+
+Configure the provider in **Nexus → Panels → AI Assistant**: local Ollama, OpenRouter,
+OpenClaw, or any OpenAI-compatible endpoint with your own URL and key. The model chip in the
+assistant lists the models the endpoint reports; the fallback model field in the same settings
+section covers endpoints that do not expose a model list.
+
 ### Per-monitor configuration
 
 You can configure per-monitor options in `~/.config/caelestia/monitors/<monitor_name>/shell.json`.
@@ -499,9 +506,13 @@ setting still applies live, it just does not survive a Hyprland restart.
     "ai": {
         "activeOllamaModel": "llama3",
         "activeProvider": "ollama",
+        "customApiKey": "",
+        "customModel": "",
+        "customUrl": "",
         "defaultOllamaModel": "llama3",
         "defaultProvider": "ollama",
         "enableCelestialMode": false,
+        "enableCustom": false,
         "enableOllama": true,
         "enableOpenClaw": false,
         "enableOpenRouter": false,

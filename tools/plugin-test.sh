@@ -69,6 +69,8 @@ TESTS=(
     "mdns-name:$(moc moc_QuickShareDiscovery.cpp):Qt6DBus Qt6Network"
     # Unique download names: pure path logic, no moc and nothing else needed.
     "download-name:$ROOT/plugin/src/Aether/Services/filepaths.cpp:Qt6Core"
+    # Config migration: pure file/JSON logic, no QML and no settings framework.
+    "config-migrate:$ROOT/plugin/src/Aether/Config/migrate.cpp:Qt6Core"
     # payload-frame also #includes its subject, so QuickShareConnection.cpp is absent here
     # too. It drags in the crypto and six generated protobuf units by reference.
     "payload-frame:$SVC/QuickShare/QuickShareCrypto.cpp $ROOT/plugin/src/Aether/Services/filepaths.cpp $(moc moc_QuickShareConnection.cpp) $GEN/device_to_device_messages.pb.cc $GEN/offline_wire_formats.pb.cc $GEN/securegcm.pb.cc $GEN/securemessage.pb.cc $GEN/ukey.pb.cc $GEN/wire_format.pb.cc:protobuf libcrypto Qt6Network"

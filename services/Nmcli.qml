@@ -11,6 +11,7 @@ Singleton {
 
     property var deviceStatus: null
     property var wirelessInterfaces: []
+    readonly property bool hasWifiDevice: wirelessInterfaces.length > 0
     property var ethernetInterfaces: []
     property bool isConnected: false
     readonly property bool connecting: wirelessInterfaces.some(i => isConnectingState(i.state))
@@ -1675,6 +1676,7 @@ Singleton {
         getNetworks(() => {});
         loadSavedConnections(() => {});
         getEthernetInterfaces(() => {});
+        getWirelessInterfaces(() => {});
 
         Qt.callLater(() => {
             if (root.wirelessInterfaces.length > 0) {

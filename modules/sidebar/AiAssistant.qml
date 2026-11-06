@@ -35,14 +35,17 @@ Item {
         var ollamaOk = GlobalConfig.ai.enableOllama !== false;
         var openRouterOk = GlobalConfig.ai.enableOpenRouter === true;
         var openClawOk = GlobalConfig.ai.enableOpenClaw === true;
+        var customOk = GlobalConfig.ai.enableCustom === true && GlobalConfig.ai.customUrl !== "";
 
-        if ((p === "openrouter" && !openRouterOk) || (p === "openclaw" && !openClawOk) || (p === "ollama" && !ollamaOk)) {
+        if ((p === "openrouter" && !openRouterOk) || (p === "openclaw" && !openClawOk) || (p === "custom" && !customOk) || (p === "ollama" && !ollamaOk)) {
             if (ollamaOk)
                 return "ollama";
             if (openRouterOk)
                 return "openrouter";
             if (openClawOk)
                 return "openclaw";
+            if (customOk)
+                return "custom";
             return "ollama";
         }
         return p;
@@ -53,6 +56,8 @@ Item {
             return GlobalConfig.ai.openRouterModel || "openrouter/auto";
         if (activeProvider === "openclaw")
             return GlobalConfig.ai.openClawModel || "openclaw/default";
+        if (activeProvider === "custom")
+            return GlobalConfig.ai.customModel || "";
         return GlobalConfig.ai.defaultOllamaModel || "llama3";
     }
 
@@ -61,6 +66,8 @@ Item {
             return "OpenRouter";
         if (activeProvider === "openclaw")
             return "OpenClaw";
+        if (activeProvider === "custom")
+            return Tr.tr("Custom API");
         return "Ollama";
     }
 
@@ -84,6 +91,12 @@ Item {
                 "label": Tr.tr("OpenClaw"),
                 "icon": "hub"
             });
+        if (GlobalConfig.ai.enableCustom === true && GlobalConfig.ai.customUrl !== "")
+            list.push({
+                "id": "custom",
+                "label": Tr.tr("Custom API"),
+                "icon": "cloud"
+            });
         if (list.length === 0)
             list.push({
                 "id": "ollama",
@@ -96,6 +109,7 @@ Item {
     readonly property var fallbackModelsFor: ({
             "openrouter": ["openrouter/auto", "openai/gpt-4o-mini", "anthropic/claude-3.5-haiku", "google/gemini-2.0-flash-001"],
             "openclaw": ["openclaw/default"],
+            "custom": GlobalConfig.ai.customModel ? [GlobalConfig.ai.customModel] : [],
             "ollama": ["llama3", "mistral", "phi3", "gemma"]
         })
 
@@ -173,7 +187,7 @@ Item {
                 continue;
             var pid = raw[i].substring(0, sep);
             var name = raw[i].substring(sep + 1);
-            var enabled = pid === "ollama" ? GlobalConfig.ai.enableOllama !== false : pid === "openrouter" ? GlobalConfig.ai.enableOpenRouter === true : pid === "openclaw" ? GlobalConfig.ai.enableOpenClaw === true : false;
+            var enabled = pid === "ollama" ? GlobalConfig.ai.enableOllama !== false : pid === "openrouter" ? GlobalConfig.ai.enableOpenRouter === true : pid === "openclaw" ? GlobalConfig.ai.enableOpenClaw === true : pid === "custom" ? GlobalConfig.ai.enableCustom === true && GlobalConfig.ai.customUrl !== "" : false;
             if (!enabled || !name)
                 continue;
             out.push({
@@ -359,7 +373,8 @@ Item {
     }
 
     function fetchProviderModels(providerId) {
-        if (modelFetchState[providerId] === "loading" || modelFetchState[providerId] === "done")
+        // Refetch on every open: the endpoint or key may have just been edited.
+        if (modelFetchState[providerId] === "loading")
             return;
 
         var requestUrl;
@@ -367,6 +382,8 @@ Item {
             requestUrl = (GlobalConfig.ai.openRouterUrl || "https://openrouter.ai/api/v1") + "/models";
         } else if (providerId === "openclaw") {
             requestUrl = (GlobalConfig.ai.openClawUrl || "http://127.0.0.1:18789") + "/v1/models";
+        } else if (providerId === "custom") {
+            requestUrl = (GlobalConfig.ai.customUrl || "").replace(/\/+$/, "") + "/models";
         } else {
             requestUrl = (GlobalConfig.ai.ollamaUrl || "http://localhost:11434") + "/api/tags";
         }
@@ -385,6 +402,10 @@ Item {
             if (token) {
                 xhr.setRequestHeader("Authorization", "Bearer " + token);
             }
+        } else if (providerId === "custom") {
+            var customKey = GlobalConfig.ai.customApiKey || "";
+            if (customKey)
+                xhr.setRequestHeader("Authorization", "Bearer " + customKey);
         }
 
         xhr.onreadystatechange = () => {
@@ -428,6 +449,8 @@ Item {
                     savedModel = GlobalConfig.ai.openRouterModel;
                 else if (providerId === "openclaw")
                     savedModel = GlobalConfig.ai.openClawModel;
+                else if (providerId === "custom")
+                    savedModel = GlobalConfig.ai.customModel;
                 else
                     savedModel = GlobalConfig.ai.defaultOllamaModel;
 
@@ -436,6 +459,8 @@ Item {
                         GlobalConfig.ai.openRouterModel = list.indexOf("openrouter/auto") !== -1 ? "openrouter/auto" : list[0];
                     else if (providerId === "openclaw")
                         GlobalConfig.ai.openClawModel = list.indexOf("openclaw/default") !== -1 ? "openclaw/default" : list[0];
+                    else if (providerId === "custom")
+                        GlobalConfig.ai.customModel = list[0];
                     else
                         GlobalConfig.ai.defaultOllamaModel = list[0];
                 }
@@ -451,6 +476,8 @@ Item {
             GlobalConfig.ai.openRouterModel = model;
         } else if (providerId === "openclaw") {
             GlobalConfig.ai.openClawModel = model;
+        } else if (providerId === "custom") {
+            GlobalConfig.ai.customModel = model;
         } else {
             GlobalConfig.ai.defaultOllamaModel = model;
         }
@@ -565,7 +592,7 @@ Item {
         if (!sess)
             return;
         var p = sess.provider || "ollama";
-        var enabled = p === "openrouter" ? GlobalConfig.ai.enableOpenRouter === true : p === "openclaw" ? GlobalConfig.ai.enableOpenClaw === true : GlobalConfig.ai.enableOllama !== false;
+        var enabled = p === "openrouter" ? GlobalConfig.ai.enableOpenRouter === true : p === "openclaw" ? GlobalConfig.ai.enableOpenClaw === true : p === "custom" ? GlobalConfig.ai.enableCustom === true && GlobalConfig.ai.customUrl !== "" : GlobalConfig.ai.enableOllama !== false;
         if (!enabled)
             return;
         if (p !== activeProvider)
@@ -575,6 +602,8 @@ Item {
                 GlobalConfig.ai.openRouterModel = sess.model;
             else if (p === "openclaw")
                 GlobalConfig.ai.openClawModel = sess.model;
+            else if (p === "custom")
+                GlobalConfig.ai.customModel = sess.model;
             else
                 GlobalConfig.ai.defaultOllamaModel = sess.model;
         }
@@ -764,7 +793,7 @@ Item {
         if (!firstMessage)
             return;
 
-        if (activeProvider === "openrouter" || activeProvider === "openclaw") {
+        if (activeProvider === "openrouter" || activeProvider === "openclaw" || activeProvider === "custom") {
             generateTitleOpenAiCompatible(chatId, firstMessage, activeProvider);
             return;
         }
@@ -804,6 +833,8 @@ Item {
         var url;
         if (provider === "openrouter") {
             url = (GlobalConfig.ai.openRouterUrl || "https://openrouter.ai/api/v1") + "/chat/completions";
+        } else if (provider === "custom") {
+            url = (GlobalConfig.ai.customUrl || "").replace(/\/+$/, "") + "/chat/completions";
         } else {
             url = (GlobalConfig.ai.openClawUrl || "http://127.0.0.1:18789") + "/v1/chat/completions";
         }
@@ -817,6 +848,10 @@ Item {
                 xhr.setRequestHeader("HTTP-Referer", "https://github.com/dim-ghub/midnight-shell");
                 xhr.setRequestHeader("X-Title", "midnight-shell");
             }
+        } else if (provider === "custom") {
+            var customKey = GlobalConfig.ai.customApiKey || "";
+            if (customKey)
+                xhr.setRequestHeader("Authorization", "Bearer " + customKey);
         } else {
             var ocToken = GlobalConfig.ai.openClawToken || "";
             if (ocToken) {
@@ -844,7 +879,7 @@ Item {
 
         var safeMsg = firstMessage.substring(0, 200);
         var body = {
-            model: provider === "openrouter" ? (GlobalConfig.ai.openRouterModel || "openrouter/auto") : (GlobalConfig.ai.openClawModel || "openclaw/default"),
+            model: provider === "openrouter" ? (GlobalConfig.ai.openRouterModel || "openrouter/auto") : provider === "custom" ? (GlobalConfig.ai.customModel || "") : (GlobalConfig.ai.openClawModel || "openclaw/default"),
             messages: [
                 {
                     role: "system",
@@ -1480,6 +1515,8 @@ Item {
             requestUrl = (GlobalConfig.ai.openRouterUrl || "https://openrouter.ai/api/v1") + "/chat/completions";
         } else if (provider === "openclaw") {
             requestUrl = (GlobalConfig.ai.openClawUrl || "http://127.0.0.1:18789") + "/v1/chat/completions";
+        } else if (provider === "custom") {
+            requestUrl = (GlobalConfig.ai.customUrl || "").replace(/\/+$/, "") + "/chat/completions";
         } else {
             requestUrl = (GlobalConfig.ai.ollamaUrl || "http://localhost:11434") + "/api/chat";
         }
@@ -1498,6 +1535,10 @@ Item {
             if (ocToken) {
                 xhr.setRequestHeader("Authorization", "Bearer " + ocToken);
             }
+        } else if (provider === "custom") {
+            var customKey = GlobalConfig.ai.customApiKey || "";
+            if (customKey)
+                xhr.setRequestHeader("Authorization", "Bearer " + customKey);
         }
 
         isStreaming = true;

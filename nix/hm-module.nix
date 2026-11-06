@@ -54,6 +54,16 @@ in {
         description = "Aether shell extra configs written to shell.json";
       };
       cli = {
+        enable = mkOption {
+          type = types.bool;
+          default = true;
+          description = "Deprecated: the in-tree CLI ships with the shell package. Kept so existing configurations still evaluate.";
+        };
+        package = mkOption {
+          type = types.nullOr types.package;
+          default = null;
+          description = "Deprecated and ignored: the in-tree CLI ships with the shell package.";
+        };
         settings = mkOption {
           type = types.attrsOf types.anything;
           default = {};

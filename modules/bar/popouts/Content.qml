@@ -43,7 +43,7 @@ Item {
             name: "network"
             sourceComponent: Network {
                 popouts: root.popouts
-                view: Nmcli.activeEthernet ? "ethernet" : "wireless"
+                view: Nmcli.hasWifiDevice && !Nmcli.activeEthernet ? "wireless" : "ethernet"
             }
         }
 

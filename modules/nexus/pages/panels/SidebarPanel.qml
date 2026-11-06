@@ -98,7 +98,6 @@ PageBase {
         ToggleRow {
             Layout.topMargin: Tokens.spacing.extraSmall / 2 - parent.spacing
             Layout.fillWidth: true
-            last: true
             text: Tr.tr("Enable Tool Usage")
             subtext: Tr.tr("Allow the assistant to search the web, take screenshots, etc.")
             configNode: root.targetConfig.ai
@@ -106,6 +105,17 @@ PageBase {
             checked: root.targetConfig.ai.enableCelestialMode
             onToggled: {
                 root.targetConfig.ai.enableCelestialMode = checked;
+            }
+        }
+
+        TextFieldRow {
+            label: Tr.tr("Ollama URL")
+            subtext: Tr.tr("Base URL of the Ollama server")
+            value: root.targetConfig.ai.ollamaUrl
+            placeholderText: "http://localhost:11434"
+            onEditingFinished: value => {
+                root.targetConfig.ai.ollamaUrl = value || "http://localhost:11434";
+                root.targetConfig.save();
             }
         }
 
@@ -118,6 +128,17 @@ PageBase {
             checked: root.targetConfig.ai.enableOpenRouter
             onToggled: {
                 root.targetConfig.ai.enableOpenRouter = checked;
+                root.targetConfig.save();
+            }
+        }
+
+        TextFieldRow {
+            label: Tr.tr("OpenRouter URL")
+            subtext: Tr.tr("Base URL of the OpenRouter API")
+            value: root.targetConfig.ai.openRouterUrl
+            placeholderText: "https://openrouter.ai/api/v1"
+            onEditingFinished: value => {
+                root.targetConfig.ai.openRouterUrl = value || "https://openrouter.ai/api/v1";
                 root.targetConfig.save();
             }
         }
@@ -180,13 +201,59 @@ PageBase {
         }
 
         TextFieldRow {
-            last: true
             label: Tr.tr("OpenClaw model")
             subtext: Tr.tr("Model id used when the OpenClaw provider is active")
             value: root.targetConfig.ai.openClawModel
             placeholderText: "openclaw/default"
             onEditingFinished: value => {
                 root.targetConfig.ai.openClawModel = value || "openclaw/default";
+                root.targetConfig.save();
+            }
+        }
+
+        ToggleRow {
+            Layout.fillWidth: true
+            text: Tr.tr("Enable custom API")
+            subtext: Tr.tr("Use any OpenAI-compatible endpoint with your own key")
+            configNode: root.targetConfig.ai
+            propertyName: "enableCustom"
+            checked: root.targetConfig.ai.enableCustom
+            onToggled: {
+                root.targetConfig.ai.enableCustom = checked;
+                root.targetConfig.save();
+            }
+        }
+
+        TextFieldRow {
+            label: Tr.tr("Custom API URL")
+            subtext: Tr.tr("Base URL of the OpenAI-compatible API")
+            value: root.targetConfig.ai.customUrl
+            placeholderText: "https://api.example.com/v1"
+            onEditingFinished: value => {
+                root.targetConfig.ai.customUrl = value;
+                root.targetConfig.save();
+            }
+        }
+
+        TextFieldRow {
+            label: Tr.tr("Custom API key")
+            subtext: Tr.tr("Bearer key sent to the custom endpoint")
+            value: root.targetConfig.ai.customApiKey
+            placeholderText: "sk-..."
+            onEditingFinished: value => {
+                root.targetConfig.ai.customApiKey = value;
+                root.targetConfig.save();
+            }
+        }
+
+        TextFieldRow {
+            last: true
+            label: Tr.tr("Custom API model")
+            subtext: Tr.tr("Fallback model id when the endpoint does not list models")
+            value: root.targetConfig.ai.customModel
+            placeholderText: "model-id"
+            onEditingFinished: value => {
+                root.targetConfig.ai.customModel = value;
                 root.targetConfig.save();
             }
         }
