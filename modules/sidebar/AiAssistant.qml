@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 
+import "aiendpoints.js" as AiEndpoints
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Effects
@@ -116,6 +117,8 @@ Item {
     property var modelsByProvider: ({})
 
     property var modelFetchState: ({})
+
+    property var modelSignatures: ({})
 
     readonly property bool modelsLoading: {
         for (var key in modelFetchState) {
@@ -373,98 +376,87 @@ Item {
     }
 
     function fetchProviderModels(providerId) {
-        // Refetch on every open: the endpoint or key may have just been edited.
         if (modelFetchState[providerId] === "loading")
             return;
 
-        var requestUrl;
-        if (providerId === "openrouter") {
-            requestUrl = (GlobalConfig.ai.openRouterUrl || "https://openrouter.ai/api/v1") + "/models";
-        } else if (providerId === "openclaw") {
-            requestUrl = (GlobalConfig.ai.openClawUrl || "http://127.0.0.1:18789") + "/v1/models";
-        } else if (providerId === "custom") {
-            requestUrl = (GlobalConfig.ai.customUrl || "").replace(/\/+$/, "") + "/models";
-        } else {
-            requestUrl = (GlobalConfig.ai.ollamaUrl || "http://localhost:11434") + "/api/tags";
-        }
+        // The list can only change when the endpoint or key does, so a matching signature means
+        // the cached list is current; reopening the picker must not hit the network again.
+        var signature = AiEndpoints.signature(providerId, GlobalConfig.ai);
+        if (modelFetchState[providerId] === "done" && modelSignatures[providerId] === signature)
+            return;
+
+        var requestUrl = AiEndpoints.modelsUrl(providerId, GlobalConfig.ai);
+        if (!requestUrl)
+            return;
+
+        var headers = AiEndpoints.authHeaders(providerId, GlobalConfig.ai);
+        modelSignatures = Object.assign({}, modelSignatures, {
+            [providerId]: signature
+        });
+        modelFetchState = Object.assign({}, modelFetchState, {
+            [providerId]: "loading"
+        });
+
+        var apply = (list, succeeded) => {
+            if (list.length === 0)
+                list = fallbackModelsFor[providerId] || [];
+
+            modelFetchState = Object.assign({}, modelFetchState, {
+                [providerId]: succeeded ? "done" : "failed"
+            });
+            modelsByProvider = Object.assign({}, modelsByProvider, {
+                [providerId]: list
+            });
+
+            var savedModel;
+            if (providerId === "openrouter")
+                savedModel = GlobalConfig.ai.openRouterModel;
+            else if (providerId === "openclaw")
+                savedModel = GlobalConfig.ai.openClawModel;
+            else if (providerId === "custom")
+                savedModel = GlobalConfig.ai.customModel;
+            else
+                savedModel = GlobalConfig.ai.defaultOllamaModel;
+
+            if (savedModel && list.indexOf(savedModel) === -1 && list.length > 0) {
+                if (providerId === "openrouter")
+                    GlobalConfig.ai.openRouterModel = list.indexOf("openrouter/auto") !== -1 ? "openrouter/auto" : list[0];
+                else if (providerId === "openclaw")
+                    GlobalConfig.ai.openClawModel = list.indexOf("openclaw/default") !== -1 ? "openclaw/default" : list[0];
+                else if (providerId === "custom")
+                    GlobalConfig.ai.customModel = list[0];
+                else
+                    GlobalConfig.ai.defaultOllamaModel = list[0];
+            }
+        };
 
         var xhr = new XMLHttpRequest();
         xhr.open("GET", requestUrl, true);
-        if (providerId === "openrouter") {
-            var key = GlobalConfig.ai.openRouterApiKey || "";
-            if (key) {
-                xhr.setRequestHeader("Authorization", "Bearer " + key);
-                xhr.setRequestHeader("HTTP-Referer", "https://github.com/dim-ghub/midnight-shell");
-                xhr.setRequestHeader("X-Title", "midnight-shell");
-            }
-        } else if (providerId === "openclaw") {
-            var token = GlobalConfig.ai.openClawToken || "";
-            if (token) {
-                xhr.setRequestHeader("Authorization", "Bearer " + token);
-            }
-        } else if (providerId === "custom") {
-            var customKey = GlobalConfig.ai.customApiKey || "";
-            if (customKey)
-                xhr.setRequestHeader("Authorization", "Bearer " + customKey);
-        }
+        for (var header in headers)
+            xhr.setRequestHeader(header, headers[header]);
+        // Without a timeout a blackholed endpoint leaves the picker loading forever.
+        xhr.timeout = 10000;
 
         xhr.onreadystatechange = () => {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                var list = [];
-                if (xhr.status === 200) {
-                    try {
-                        var response = JSON.parse(xhr.responseText);
-                        if (providerId === "ollama") {
-                            if (response.models) {
-                                for (var i = 0; i < response.models.length; i++)
-                                    list.push(response.models[i].name);
-                            }
-                        } else if (response.data) {
-                            for (var j = 0; j < response.data.length; j++) {
-                                if (response.data[j].id)
-                                    list.push(response.data[j].id);
-                            }
-                            list.sort();
-                        }
-                    } catch (e) {
-                        console.log("Error parsing " + providerId + " models: " + e.message);
-                    }
-                } else {
-                    console.log(providerId + " models request failed (status " + xhr.status + ")");
+            if (xhr.readyState !== XMLHttpRequest.DONE)
+                return;
+            var list = [];
+            var succeeded = false;
+            if (xhr.status === 200) {
+                try {
+                    list = AiEndpoints.parseModels(providerId, xhr.responseText);
+                    succeeded = list.length > 0;
+                } catch (e) {
+                    console.log("Error parsing " + providerId + " models: " + e.message);
                 }
-
-                var succeeded = xhr.status === 200 && list.length > 0;
-                if (list.length === 0)
-                    list = fallbackModelsFor[providerId] || [];
-
-                modelFetchState = Object.assign({}, modelFetchState, {
-                    [providerId]: succeeded ? "done" : "failed"
-                });
-                modelsByProvider = Object.assign({}, modelsByProvider, {
-                    [providerId]: list
-                });
-
-                var savedModel;
-                if (providerId === "openrouter")
-                    savedModel = GlobalConfig.ai.openRouterModel;
-                else if (providerId === "openclaw")
-                    savedModel = GlobalConfig.ai.openClawModel;
-                else if (providerId === "custom")
-                    savedModel = GlobalConfig.ai.customModel;
-                else
-                    savedModel = GlobalConfig.ai.defaultOllamaModel;
-
-                if (savedModel && list.indexOf(savedModel) === -1 && list.length > 0) {
-                    if (providerId === "openrouter")
-                        GlobalConfig.ai.openRouterModel = list.indexOf("openrouter/auto") !== -1 ? "openrouter/auto" : list[0];
-                    else if (providerId === "openclaw")
-                        GlobalConfig.ai.openClawModel = list.indexOf("openclaw/default") !== -1 ? "openclaw/default" : list[0];
-                    else if (providerId === "custom")
-                        GlobalConfig.ai.customModel = list[0];
-                    else
-                        GlobalConfig.ai.defaultOllamaModel = list[0];
-                }
+            } else {
+                console.log(providerId + " models request failed (status " + xhr.status + ")");
             }
+            apply(list, succeeded);
+        };
+        xhr.ontimeout = () => {
+            console.log(providerId + " models request timed out");
+            apply([], false);
         };
         xhr.send();
     }
@@ -799,7 +791,7 @@ Item {
         }
 
         var xhr = new XMLHttpRequest();
-        var url = (GlobalConfig.ai.ollamaUrl || "http://localhost:11434") + "/api/generate";
+        var url = AiEndpoints.baseUrl("ollama", GlobalConfig.ai) + "/api/generate";
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-Type", "application/json");
         xhr.onreadystatechange = () => {
@@ -830,34 +822,13 @@ Item {
 
     function generateTitleOpenAiCompatible(chatId, firstMessage, provider) {
         var xhr = new XMLHttpRequest();
-        var url;
-        if (provider === "openrouter") {
-            url = (GlobalConfig.ai.openRouterUrl || "https://openrouter.ai/api/v1") + "/chat/completions";
-        } else if (provider === "custom") {
-            url = (GlobalConfig.ai.customUrl || "").replace(/\/+$/, "") + "/chat/completions";
-        } else {
-            url = (GlobalConfig.ai.openClawUrl || "http://127.0.0.1:18789") + "/v1/chat/completions";
-        }
+        var url = AiEndpoints.chatUrl(provider, GlobalConfig.ai);
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-Type", "application/json");
 
-        if (provider === "openrouter") {
-            var orKey = GlobalConfig.ai.openRouterApiKey || "";
-            if (orKey) {
-                xhr.setRequestHeader("Authorization", "Bearer " + orKey);
-                xhr.setRequestHeader("HTTP-Referer", "https://github.com/dim-ghub/midnight-shell");
-                xhr.setRequestHeader("X-Title", "midnight-shell");
-            }
-        } else if (provider === "custom") {
-            var customKey = GlobalConfig.ai.customApiKey || "";
-            if (customKey)
-                xhr.setRequestHeader("Authorization", "Bearer " + customKey);
-        } else {
-            var ocToken = GlobalConfig.ai.openClawToken || "";
-            if (ocToken) {
-                xhr.setRequestHeader("Authorization", "Bearer " + ocToken);
-            }
-        }
+        var headers = AiEndpoints.authHeaders(provider, GlobalConfig.ai);
+        for (var header in headers)
+            xhr.setRequestHeader(header, headers[header]);
 
         xhr.onreadystatechange = () => {
             if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
@@ -1510,36 +1481,12 @@ Item {
             ];
         }
 
-        var requestUrl;
-        if (provider === "openrouter") {
-            requestUrl = (GlobalConfig.ai.openRouterUrl || "https://openrouter.ai/api/v1") + "/chat/completions";
-        } else if (provider === "openclaw") {
-            requestUrl = (GlobalConfig.ai.openClawUrl || "http://127.0.0.1:18789") + "/v1/chat/completions";
-        } else if (provider === "custom") {
-            requestUrl = (GlobalConfig.ai.customUrl || "").replace(/\/+$/, "") + "/chat/completions";
-        } else {
-            requestUrl = (GlobalConfig.ai.ollamaUrl || "http://localhost:11434") + "/api/chat";
-        }
-        xhr.open("POST", requestUrl, true);
+        xhr.open("POST", AiEndpoints.chatUrl(provider, GlobalConfig.ai), true);
         xhr.setRequestHeader("Content-Type", "application/json");
 
-        if (provider === "openrouter") {
-            var orKey = GlobalConfig.ai.openRouterApiKey || "";
-            if (orKey) {
-                xhr.setRequestHeader("Authorization", "Bearer " + orKey);
-                xhr.setRequestHeader("HTTP-Referer", "https://github.com/dim-ghub/midnight-shell");
-                xhr.setRequestHeader("X-Title", "midnight-shell");
-            }
-        } else if (provider === "openclaw") {
-            var ocToken = GlobalConfig.ai.openClawToken || "";
-            if (ocToken) {
-                xhr.setRequestHeader("Authorization", "Bearer " + ocToken);
-            }
-        } else if (provider === "custom") {
-            var customKey = GlobalConfig.ai.customApiKey || "";
-            if (customKey)
-                xhr.setRequestHeader("Authorization", "Bearer " + customKey);
-        }
+        var headers = AiEndpoints.authHeaders(provider, GlobalConfig.ai);
+        for (var header in headers)
+            xhr.setRequestHeader(header, headers[header]);
 
         isStreaming = true;
         xhr.send(JSON.stringify(requestBody));

@@ -40,6 +40,8 @@ ALLOWED = {
     "(CachingImage/CachingAnimatedImage stay because the MiDnight wallpaper engine reads "
     "them). No merged consumer -- upstream's FolderContents stopped using it -- but the "
     "engine swap is expected to reach for it; allowlist rather than delete.",
+    "tests/ai-endpoints.qml": "a test entry point, run directly by tools/verify.sh with the Qt qml runtime. "
+    "Nothing imports it, which is the point.",
 }
 
 

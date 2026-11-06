@@ -83,7 +83,7 @@ cd "$ROOT"
 BUILD_DIR=${BUILD_DIR:-$ROOT/build}
 QS=${QS:-qs}
 SWAY=${SWAY:-sway}
-PRESET_DIR=$ROOT/presets
+PRESET_DIR=$ROOT/tests/presets
 SELF_TEST=0
 AUDIT=0
 IGNORE_FILE=$ROOT/tools/smoke-ignore.txt

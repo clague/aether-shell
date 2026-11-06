@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 
+import "../../../sidebar/aiendpoints.js" as AiEndpoints
 import QtQuick
 import QtQuick.Layouts
 import Aether.Config
@@ -147,6 +148,7 @@ PageBase {
             label: Tr.tr("OpenRouter API key")
             subtext: Tr.tr("Bearer key used for OpenRouter requests")
             value: root.targetConfig.ai.openRouterApiKey
+            secret: true
             placeholderText: "sk-or-..."
             onEditingFinished: value => {
                 root.targetConfig.ai.openRouterApiKey = value;
@@ -193,6 +195,7 @@ PageBase {
             label: Tr.tr("OpenClaw token")
             subtext: Tr.tr("Gateway bearer token used for authentication")
             value: root.targetConfig.ai.openClawToken
+            secret: true
             placeholderText: Tr.tr("Gateway token")
             onEditingFinished: value => {
                 root.targetConfig.ai.openClawToken = value;
@@ -226,7 +229,7 @@ PageBase {
 
         TextFieldRow {
             label: Tr.tr("Custom API URL")
-            subtext: Tr.tr("Base URL of the OpenAI-compatible API")
+            subtext: AiEndpoints.isInsecure(root.targetConfig.ai.customUrl) ? Tr.tr("Plain HTTP sends the API key unencrypted; use HTTPS or a localhost address") : Tr.tr("Base URL of the OpenAI-compatible API")
             value: root.targetConfig.ai.customUrl
             placeholderText: "https://api.example.com/v1"
             onEditingFinished: value => {
@@ -239,6 +242,7 @@ PageBase {
             label: Tr.tr("Custom API key")
             subtext: Tr.tr("Bearer key sent to the custom endpoint")
             value: root.targetConfig.ai.customApiKey
+            secret: true
             placeholderText: "sk-..."
             onEditingFinished: value => {
                 root.targetConfig.ai.customApiKey = value;

@@ -18,11 +18,10 @@ next to the upstream-shaped tree, and the split is what keeps syncs cheap.
 
 | Path | Origin | Rule |
 |---|---|---|
-| `modules/`, `components/`, `services/`, `daemons/`, `utils/`, `assets/`, `scripts/`, `extras/`, `.github/`, `shell.qml` | upstream / imported forks | Edit as little as possible. Upstream and imported files stay at their upstream path so a merge finds them; new *dev* tools go in `tools/`. |
-| `scripts/` (two exceptions) | ours | `aether-colors.py` and `askpass.sh` are project code because QML resolves them through `shellPath("scripts/…")`; new runtime helpers go here only when that path is required. |
+| `modules/`, `components/`, `services/`, `daemons/`, `utils/`, `assets/`, `scripts/`, `extras/`, `.github/`, `shell.qml` | upstream / imported forks | Edit as little as possible. Upstream and imported files stay at their upstream path so a merge finds them; new *dev* tools go in `tools/`. Three runtime files are ours because QML resolves them by path: `scripts/aether-colors.py`, `scripts/askpass.sh`, `modules/sidebar/aiendpoints.js`. |
 | `plugin/` | upstream layout, Aether code | New C++ modules and config nodes belong under `plugin/src/Aether/`; the module layout is fixed by Qt and by the merge. |
 | `nix/`, `flake.nix`, `flake.lock` | packaging, inherited and adapted | Change together with the build; not part of the shell runtime. |
-| `bin/`, `cli/`, `docs/`, `hypr/`, `presets/`, `tests/`, `tools/` | ours | New project-owned files go here. Upstream will never touch these. |
+| `bin/`, `cli/`, `docs/`, `hypr/`, `tests/`, `tools/` | ours | New project-owned files go here. Upstream will never touch these. |
 
 ### The project-owned tree
 
@@ -31,8 +30,7 @@ bin/            the `aether` command entry point
 cli/            in-tree command surface (scheme, wallpaper, record, …)
 docs/           architecture, traps, provenance, plugin contract, parked ideas
 hypr/           reference copy of the Hyprland config the shell depends on
-presets/        smoke-matrix configs; picked up automatically
-tests/          C++ unit tests, CLI/config harnesses, fixtures
+tests/          C++ unit tests, CLI/config harnesses, fixtures, smoke-matrix presets
 tools/          build/lint/smoke verification, upstream drift, dead-code audits
 ```
 

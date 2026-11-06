@@ -101,7 +101,7 @@ These were settled by source audit on 2026-09-02. Do not re-litigate without new
 | D5 | **Services are merged, never dual-implemented** | Both forks *extended* a shared service set. Their diffs are additive and non-overlapping. |
 | D6 | **Superseded 2026-11-06: one in-tree command surface** | The shell no longer spawns `caelestia`. `bin/aether` + `cli/aether_cli/` carry the subcommands the shell uses, so the separate `caelestia-hybrid-cli` fork has no consumer. Why the fork existed: all three shells install a binary named `caelestia`, so they cannot coexist, and naming a config with `qs -c` could drive the packaged shell instead of this tree (T53). |
 | D7 | **Upstream catch-up is Phase 2**, before the feature system | Upstream rewrote the config module and rearranged the plugin layout. Build the feature defaults on the system we keep. |
-| D8 | **No presets** (superseded) | Every setting has a static default and one switch on its Nexus page. `presets/*.json` are smoke-matrix inputs only. |
+| D8 | **No presets** (superseded) | Every setting has a static default and one switch on its Nexus page. `tests/presets/*.json` are smoke-matrix inputs only. |
 | D9 | **Merge upstream; cherry-pick OP** | Upstream is a true ancestor. OP shares ancestor `ad8dca0a`, so `git cherry-pick -x` works directly. Never rebase onto an upstream. |
 | D10 | **OP's pattern lock does not ship as-is** | It is a lock-screen bypass. See `docs/traps.md`. Release blocker. |
 | D11 | **Hyprland settings persist via `hypr-vars.lua`**, with the config contract in `hypr/` | The shell writes that one override table (never the dotfiles); `hypr/` holds the full config side — `hyprland.lua`, `variables.lua`, every `hyprland/*.lua` module that consumes a Nexus-written key, `utils/` and `scheme/default.lua` — so setting up a machine is copying the tree, and every settings page has its consumer in the repo. |
@@ -114,9 +114,10 @@ These were settled by source audit on 2026-09-02. Do not re-litigate without new
 3. **`qmllint` and `clang-format` are zero-tolerance**, as upstream has them. MiDnight disabled its CI;
    we re-enable it in Phase 0 and do not disable it again.
 4. **Every imported file gets a provenance row** in `docs/provenance.md` in the same commit.
-5. **Project-owned code lives in the root-level dirs `bin/`, `cli/`, `docs/`, `hypr/`, `presets/`,
+5. **Project-owned code lives in the root-level dirs `bin/`, `cli/`, `docs/`, `hypr/`, `tests/`,
    `tools/`.** Never add project-owned files to `scripts/`, `modules/`, `services/`, or `components/`
-   — those are upstream-shaped paths and will collide on merge.
+   — those are upstream-shaped paths and will collide on merge. Runtime files that QML can only
+   resolve beside their consumer are the exception, listed in `docs/README.md`.
 6. **Prefer an adapter/wrapper over editing an upstream file** — but only up to the point where the
    adapter is smaller than the edit. A 200-line adapter replacing a 20-line edit is the wrong trade.
 7. **All three upstreams are GPL-3.0.** Preserve license headers, authorship and history. Do not squash
@@ -129,13 +130,13 @@ modules/  components/  services/  daemons/  utils/  plugin/  shell.qml   ← ups
 scripts/  assets/  .github/  extras/                                      ← upstream-shaped. Same rule.
 nix/  flake.nix  flake.lock                                               ← packaging, inherited and adapted.
 
-bin/  cli/  docs/  hypr/  presets/  tests/  tools/     ← ours. Upstream will never touch them.
+bin/  cli/  docs/  hypr/  tests/  tools/               ← ours. Upstream will never touch them.
   bin/            the `aether` command entry point
   cli/            in-tree command surface (scheme, wallpaper, record, …)
   docs/           architecture, traps, provenance, plugin contract, parked ideas, layout
   hypr/           reference copy of the Hyprland config the shell depends on
-  presets/        smoke-matrix configs (all-on, all-off, variants-flipped, theme-nebula)
-  tests/          C++ unit tests, CLI/config harnesses, fixtures
+  tests/          C++ unit tests, CLI/config harnesses, fixtures,
+                  and tests/presets/ smoke-matrix configs
   tools/          build/lint/smoke verification, upstream drift, dead-code audits
 ```
 

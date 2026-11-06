@@ -96,6 +96,8 @@ step "cli deps self-test"; ./tools/cli-deps.py --self-test | tail -1; ./tools/cl
 # alive on exactly the machines that have the package installed.
 step "cli deps";      ./tools/cli-deps.py           | tail -1; ./tools/cli-deps.py           >/dev/null || fail=1
 step "cli tests";     ./tests/cli-test.sh            | tail -1; ./tests/cli-test.sh            >/dev/null || fail=1
+step "ai endpoints"
+QT_QPA_PLATFORM=offscreen /usr/lib/qt6/bin/qml tests/ai-endpoints.qml >/dev/null 2>&1 && echo clean || { echo FAILED; fail=1; }
 step "singleton self-test"
 ./tools/singleton-members.py --self-test | tail -1; ./tools/singleton-members.py --self-test >/dev/null || fail=1
 step "singletons";    ./tools/singleton-members.py | tail -1; ./tools/singleton-members.py >/dev/null || fail=1
@@ -103,6 +105,10 @@ step "i18n self-test"
 ./tools/i18n-check.py --self-test | tail -1; ./tools/i18n-check.py --self-test >/dev/null || fail=1
 # A string with no catalog entry renders as English in a Chinese UI and nothing else notices.
 step "i18n";          ./tools/i18n-check.py | tail -1; ./tools/i18n-check.py >/dev/null || fail=1
+# The Nexus search index is generated from page labels; a stale copy silently drops rows from
+# search. The generator owns the file, so this compares instead of reformatting.
+step "search index"
+python3 scripts/gen-nexus-search-index.py --check && echo clean || fail=1
 step "subpage index self-test"
 ./tools/subpage-index.py --self-test | tail -1; ./tools/subpage-index.py --self-test >/dev/null || fail=1
 # A row that opens the wrong sub-page compiles, lints and renders; only this compares the

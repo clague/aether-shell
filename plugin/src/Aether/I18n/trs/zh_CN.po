@@ -8054,6 +8054,9 @@ msgstr "Ollama 服务的基础地址"
 msgid "Base URL of the OpenAI-compatible API"
 msgstr "OpenAI 兼容 API 的基础地址"
 #: modules/
+msgid "Plain HTTP sends the API key unencrypted; use HTTPS or a localhost address"
+msgstr "纯 HTTP 会以明文发送 API 密钥；请使用 HTTPS 或 localhost 地址"
+#: modules/
 msgid "Base URL of the OpenRouter API"
 msgstr "OpenRouter API 的基础地址"
 #: modules/

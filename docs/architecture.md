@@ -160,7 +160,7 @@ and the rest moved to the page that uses them, a preset was only a bulk shortcut
 and a handful of variants — and an invisible one, since the selector had no home that made sense.
 
 Every setting now has a static default in the compiled schema and exactly one switch on its Nexus
-page. `presets/*.json` remain as smoke-matrix inputs, not as a settings feature. The variant
+page. `tests/presets/*.json` remain as smoke-matrix inputs, not as a settings feature. The variant
 defaults preserve what the old recommended preset chose (`audioPopout` is OP, the rest MiDnight).
 
 ### D9 — Merge upstream, cherry-pick OP

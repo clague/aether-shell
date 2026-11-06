@@ -1590,7 +1590,7 @@ costs merge conflicts against three upstreams. Run `qml-lint-conventions.py --fi
 
 ## T40 — The presets README claimed a guarantee the matrix does not check
 
-`presets/README.md` said of the `all-on`/`all-off` pair:
+`tests/presets/README.md` said of the `all-on`/`all-off` pair:
 
 > they prove a flag gates *instantiation* rather than visibility, because the components a
 > preset turns off report zero instantiations, not zero visible pixels

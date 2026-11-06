@@ -65,7 +65,7 @@ if [ ! -f "$CFG_FILE" ]; then
     if [ -n "$CONFIG_SRC" ]; then
         src=$CONFIG_SRC
     else
-        src=$ROOT/presets/$PRESET.json
+        src=$ROOT/tests/presets/$PRESET.json
     fi
     [ -f "$src" ] || { printf '%s no such config: %s\n' "$(red fail)" "$src"; exit 2; }
     cp "$src" "$CFG_FILE"

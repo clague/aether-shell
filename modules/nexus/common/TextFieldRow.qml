@@ -22,6 +22,7 @@ ConnectedRect {
     property alias validate: input.validate
     property alias validator: input.validator
     property bool smallField
+    property bool secret
     readonly property alias field: input
 
     signal valueEdited(value: string)
@@ -96,6 +97,7 @@ ConnectedRect {
             verticalPadding: Tokens.padding.small
 
             text: root.value
+            echoMode: root.secret ? TextInput.Password : TextInput.Normal
 
             onTextEdited: root.valueEdited(text)
             onEditingFinished: root.editingFinished(text)
