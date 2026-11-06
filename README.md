@@ -6,8 +6,12 @@ Aether is a Quickshell desktop shell merging **MiDnight Shell** and **OP-Caelest
 upstream **Caelestia**. One shell, one config, one CLI — features toggled, not forks juggled.
 </div>
 
-> [!WARNING]
-> This project is no longer being maintained by me. I have started work on my own rust based shell. As soon as it is publicly available, you may find it [here](https://github.com/Kiite-Org/KiiteShell).
+<p align=center>
+<a href="#installation">Install</a> ·
+<a href="hypr/README.md">Hyprland config</a> ·
+<a href="docs/README.md">Docs</a> ·
+<a href="docs/architecture.md">Architecture</a>
+</p>
 
 > [!NOTE]
 > This is a merge of three GPL-3.0 projects: [caelestia-dots/shell](https://github.com/caelestia-dots/shell)
@@ -94,12 +98,24 @@ scheme change, so a choice written there survives only until the next one.
 
 ## Installation
 
+The package is on the AUR as [`aether-shell-git`](https://aur.archlinux.org/packages/aether-shell-git):
+
+```sh
+yay -S aether-shell-git          # or paru, or your AUR helper of choice
+```
+
+It installs the shell to `/etc/xdg/quickshell/aether`, the `aether` command to `/usr/bin`, and
+prints the Hyprland autostart line when it finishes. Everything lives under `aether` paths, so it
+can coexist with `caelestia-shell-git`.
+
 > [!IMPORTANT]
-> There is no AUR entry yet, no flake URL and no installer. The package source is kept in
-> [`packaging/aur/`](packaging/aur/PKGBUILD): copy that directory into its own git repository and
-> `makepkg -si` builds, installs and prints the Hyprland autostart line. System files go under
-> `aether` paths, so the package can coexist with `caelestia-shell-git`. The instructions below
-> are the from-source path and are still supported.
+> The shell is one half of the setup. The Hyprland side — keybinds, window rules, environment —
+> lives in [`hypr/`](hypr/README.md). Copy it next to your config, or take just the
+> `hl.dsp.global(...)` binds from `hypr/hyprland/keybinds.lua`, and the `aether:*` shortcuts the
+> shell exposes go live.
+
+### From source
+
 <details><summary id="dependencies">Dependencies</summary>
 
 -   `python-materialyoucolor` and `python-pillow` — the in-tree command surface
@@ -134,7 +150,9 @@ scheme change, so a choice written there survives only until the next one.
 -   [`ttf-rubik-vf`](https://github.com/googlefonts/rubik)
 -   [`ttf-cascadia-code-nerd`](https://github.com/ryanoasis/nerd-fonts)
 -   `qt6-base`
--   `qt6-declarative`Build dependencies:
+-   `qt6-declarative`
+
+Build dependencies:
 
 -   [`cmake`](https://gitlab.kitware.com/cmake/cmake)
 -   [`ninja`](https://github.com/ninja-build/ninja)
@@ -199,15 +217,24 @@ surface (`bin/aether`); there is no separate CLI package.
 
 ### Development
 
-`tools/dev-shell.sh` runs the shell from the working tree against an isolated config
-and state directory, so it never touches a running session. See `docs/` for the
-architecture, the known traps, and the verification gate.
+```sh
+./tools/dev-shell.sh          # isolated config and state; never touches a live session
+./tools/verify.sh             # every CI gate in one run, prints GREEN or RED
+```
+
+The project-owned code sits in `bin/`, `cli/`, `docs/`, `hypr/`, `packaging/`, `tests/` and
+`tools/`; everything else is upstream-shaped and kept close to its upstream path so merges stay
+cheap. [`docs/README.md`](docs/README.md) has the full split, [`docs/architecture.md`](docs/architecture.md)
+the decisions behind it, and [`docs/traps.md`](docs/traps.md) the landmines.
 
 ## Components
 
--   Widgets: [`Quickshell`](https://quickshell.outfoxxed.me)
+-   Widget toolkit: [`Quickshell`](https://quickshell.outfoxxed.me)
 -   Window manager: [`Hyprland`](https://hyprland.org)
--   Dots: [`caelestia`](https://github.com/caelestia-dots)
+-   Shell code: upstream [`caelestia-dots/shell`](https://github.com/caelestia-dots/shell), with
+    [MiDnight Shell](https://github.com/dim-ghub/midnight-shell) as the baseline and
+    [OP-Caelestia](https://github.com/OVERxPOWERED/op-caelestia-shell) cherry-picked on top
+-   Hyprland side: [`hypr/`](hypr/README.md) in this repository, not a separate dotfiles repo
 
 ## Global Shortcuts
 
@@ -363,15 +390,15 @@ You can start the shell by running `aether shell -d` (preferred) or `qs -p . -n 
 You may omit `-d` from the command to keep the shell attached to the current terminal if necessary,
 though you likely want it to be detached (so it doesn't close when the terminal is closed).
 
-If using the [Caelestia dotfiles][dots-repo], the shell will be autostarted on login
-via a `hl.on("hyprland.start", ...)` function in the Hyprland config.
+If you copied the Hyprland config from [`hypr/`](hypr/README.md), the shell is started on login
+by the `hl.on("hyprland.start", ...)` function there, and the keybinds are already wired.
 
 ### Shortcuts/IPC
 
 All keybinds are accessible via Hyprland [global shortcuts](https://wiki.hypr.land/Configuring/Basics/Binds#dbus-global-shortcuts).
-If you copied the Hyprland config from this repository, the keybinds are already configured for you.
-Otherwise, [this file](https://github.com/caelestia-dots/caelestia/blob/main/hypr/hyprland/keybinds.lua#L52-L67)
-contains an example on how to use global shortcuts.
+If you copied the Hyprland config from [`hypr/`](hypr/README.md), the keybinds are already
+configured for you. Otherwise,
+[`hypr/hyprland/keybinds.lua`](hypr/hyprland/keybinds.lua) shows how to call one.
 
 All IPC commands can be accessed via `aether shell ...`, for example:
 
@@ -395,7 +422,14 @@ Use `aether wallpaper -h` for more info about this command.
 
 ## Updating
 
-There is no package yet, so updating means pulling and rebuilding:
+With the AUR package, reinstall it:
+
+```sh
+yay -S aether-shell-git
+```
+
+From a clone, pull and rebuild the same way you installed it:
+
 ```sh
 cd $XDG_CONFIG_HOME/quickshell/aether
 git pull
@@ -403,13 +437,17 @@ cmake --build build
 sudo cmake --install build
 ```
 
-Restart the shell afterwards with `aether shell -d` (or `aether shell -k` first, if
-one is already running).
+Restart the shell afterwards with `aether shell -r -d`, which kills the running instance and
+starts the new one.
 
 ## Uninstalling
 
-`cmake --install` writes no manifest that can be replayed, so removal is manual: delete the
-clone at `$XDG_CONFIG_HOME/quickshell/aether` and the files listed in
+With the package: `sudo pacman -Rns aether-shell-git`. Your settings in `~/.config/aether`,
+`~/.local/state/aether` and `~/.local/share/aether` are not touched, so a reinstall picks them
+up again; delete those three directories yourself if you want a clean slate.
+
+From source, `cmake --install` writes no manifest that can be replayed, so removal is manual:
+delete the clone at `$XDG_CONFIG_HOME/quickshell/aether` and the files listed in
 `build/install_manifest.txt`.
 
 > [!CAUTION]
@@ -1512,29 +1550,34 @@ The module automatically adds the shell to the path with **full functionality**.
 
 ### Need help or support?
 
-You can join the Caelestia Discord server for assistance and discussion [here][discord].
+Open an issue at [clague/aether-shell/issues](https://github.com/clague/aether-shell/issues).
+Bugs that also reproduce on a stock install of one of the upstreams are usually best reported
+upstream; those projects have their own trackers.
 
 ### The shell stutters or tears!
 
-Try disabling VRR in the hyprland config. You can do this by adding the following to `~/.config/aether/hypr-user.conf`:
+Most of the time that is VRR. It is a setting: **Nexus → Hyprland → Variables → Variable refresh
+rate**, which writes the override to `~/.config/aether/hypr-vars.lua`. To do it by hand, add to
+`~/.config/aether/hypr-user.lua`:
 
-```conf
-misc {
-    vrr = 0
-}
+```lua
+hl.config({ misc = { vrr = 0 } })
 ```
 
 ### How do I enable blur for the Polkit dialog?
 
-Add the following layer rule to your `~/.config/aether/hypr-user.conf`:
+The dialog is a layer surface named `aether-polkit`. Add to `~/.config/aether/hypr-user.lua`:
 
-```conf
-layerrule = no_anim true, match:namespace aether-polkit, blur true, ignore_alpha 0.1
+```lua
+hl.layer_rule({ match = { namespace = "aether-polkit" }, blur = true, ignore_alpha = 0.1 })
 ```
 
 ### I want to make my own changes to the hyprland config!
 
-You can add your custom hyprland configs to `~/.config/aether/hypr-user.conf`.
+`~/.config/hypr` is yours; nothing here rewrites it. The shell writes exactly one file,
+`~/.config/aether/hypr-vars.lua`, which the dotfiles merge over `variables.lua`. For anything
+the settings pages do not cover, edit `~/.config/aether/hypr-user.lua`: it is loaded after the
+modules, and it is also the file **Nexus → Hyprland → User configuration** opens.
 
 ### I want to make my own changes to other stuff!
 
@@ -1589,6 +1632,3 @@ which helped me a lot with learning how to use Quickshell.
 Finally, another thank you to all the configs I took inspiration from (only one for now):
 
 -   [Axenide/Ax-Shell](https://github.com/Axenide/Ax-Shell)
-
-[dots-repo]: https://github.com/caelestia-dots/caelestia
-[discord]: https://caelestiashell.com/discord
