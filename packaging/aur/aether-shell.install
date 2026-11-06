@@ -1,6 +1,9 @@
 post_install() {
     cat <<'EOF'
-Aether is installed. Nothing else is needed to build or start it.
+Aether is installed under /etc/xdg/quickshell/aether. It can coexist with
+caelestia-shell-git; only one of the two shells should be running.
+
+Nothing else is needed to build or start it.
 
 Start the shell now:
     aether shell -d

@@ -67,10 +67,7 @@ pkgbase = aether-shell-git
 	optdepends = python-playwright: web search/read tools in the AI assistant (then run playwright install chromium)
 	optdepends = ttf-rubik-vf: alternative UI font for older configs
 	provides = aether-shell
-	provides = caelestia-shell
 	conflicts = aether-shell
-	conflicts = caelestia-shell
-	conflicts = caelestia-shell-git
 	source = aether-shell-git::git+https://github.com/clague/aether-shell.git
 	sha256sums = SKIP
 

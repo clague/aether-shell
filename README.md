@@ -97,7 +97,8 @@ scheme change, so a choice written there survives only until the next one.
 > [!IMPORTANT]
 > There is no AUR entry yet, no flake URL and no installer. The package source is kept in
 > [`packaging/aur/`](packaging/aur/PKGBUILD): copy that directory into its own git repository and
-> `makepkg -si` builds, installs and prints the Hyprland autostart line. The instructions below
+> `makepkg -si` builds, installs and prints the Hyprland autostart line. System files go under
+> `aether` paths, so the package can coexist with `caelestia-shell-git`. The instructions below
 > are the from-source path and are still supported.
 <details><summary id="dependencies">Dependencies</summary>
 

@@ -7,13 +7,18 @@ set -eu
 prompt="${1:-Password}"
 qs="${QS:-qs}"
 
-id=$("$qs" -c caelestia ipc call askpass request "$prompt") || exit 1
+# The shell is found by path, not by name: `qs -c caelestia` resolves whichever config the user
+# has installed, which may be a different tree than this script. readlink resolves the symlink
+# the docs suggest putting in ~/.local/bin.
+root=$(CDPATH= cd -- "$(dirname -- "$(readlink -f -- "$0")")/.." && pwd)
+
+id=$("$qs" -p "$root" ipc call askpass request "$prompt") || exit 1
 [ -n "$id" ] || exit 1
 
 # The dialog stays up until it is answered or cancelled. A helper that is killed leaves the
 # request to the shell's own timeout rather than tidying up here.
 while :; do
-    answer=$("$qs" -c caelestia ipc call askpass poll "$id") || exit 1
+    answer=$("$qs" -p "$root" ipc call askpass poll "$id") || exit 1
     case "$answer" in
         pending) sleep 0.15 ;;
         ok:*)

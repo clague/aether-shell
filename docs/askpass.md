@@ -11,9 +11,10 @@ ssh / sudo ──> scripts/askpass.sh ──> caelestia:askpass IPC ──> dial
 ## Setup
 
 ```sh
-export SSH_ASKPASS="$HOME/.config/quickshell/caelestia/scripts/askpass.sh"
+# Package install. A source checkout has the same file under its own tree.
+export SSH_ASKPASS=/etc/xdg/quickshell/aether/scripts/askpass.sh
 export SSH_ASKPASS_REQUIRE=force          # ssh ignores the helper when it still has a TTY
-export SUDO_ASKPASS="$HOME/.config/quickshell/caelestia/scripts/askpass.sh"
+export SUDO_ASKPASS=/etc/xdg/quickshell/aether/scripts/askpass.sh
 ```
 
 Then `sudo -A systemctl restart something`, `ssh-add`, or any `ssh` connection whose passphrase
@@ -25,19 +26,21 @@ without `SSH_ASKPASS_REQUIRE`.
 everywhere, wrap it (`alias sudo='sudo -A'`) or configure the terminal's own askpass.
 
 The helper is installed next to the shell, at
-`${prefix}/share/caelestia/scripts/askpass.sh` (a package install) or in the repository's
+`/etc/xdg/quickshell/aether/scripts/askpass.sh` (a package install) or in the repository's
 `scripts/` for a source build. A symlink into `~/.local/bin` is convenient:
 
 ```sh
-ln -sf "$HOME/.config/quickshell/caelestia/scripts/askpass.sh" ~/.local/bin/caelestia-askpass
-export SSH_ASKPASS=caelestia-askpass SUDO_ASKPASS=caelestia-askpass
+ln -sf /etc/xdg/quickshell/aether/scripts/askpass.sh ~/.local/bin/aether-askpass
+export SSH_ASKPASS=aether-askpass SUDO_ASKPASS=aether-askpass
 ```
 
 `QS=/path/to/qs` overrides the binary the helper calls, if `qs` is not on `PATH`.
 
 ## What it does
 
-1. `qs -c caelestia ipc call askpass request "<prompt>"` returns a request id.
+1. `qs -p <shell tree> ipc call askpass request "<prompt>"` returns a request id. The helper
+   resolves `<shell tree>` from its own file (and follows the symlink above), so it does not
+   depend on the shell being discoverable by config name.
 2. The shell shows the dialog with that prompt, on the overlay layer, with the keyboard focused.
 3. The helper polls `ipc call askpass poll <id>` every 150ms until the answer is
    `ok:<password>` (printed, exit 0) or `cancel` / `unknown` (exit 1).

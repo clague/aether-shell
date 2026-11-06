@@ -80,8 +80,8 @@ optdepends=(
     'ttf-rubik-vf: alternative UI font for older configs'
 )
 makedepends=('git' 'cmake' 'ninja' 'qt6-shadertools')
-provides=('aether-shell' 'caelestia-shell')
-conflicts=('aether-shell' 'caelestia-shell' 'caelestia-shell-git')
+provides=('aether-shell')
+conflicts=('aether-shell')
 install=aether-shell.install
 source=("$pkgname::git+$url.git")
 sha256sums=('SKIP')

@@ -37,12 +37,13 @@ After the first import, bump `pkgver` (or leave `pkgver()` to regenerate it) and
 
 ## What the package does
 
-- Installs the shell to `/etc/xdg/quickshell/caelestia`, the QML plugin to
-  `/usr/lib/qt6/qml/Aether`, extras to `/usr/lib/caelestia`, the Qt platform theme to
+- Installs the shell to `/etc/xdg/quickshell/aether`, the QML plugin to
+  `/usr/lib/qt6/qml/Aether`, extras to `/usr/lib/aether`, the Qt platform theme to
   `/usr/lib/qt6/plugins/platformthemes`, and `/usr/bin/aether`.
 - `aether` is a wrapper around the in-tree command surface; the installed Python needs
   `python-materialyoucolor` and `python-pillow`, both declared as dependencies.
 - Ships the Hyprland reference config to `/usr/share/aether-shell/hypr` and prints the autostart
   line and keybind location after install. It never writes `~/.config/hypr`.
-- Conflicts with `caelestia-shell-git` because both own
-  `/etc/xdg/quickshell/caelestia`. Existing `~/.config/caelestia` settings are reused.
+- Does not conflict with `caelestia-shell-git`: the system files use `aether` paths, so both
+  packages can be installed. Only run one of them at a time (both answer on the `caelestia:*`
+  IPC names and draw a bar). Existing `~/.config/caelestia` settings are reused.
