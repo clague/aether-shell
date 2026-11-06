@@ -276,7 +276,8 @@ bind = SUPER, M, global, aether:utilities
   transparent padding, rounded corners, a border and a drop shadow. The values follow the
   running Hyprland config: `decoration:rounding`, `general:border_size`,
   `general:col.active_border`, `decoration:shadow:range`, `decoration:shadow:render_power`,
-  `decoration:shadow:offset` and `decoration:shadow:color`. Padding follows the shadow extent.
+  `decoration:shadow:scale`, `decoration:shadow:offset` and `decoration:shadow:color`.
+  Padding follows the shadow extent.
   The shadow reproduces the compositor's own falloff, `alpha = A * (1 - d/range) **
   render_power`, so it is as dense at the window edge as it is on screen; the offset stretches
   that falloff on its side instead of shifting a solid block under the window.

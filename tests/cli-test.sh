@@ -193,6 +193,22 @@ assert all(b < a for a, b in zip(got, got[1:])), got  # no full-alpha plateau un
 print("profile-ok")' "$work/swappy-shadow.png")
 check "shadow follows Hyprland falloff" "profile-ok" "$shadow"
 
+scale=$(python3 -c 'import sys
+sys.path.insert(0, sys.argv[1] + "/cli")
+from io import BytesIO
+from PIL import Image
+from aether_cli.utils.windowshot import WindowStyle, render
+buf = BytesIO()
+Image.new("RGBA", (400, 300), (0, 0, 0, 255)).save(buf, "PNG")
+raw = buf.getvalue()
+def canvas(scale):
+    style = WindowStyle(rounding=0, border_size=0, shadow_range=15, shadow_power=4,
+                        shadow_color=(0, 0, 0, 255), shadow_offset=(0, 0), shadow_scale=scale)
+    return Image.open(BytesIO(render(raw, style))).size
+# Hyprland scales the window box grown by range, so the reach is 15, 13 and 0 pixels.
+print(canvas(1.0) == (430, 330) and canvas(0.99) == (426, 326) and canvas(0.5) == (400, 300))' "$ROOT")
+check "shadow scale shrinks the reach like Hyprland" "True" "$scale"
+
 if "$AETHER" screenshot -w 1 -r >"$work/window-region.out" 2>&1; then
     echo "FAIL: --window and --region were accepted together" >&2
     exit 1

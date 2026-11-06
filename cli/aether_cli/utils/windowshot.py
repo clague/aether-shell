@@ -5,8 +5,8 @@ buffer: toplevel export explicitly excludes them, while workspace/output capture
 desktop background. The frame is therefore reconstructed from the values Hyprland does expose.
 
 The values come from the running compositor: rounding, border size/colour, and shadow
-enabled/sharp/range/power/offset/colour. Each field falls back independently when hyprctl is
-unavailable (tests, scripts outside the session).
+enabled/sharp/range/power/scale/offset/colour. Each field falls back independently when
+hyprctl is unavailable (tests, scripts outside the session).
 
 The shadow uses Hyprland's own falloff from `src/render/shaders/glsl/shadow.glsl`:
 `alpha = A * (1 - d / range) ** render_power` over the shadow's reach, so it is at full
@@ -34,6 +34,7 @@ class WindowStyle:
     shadow_sharp: bool = False
     shadow_range: int = 24
     shadow_power: int = 4
+    shadow_scale: float = 1.0
     shadow_offset: tuple[int, int] = (0, 10)
     shadow_color: tuple[int, int, int, int] = (0, 0, 0, 90)
 
@@ -130,6 +131,20 @@ def _int(name: str, fallback: int) -> int:
         return fallback
 
 
+def _float(name: str, fallback: float) -> float:
+    try:
+        return float(_option(name).get("float", fallback))
+    except (
+        OSError,
+        subprocess.SubprocessError,
+        ValueError,
+        KeyError,
+        TypeError,
+        json.JSONDecodeError,
+    ):
+        return fallback
+
+
 def _bool(name: str, fallback: bool) -> bool:
     try:
         return bool(_option(name).get("bool", fallback))
@@ -193,6 +208,7 @@ def style_from_hyprland() -> WindowStyle:
         shadow_sharp=_bool("decoration:shadow:sharp", False),
         shadow_range=max(0, _int("decoration:shadow:range", 24)),
         shadow_power=max(1, min(4, _int("decoration:shadow:render_power", 4))),
+        shadow_scale=min(1.0, max(0.0, _float("decoration:shadow:scale", 1.0))),
         shadow_offset=_offset("decoration:shadow:offset", (0, 10)),
         shadow_color=_color("decoration:shadow:color", (0, 0, 0, 90)),
     )
@@ -355,13 +371,30 @@ def render(raw: bytes, style: WindowStyle | None = None) -> bytes:
         extent = 0
 
     offset_x, offset_y = style.shadow_offset
-    extents = (
-        extent + max(0, -offset_x),
-        extent + max(0, -offset_y),
-        extent + max(0, offset_x),
-        extent + max(0, offset_y),
-    )
-    padding = max(extents) if extent else 0
+    # Hyprland grows the window box by `range` and then scales it about its own centre, so a
+    # scale below 1 pulls the shadow's outer edge towards the window -- for a window larger
+    # than the range it lands inside it, where the window hides the shadow completely.
+    extents = (0, 0, 0, 0)
+    alpha = 0
+    if extent:
+        reach_x = (outer_width / 2 + extent) * style.shadow_scale - outer_width / 2
+        reach_y = (outer_height / 2 + extent) * style.shadow_scale - outer_height / 2
+        extents = (
+            max(0, round(reach_x) + max(0, -offset_x)),
+            max(0, round(reach_y) + max(0, -offset_y)),
+            max(0, round(reach_x) + max(0, offset_x)),
+            max(0, round(reach_y) + max(0, offset_y)),
+        )
+        # The shader keeps the falloff's shape but starts it lower when the reach shrank.
+        reaching = [reach for reach in (reach_x, reach_y) if reach > 0]
+        alpha = (
+            round(
+                style.shadow_color[3] * (min(reaching) / extent) ** style.shadow_power
+            )
+            if reaching
+            else 0
+        )
+    padding = max(extents)
     # Transparent, so the result can be dropped onto any background; the shadow lives in the
     # alpha channel and stays visible over whatever the viewer draws behind it.
     canvas = Image.new(
@@ -383,7 +416,7 @@ def render(raw: bytes, style: WindowStyle | None = None) -> bytes:
             rounding,
             extents,
             style.shadow_power,
-            style.shadow_color[3],
+            alpha,
             style.shadow_sharp,
             _supersample(*canvas.size),
         )
