@@ -15,7 +15,6 @@ Scope {
         property bool closing
         property bool clipboardOnly
         property bool searchMode
-        property bool windowMode
 
         Variants {
             model: Screens.screens
@@ -55,7 +54,6 @@ Scope {
             root.closing = false;
             root.clipboardOnly = false;
             root.searchMode = false;
-            root.windowMode = false;
             root.activeAsync = true;
         }
 
@@ -64,7 +62,6 @@ Scope {
             root.closing = false;
             root.clipboardOnly = false;
             root.searchMode = false;
-            root.windowMode = false;
             root.activeAsync = true;
         }
 
@@ -73,7 +70,6 @@ Scope {
             root.closing = false;
             root.clipboardOnly = true;
             root.searchMode = false;
-            root.windowMode = false;
             root.activeAsync = true;
         }
 
@@ -82,7 +78,6 @@ Scope {
             root.closing = false;
             root.clipboardOnly = true;
             root.searchMode = false;
-            root.windowMode = false;
             root.activeAsync = true;
         }
 
@@ -91,16 +86,16 @@ Scope {
             root.freeze = false;
             root.closing = false;
             root.clipboardOnly = false;
-            root.windowMode = false;
             root.activeAsync = true;
         }
 
         function openWindow(): void {
+            // Kept as an alias: the normal picker already distinguishes a window click from a
+            // dragged region.
             root.freeze = false;
             root.closing = false;
             root.clipboardOnly = false;
             root.searchMode = false;
-            root.windowMode = true;
             root.activeAsync = true;
         }
 
@@ -111,13 +106,12 @@ Scope {
     CustomShortcut {
         // qmllint enable unresolved-type
         name: "screenshot"
-        description: "Open screenshot tool"
+        description: "Click a window for its surface, or drag a region"
         onPressed: {
             root.freeze = false;
             root.closing = false;
             root.clipboardOnly = false;
             root.searchMode = false;
-            root.windowMode = false;
             root.activeAsync = true;
         }
     }
@@ -126,13 +120,12 @@ Scope {
     CustomShortcut {
         // qmllint enable unresolved-type
         name: "screenshotFreeze"
-        description: "Open screenshot tool (freeze mode)"
+        description: "Click a window or drag a region on a frozen frame"
         onPressed: {
             root.freeze = true;
             root.closing = false;
             root.clipboardOnly = false;
             root.searchMode = false;
-            root.windowMode = false;
             root.activeAsync = true;
         }
     }
@@ -141,13 +134,12 @@ Scope {
     CustomShortcut {
         // qmllint enable unresolved-type
         name: "screenshotClip"
-        description: "Open screenshot tool (clipboard)"
+        description: "Click a window or drag a region; copy only"
         onPressed: {
             root.freeze = false;
             root.closing = false;
             root.clipboardOnly = true;
             root.searchMode = false;
-            root.windowMode = false;
             root.activeAsync = true;
         }
     }
@@ -156,13 +148,12 @@ Scope {
     CustomShortcut {
         // qmllint enable unresolved-type
         name: "screenshotFreezeClip"
-        description: "Open screenshot tool (freeze mode, clipboard)"
+        description: "Click a window or drag a region on a frozen frame; copy only"
         onPressed: {
             root.freeze = true;
             root.closing = false;
             root.clipboardOnly = true;
             root.searchMode = false;
-            root.windowMode = false;
             root.activeAsync = true;
         }
     }
@@ -171,13 +162,12 @@ Scope {
     CustomShortcut {
         // qmllint enable unresolved-type
         name: "screenshotWindow"
-        description: "Select a window and capture its own surface"
+        description: "Alias for the screenshot picker (click window or drag region)"
         onPressed: {
             root.freeze = false;
             root.closing = false;
             root.clipboardOnly = false;
             root.searchMode = false;
-            root.windowMode = true;
             root.activeAsync = true;
         }
     }

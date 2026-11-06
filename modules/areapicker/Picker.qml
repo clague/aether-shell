@@ -18,6 +18,7 @@ MouseArea {
 
     property bool onClient
     property var targetClient: null
+    property bool dragging: false
 
     property real realBorderWidth: onClient ? (Hypr.options["general:border_size"] ?? 1) : 2
     property real realRounding: onClient ? (Hypr.options["decoration:rounding"] ?? 0) : 0
@@ -92,6 +93,15 @@ MouseArea {
         }
     }
 
+    function captureWindow(id: string): void {
+        if (root.loader.clipboardOnly) {
+            Quickshell.execDetached(["sh", "-c", 'grim -T "$1" - | wl-copy --type image/png', "sh", id]);
+            Toaster.toast(Tr.tr("Screenshot taken"), Tr.tr("Screenshot copied to clipboard"), "screenshot_monitor");
+        } else {
+            Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "screenshot", "-w", String(id)]);
+        }
+    }
+
     function save(): void {
         const isSearch = root.loader.searchMode;
         CUtils.mkdirp(root.tmpDir);
@@ -147,22 +157,25 @@ MouseArea {
     }
 
     onPressed: event => {
+        root.dragging = false;
         ssx = event.x;
         ssy = event.y;
-        if (root.loader.windowMode)
-            checkClientRects(event.x, event.y);
+        // A click on a window selects that window; moving more than a few pixels turns it into
+        // an ordinary region selection.
+        checkClientRects(event.x, event.y);
     }
 
     onReleased: {
         if (closeAnim.running)
             return;
 
-        if (root.loader.windowMode) {
+        if (!root.dragging) {
             const id = root.targetClient?.lastIpcObject?.stableId;
-            if (id)
-                Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "screenshot", "-w", String(id)]);
-            closeAnim.start();
-            return;
+            if (id) {
+                root.captureWindow(String(id));
+                closeAnim.start();
+                return;
+            }
         }
 
         if (root.loader.freeze) {
@@ -178,13 +191,18 @@ MouseArea {
         const x = event.x;
         const y = event.y;
 
-        if (root.loader.windowMode) {
+        if (!pressed) {
             checkClientRects(x, y);
             return;
         }
 
-        if (pressed) {
+        if (!root.dragging && Math.hypot(x - ssx, y - ssy) > 4) {
+            root.dragging = true;
             onClient = false;
+            targetClient = null;
+        }
+
+        if (root.dragging) {
             sx = ssx;
             sy = ssy;
             ex = x;
