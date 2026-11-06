@@ -105,7 +105,14 @@ jobs:
           # Set version and git rev for CI build so we don't call git
           cmake -B build -G Ninja -DCMAKE_CXX_COMPILER=${{ matrix.compiler }} -DCMAKE_CXX_FLAGS=-Werror \
             -DVERSION= -DGIT_REVISION=
-          cmake --build build
+          # Job logs need an authenticated request; surface the compiler lines as
+          # annotations so a failed matrix leg says why instead of only "exit code 1".
+          cmake --build build 2>&1 | tee /tmp/build.log
+          status=${PIPESTATUS[0]}
+          grep -E "error:|warning:" /tmp/build.log | tail -20 | while IFS= read -r line; do
+            echo "::error title=${{ matrix.compiler }}::$line"
+          done
+          exit "$status"
 
   build-check:
     if: always()
