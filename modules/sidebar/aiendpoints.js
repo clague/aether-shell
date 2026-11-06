@@ -43,8 +43,8 @@ function authHeaders(provider, cfg) {
             return {};
         return {
             "Authorization": "Bearer " + cfg.openRouterApiKey,
-            "HTTP-Referer": "https://github.com/dim-ghub/midnight-shell",
-            "X-Title": "midnight-shell"
+            "HTTP-Referer": "https://github.com/clague/aether-shell",
+            "X-Title": "aether"
         };
     }
     if (provider === "openclaw")

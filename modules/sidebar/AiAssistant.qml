@@ -1218,11 +1218,13 @@ Item {
                                     } else if (toolName === "get_weather") {
                                         currentActionText = "Checking weather...";
                                         var loc = args.location;
-                                        runAgentArgv(["curl", "-s", "wttr.in/" + String(loc) + "?0T"], "exec_" + toolName);
+                                        runAgentArgv(["curl", "-s", "wttr.in/" + encodeURIComponent(String(loc)) + "?0T"], "exec_" + toolName);
                                     } else if (toolName === "aether_command") {
                                         currentActionText = "Running aether...";
                                         var subcmd = String(args.subcommand || "");
-                                        var allowed = ["shell", "scheme", "wallpaper", "screenshot", "record", "clipboard", "ipc"];
+                                        // No "ipc": that target reaches every shell handler, including the askpass dialog,
+                                        // which would hand a typed password to the model.
+                                        var allowed = ["shell", "scheme", "wallpaper", "screenshot", "record", "clipboard"];
                                         if (allowed.indexOf(subcmd) === -1) {
                                             runningToolsCount--;
                                             recordToolResult("aether_command", "Unknown subcommand. Use one of: " + allowed.join(", "));
@@ -1300,7 +1302,14 @@ Item {
             "content": sysPrompt
         });
 
-        for (var i = 0; i < chatHistory.count; i++) {
+        // The whole history used to go out every turn: cost grows with the square of the
+        // conversation, and a long chat eventually exceeds the context window. Keep the tail and
+        // start on a user message, so no tool result arrives without the call that made it.
+        var first = Math.max(0, chatHistory.count - 40);
+        while (first < chatHistory.count - 1 && !chatHistory.get(first).isUser)
+            first++;
+
+        for (var i = first; i < chatHistory.count; i++) {
             var msg = chatHistory.get(i);
             if (!msg.isUser && (!msg.text || msg.text.length === 0))
                 continue;
@@ -1458,7 +1467,7 @@ Item {
                     "type": "function",
                     "function": {
                         "name": "aether_command",
-                        "description": "Run an aether command to manage the system. Valid subcommands: shell, scheme, wallpaper, screenshot, record, clipboard, ipc.",
+                        "description": "Run an aether command to manage the system. Valid subcommands: shell, scheme, wallpaper, screenshot, record, clipboard.",
                         "parameters": {
                             "type": "object",
                             "properties": {

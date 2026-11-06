@@ -65,8 +65,8 @@ Item {
             "openRouterApiKey": "k"
         })), {
             "Authorization": "Bearer k",
-            "HTTP-Referer": "https://github.com/dim-ghub/midnight-shell",
-            "X-Title": "midnight-shell"
+            "HTTP-Referer": "https://github.com/clague/aether-shell",
+            "X-Title": "aether"
         });
         check("ollama has no auth", AiEndpoints.authHeaders("ollama", cfg({})), {});
 
