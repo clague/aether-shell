@@ -45,11 +45,15 @@ MouseArea {
         // the first IPC reply, and for the whole run under a compositor that is not
         // Hyprland. The `!mon` check above does not cover that.
         const special = mon.lastIpcObject?.specialWorkspace;
-        const wsId = special?.name ? special.id : mon.activeWorkspace?.id;
-        if (wsId === undefined || wsId === null)
+        // Special workspaces have no numeric id in hyprctl's client JSON, only a name; filter
+        // by the visible workspace name so a picker opened on special:music still finds its
+        // windows.
+        const wsName = special?.name ? special.name : mon.activeWorkspace?.name;
+        if (!wsName)
             return [];
 
-        return Hypr.toplevelsForWs(wsId).sort((a, b) => {
+        const all = Hypr.toplevels?.values ?? [];
+        return all.filter(client => client.lastIpcObject?.workspace?.name === wsName && !Hypr.isToplevelIgnored(client)).sort((a, b) => {
             // Pinned first, then fullscreen, then floating, then any other
             const ac = a?.lastIpcObject;
             const bc = b?.lastIpcObject;

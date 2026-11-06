@@ -279,6 +279,12 @@ bind = SUPER, M, global, aether:utilities
   `decoration:shadow:offset` and `decoration:shadow:color`. Padding follows the shadow extent.
   When Hyprland cannot be queried (tests, scripts outside the session), built-in defaults are
   used. Region and full-screen captures are not framed.
+
+  Hyprland has no API that renders a window *with its server-side decorations* into an alpha
+  buffer: toplevel export explicitly excludes decorations, and workspace/output capture
+  includes the desktop background. The frame above is a reconstruction from the values
+  Hyprland exposes; the shadow falloff is an approximation, not a pixel-exact compositor
+  render.
 - `aether:screenshotWindow` is an alias for the picker, kept for existing binds.
 - `aether:screenshotClip` and `aether:screenshotFreezeClip` use the same picker but copy
   instead of opening swappy; a window click copies the raw surface and a drag copies the
