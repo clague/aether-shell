@@ -9293,3 +9293,58 @@ msgstr "MiDnight 实现"
 #: modules/nexus/pages/panels/AudioPage.qml
 msgid "OP implementation"
 msgstr "OP 实现"
+
+#: modules/
+msgid "Border colour"
+msgstr "边框颜色"
+#: modules/
+msgid "Border width"
+msgstr "边框宽度"
+#: modules/
+msgid "Border width in pixels; 0 disables it"
+msgstr "边框宽度（像素）；0 表示关闭"
+#: modules/
+msgid "Corner radius in pixels"
+msgstr "圆角半径（像素）"
+#: modules/
+msgid "Custom frame"
+msgstr "自定义边框"
+#: modules/
+msgid "Draw a soft shadow behind the window"
+msgstr "在窗口后方绘制柔和阴影"
+#: modules/
+msgid "Follow the window manager"
+msgstr "跟随窗口管理器"
+#: modules/
+msgid "Hex or rgba() colour"
+msgstr "十六进制或 rgba() 颜色"
+#: modules/
+msgid "Horizontal offset"
+msgstr "水平偏移"
+#: modules/
+msgid "Hyprland's render power, 1 (soft) to 4 (crisp)"
+msgstr "Hyprland 的渲染强度，1（柔和）到 4（锐利）"
+#: modules/
+msgid "Screenshots"
+msgstr "截图"
+#: modules/
+msgid "Shadow blur range in pixels"
+msgstr "阴影模糊范围（像素）"
+#: modules/
+msgid "Shadow offset in pixels"
+msgstr "阴影偏移（像素）"
+#: modules/
+msgid "Shadow power"
+msgstr "阴影强度"
+#: modules/
+msgid "Use Hyprland's rounding, border and shadow values"
+msgstr "使用 Hyprland 的圆角、边框和阴影参数"
+#: modules/
+msgid "Vertical offset"
+msgstr "垂直偏移"
+#: modules/
+msgid "Window capture frame: rounding, border and shadow"
+msgstr "窗口截图边框：圆角、边框和阴影"
+#: modules/
+msgid "Window frame"
+msgstr "窗口边框"

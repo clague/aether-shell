@@ -151,6 +151,14 @@ QtObject {
             }
         },
         Component {
+            // Screenshots
+            StackPage {
+                Component {
+                    ScreenshotsPage {}
+                }
+            }
+        },
+        Component {
             // Hyprland
             StackPage {
                 Component {

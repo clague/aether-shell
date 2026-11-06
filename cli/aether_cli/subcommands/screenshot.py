@@ -1,11 +1,12 @@
+import json
 import subprocess
 from argparse import Namespace
 from datetime import datetime
 
 from aether_cli.utils import hypr
 from aether_cli.utils.notify import notify
-from aether_cli.utils.paths import screenshots_cache_dir, screenshots_dir, shell_root
-from aether_cli.utils.windowshot import render, style_from_hyprland
+from aether_cli.utils.paths import c_config_dir, screenshots_cache_dir, screenshots_dir, shell_root
+from aether_cli.utils.windowshot import render, style_from_config
 
 
 class Command:
@@ -51,11 +52,20 @@ class Command:
         if not stable:
             raise ValueError("no focused window to capture")
 
-        framed = render(self._output(["grim", "-T", str(stable), "-"]), style_from_hyprland())
+        framed = render(self._output(["grim", "-T", str(stable), "-"]), self._window_style())
         if self.args.clipboard:
             subprocess.run(["wl-copy", "--type", "image/png"], input=framed, check=False)
         else:
             self._editor(framed)
+
+    @staticmethod
+    def _window_style():
+        try:
+            data = json.loads((c_config_dir / "shell.json").read_text())
+            frame = data.get("aether", {}).get("windowFrame", {})
+            return style_from_config(frame if isinstance(frame, dict) else {})
+        except (OSError, ValueError, TypeError):
+            return style_from_config({})
 
     def _capture_editor(self, cmd: list[str]) -> None:
         self._editor(self._output(cmd))

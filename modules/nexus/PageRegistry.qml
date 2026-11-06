@@ -42,6 +42,12 @@ QtObject {
             description: Tr.tr("Default apps, favourites, hidden apps"),
             category: "desktop"
         },
+        {
+            label: Tr.tr("Screenshots"),
+            icon: "photo_camera",
+            description: Tr.tr("Window capture frame: rounding, border and shadow"),
+            category: "desktop"
+        },
 
         // Window
         {

@@ -164,6 +164,15 @@ GRIM_ARGS=$work/grim.args FAKE_WINDOW=$work/window.png WL_COPY_OUT=$work/wl-copy
     PATH="$work/bin:$PATH" "$AETHER" screenshot -w 180001e3 --clipboard
 check "window clipboard is rendered too" "framed" "$(framed "$work/wl-copy.out")"
 
+cat >"$XDG_CONFIG_HOME/aether/shell.json" <<'JSON'
+{"aether":{"windowFrame":{"followWm":false,"rounding":0,"borderSize":0,"shadowEnabled":false,"borderColor":"rgba(0, 0, 0, 0)","shadowColor":"rgba(0, 0, 0, 0)"}}}
+JSON
+GRIM_ARGS=$work/grim.args FAKE_WINDOW=$work/window.png SWAPPY_ARGS=$work/swappy.args \
+    SWAPPY_STDIN=$work/swappy-custom.png PATH="$work/bin:$PATH" "$AETHER" screenshot -w 180001e3
+for _ in $(seq 1 20); do [ -s "$work/swappy-custom.png" ] && break; sleep 0.05; done
+custom_size=$(python3 -c 'import sys; from PIL import Image; im = Image.open(sys.argv[1]); print(f"{im.size[0]}x{im.size[1]}")' "$work/swappy-custom.png")
+check "custom frame can disable the frame" "20x10" "$custom_size"
+
 if "$AETHER" screenshot -w 1 -r >"$work/window-region.out" 2>&1; then
     echo "FAIL: --window and --region were accepted together" >&2
     exit 1

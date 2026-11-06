@@ -6,6 +6,8 @@
 
 namespace aether::shell::config {
 
+using Qt::StringLiterals::operator""_s;
+
 // One boolean per feature that costs something when it is on: an extra window, a video
 // decoder, a poll loop. Everything else is always available and has no flag.
 //
@@ -48,11 +50,29 @@ class AetherVariants : public settings::ObjectNode {
     CONFIG_GLOBAL_ENUM_PROPERTY(AetherVariant, dock, AetherVariant::Midnight)
 };
 
+// Window screenshots are presented with a frame. Follow the compositor by default; the
+// values below only apply when followWm is false.
+class AetherWindowFrame : public settings::ObjectNode {
+    CONFIG_NODE(AetherWindowFrame, settings::ObjectNode)
+
+    CONFIG_GLOBAL_PROPERTY(bool, followWm, true)
+    CONFIG_GLOBAL_PROPERTY(int, rounding, 12)
+    CONFIG_GLOBAL_PROPERTY(int, borderSize, 1)
+    CONFIG_GLOBAL_PROPERTY(QString, borderColor, u"rgba(0, 0, 0, 0.22)"_s)
+    CONFIG_GLOBAL_PROPERTY(bool, shadowEnabled, true)
+    CONFIG_GLOBAL_PROPERTY(int, shadowRange, 24)
+    CONFIG_GLOBAL_PROPERTY(int, shadowPower, 4)
+    CONFIG_GLOBAL_PROPERTY(int, shadowOffsetX, 0)
+    CONFIG_GLOBAL_PROPERTY(int, shadowOffsetY, 10)
+    CONFIG_GLOBAL_PROPERTY(QString, shadowColor, u"rgba(0, 0, 0, 0.35)"_s)
+};
+
 class AetherConfig : public settings::ObjectNode {
     CONFIG_NODE(AetherConfig, settings::ObjectNode)
 
     CONFIG_GLOBAL_SUBOBJECT(AetherFeatures, features)
     CONFIG_GLOBAL_SUBOBJECT(AetherVariants, variants)
+    CONFIG_GLOBAL_SUBOBJECT(AetherWindowFrame, windowFrame)
 };
 
 } // namespace aether::shell::config

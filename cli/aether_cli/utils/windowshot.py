@@ -167,6 +167,33 @@ def style_from_hyprland() -> WindowStyle:
     )
 
 
+def _config_int(value, fallback: int) -> int:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return fallback
+
+
+def style_from_config(config: dict | None = None) -> WindowStyle:
+    """Use the Nexus window-frame settings, or follow Hyprland when followWm is on."""
+    if not config or bool(config.get("followWm", True)):
+        return style_from_hyprland()
+
+    return WindowStyle(
+        rounding=max(0, _config_int(config.get("rounding"), 12)),
+        border_size=max(0, _config_int(config.get("borderSize"), 1)),
+        border_color=parse_color(config.get("borderColor"), (0, 0, 0, 55)),
+        shadow_enabled=bool(config.get("shadowEnabled", True)),
+        shadow_range=max(0, _config_int(config.get("shadowRange"), 24)),
+        shadow_power=max(1, min(4, _config_int(config.get("shadowPower"), 4))),
+        shadow_offset=(
+            _config_int(config.get("shadowOffsetX"), 0),
+            _config_int(config.get("shadowOffsetY"), 10),
+        ),
+        shadow_color=parse_color(config.get("shadowColor"), (0, 0, 0, 90)),
+    )
+
+
 def render(raw: bytes, style: WindowStyle | None = None) -> bytes:
     if style is None:
         style = WindowStyle()
