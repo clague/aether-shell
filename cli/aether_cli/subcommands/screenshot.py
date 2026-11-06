@@ -5,7 +5,7 @@ from datetime import datetime
 from aether_cli.utils import hypr
 from aether_cli.utils.notify import notify
 from aether_cli.utils.paths import screenshots_cache_dir, screenshots_dir, shell_root
-from aether_cli.utils.windowshot import render
+from aether_cli.utils.windowshot import render, style_from_hyprland
 
 
 class Command:
@@ -51,7 +51,7 @@ class Command:
         if not stable:
             raise ValueError("no focused window to capture")
 
-        framed = render(self._output(["grim", "-T", str(stable), "-"]))
+        framed = render(self._output(["grim", "-T", str(stable), "-"]), style_from_hyprland())
         if self.args.clipboard:
             subprocess.run(["wl-copy", "--type", "image/png"], input=framed, check=False)
         else:

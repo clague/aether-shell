@@ -273,8 +273,12 @@ bind = SUPER, M, global, aether:utilities
   wallpaper, blur, rounding or other windows. `--clipboard` copies the framed result instead
   of opening the editor.
 - Window captures are rendered macOS-style before they reach swappy or the clipboard:
-  transparent padding, rounded corners, a one-pixel border and a soft drop shadow. Region
-  and full-screen captures are not framed.
+  transparent padding, rounded corners, a border and a soft drop shadow. The values follow
+  the running Hyprland config: `decoration:rounding`, `general:border_size`,
+  `general:col.active_border`, `decoration:shadow:range`, `decoration:shadow:render_power`,
+  `decoration:shadow:offset` and `decoration:shadow:color`. Padding follows the shadow extent.
+  When Hyprland cannot be queried (tests, scripts outside the session), built-in defaults are
+  used. Region and full-screen captures are not framed.
 - `aether:screenshotWindow` is an alias for the picker, kept for existing binds.
 - `aether:screenshotClip` and `aether:screenshotFreezeClip` use the same picker but copy
   instead of opening swappy; a window click copies the raw surface and a drag copies the
