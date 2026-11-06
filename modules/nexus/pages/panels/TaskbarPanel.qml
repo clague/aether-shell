@@ -134,7 +134,7 @@ PageBase {
         NavRow {
             // The bar's dock section only exists in MiDnight's dock implementation. OP's
             // independent panel has its own page under Panels > Dock.
-            visible: GlobalConfig.hybrid.variants.dock === HybridVariant.Midnight
+            visible: GlobalConfig.aether.variants.dock === AetherVariant.Midnight
             icon: "dock"
             text: Tr.tr("Bar dock")
             subtext: Tr.tr("Dock section inside the taskbar")

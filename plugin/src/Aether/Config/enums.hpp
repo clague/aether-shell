@@ -62,7 +62,7 @@ ENUM(WallpaperTransition,
 )
 
 // Which fork's implementation to use where both forks ship one (D3/D4).
-ENUM(HybridVariant, Midnight, Op)
+ENUM(AetherVariant, Midnight, Op)
 
 #undef ENUM
 

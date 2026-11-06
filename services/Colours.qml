@@ -98,7 +98,7 @@ Singleton {
     }
 
     function setMode(mode: string): void {
-        Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "scheme", "set", "--notify", "-m", mode]);
+        Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "scheme", "set", "--notify", "-m", mode]);
     }
 
     function reloadHyprRules(): void {

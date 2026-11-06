@@ -1,0 +1,16 @@
+{
+  "aether": {
+    "features": {
+      "overview": false,
+      "videoWallpaper": false,
+      "badApple": false,
+      "hotspot": false,
+      "btAgent": false
+    },
+    "variants": {
+      "audioPopout": "midnight",
+      "overview": "midnight",
+      "dock": "midnight"
+    }
+  }
+}

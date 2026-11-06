@@ -11,7 +11,7 @@ namespace aether::shell::config {
 using Qt::StringLiterals::operator""_s;
 
 // Lets a lambda default containing commas pass through a macro argument in one piece, as
-// hybridconfig.hpp does for the same reason.
+// aetherconfig.hpp does for the same reason.
 namespace detail {
 
 // Defined in userpaths.cpp. `self` is the UserPaths node, so the theme name is read from the

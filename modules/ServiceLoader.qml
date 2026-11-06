@@ -16,7 +16,7 @@ Scope {
         Brightness;
         Weather.reload();
 
-        if (GlobalConfig.hybrid.variants.dock === HybridVariant.Op)
+        if (GlobalConfig.aether.variants.dock === AetherVariant.Op)
             DockPins;
 
         Pomodoro;

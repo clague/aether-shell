@@ -8,7 +8,7 @@
 namespace aether::shell::config {
 
 // OP's dock: a separate auto-hiding panel, as distinct from MiDnight's dock, which is a section
-// inside the bar and configured under `bar.dock`. Both are selected by hybrid.variants.dock, so
+// inside the bar and configured under `bar.dock`. Both are selected by aether.variants.dock, so
 // both config blocks exist and only the selected one is read.
 //
 // Ported from OP's ConfigObject-era class to settings::ObjectNode, which is the config system

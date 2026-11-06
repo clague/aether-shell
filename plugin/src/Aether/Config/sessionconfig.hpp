@@ -19,7 +19,7 @@ using Qt::StringLiterals::operator""_s;
 // settings::Quarantine, which ObjectNode::syncJson fills and ObjectNode::toJson re-applies
 // -- so these classes only have to *observe* them on the way past and expose them to QML.
 // Key order is whatever QJsonObject iteration gives, which is alphabetical; see
-// hybrid/docs/phase2-upstream-catchup.md for why the pre-merge order-preservation was
+// docs/phase2-upstream-catchup.md for why the pre-merge order-preservation was
 // dropped rather than ported.
 class SessionIcons : public settings::ObjectNode {
     CONFIG_NODE(SessionIcons, settings::ObjectNode)

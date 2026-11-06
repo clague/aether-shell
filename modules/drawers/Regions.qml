@@ -55,7 +55,7 @@ Region {
         width: panel.width * (1 - root.panels.workspaceOverview.offsetScale) + root.borderThickness
     }
 
-    // OP's dock, when hybrid.variants.dock selects it. With MiDnight's dock selected the panel
+    // OP's dock, when aether.variants.dock selects it. With MiDnight's dock selected the panel
     // never activates, offsetScale stays 1 and this height collapses to the border thickness,
     // so the region costs nothing rather than needing its own condition.
     R {

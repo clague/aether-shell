@@ -32,7 +32,7 @@ CustomMouseArea {
     // Mirrors Dock.Wrapper's shouldBeActive minus screenState.dock, which is what these
     // interactions set. With MiDnight's dock selected, or the dock disabled, the bottom edge
     // belongs to the launcher alone.
-    readonly property bool dockActive: Config.dock.enabled && GlobalConfig.hybrid.variants.dock === HybridVariant.Op
+    readonly property bool dockActive: Config.dock.enabled && GlobalConfig.aether.variants.dock === AetherVariant.Op
 
     function inBarArea(x: real, y: real): bool {
         if (Config.bar.position === "left")

@@ -11,7 +11,7 @@ PageBase {
 
     // When OP's dock owns the bottom edge it also decides which of the two opens on hover;
     // the launcher's own switch would only be able to break that pairing.
-    readonly property bool dockControlsReveal: Config.dock.enabled && GlobalConfig.hybrid.variants.dock === HybridVariant.Op
+    readonly property bool dockControlsReveal: Config.dock.enabled && GlobalConfig.aether.variants.dock === AetherVariant.Op
 
     title: Tr.tr("Launcher")
     isSubPage: true

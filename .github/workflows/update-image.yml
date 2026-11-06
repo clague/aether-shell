@@ -17,7 +17,7 @@ name: Update Docker CI image
 #                    a code problem and is a missing package.
 #   python-dbus      scripts/bt-agent.py talks to BlueZ over D-Bus.
 #   python-gobject   its GLib main loop. Without either, the smoke matrix fails on exactly
-#                    the three presets with hybrid.features.btAgent on -- the matrix drives
+#                    the three presets with aether.features.btAgent on -- the matrix drives
 #                    `nexus openPage`, which opens the settings window, which is what loads
 #                    the pairing dialog and so starts the agent. A missing package there
 #                    reads as a broken feature.

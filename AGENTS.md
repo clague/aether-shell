@@ -3,7 +3,7 @@
 A single merged Quickshell desktop shell combining **MiDnight Shell** and **OP-Caelestia**
 on top of upstream **Caelestia**. One shell, one config, one CLI — features toggled, not forks juggled.
 
-> Read `hybrid/docs/architecture.md` for the reasoning and `hybrid/docs/traps.md` before touching
+> Read `docs/architecture.md` for the reasoning and `docs/traps.md` before touching
 > anything in `modules/drawers/`, `services/`, `modules/lock/`, or `plugin/src/`.
 
 ## Status
@@ -15,10 +15,10 @@ on top of upstream **Caelestia**. One shell, one config, one CLI — features to
 | 0 | scaffold, docs, tooling, all four static gates brought to zero | done |
 | 1 | offscreen smoke harness + preset matrix | done |
 | 2 | 51 upstream commits merged, incl. the config-module rewrite | done |
-| 3 | `hybrid.features` / `hybrid.variants` schema + Nexus page | done |
-| 4 | OP's dock behind `hybrid.variants.dock` | done, and verified on hardware |
+| 3 | `aether.features` / `aether.variants` schema + Nexus page | done |
+| 4 | OP's dock behind `aether.variants.dock` | done, and verified on hardware |
 | 5 | OP overview, hotspot/BtAgent/Nmcli, GPU detection, themes | done |
-| 6 | single CLI (D6) | done -- in-tree at `hybrid/bin/aether`; the separate repo is no longer used (D6 superseded) |
+| 6 | single CLI (D6) | done -- in-tree at `bin/aether`; the separate repo is no longer used (D6 superseded) |
 | 7 | the real variants | 3 wired: `audioPopout`, `overview`, `dock` |
 | 8 | OP's pattern lock | satisfied by omission -- it is not in the tree (D10) |
 
@@ -26,10 +26,10 @@ Phase 6 was not cosmetic. Every CLI subcommand ran `qs -c caelestia`, which reso
 *by name* -- so on a machine with `midnight-shell-git` installed it drove the packaged shell
 rather than this tree. That is T53, and it is what broke the launcher's Settings action.
 
-The command surface now lives in the checkout (`hybrid/bin/aether`, `hybrid/cli/aether_cli/`)
-and starts the shell with `qs -p <checkout>`. `hybrid/tools/cli-deps.py` fails the gate if an
+The command surface now lives in the checkout (`bin/aether`, `cli/aether_cli/`)
+and starts the shell with `qs -p <checkout>`. `tools/cli-deps.py` fails the gate if an
 argv element or exec line spawns the old `caelestia` binary again. QML calls it by absolute
-path; Hyprland keybinds call `aether` from PATH (`hybrid/tools/install-cli.sh`).
+path; Hyprland keybinds call `aether` from PATH (`tools/install-cli.sh`).
 
 Phase 7's remaining two -- `desktopClock`, `colours` -- have no second implementation to
 select between: OP's side of each is edits to shared files rather than separate files.
@@ -47,20 +47,20 @@ Every gate upstream enforces is green on a tree that arrived with all of them fa
 | `g++ -Werror` (`build.yml`) | 11, never run | 0 |
 | `clazy -Werror` (`build.yml`) | 9+, never run | 0 |
 | smoke matrix | did not run at all | 4 presets, x2 compositor configs |
-| `hybrid/tools/plugin-test.sh` | no test of any kind existed | 4 tests, 0 failures |
-| `hybrid/tools/dead-signals.py` | didn't exist; 1 dead signal | 0 of 209 |
-| `hybrid/tools/dead-qml.py` | didn't exist; 5 dead files | 0 of 367 |
-| `hybrid/tools/shell-safety.py` | didn't exist; 15 injectable sites | 0 of 33 |
-| `hybrid/tools/dead-config.py` | didn't exist; the T28 sweep was prose | 0 of 368, 15 allowlisted |
-| `hybrid/tools/check-index-modes.sh` | didn't exist; 4 tools non-executable | clean |
-| `hybrid/tools/hw-verify.sh` | didn't exist; the dock could not appear at all | 12 ok, 1 skipped |
-| `hybrid/tools/singleton-members.py` | didn't exist; qmllint checks no singleton member at all | 2617 refs, 0 unexplained |
-| `hybrid/tools/hw-audit.sh` | didn't exist; no IPC entry point had ever been driven | 51 ok, 0 skipped |
+| `tools/plugin-test.sh` | no test of any kind existed | 4 tests, 0 failures |
+| `tools/dead-signals.py` | didn't exist; 1 dead signal | 0 of 209 |
+| `tools/dead-qml.py` | didn't exist; 5 dead files | 0 of 367 |
+| `tools/shell-safety.py` | didn't exist; 15 injectable sites | 0 of 33 |
+| `tools/dead-config.py` | didn't exist; the T28 sweep was prose | 0 of 368, 15 allowlisted |
+| `tools/check-index-modes.sh` | didn't exist; 4 tools non-executable | clean |
+| `tools/hw-verify.sh` | didn't exist; the dock could not appear at all | 12 ok, 1 skipped |
+| `tools/singleton-members.py` | didn't exist; qmllint checks no singleton member at all | 2617 refs, 0 unexplained |
+| `tools/hw-audit.sh` | didn't exist; no IPC entry point had ever been driven | 51 ok, 0 skipped |
 
-`./hybrid/tools/verify.sh` runs every row of that table in one go and prints GREEN or RED.
+`./tools/verify.sh` runs every row of that table in one go and prints GREEN or RED.
 CI runs them too (`.github/workflows/smoke.yml` carries the last two, on headless sway).
-`hybrid/tools/qml-section-order.py` is ours — the `section-order` fixer upstream's checker
-lacks. `hybrid/tools/plugin-test.sh` is ours too, and runs the only executable tests in the
+`tools/qml-section-order.py` is ours — the `section-order` fixer upstream's checker
+lacks. `tools/plugin-test.sh` is ours too, and runs the only executable tests in the
 tree: the UKEY2 handshake, the `BeatTracker::beat` forward, the mDNS name decode and the
 QuickShare payload frames.
 
@@ -75,17 +75,17 @@ its place repeatedly: `hw-verify.sh` reported hover passing on a method that cou
 and `Colours.paletteXX.m3outlineYY` is three bogus accesses and zero findings. QML is silent at
 runtime too. See T58.
 
-Read `hybrid/docs/traps.md` T12–T35 before touching the harness; **T18 and T19 in
+Read `docs/traps.md` T12–T35 before touching the harness; **T18 and T19 in
 particular**, because qmllint silently lints against an installed `midnight-shell-git`
 unless `--bare` is passed, and because the two `-Werror` build legs sat red through a phase
 that reported CI green — they were never run locally, and a `clazy` finding is invisible to
 `g++`.
 
-`hybrid/docs/phase2-upstream-catchup.md` records every merge decision and the API mapping from
+`docs/phase2-upstream-catchup.md` records every merge decision and the API mapping from
 the old `ConfigObject` to `settings::ObjectNode`.
 
 The remote is `https://github.com/clague/aether-shell` and `main` is pushed. The shell runs
-on real hardware; `hybrid/tools/hw-verify.sh` drives a live session and is the only gate that
+on real hardware; `tools/hw-verify.sh` drives a live session and is the only gate that
 can see a feature that loads correctly and is then unreachable (T54).
 
 ## Locked decisions
@@ -97,25 +97,26 @@ These were settled by source audit on 2026-09-02. Do not re-litigate without new
 | D1 | **Baseline is `dim-ghub/midnight-shell`**, not OP | MiDnight's delta is 4x OP's (33.5k vs 8.9k lines). Porting OP→MiDnight is weeks; the reverse is months. |
 | D2 | **Nexus is upstream**, not an OP asset | `modules/nexus/` exists in all three. It is not a reason to prefer any baseline. |
 | D3 | **Feature flags, not implementation selectors** | The forks are ~90% disjoint. Only 4 components have two real implementations. |
-| D4 | **`hybrid.variants` is capped at ~6 entries** | If it grows, the design is drifting back toward a registry we deliberately rejected. |
+| D4 | **`aether.variants` is capped at ~6 entries** | If it grows, the design is drifting back toward a registry we deliberately rejected. |
 | D5 | **Services are merged, never dual-implemented** | Both forks *extended* a shared service set. Their diffs are additive and non-overlapping. |
-| D6 | **Superseded 2026-11-06: one in-tree command surface** | The shell no longer spawns `caelestia`. `hybrid/bin/aether` + `hybrid/cli/aether_cli/` carry the subcommands the shell uses, so the separate `caelestia-hybrid-cli` fork has no consumer. Why the fork existed: all three shells install a binary named `caelestia`, so they cannot coexist, and naming a config with `qs -c` could drive the packaged shell instead of this tree (T53). |
+| D6 | **Superseded 2026-11-06: one in-tree command surface** | The shell no longer spawns `caelestia`. `bin/aether` + `cli/aether_cli/` carry the subcommands the shell uses, so the separate `caelestia-hybrid-cli` fork has no consumer. Why the fork existed: all three shells install a binary named `caelestia`, so they cannot coexist, and naming a config with `qs -c` could drive the packaged shell instead of this tree (T53). |
 | D7 | **Upstream catch-up is Phase 2**, before the feature system | Upstream rewrote the config module and rearranged the plugin layout. Build the feature defaults on the system we keep. |
-| D8 | **No presets** (superseded) | Every setting has a static default and one switch on its Nexus page. `hybrid/presets/*.json` are smoke-matrix inputs only. |
+| D8 | **No presets** (superseded) | Every setting has a static default and one switch on its Nexus page. `presets/*.json` are smoke-matrix inputs only. |
 | D9 | **Merge upstream; cherry-pick OP** | Upstream is a true ancestor. OP shares ancestor `ad8dca0a`, so `git cherry-pick -x` works directly. Never rebase onto an upstream. |
-| D10 | **OP's pattern lock does not ship as-is** | It is a lock-screen bypass. See `hybrid/docs/traps.md`. Release blocker. |
-| D11 | **Hyprland settings persist via `hypr-vars.lua`**, with the config contract in `hybrid/hypr/` | The shell writes that one override table (never the dotfiles); `hybrid/hypr/` holds the full config side — `hyprland.lua`, `variables.lua`, every `hyprland/*.lua` module that consumes a Nexus-written key, `utils/` and `scheme/default.lua` — so setting up a machine is copying the tree, and every settings page has its consumer in the repo. |
+| D10 | **OP's pattern lock does not ship as-is** | It is a lock-screen bypass. See `docs/traps.md`. Release blocker. |
+| D11 | **Hyprland settings persist via `hypr-vars.lua`**, with the config contract in `hypr/` | The shell writes that one override table (never the dotfiles); `hypr/` holds the full config side — `hyprland.lua`, `variables.lua`, every `hyprland/*.lua` module that consumes a Nexus-written key, `utils/` and `scheme/default.lua` — so setting up a machine is copying the tree, and every settings page has its consumer in the repo. |
 
 ## Hard rules
 
 1. **Never `rm -rf` a config dir or `killall quickshell`.** OP's `install.sh` does both. Never run it here,
-   and never copy its patterns. Development uses `hybrid/tools/dev-shell.sh`, which is isolated.
+   and never copy its patterns. Development uses `tools/dev-shell.sh`, which is isolated.
 2. **Never rebase our branch onto an upstream.** Merge (upstream) or cherry-pick (OP).
 3. **`qmllint` and `clang-format` are zero-tolerance**, as upstream has them. MiDnight disabled its CI;
    we re-enable it in Phase 0 and do not disable it again.
-4. **Every imported file gets a provenance row** in `hybrid/docs/provenance.md` in the same commit.
-5. **Project-owned code lives in `hybrid/`.** Never add project-owned files to `scripts/`, `modules/`,
-   `services/`, or `components/` — those are upstream-shaped paths and will collide on merge.
+4. **Every imported file gets a provenance row** in `docs/provenance.md` in the same commit.
+5. **Project-owned code lives in the root-level dirs `bin/`, `cli/`, `docs/`, `hypr/`, `presets/`,
+   `tools/`.** Never add project-owned files to `scripts/`, `modules/`, `services/`, or `components/`
+   — those are upstream-shaped paths and will collide on merge.
 6. **Prefer an adapter/wrapper over editing an upstream file** — but only up to the point where the
    adapter is smaller than the edit. A 200-line adapter replacing a 20-line edit is the wrong trade.
 7. **All three upstreams are GPL-3.0.** Preserve license headers, authorship and history. Do not squash
@@ -126,11 +127,14 @@ These were settled by source audit on 2026-09-02. Do not re-litigate without new
 ```
 modules/  components/  services/  plugin/  shell.qml   ← upstream-shaped. Merge target. Edit minimally.
 scripts/  assets/  .github/                            ← upstream-shaped. Same rule.
-hybrid/                                                ← ours. Upstream will never touch it.
-  ├── docs/       architecture, traps, provenance, plugin contract, parked ideas
-  ├── hypr/       reference copy of the Hyprland config the shell depends on
-  ├── presets/    smoke-matrix configs (all-on, all-off, variants-flipped, theme-nebula)
-  └── tools/      build/lint/smoke verification, upstream drift, dead-code audits
+
+bin/  cli/  docs/  hypr/  presets/  tools/             ← ours. Upstream will never touch them.
+  bin/            the `aether` command entry point
+  cli/            in-tree command surface (scheme, wallpaper, record, …)
+  docs/           architecture, traps, provenance, plugin contract, parked ideas, layout
+  hypr/           reference copy of the Hyprland config the shell depends on
+  presets/        smoke-matrix configs (all-on, all-off, variants-flipped, theme-nebula)
+  tools/          build/lint/smoke verification, upstream drift, dead-code audits
 ```
 
 ## Reference checkouts
@@ -178,16 +182,16 @@ Agents and skills read these. Never edit them; they are throwaway checkouts.
 
 The Overview row was `no — only OP` until 2026-09-04. That was wrong: MiDnight ships
 `modules/drawers/WorkspaceOverview.qml`, it is 447 lines, it is in this tree as part of the D1
-baseline, and `hybrid.features.overview` already gates it from `modules/Shortcuts.qml`. Both
+baseline, and `aether.features.overview` already gates it from `modules/Shortcuts.qml`. Both
 forks implement a workspace overview; they are different designs of the same component, which
 is the definition this table uses for a dual site.
 
 So there are **five** dual sites, not four, and OP's `modules/overview/` must not be imported
 as a second boolean-gated implementation — that is precisely what D3 and D5 exist to prevent.
 It is either left alone (MiDnight's works and is the baseline) or `overview` is promoted to
-`hybrid.variants` in Phase 7. That was done, and the list then went the other way.
+`aether.variants` in Phase 7. That was done, and the list then went the other way.
 
-**`hybrid.variants` holds three entries: `audioPopout`, `overview`, `dock`.** All three are
+**`aether.variants` holds three entries: `audioPopout`, `overview`, `dock`.** All three are
 wired. `desktopClock` and `colours` were declared and were removed on 2026-09-05, because
 neither is a dual site and the evidence is mechanical: OP never touched
 `modules/background/DesktopClock.qml` (its copy is identical to upstream's 161 lines), and its
@@ -196,15 +200,15 @@ dual-implements. `lockCentre` is a genuine dual site that Phase 8 blocks: OP's
 `PasswordInput.qml` refers to `PatternGrid` eight times, so its lock centre cannot be imported
 without the lock-screen bypass D10 rejects. Its key is not declared until then.
 
-The lesson is worth keeping: a `hybrid.variants` entry needs *two implementations that exist as
+The lesson is worth keeping: a `aether.variants` entry needs *two implementations that exist as
 files*, not two forks that both have opinions about an area. Four of the original six failed
 that test on inspection, and two of them only failed once someone diffed the actual files.
 
 ## Verification
 
-`hybrid/tools/smoke-matrix.sh` is the gate. It boots the shell headless
+`tools/smoke-matrix.sh` is the gate. It boots the shell headless
 (`QT_QPA_PLATFORM=offscreen qs -p .`) under every smoke config and fails on QML errors.
-Run `./hybrid/tools/verify.sh` before calling any change done; it wraps the smoke matrix,
+Run `./tools/verify.sh` before calling any change done; it wraps the smoke matrix,
 `qmllint`, `clang-format` and the rest of the CI gates.
 
 **This project only builds and runs on Linux** (Quickshell + Qt6 + Wayland/Hyprland).

@@ -9061,8 +9061,8 @@ msgid "Not set: %1"
 msgstr "未设置：%1"
 
 #: modules/nexus/common/DoctorText.qml
-msgid "Install it with ./hybrid/tools/install-qt-theme.sh, then log out and back in"
-msgstr "运行 ./hybrid/tools/install-qt-theme.sh 安装，然后重新登录"
+msgid "Install it with ./tools/install-qt-theme.sh, then log out and back in"
+msgstr "运行 ./tools/install-qt-theme.sh 安装，然后重新登录"
 
 #: modules/nexus/common/DoctorText.qml
 msgid "Set QT_QPA_PLATFORMTHEME=aether in ~/.config/caelestia/hypr-user.lua"

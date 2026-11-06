@@ -13,7 +13,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    // Ordered to match config::HybridVariant (Midnight, Op)
+    // Ordered to match config::AetherVariant (Midnight, Op)
     readonly property list<MenuItem> variantItems: [
         MenuItem {
             text: Tr.tr("MiDnight implementation")
@@ -57,10 +57,10 @@ PageBase {
             last: true
             text: Tr.tr("Enabled")
             subtext: Tr.tr("Workspace overview with window thumbnails")
-            configNode: GlobalConfig.hybrid.features
+            configNode: GlobalConfig.aether.features
             propertyName: "overview"
-            checked: GlobalConfig.hybrid.features.overview
-            onToggled: GlobalConfig.hybrid.features.overview = checked
+            checked: GlobalConfig.aether.features.overview
+            onToggled: GlobalConfig.aether.features.overview = checked
         }
 
         // View options
@@ -87,12 +87,12 @@ PageBase {
             last: true
             label: Tr.tr("Taskview implementation")
             subtext: Tr.tr("A drawer of workspace thumbnails, or a carousel with a window grid")
-            configNode: GlobalConfig.hybrid.variants
+            configNode: GlobalConfig.aether.variants
             propertyName: "overview"
             menuItems: root.variantItems
-            active: root.variantItems[GlobalConfig.hybrid.variants.overview === HybridVariant.Op ? 1 : 0]
+            active: root.variantItems[GlobalConfig.aether.variants.overview === AetherVariant.Op ? 1 : 0]
             onSelected: item => {
-                GlobalConfig.hybrid.variants.overview = root.variantItems.indexOf(item) === 1 ? HybridVariant.Op : HybridVariant.Midnight;
+                GlobalConfig.aether.variants.overview = root.variantItems.indexOf(item) === 1 ? AetherVariant.Op : AetherVariant.Midnight;
             }
         }
 

@@ -40,7 +40,7 @@ Searcher {
         id: getSchemes
 
         running: true
-        command: [Quickshell.shellPath("hybrid/bin/aether"), "scheme", "list"]
+        command: [Quickshell.shellPath("bin/aether"), "scheme", "list"]
         stdout: StdioCollector {
             onStreamFinished: {
                 const schemeData = JSON.parse(text);
@@ -64,7 +64,7 @@ Searcher {
         id: getCurrent
 
         running: true
-        command: [Quickshell.shellPath("hybrid/bin/aether"), "scheme", "get", "-nfv"]
+        command: [Quickshell.shellPath("bin/aether"), "scheme", "get", "-nfv"]
         stdout: StdioCollector {
             onStreamFinished: {
                 const [name, flavour, variant] = text.trim().split("\n");
@@ -82,7 +82,7 @@ Searcher {
 
         function onClicked(list: AppList): void {
             list.screenState.launcher = false;
-            Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "scheme", "set", "-n", name, "-f", flavour]);
+            Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "scheme", "set", "-n", name, "-f", flavour]);
         }
     }
 }

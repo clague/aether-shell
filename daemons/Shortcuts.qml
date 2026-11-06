@@ -22,7 +22,7 @@ Scope {
     }
 
     // The mouse's back/forward buttons only reach Qt for some device codes; the compositor
-    // routes the rest here (see hybrid/hypr/hyprland/keybinds.lua).
+    // routes the rest here (see hypr/hyprland/keybinds.lua).
     // qmllint disable unresolved-type
     CustomShortcut {
         // qmllint enable unresolved-type
@@ -262,15 +262,15 @@ Scope {
         name: "workspaceOverview"
         description: "Toggle workspace overview"
         onPressed: {
-            if (root.hasFullscreen || !GlobalConfig.hybrid.features.overview)
+            if (root.hasFullscreen || !GlobalConfig.aether.features.overview)
                 return;
             const screenState = ShellState.forActive();
             if (!screenState)
                 return;
-            // The two implementations of hybrid.variants.overview keep their own visibility:
+            // The two implementations of aether.variants.overview keep their own visibility:
             // MiDnight's is a panel in modules/drawers driven by workspaceDrawer, OP's is a
             // separate Scope with its own per-screen flag. One shortcut, whichever is selected.
-            if (GlobalConfig.hybrid.variants.overview === HybridVariant.Op)
+            if (GlobalConfig.aether.variants.overview === AetherVariant.Op)
                 screenState.overview = !screenState.overview;
             else
                 screenState.workspaceDrawer = !screenState.workspaceDrawer;
@@ -291,7 +291,7 @@ Scope {
             }
             if (root.hasFullscreen && ["launcher", "session", "dashboard"].includes(drawer))
                 return;
-            if (drawer === "workspaceDrawer" && !GlobalConfig.hybrid.features.overview)
+            if (drawer === "workspaceDrawer" && !GlobalConfig.aether.features.overview)
                 return;
             screenState[drawer] = !screenState[drawer];
         }

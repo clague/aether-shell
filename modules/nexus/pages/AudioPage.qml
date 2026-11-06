@@ -14,7 +14,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    // Ordered to match config::HybridVariant (Midnight, Op)
+    // Ordered to match config::AetherVariant (Midnight, Op)
     readonly property list<MenuItem> variantItems: [
         MenuItem {
             text: Tr.tr("MiDnight implementation")
@@ -574,12 +574,12 @@ PageBase {
             last: true
             label: Tr.tr("Audio popout")
             subtext: Tr.tr("Which fork's audio panel the bar opens")
-            configNode: GlobalConfig.hybrid.variants
+            configNode: GlobalConfig.aether.variants
             propertyName: "audioPopout"
             menuItems: root.variantItems
-            active: root.variantItems[GlobalConfig.hybrid.variants.audioPopout === HybridVariant.Op ? 1 : 0]
+            active: root.variantItems[GlobalConfig.aether.variants.audioPopout === AetherVariant.Op ? 1 : 0]
             onSelected: item => {
-                GlobalConfig.hybrid.variants.audioPopout = root.variantItems.indexOf(item) === 1 ? HybridVariant.Op : HybridVariant.Midnight;
+                GlobalConfig.aether.variants.audioPopout = root.variantItems.indexOf(item) === 1 ? AetherVariant.Op : AetherVariant.Midnight;
             }
         }
     }

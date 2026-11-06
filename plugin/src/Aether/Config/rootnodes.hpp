@@ -4,6 +4,7 @@
 
 #include "settings/rootnode.hpp"
 #include "settings/singleton.hpp"
+#include "aetherconfig.hpp"
 #include "aiconfig.hpp"
 #include "appearanceconfig.hpp"
 #include "audioconfig.hpp"
@@ -15,7 +16,6 @@
 #include "dockconfig.hpp"
 #include "font.hpp"
 #include "generalconfig.hpp"
-#include "hybridconfig.hpp"
 #include "launcherconfig.hpp"
 #include "lockconfig.hpp"
 #include "nexusconfig.hpp"
@@ -59,8 +59,8 @@ class ConfigRoot : public settings::RootNode {
     CONFIG_SUBOBJECT(AiConfig, ai)
     CONFIG_SUBOBJECT(QtConfig, qt)
 
-    // The hybrid feature system (D3). Global: flags do not vary per monitor.
-    CONFIG_GLOBAL_SUBOBJECT(HybridConfig, hybrid)
+    // The Aether feature system (D3). Global: flags do not vary per monitor.
+    CONFIG_GLOBAL_SUBOBJECT(AetherConfig, aether)
 
     // MiDnight-only sections are listed above (ai / audio / shimeji).
 
@@ -99,11 +99,14 @@ enum class ConfigKind : quint8 {
     Tokens,
 };
 
+void migrate(ConfigKind kind, const QString& path);
 void loaded(ConfigKind kind, settings::RootNode* layer, const QString& screen);
 void loadFailed(ConfigKind kind, const QString& error, const QString& screen);
 void saveFailed(ConfigKind kind, const QString& error, const QString& screen);
 
 template <ConfigKind Kind> struct Handler {
+    static void migrate(const QString& path) { detail::migrate(Kind, path); }
+
     static void loaded(settings::RootNode* layer, const QString& screen);
     static void loadFailed(const QString& error, const QString& screen);
     static void saveFailed(const QString& error, const QString& screen);

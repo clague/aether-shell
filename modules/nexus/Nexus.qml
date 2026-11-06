@@ -403,7 +403,7 @@ Item {
     Loader {
         anchors.fill: parent
         z: 100
-        active: GlobalConfig.hybrid.features.btAgent
+        active: GlobalConfig.aether.features.btAgent
 
         sourceComponent: BluetoothPairingDialog {}
     }

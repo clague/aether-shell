@@ -209,25 +209,25 @@ if("shell" IN_LIST ENABLE_MODULES)
         install(DIRECTORY ${dir} DESTINATION "${INSTALL_QSCONFDIR}")
     endforeach()
 
-    # Only the command surface is needed at runtime; hybrid/tools and hybrid/docs are for
+    # Only the command surface is needed at runtime; tools and docs are for
     # the checkout.
-    install(DIRECTORY hybrid/bin hybrid/cli DESTINATION "${INSTALL_QSCONFDIR}/hybrid"
+    install(DIRECTORY bin cli DESTINATION "${INSTALL_QSCONFDIR}"
         PATTERN "__pycache__" EXCLUDE PATTERN "*.pyc" EXCLUDE)
 
     # install(DIRECTORY) does not carry the executable bit. The QML callers run this file
     # directly, so it has to stay executable.
-    install(PROGRAMS hybrid/bin/aether DESTINATION "${INSTALL_QSCONFDIR}/hybrid/bin")
+    install(PROGRAMS bin/aether DESTINATION "${INSTALL_QSCONFDIR}/bin")
 
     # execs.lua and the keybinds call `aether` by name. Install a wrapper, not a copy: the
     # script finds its package relative to its own file.
     get_filename_component(AETHER_QSCONFDIR_ABS "${INSTALL_QSCONFDIR}" ABSOLUTE BASE_DIR "${CMAKE_INSTALL_PREFIX}")
     file(WRITE "${CMAKE_BINARY_DIR}/aether-wrapper"
-        "#!/bin/sh\nexec python3 \"${AETHER_QSCONFDIR_ABS}/hybrid/bin/aether\" \"$@\"\n")
+        "#!/bin/sh\nexec python3 \"${AETHER_QSCONFDIR_ABS}/bin/aether\" \"$@\"\n")
     install(PROGRAMS "${CMAKE_BINARY_DIR}/aether-wrapper" DESTINATION "${CMAKE_INSTALL_BINDIR}" RENAME aether)
 
     # An installed tree has no .git, so `aether --version` reads this instead of describing.
     file(WRITE "${CMAKE_BINARY_DIR}/aether-version" "${VERSION}\n")
-    install(FILES "${CMAKE_BINARY_DIR}/aether-version" DESTINATION "${INSTALL_QSCONFDIR}/hybrid" RENAME version)
+    install(FILES "${CMAKE_BINARY_DIR}/aether-version" DESTINATION "${INSTALL_QSCONFDIR}" RENAME version)
 
     # Runtime helpers (bt-agent, app-fonts, doctor, display-draft, wifi-connect,
     # startup-shell) are resolved through Quickshell.shellPath("scripts/..."), so an

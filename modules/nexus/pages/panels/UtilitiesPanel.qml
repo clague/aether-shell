@@ -217,10 +217,10 @@ PageBase {
             last: true
             text: Tr.tr("Bad Apple overlay")
             subtext: Tr.tr("Enable the fullscreen animation (one transparent layer per screen)")
-            configNode: GlobalConfig.hybrid.features
+            configNode: GlobalConfig.aether.features
             propertyName: "badApple"
-            checked: GlobalConfig.hybrid.features.badApple
-            onToggled: GlobalConfig.hybrid.features.badApple = checked
+            checked: GlobalConfig.aether.features.badApple
+            onToggled: GlobalConfig.aether.features.badApple = checked
         }
     }
 }

@@ -400,7 +400,7 @@ Item {
                 anchors.fill: parent
                 asynchronous: true
 
-                active: GlobalConfig.hybrid.features.videoWallpaper && img.isVideo && img.verifiedPath !== "" && img.renderActive
+                active: GlobalConfig.aether.features.videoWallpaper && img.isVideo && img.verifiedPath !== "" && img.renderActive
                 source: "VideoWallpaper.qml"
 
                 onLoaded: {

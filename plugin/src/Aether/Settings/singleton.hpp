@@ -31,7 +31,8 @@
 // screen is empty for the global layer.
 #define SETTINGS_SINGLETON_IMPL(Type, Root, dir, monitorDir, file, Handler)                                            \
     Type* Type::instance() {                                                                                           \
-        static Type instance;                                                                                          \
+        /* The rename from the old top-level key has to happen before the root reads the file. */                      \
+        static Type instance = (Handler::migrate(dir + u'/' + file), Type{});                                          \
         return &instance;                                                                                              \
     }                                                                                                                  \
                                                                                                                        \

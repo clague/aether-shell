@@ -18,7 +18,7 @@ Searcher {
 
     function previewVariant(variant: string): void {
         // Preview, not set: `scheme preview` computes the colours without saving scheme.json.
-        getPreviewColoursProc.command = [Quickshell.shellPath("hybrid/bin/aether"), "scheme", "preview", "-v", variant];
+        getPreviewColoursProc.command = [Quickshell.shellPath("bin/aether"), "scheme", "preview", "-v", variant];
         getPreviewColoursProc.running = true;
     }
 
@@ -100,7 +100,7 @@ Searcher {
 
         function onClicked(list: AppList): void {
             list.screenState.launcher = false;
-            Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "scheme", "set", "-v", variant]);
+            Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "scheme", "set", "-v", variant]);
         }
     }
 }

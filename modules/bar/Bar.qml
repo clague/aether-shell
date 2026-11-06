@@ -307,10 +307,10 @@ Item {
             id: repeater
 
             model: ScriptModel {
-                // The dock entry is MiDnight's side of hybrid.variants.dock: a section inside
+                // The dock entry is MiDnight's side of aether.variants.dock: a section inside
                 // the bar. OP's is a separate auto-hiding panel, so with that variant selected
                 // this entry must not appear or the machine shows two docks.
-                values: section.values.filter(e => e.enabled && (e.id !== "dock" || GlobalConfig.hybrid.variants.dock === HybridVariant.Midnight))
+                values: section.values.filter(e => e.enabled && (e.id !== "dock" || GlobalConfig.aether.variants.dock === AetherVariant.Midnight))
             }
 
             delegate: EntryChooser {}

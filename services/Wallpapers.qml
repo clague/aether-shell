@@ -162,7 +162,7 @@ Searcher {
     }
 
     function setRandom(): void {
-        Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "wallpaper", "-r", ...smartArg]);
+        Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "wallpaper", "-r", ...smartArg]);
     }
 
     function setWallpaper(path: string): void {
@@ -203,7 +203,7 @@ Searcher {
 
         stopPreview();
 
-        Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "wallpaper", "-f", targetPath, ...smartArg]);
+        Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "wallpaper", "-f", targetPath, ...smartArg]);
     }
 
     function preview(path: string): void {
@@ -240,7 +240,7 @@ Searcher {
             actualCurrent = rollbackPath;
             isTrackingRollback = false;
 
-            Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "wallpaper", "-f", rollbackPath, ...smartArg]);
+            Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "wallpaper", "-f", rollbackPath, ...smartArg]);
         }
 
         if (previewColourLock) {
@@ -300,7 +300,7 @@ Searcher {
                     }
                 }
             } else {
-                Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "wallpaper", "-f", target, ...smartArg]);
+                Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "wallpaper", "-f", target, ...smartArg]);
             }
         }
     }
@@ -386,7 +386,7 @@ Searcher {
             let wall = text().trim();
             if (!wall) {
                 wall = root.fallback;
-                Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "wallpaper", "-f", root.fallback, ...root.smartArg]);
+                Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "wallpaper", "-f", root.fallback, ...root.smartArg]);
             }
             root.actualCurrent = wall;
             root.previewColourLock = false;
@@ -405,7 +405,7 @@ Searcher {
         onLoadFailed: {
             root.actualCurrent = root.fallback;
             root.previewColourLock = false;
-            Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "wallpaper", "-f", root.fallback, ...root.smartArg]);
+            Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "wallpaper", "-f", root.fallback, ...root.smartArg]);
         }
     }
 
@@ -493,7 +493,7 @@ Searcher {
             running = true;
         }
 
-        command: [Quickshell.shellPath("hybrid/bin/aether"), "wallpaper", "-p", currentProcessingPath, ...root.smartArg]
+        command: [Quickshell.shellPath("bin/aether"), "wallpaper", "-p", currentProcessingPath, ...root.smartArg]
 
         stdout: StdioCollector {
             onStreamFinished: {

@@ -40,12 +40,12 @@ capitalised, so `deep-space` shows as "Deep Space".
 
 ## What ships here
 
-Only `nebula`, and it is generated rather than drawn: `hybrid/tools/mascot/make-theme.py`
+Only `nebula`, and it is generated rather than drawn: `tools/mascot/make-theme.py`
 renders it from `sparkle.py`, the same four-pointed sparkle as `assets/logo.svg`, in a violet
 palette. Re-running it reproduces the same files byte for byte.
 
 ```sh
-./hybrid/tools/mascot/make-theme.py nebula
+./tools/mascot/make-theme.py nebula
 ```
 
 This is deliberate. OP-Caelestia ships Deadpool, Gojo and Shinchan packs, which are third-party

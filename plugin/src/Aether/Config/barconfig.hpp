@@ -48,7 +48,7 @@ class BarWorkspaces : public settings::ObjectNode {
     // MiDnight renders workspaces itself (modules/bar/components/workspaces/Workspace.qml),
     // so `useIcon` and a plain-string `capitalisation` stay instead of upstream's
     // BarWorkspaceDisplay / BarWorkspaceCapitalisation enums. Converging on the enums means
-    // taking upstream's Workspace.qml too -- see hybrid/docs/phase2-upstream-catchup.md.
+    // taking upstream's Workspace.qml too -- see docs/phase2-upstream-catchup.md.
     CONFIG_PROPERTY(bool, useIcon, true)
     CONFIG_PROPERTY(QString, label, u" "_s)
     CONFIG_PROPERTY(QString, occupiedLabel, u" 󰮯"_s)

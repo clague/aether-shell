@@ -378,13 +378,13 @@ PageBase {
 
         ToggleRow {
             first: true
-            last: !GlobalConfig.hybrid.features.hotspot
+            last: !GlobalConfig.aether.features.hotspot
             text: Tr.tr("Enable hotspot")
             subtext: Tr.tr("Show the hotspot page and keep its status up to date")
-            configNode: GlobalConfig.hybrid.features
+            configNode: GlobalConfig.aether.features
             propertyName: "hotspot"
-            checked: GlobalConfig.hybrid.features.hotspot
-            onToggled: GlobalConfig.hybrid.features.hotspot = checked
+            checked: GlobalConfig.aether.features.hotspot
+            onToggled: GlobalConfig.aether.features.hotspot = checked
         }
 
         RowButton {
@@ -392,7 +392,7 @@ PageBase {
             icon: "wifi_tethering"
             text: Tr.tr("Hotspot")
             trailingIcon: "chevron_right"
-            visible: GlobalConfig.hybrid.features.hotspot
+            visible: GlobalConfig.aether.features.hotspot
             onClicked: root.nState.openSubPage(7) // Hotspot sub-page
         }
     }

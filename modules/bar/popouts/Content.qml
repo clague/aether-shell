@@ -129,7 +129,7 @@ Item {
             }
         }
 
-        // The first hybrid.variants site to have two implementations (D3/D4). Both forks wrote
+        // The first aether.variants site to have two implementations (D3/D4). Both forks wrote
         // an audio popout; ours is upstream's file at its canonical path, OP's is the same file
         // renamed, because they cannot both occupy modules/bar/popouts/AudioPopout.qml and the
         // one matching upstream is the one that should stay there.
@@ -138,7 +138,7 @@ Item {
         // is never instantiated.
         Popout {
             name: "audio"
-            sourceComponent: GlobalConfig.hybrid.variants.audioPopout === HybridVariant.Op ? audioPopoutOp : audioPopoutMidnight
+            sourceComponent: GlobalConfig.aether.variants.audioPopout === AetherVariant.Op ? audioPopoutOp : audioPopoutMidnight
         }
 
         Popout {

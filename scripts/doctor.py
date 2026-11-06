@@ -383,7 +383,7 @@ def c_qt_theme():
             "warn",
             "QT_QPA_PLATFORMTHEME is aether but the plugin is missing",
             detail_key="QT_QPA_PLATFORMTHEME is aether but the plugin is missing",
-            hint="Install it with ./hybrid/tools/install-qt-theme.sh, then log out and back in",
+            hint="Install it with ./tools/install-qt-theme.sh, then log out and back in",
         )
     if not theme:
         return check(

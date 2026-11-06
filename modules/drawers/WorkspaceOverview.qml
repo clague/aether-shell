@@ -46,7 +46,7 @@ Item {
     // has no reason to be built.
     Loader {
         anchors.fill: parent
-        active: GlobalConfig.hybrid.variants.overview === HybridVariant.Midnight
+        active: GlobalConfig.aether.variants.overview === AetherVariant.Midnight
 
         sourceComponent: Component {
             Item {

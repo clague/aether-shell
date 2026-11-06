@@ -1,0 +1,75 @@
+#!/usr/bin/env python3
+"""Aether control entry point.
+
+Lives in the checkout and is called by path from QML, so the shell never has to guess which
+`caelestia` binary is installed. Hyprland keybinds call it as `aether` (see
+tools/install-cli.sh).
+
+shortcut: this is a Python entry point, not a compiled one, so start-up costs ~40 ms and the
+system Python must have materialyoucolor and Pillow. Upgrade to a small C++/QML command surface
+only if the scheme fan-out ever stops dominating that cost.
+"""
+
+import subprocess
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "cli"))
+
+from aether_cli.utils.io import fatal  # noqa: E402
+from aether_cli.utils.paths import shell_root  # noqa: E402
+
+
+def version() -> str:
+    try:
+        describe = subprocess.run(
+            ["git", "-C", str(shell_root), "describe", "--tags", "--always", "--dirty"],
+            capture_output=True,
+            text=True,
+            check=False,
+        ).stdout.strip()
+    except OSError:
+        describe = ""
+
+    if describe:
+        return describe
+
+    # An installed tree has no .git; CMake writes the version next to the package.
+    try:
+        return (shell_root / "version").read_text().strip() or "unknown"
+    except OSError:
+        return "unknown"
+
+
+def main() -> None:
+    # Keybind path: do not import the parser and every subcommand just to forward a call.
+    if len(sys.argv) > 1 and sys.argv[1] == "ipc":
+        if any(arg in ("-h", "--help") for arg in sys.argv[2:]):
+            print("usage: aether ipc TARGET FUNCTION [ARGS...]")
+            return
+        subprocess.run(["qs", "-p", str(shell_root), "ipc", "call", *sys.argv[2:]])
+        return
+
+    from aether_cli.parser import parse_args
+
+    _, args = parse_args()
+
+    if getattr(args, "version", False):
+        print(f"aether {version()}")
+        return
+
+    if getattr(args, "cls", None) is None:
+        # ipc: keystrokes should reach the running shell without knowing how it was started.
+        subprocess.run(["qs", "-p", str(shell_root), "ipc", "call", args.target, args.function, *args.args])
+        return
+
+    command = args.cls(args)
+    try:
+        command.run()
+    except (ValueError, OSError) as e:
+        # Bad user input and missing helper binaries are one-line errors, not tracebacks.
+        fatal(str(e))
+
+
+if __name__ == "__main__":
+    main()

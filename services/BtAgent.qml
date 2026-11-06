@@ -141,7 +141,7 @@ Singleton {
         // the flag is on, so with the feature off it should never exist -- but a stray
         // reference here does not merely poll something, it spawns a Python process that
         // registers a system-wide BlueZ pairing agent. That is worth a second gate.
-        running: GlobalConfig.hybrid.features.btAgent
+        running: GlobalConfig.aether.features.btAgent
 
         stdout: SplitParser {
             onRead: data => console.log("[bt-agent/out]", data)
@@ -198,7 +198,7 @@ Singleton {
         // Re-check the flag rather than assigning `true`. This assignment breaks the binding
         // above -- that is unavoidable in an imperative restart -- so it has to carry the
         // gate itself, or a crash would resurrect the agent with the feature switched off.
-        onTriggered: agentProc.running = !root.gaveUp && GlobalConfig.hybrid.features.btAgent
+        onTriggered: agentProc.running = !root.gaveUp && GlobalConfig.aether.features.btAgent
     }
 
     // Delay socket connection until agent has time to create the socket

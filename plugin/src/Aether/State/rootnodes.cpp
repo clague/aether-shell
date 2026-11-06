@@ -11,6 +11,8 @@ QString nameFor(const QString& key) {
 }
 
 struct Handler {
+    static void migrate(const QString& path) { Q_UNUSED(path); }
+
     static void loaded(settings::RootNode* layer, const QString& screen) {
         qCDebug(lcState) << "Loaded state for" << nameFor(screen) << "with" << layer->diagnostics().count() << "issues";
     }

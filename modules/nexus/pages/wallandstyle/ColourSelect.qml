@@ -69,7 +69,7 @@ PageBase {
 
                 text: `${modelData.name} ${modelData.flavour}`
                 onClicked: {
-                    Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "scheme", "set", "-n", modelData.name, "-f", modelData.flavour]);
+                    Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "scheme", "set", "-n", modelData.name, "-f", modelData.flavour]);
                 }
             }
         }
@@ -84,7 +84,7 @@ PageBase {
 
                 text: modelData.label
                 onClicked: {
-                    Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "scheme", "set", "-v", modelData.name]);
+                    Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "scheme", "set", "-v", modelData.name]);
                 }
             }
         }

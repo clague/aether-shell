@@ -315,8 +315,8 @@ PageBase {
 
             text: Tr.tr("Video wallpapers")
             subtext: Tr.tr("Animated wallpapers, paused when nothing can see them")
-            checked: GlobalConfig.hybrid.features.videoWallpaper
-            onToggled: GlobalConfig.hybrid.features.videoWallpaper = checked
+            checked: GlobalConfig.aether.features.videoWallpaper
+            onToggled: GlobalConfig.aether.features.videoWallpaper = checked
         }
 
         ToggleRow {

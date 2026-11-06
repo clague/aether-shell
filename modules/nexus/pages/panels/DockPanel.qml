@@ -13,7 +13,7 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    // Ordered to match config::HybridVariant (Midnight, Op)
+    // Ordered to match config::AetherVariant (Midnight, Op)
     readonly property list<MenuItem> variantItems: [
         MenuItem {
             text: Tr.tr("MiDnight implementation")
@@ -97,12 +97,12 @@ PageBase {
             last: true
             label: Tr.tr("Dock implementation")
             subtext: Tr.tr("A dock section inside the bar, or a separate auto-hiding panel")
-            configNode: GlobalConfig.hybrid.variants
+            configNode: GlobalConfig.aether.variants
             propertyName: "dock"
             menuItems: root.variantItems
-            active: root.variantItems[GlobalConfig.hybrid.variants.dock === HybridVariant.Op ? 1 : 0]
+            active: root.variantItems[GlobalConfig.aether.variants.dock === AetherVariant.Op ? 1 : 0]
             onSelected: item => {
-                GlobalConfig.hybrid.variants.dock = root.variantItems.indexOf(item) === 1 ? HybridVariant.Op : HybridVariant.Midnight;
+                GlobalConfig.aether.variants.dock = root.variantItems.indexOf(item) === 1 ? AetherVariant.Op : AetherVariant.Midnight;
             }
         }
 

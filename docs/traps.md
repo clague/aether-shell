@@ -1,0 +1,3171 @@
+# Known traps
+
+Each entry was verified against source on 2026-09-02. Paths are upstream-relative.
+When one of these bites you, extend the entry rather than burying the lesson in a commit message.
+
+---
+
+## T1 — `modules/drawers/Panels.qml` is a coupling graph, not a panel list
+
+**Symptom:** you wrap a panel in a `Loader` and unrelated things break.
+
+Panels reference each other by `id` through anchors and required properties:
+
+```qml
+osdWrapper.anchors.rightMargin: sessionWrapper.anchors.rightMargin
+                                + session.width * (1 - session.offsetScale)
+toasts.anchors.bottom:          sidebar.visible ? parent.bottom : utilities.top
+sidebar.anchors.top:            notifications.bottom
+Notifications.Wrapper { sidebarPanel: sidebar; osdPanel: osdWrapper;
+                        sessionPanel: sessionWrapper; utilitiesPanel: utilities }
+```
+
+It also exposes ~11 `readonly property alias` members, and `panels.<x>` is referenced
+**~107 times across 6 files** (`ContentWindow.qml`, `Interactions.qml`, `Regions.qml`,
+`launcher/WallpaperList.qml`, `launcher/Wrapper.qml`, `nexus/PageCompRegistry.qml`).
+
+**Why a Loader hurts here**
+
+- `readonly property alias osd: osd` **cannot alias into a Loader**. Aliases need a compile-time
+  target; `loader.item` is `null` until loaded. Converting to `property Item` means auditing every
+  one of those call sites for null-safety.
+- `Regions.qml` derives the Wayland input region from panel geometry. A null panel during load is a
+  frame of wrong click-through.
+
+**Rule:** Loader-host only weakly-referenced, self-contained modules. OP's `modules/dock/` has its
+own `Wrapper`/window and is a good candidate. Inside the Panels graph, merge implementations and
+switch behaviour with config properties instead.
+
+---
+
+## T2 — The bar has a 10-member implicit contract
+
+`modules/drawers/Interactions.qml` (313 lines) is a global hover/drag/hit-test state machine that
+reaches into bar internals:
+
+```
+bar.checkPopout    bar.clampedWidth   bar.closeTray         bar.dragThreshold  bar.handleWheel
+bar.implicitWidth  bar.isHovered      bar.minHoverThreshold bar.popouts        bar.showOnHover
+```
+
+Both forks modified `Interactions.qml` differently (OP +61/-7, MiDnight +94/-32), so each extended
+this contract in its own direction.
+
+**Rule:** the bar is not swappable — there is one bar. Bar *components* (Dock, Spotify, Github,
+status icons) are the unit of choice, and they map almost 1:1 onto upstream's planned plugin entry
+points (`BarEntry`, `BarPopout`, `StatusIcon`). Keep them shaped that way so they can migrate later.
+
+---
+
+## T3 — OP's pattern lock is a lock-screen bypass — RELEASE BLOCKER
+
+`modules/lock/center/PasswordInput.qml`:
+
+```qml
+readonly property string patternCode: GlobalConfig.lock.pattern ?? "74159"
+readonly property bool patternAvailable: true          // hardcoded, ignores enablePattern
+
+onPatternFinished: code => {
+    if (code === root.patternCode) {
+        root.lock.lock.unlock();                        // direct unlock, PAM never consulted
+        return;
+    }
+    triggerError();
+    root.lock.pam.rejectPattern();
+}
+```
+
+`plugin/src/Aether/Config/lockconfig.hpp`:
+
+```cpp
+CONFIG_GLOBAL_PROPERTY(bool, enablePattern, true)
+CONFIG_GLOBAL_PROPERTY(QString, pattern, u"74159"_s)
+```
+
+Four separate defects:
+
+1. The unlock secret is stored **plaintext** in `~/.config/caelestia/shell.json`, readable by any
+   process running as that user.
+2. The success path **bypasses PAM entirely** — no attempt counting, no lockout, no `faillock`, no
+   audit trail.
+3. `patternAvailable` is hardcoded `true`, so the grid toggle is reachable even when `enablePattern`
+   is false.
+4. The default `"74159"` is a published constant. Any unconfigured OP install unlocks with it.
+
+**Minimum bar before this ships:** salted hash (argon2id), honour `enablePattern`, no default value,
+attempt limiting with password fallback, and require a password on first unlock after boot/suspend.
+Preferred design: pattern is a convenience gate *in front of* PAM, never a replacement for it.
+
+Dropping the feature is a legitimate alternative and costs nothing else in the project.
+
+---
+
+## T4 — `configDir()` is hardcoded; directory naming does not isolate a dev instance
+
+`plugin/src/Aether/Config/common.cpp`:
+
+```cpp
+QString configDir() {
+    return QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation) + u"/caelestia"_s;
+}
+```
+
+Installing QML to `~/.config/quickshell/caelestia-hybrid` still reads the **same**
+`~/.config/caelestia/shell.json` as the user's working shell. A dev instance will fight their daily
+driver over one file.
+
+- **Workaround in use:** `tools/dev-shell.sh` overrides `XDG_CONFIG_HOME`.
+- **Proper fix (small, upstreamable):** make `configDir()` honour `$AETHER_CONFIG_DIR`.
+
+---
+
+## T5 — Singletons are lazy, but shadowing one does not work
+
+Good news: QML singletons are lazily instantiated. `ServiceLoader.qml` exists precisely to *force* a
+handful to load early (`IdleInhibitor; GameMode; Notifs; Players; Brightness;`). An unreferenced
+service is never constructed, so dead variant code costs nothing at runtime.
+
+Bad news: `qs.services.Colours` and `qs.variants.midnight.services.Colours` are **different types**.
+Anything importing `qs.services` gets the shared one. You cannot shadow a singleton to change
+behaviour for one consumer — the change must go into the single shared service, gated by config.
+
+This is why decision D5 exists: **merge services, do not fork them.**
+
+---
+
+## T6 — `services/Wallpapers.qml` state model *is* the feature
+
+MiDnight rewrote it 125 → 486 lines with new singleton state: `wallpaperMode`, `previewPath`,
+`rollbackPath`, `isTrackingRollback`, `cacheBuster`, `_hashCache`, video detection, categories.
+
+Splitting wallpaper into selectable sub-implementations (renderer / browser / transitions / video /
+auto-pause / wallhaven / palette extraction) would mean seven implementations of one singleton's
+state. **Rejected.** Wallpaper is one implementation with config options.
+
+---
+
+## T7 — Both forks wrote code upstream has since replaced
+
+- `services/NetworkUsage.qml`: both forks added it; upstream landed
+  `feat(services): migrate NetworkUsage from QML to C++ (#1860)` after both fork points.
+  On the Phase 2 merge, **delete both QML copies and take upstream's C++**.
+- MiDnight's per-monitor config (`monitorconfigmanager.cpp`, `ConfigList`, `PerMonitorStatusChip`,
+  `MonitorTargetSelector`) is superseded by upstream's `Settings/layerregistry.hpp` +
+  `ConfigRoot::forScreen()`. **Take upstream's, drop MiDnight's.**
+
+Before re-landing any fork feature, check whether upstream has since implemented it natively.
+
+---
+
+## T8 — `services/Audio.qml` conflicts are cosmetic; keep both sides
+
+- OP adds `getStreamTitle()` / `getStreamIcon()` — per-app audio display.
+- MiDnight adds `playLock()` / `playUnlock()` / `playCameraClick()` … — sound effects via
+  `QtMultimedia`.
+
+Different concerns, both purely additive, hunks textually adjacent (OP `@@ -104,2 +105,93`,
+MiDnight `@@ -107,0 +109,44`). Git reports a conflict; the resolution is **keep both**.
+
+This is the template for most service conflicts in this project. If a service conflict looks like it
+needs a decision, re-read it — usually it does not.
+
+---
+
+## T9 — MiDnight ships with CI disabled
+
+```
+.github/workflows/  build-nix.yml
+                    check-format.yml.disabled
+                    lint.yml.disabled
+                    release.yml.disabled
+                    update-flake-inputs.yml.disabled
+                    update-image.yml.disabled
+```
+
+33.5k lines that are not `qmllint`-clean and not `clang-format`-clean. Re-enabling in Phase 0 will
+surface a backlog — budget for it, and fix rather than re-disable.
+
+**Measured backlog** (`scripts/qml-lint-conventions.py`, same script in all three trees):
+
+| Tree | Violations | Changed lines | Density |
+|---|---|---|---|
+| upstream | **0** | — | clean |
+| OP | 227 | +8892 | 1 per 39 |
+| MiDnight | 1034 | +33543 | 1 per 32 |
+
+Entirely fork-introduced, and of similar density in both — this is not evidence the baseline
+choice was wrong. `--fix` cleared 540 of MiDnight's (all `missing-section-separator`,
+`import-order`, `file-structure`) and is already applied. **494 remain**: 489 `section-order`
+plus 5 `blank-before-close-brace`, which the fixer deliberately leaves alone because they move
+code rather than whitespace.
+
+Two notes for whoever finishes this:
+
+- Running the fixer on Windows rewrites files as CRLF (`Path.write_text` uses `os.linesep`).
+  Normalise afterwards.
+- Only **2 files** overlap between the violation set (88 QML files) and the incoming upstream
+  range (22 QML files) — `services/Colours.qml` and `shell.qml`. So a style pass does *not*
+  meaningfully increase Phase 2 conflict surface; upstream's churn is 159/197 files in C++.
+  Do not defer the cleanup out of merge-conflict fear.
+
+**`qmllint` is a second, larger backlog** (measured 2026-09-02 on CachyOS, Qt 6.11.2, against a
+real build — use `/usr/lib/qt6/bin/qmllint`, see T13):
+
+| Category | Count |
+|---|---|
+| `unqualified` | 573 |
+| `unused-imports` | 125 |
+| `missing-property` | 78 |
+| `unresolved-type` | 11 |
+| others (`equality-type-coercion`, `property-override`, `incompatible-type`, …) | ~25 |
+
+~810 warnings total. Upstream's `lint.yml` fails on **any** output, so this must reach zero before
+that gate can go green. `unqualified` dominates and is largely mechanical — it wants `root.`
+prefixes or `pragma ComponentBehavior: Bound` — but unlike the convention fixer there is no
+`--fix`, and it genuinely changes code, so it needs the smoke matrix behind it.
+
+Treat these as two separate burn-downs: conventions (494 left, mechanical) and qmllint (~810,
+needs review). Neither blocks Phase 2; both block a green CI badge.
+
+**MiDnight only disabled the workflows; it did not weaken them.** `lint.yml` and
+`check-format.yml` are byte-identical to upstream at the merge base `ad8dca0a`. The `lint-cpp`
+clang-tidy job that upstream's current `lint.yml` has was added on 2026-09-01
+(`5f37c31e chore: add clang tidy (#1920)`), *after* MiDnight's fork point — it was never removed.
+It arrives naturally in the Phase 2 merge. Do not backport it early: running
+`-warnings-as-errors='*'` against pre-rewrite C++ produces noise from code that is about to be
+replaced.
+
+Not every disabled workflow should come back:
+
+| Workflow | Phase 0 action |
+|---|---|
+| `check-format.yml`, `lint.yml` | **Re-enable** — quality gates |
+| `release.yml` | Leave off until there is a release process; wants `contents: write` |
+| `update-flake-inputs.yml` | Leave off — weekly bot that commits to the repo, needs an app token |
+| `update-image.yml` | **Leave off permanently** — publishes `shell-arch-env` to the fork owner's ghcr; we consume upstream's image instead |
+
+Both quality gates reference `ghcr.io/${{ github.repository_owner }}/shell-arch-env:latest`. A fork
+does not publish that image, so the templated owner resolves to nothing and the job cannot start.
+Repoint to `ghcr.io/caelestia-dots/`. OP hit this and fixed it the same way.
+
+---
+
+## T10 — Config schema is compiled C++, not dynamic JSON
+
+Adding a setting is not "add a JSON key". It is a macro in a `*config.hpp`, registration on the
+config root, and Nexus UI wiring. See the `config-property` skill.
+
+Unknown JSON keys do not become config properties — upstream's `Settings/quarantine.cpp` sets aside
+what it cannot place. A hand-edited `shell.json` key that never appears in the UI is this, not a bug.
+
+---
+
+## T11 — Upstream's plugin system is coming and overlaps with our feature flags
+
+`caelestia/feat/plugins` is a real system: manifests, hot reload, a URL interceptor, per-plugin
+settings plus settings UI, and typed entry points (`Custom`, `BarEntry`, `BarPopout`, `StatusIcon`,
+`QuickToggle`, `DashboardTab`). As of 2026-09-02 it is 51 commits ahead of `main` and **64 behind**,
+and is built on the *old* config module, so it needs rework before it lands.
+
+It cannot host a dock, lockscreen, or wallpaper backend — the entry points do not exist. But when it
+does land, anything we built as a bar entry, popout, status icon or quick toggle should migrate onto
+it. Shape those features accordingly and avoid inventing a competing manifest format.
+
+---
+
+## T12 — `QT_QPA_PLATFORM=offscreen` cannot boot this shell
+
+Quickshell's `PanelWindow` is a **wlr-layer-shell** surface. With no Wayland backend the type is
+unavailable, and because Quickshell resolves the `services/` singletons as one graph, a single
+`PanelWindow` failure cascades into everything:
+
+```
+Failed to load configuration
+  caused by @shell.qml[37:5]: Type ServiceLoader unavailable
+  caused by @services/Audio.qml: Type Brightness unavailable
+  … 12 more …
+  caused by @services/NotifData.qml[67:9]: No PanelWindow backend loaded.
+```
+
+**Read that cascade bottom-up.** The last line is the cause; everything above is fallout.
+
+Upstream's `lint.yml` *does* run `QT_QPA_PLATFORM=offscreen … qs -p .`, which is what misled us.
+It sits under `# Generate tooling`, exists only to emit `.qmlls.ini` for the linter, and its exit
+code is never checked — it is *expected* to fail this way.
+
+`tools/smoke-matrix.sh` therefore spawns a nested Hyprland. Notes:
+
+- Hyprland has **no headless flag**, and aquamarine has **no `AQ_BACKENDS` env var** (checked with
+  `strings` on `libaquamarine.so`). It auto-selects: Wayland if `WAYLAND_DISPLAY` is set, else DRM.
+  With neither it dies with `CBackend::create() failed!`.
+- `--socket NAME` does **not** name a new socket; it requires `--wayland-fd` and is for socket
+  handover. Let Hyprland pick, then diff `$XDG_RUNTIME_DIR/wayland-*` before and after.
+- CI has neither a parent display nor a free DRM device, so Hyprland cannot run there at all.
+  Confirmed: `XDG_BACKEND=headless`, `WLR_BACKENDS=headless` and a bare run with `WAYLAND_DISPLAY`
+  and `DISPLAY` unset all abort in `CBackend::create()`. Aquamarine *has* a `CHeadlessBackend`,
+  but it is a fallback for output management, not a backend you can select.
+
+**CI runs headless sway instead** (`--compositor sway`, `.github/workflows/smoke.yml`). It is
+wlroots, it implements wlr-layer-shell — the only protocol `PanelWindow` needs — and
+`WLR_BACKENDS=headless` needs no display. Three things are load-bearing:
+
+- **`WLR_RENDERER=pixman`.** With the GL renderer a headless output has no scanout buffer, so the
+  client dies *after* loading successfully:
+  `importing the supplied dmabufs failed` → `Could not create EGL surface (EGL error 0x3000)` →
+  `The Wayland connection experienced a fatal error: Protocol error`. Easy to misread as a shell
+  bug; it is not.
+- **`XDG_RUNTIME_DIR`.** A CI container has none and no `/run/user/<uid>`. `smoke-matrix.sh`
+  creates a private one when the configured path does not exist.
+- **A separate ignore list.** Sway advertises none of the `hyprland-*` protocols and a container
+  has no GPU, PipeWire or session bus, so `tools/smoke-ignore-headless.txt` is applied on
+  top of the main list *only* under `--compositor sway`.
+
+Sway is a **narrower gate**: everything behind `Hypr.*` is inert there, including the lua/conf
+axis of T17. It still catches load errors, unresolved types and binding errors across every
+preset, which is most of the value. Hyprland stays the default wherever a display exists, and
+`smoke-matrix.sh` falls back to sway on its own when there is none.
+
+---
+
+## T13 — `/usr/bin/qmllint` is not Qt's qmllint
+
+On Arch/CachyOS, `/usr/bin/qmllint` is an unrelated tool that reports `qmllint 1.0` and rejects
+`--import`. Qt's is at `/usr/lib/qt6/bin/qmllint` (6.11.2 here). Identical situation for
+`qmlformat`. This is exactly why upstream CI hardcodes `/usr/lib/qt6/bin/`.
+
+A run that "passes" with one line of output and exit 1 is this, not a clean tree.
+
+Related: the Bash tool on this machine runs **zsh**, so `mapfile` and `read -ra` fail in inline
+commands. Wrap them in `bash -c '…'`. The repo's own scripts are unaffected — they have
+`#!/usr/bin/env bash` shebangs.
+
+---
+
+## T14 — MiDnight's `Settings` persistence silently does not work
+
+`services/Wallpapers.qml` and `services/WallpaperPauser.qml` are the **only** files across all
+three trees that use QtCore's `Settings` type. Quickshell never calls
+`QCoreApplication::setOrganizationName`/`setApplicationName`, so QSettings fails to initialise:
+
+```
+QML Settings at @services/Wallpapers.qml[383:5]: Failed to initialize QSettings instance. Status code is: 1
+The following application identifiers have not been set: QList("organizationName", "organizationDomain")
+```
+
+Wallpaper-engine volume/silent and the pauser's settings therefore never persisted across restarts.
+
+Adding an explicit `location:` does **not** help — `WallpaperPauser` already had one and still
+failed, which is the clue: the failure is at QSettings construction, before the location matters.
+
+**Fixed** in `plugin/src/Aether/Config/appidentity.cpp`, a `Q_COREAPP_STARTUP_FUNCTION` that
+fills in `organizationName` and `organizationDomain` (and `applicationName` if a host ever leaves
+it empty). Quickshell sets `applicationName` to `quickshell` and nothing else, so supplying the
+missing half is the entire fix. Verified by running with a fixed `XDG_CONFIG_HOME` and reading the
+file back:
+
+```
+$XDG_CONFIG_HOME/caelestia/quickshell.conf
+  [General]          silent=false  volume=0.15
+  [WallpaperPauser]  hwDecoder=none  manualPause=false  pauseOnBattery=false  pauseOnWindowOverlap=true
+```
+
+Note the pauser's values land in that file rather than the `location:` it asks for — the location
+is still not applied. They persist, which was the bug; where exactly is cosmetic.
+
+---
+
+## T15 — MiDnight deleted `assets/wallpaper.webp` but kept the reference
+
+Fixed 2026-09-02, recorded because it is the shape of bug to expect from the baseline.
+
+`326d9090 "Add multiple featured wallpapers to wallpaper picker"` removed `assets/wallpaper.webp`
+(present in upstream and OP, 5.5 MB) and added `assets/wallpapers/*.png`. But
+`services/Wallpapers.qml:18` still pointed `fallback` at the deleted file, and `fallback` is used
+in four places — including `caelestia wallpaper -f "$fallback"`, so a fresh install asked the CLI
+to set a nonexistent wallpaper.
+
+Now points at `assets/wallpapers/Gravitation.png`. Found by the very first smoke run.
+
+---
+
+## T16 — `qmllint` reports imports as unused that are actually required
+
+Two files in the tree hit a `qmllint` 6.11.2 false positive: the import is reported as
+`[unused-imports]`, and deleting it turns every use of the singleton it provided into
+`[unqualified]`. The linter contradicts itself.
+
+| File | Import | Symbol | Uses |
+|---|---|---|---|
+| `modules/Shortcuts.qml` | `Aether.Config` | `GlobalConfig` | 7 |
+| `modules/launcher/services/Animations.qml` | `qs.utils` | `Paths` | 2 |
+
+It is not simply "used only in a template literal" — that alone is credited correctly. A minimal
+reproducer, linted with the project's own import paths:
+
+```qml
+Item { property string a: `${Paths.config}/x` }        // clean
+Item { property string a: Paths.config + "/x" }        // clean
+Item { property string a: `${Paths.config}` + "/x" }   // FALSE "Unused import"
+```
+
+Both real cases use the singleton only inside JS statement bodies or an array literal, never in a
+plain property binding.
+
+**Handling.** Keep the import and silence the one line:
+
+```qml
+import Aether.Config // qmllint disable unused-imports
+```
+
+Before adding one of these, *prove* it: delete the import, re-lint the file, and confirm you get
+`Unqualified access` on the symbol. If you don't, the import really is unused — remove it.
+
+**Consequence for bulk cleanup.** Do not trust `[unused-imports]` in bulk. Remove, re-lint the
+whole tree, and diff the diagnostics by `(file, message, category)` rather than by line — line
+numbers shift under you. A removal that introduces *any* new `unqualified` or `unresolved-type`
+was wrong. Cross-check the pre-existing `unqualified` list too: if a symbol was already unresolved
+before the removal, breaking it further produces no new diagnostic and the diff will not see it.
+
+---
+
+## T17 — `Hyprland.usingLua` is false for the first moments after startup
+
+Hyprland 0.56 reads a Lua config when it finds one and calls the ini format **legacy** in
+its own logs. The two are not interchangeable at the IPC layer. Measured on 0.56.2 against
+a nested instance:
+
+| command | conf config | lua config |
+|---|---|---|
+| `dispatch workspace 2` | ok | **error** — "dispatch in lua is a shorthand for `hl.dispatch(...)`" |
+| `keyword general:gaps_in 7` | ok | **error** — "keyword can't work with non-legacy parsers. Use eval." |
+| `dispatch 'hl.dsp.focus({ workspace = "3" })'` | error | ok |
+
+The shell picks a spelling from `Hyprland.usingLua` in **40 places across 17 files**. That
+property works — but it is populated asynchronously, after Quickshell's IPC handshake:
+
+```
+PROBE init  usingLua = false      # Component.onCompleted
+PROBE tick  usingLua = true       # 3s later, lua config
+PROBE tick  usingLua = false      # 3s later, conf config
+```
+
+**Anything that dispatches during startup therefore takes the legacy branch regardless of
+the real config.** `services/Colours.qml:130` does exactly that:
+
+```qml
+Component.onCompleted: root.requestReloadHyprRules()
+```
+
+and the first call is not debounced, so on a Lua setup it sent
+`keyword layerrule blur ..., match:namespace caelestia-drawers` — which Hyprland rejects.
+Blur and `ignore_alpha` for the drawers, polkit/askpass and desktop-lyrics layer surfaces were
+silently never applied.
+
+Fixed by resending from `onUsingLuaChanged` on the `Hypr` singleton. Verified by
+instrumenting the handler and booting under each config:
+
+```
+lua   TMPPROBE onCompleted, usingLua = false
+lua   TMPPROBE onUsingLuaChanged fired, usingLua = true     <- resend, correct spelling
+conf  TMPPROBE onCompleted, usingLua = false                <- correct already, no resend
+```
+
+**Connect to `Hypr`, not to `Hyprland`.** Quickshell's `usingLua` is a
+`QObjectBindableProperty`; a QML binding on it re-evaluates, but
+`Connections { target: Hyprland; function onUsingLuaChanged() }` never fires. `Hypr`
+re-exposes it as an ordinary QML property (`readonly property bool usingLua:
+Hyprland.usingLua`), whose change signal does. Both were tested.
+
+`smoke-matrix.sh` boots under a Lua config by default and takes `--hypr conf` / `--hypr
+both`. Note what that does and does not cover: the axis genuinely flips `usingLua`, but
+nearly every one of the 40 branch sites is inside a click handler, so a boot smoke reaches
+almost none of them.
+
+---
+
+## T18 — qmllint lints against the *installed* shell, not the one you built
+
+`qmllint` always consults Qt's default QML import directory, and it does so **in preference
+to every `-I` path you pass**. This machine has `midnight-shell-git` installed, which ships
+`/usr/lib/qt6/qml/Caelestia/` — the pre-Phase-2 plugin layout. So the linter was resolving
+`Caelestia.*` types from the *package*, not from `./build/qml`.
+
+While the two layouts agreed this was invisible. After the upstream config rewrite moved
+types between modules it produced a contradiction that looks like a qmllint bug and is not:
+
+```
+Info:    Unused import [unused-imports]          import Aether.Images
+Warning: Cannot resolve alias "wallLuminance"    analyser.luminance
+```
+
+The import is "unused" because `ImageAnalyser` was never found in it — the installed
+`Aether.Images` has `IUtils` but not `ImageAnalyser`, which in that layout lives in the
+root `Caelestia`. `IUtils` resolved; `ImageAnalyser` did not; same module, same file.
+
+**`--bare` is the fix.** It drops the default import directory, after which `-I` order is
+honoured and `./build/qml` wins. `tools/qml-lint.sh` passes it. To reproduce the
+problem, drop the flag.
+
+**Two things this hid.** First, `--import disable` — which upstream's CI passes and which
+this project copied — silences the whole `import` category, so `ImageAnalyser was not
+found` never printed and only the "unused import" symptom did. When an unused-import report
+makes no sense, re-run without `--import disable` before believing it.
+
+Second, and worse: `qml-lint.sh --summary` counted diagnostics with `\[[a-z0-9-]+\]$`,
+which does not match the qmllint Quick plugin's `[Quick.property-changes-parsed]` or
+`[syntax.duplicate-ids]`. It reported **`clean, no warnings` on a tree that had 60 of
+them**, including two duplicate-id *errors*. The exit code was right — that path measures
+output size — so the gate itself never passed falsely, but the summary did, and it was
+believed. The class is now `[A-Za-z0-9.-]+`.
+
+Anything counting compiler or linter output needs its category pattern checked against real
+output containing every category, not against the categories you expect.
+
+---
+
+## T19 — `-Werror` is a CI gate, and it had never been run here
+
+**Symptom:** none locally. `cmake --build build` is green, every lint is zero, and
+`.github/workflows/build.yml` still fails on both of its legs.
+
+`build.yml` builds twice — `g++` and `clazy` — and both pass `-DCMAKE_CXX_FLAGS=-Werror`.
+Nothing in this project's tooling did, so the flag was never exercised. On first run:
+
+| leg | errors | where |
+|---|---|---|
+| `g++ -Werror` | 11 | `QuickShareCrypto.cpp`, deprecated OpenSSL 3.0 `EC_KEY` API |
+| `clazy -Werror` | 9 + a truncated tail | 5 files, plus every generated `.pb.cc` |
+
+Three separate lessons came out of it.
+
+**A gate you inherit is not a gate you pass.** Four static gates were brought to zero in
+Phase 0 and CI was described as green. The two `-Werror` build legs were part of that CI
+the whole time and had simply never been invoked locally.
+
+**`-Werror` is compiler-specific, so one compiler proves nothing.** Every `clazy` finding
+was invisible to `g++`: `-Wnullability-extension` does not exist there, and the
+`clazy-*` checks are a clang plugin. Run both legs or neither.
+
+**A truncated error list hides its own size.** clang stops at `-ferror-limit=20`. The first
+clazy run reported 3 distinct warnings; after fixing them the next run found 3 more, and
+only the run after that was clean. Re-run until a *clean* run, never until a *short* one.
+
+### What the findings actually were
+
+`QuickShareCrypto.cpp` carried a TODO saying the `EC_KEY` migration could not be verified
+because "nothing in this tree can exercise a real Quick Share transfer". That was true of a
+*transfer* and false of the *handshake* — see T20.
+
+The generated `.pb.cc` files are not ours to lint; `plugin/src/Aether/Services/CMakeLists.txt`
+now sets `COMPILE_OPTIONS "-w"` on `${PROTO_SRCS}`. Use `-w` rather than naming the specific
+warning: the set changes with the protoc and compiler version, and `-w` is understood by
+gcc, clang and clazy alike.
+
+The rest were real and each had a truthful fix rather than a suppression:
+`Q_PROPERTY(... CONSTANT)` for the three BlueZ advertisement properties (BlueZ reads them
+once at `RegisterAdvertisement`, and all three are literals), `QDateTime::currentSecsSinceEpoch()`
+for `currentDateTime().toSecsSinceEpoch()`, and a `const` binding for two range-loops that
+were detaching a Qt container.
+
+### clang-tidy's build directory must be NAMED "build"
+
+Two filters act on it and they want different things, which is easy to satisfy by halves:
+
+| | pattern | `build` | `tidy-build` |
+|---|---|---|---|
+| generated **headers** | `.clang-tidy`'s `ExcludeHeaderFilterRegex: 'build/.*'` — unanchored | excluded | excluded |
+| generated **sources** | CI's `-source-filter='^(?!.*/build/).*\.cpp$'` — needs a literal `/build/` | excluded | **not excluded** |
+
+Satisfy only the first and Qt's own generated `.cpp` get linted as project sources:
+`mocs_compilation.cpp`, `caelestia-*_qmltyperegistrations.cpp` and the `qrc_qmake_*.cpp`
+resource files. Measured on the same tree with the same command: **316 diagnostics from
+`tidy-build`, 0 from `build`**, dominated by `readability-identifier-naming` and
+`bugprone-suspicious-include` on code moc wrote.
+
+`tools/verify.sh` got this wrong on its first run, and so did the earlier version of
+this trap, which said the name merely had to *end* in "build". Nested is fine —
+`.verify/build` satisfies both, because the component is what matters, not the prefix.
+
+Note that protoc's output escapes on a technicality rather than by design: `.pb.cc` does not
+match `\.cpp$`. Do not rely on that; the extension list is CI's, not ours.
+
+### And a local-only hazard found on the way
+
+A `build/` directory configured with one compiler and later reconfigured with another keeps
+the *first* compiler's interface flags and PCH targets. A `build/` that had seen `g++` and
+was then pointed at `clang++` produced `error: unknown argument: '-mno-direct-extern-access'`
+on 126 of 127 entries. Configure a fresh directory per compiler; do not reuse one.
+
+That flag is not noise, incidentally: Arch's Qt6 is built with `-mno-direct-extern-access`
+and anything linking Qt must be too, or the link fails with `copy relocation against
+non-copyable protected symbol '_ZN10QByteArray6_emptyE'`. `tools/plugin-test.sh`
+passes it for that reason.
+
+---
+
+## T20 — The QuickShare handshake is testable without a phone
+
+**Symptom:** hand-rolled crypto with no coverage, and a TODO saying it cannot be covered.
+
+QuickShare's UKEY2 implementation is ~500 lines of imported OpenSSL: an ECDH exchange, an
+HKDF ladder deriving four keys and a PIN, and AES-256-CBC payload encryption. Nothing
+exercised any of it. The stated reason was that checking it meant sending a real file from
+a real phone.
+
+It does not. `QuickShareCrypto` is a plain class with no transport in it, so two instances
+can be handed each other's messages directly:
+
+```
+client.generateClientInit()  ->  server.processClientInit(...)
+                             <-  returns the server init
+client.processServerInit(...) ->  returns the client finish
+                             ->  server.processClientFinished(...)
+```
+
+After that the invariants are all locally checkable, and they are what the protocol is
+*for*: each side's encode key equals the other's decode key, the two directions use
+different keys, both sides derive the same PIN, a payload round-trips both ways, a third
+party running the same exchange derives different keys, and malformed input leaves
+`isHandshakeComplete()` false rather than half-completing.
+
+`tools/plugin-test.sh` runs 50 rounds of that plus the negative cases. It is how the
+OpenSSL 3.0 migration in T19 was verified, and it found the `-mno-direct-extern-access`
+link requirement on the way.
+
+**The generalisable part:** "this needs real hardware to test" is usually a claim about the
+*transport*, not about the logic underneath it. Check whether the logic is separable before
+accepting it. Here the class had no I/O in it at all.
+
+---
+
+## T21 — `BeatTracker::beat` was declared, connected to, and never emitted
+
+**Symptom:** the dashboard's media shapes morph on a timer instead of on the beat, and
+drift out of phase with the music. No warning, no error, no lint finding.
+
+`plugin/src/Aether/Services/beattracker.hpp` declares the signal twice, on two different
+classes:
+
+```cpp
+class BeatProcessor : public AudioProcessor { signals: void beat(smpl_t bpm); };
+class BeatTracker   : public AudioProvider  { signals: void beat(smpl_t bpm); };
+```
+
+`BeatProcessor::beat` is emitted from `process()` and connected to `BeatTracker::updateBpm`.
+`BeatTracker::beat` — the one QML can see, because `BeatTracker` is the `QML_ELEMENT` — was
+emitted by nothing, in **all three upstreams**. Meanwhile
+`modules/dashboard/dash/MediaShapes.qml` has been connecting to it the whole time:
+
+```qml
+Connections {
+    function onBeat(bpm) { materialShape.morph(); }
+    target: Audio.beatTracker
+}
+```
+
+The fix is to forward it. `updateBpm` cannot stand in: it only signals when the bpm
+*changes*, and a beat happens on every beat. `tools/tests/beat-signal.cpp` measures
+exactly that distinction — against `HEAD` before the fix it reports `beat fired 0/3`, and
+after it reports `beat fired 3/3 at 128.0 bpm, bpmChanged fired 1/1`.
+
+**Why nothing caught it.** A QML `Connections` handler for a signal that exists but never
+fires is valid QML and valid C++. qmllint resolves the signal, so there is nothing to warn
+about; the C++ side has a declared signal with no emitter, which no compiler diagnoses
+because moc generates a perfectly good emitter for it. The only way to see it is to ask
+"what emits this?" — worth asking of any signal a QML file handles.
+
+`tools/dead-signals.py` now asks it for all 209 of them, and runs first in
+`lint.yml`'s `lint-cpp` job because it needs no build. Against `7f1ec1fe~1` it reports
+`DEAD BeatTracker::beat`; against the current tree, nothing.
+
+**It has to be generous, and here is what that costs.** A false positive sends someone to
+"fix" working code, so four things count as an emitter, and a first cut that missed any of
+them produced only false alarms:
+
+| looks dead | actually | seen in |
+|---|---|---|
+| `usingLuaChanged` | moc emits the NOTIFY of a `MEMBER` property on write | `HyprExtras` |
+| six `AppEntry` `*Changed` | forwarded via the runtime metaobject API, which no source scan can follow: `connect(m_entry, metaProp.notifySignal(), this, thisMetaProp.notifySignal())` | `AppEntry` |
+| `rawDeformMatrixChanged` | emitted by a *subclass* — declared on `BlobShape`, emitted four times in `BlobRect` | `BlobShape` |
+
+The last one is the reason the checker resolves inheritance rather than matching on the
+declaring class. The first version of it keyed on the signal *name* globally, which is worse
+still: it would have called `BeatTracker::beat` live, because `BeatProcessor::beat` — a
+different class, in the same header — is emitted. **A checker for this has to be class-aware
+and inheritance-aware, or it silently misses the exact case it was written for.**
+
+---
+
+## T22 — `chmod +x` does not reach the index, because `core.fileMode` is false
+
+**Symptom:** a script you can run all day locally fails in CI, or for anyone who clones,
+with `Permission denied`. `git status` is clean. `ls -l` shows `-rwxr-xr-x`.
+
+This repository sets `core.fileMode = false`, and it has to. Turning it on reports **419
+mode-only differences** — the working tree carries exec bits the index does not, and every
+real diff would be buried under the noise. So the setting is right, and the consequence is
+that `chmod +x` on a new file silently does nothing git will ever record. It is committed
+`100644` and nothing says so.
+
+Four tools were already committed that way: `qml-lint.sh`, `qml-section-order.py`,
+`plugin-test.sh` and `dead-signals.py`. The shell-verify gate invokes all four as
+`./tools/...`, so a clean checkout would have failed on the first two steps of the
+gate, and CI would have failed on `plugin-test.sh` the first time it ran.
+
+**The fix is `git update-index --chmod=+x <path>`**, not `chmod`. `chmod` is what does not
+work here, and it is the thing everyone reaches for.
+
+`tools/check-index-modes.sh` fails on any tracked file that starts with `#!` and is
+not `100755`. It runs first in `smoke.yml`, before anything can invoke a script.
+
+One implementation note, since it bit while writing it: testing the first two bytes with
+`case $(head -c 2 "$f")` makes bash warn `ignored null byte in input` on every binary file
+in the repo. `head -n 1 "$f" | grep -qa '^#!'` avoids the command substitution and stays
+quiet.
+
+---
+
+## T23 — A gate nobody has watched fail is not known to work
+
+Three of this project's gates turned out to have no teeth, in three different ways, and
+none of them looked broken:
+
+- **`build.yml`'s two `-Werror` legs** had never been run locally at all. They were red the
+  whole time CI was described as green (T19).
+- **A hand-rolled gate script** printed `diagnostics: 0` for each `-Werror` leg without ever
+  setting its failure flag, so it could have reported GREEN over a red leg. It was caught
+  only because an unrelated step happened to be red at the time and made the overall verdict
+  disagree with the step output.
+- **`qml-lint.sh --summary`** counted diagnostics with a regex that missed two whole
+  categories and printed `clean, no warnings` over 60 real ones (T18).
+
+The smoke matrix is the one that would hurt most. It works by copying a preset to
+`shell.json` and failing on what the log says — so if a preset were silently rejected, the
+shell would boot with defaults, the log would be clean, and the matrix would report six
+presets passing while testing one config six times.
+
+It does not: `settings::Node` warns on unknown keys, wrong types and bad enum values, and
+the harness treats those warnings as failures. That was a guess until it was measured, and
+measuring it is now `--self-test`:
+
+```
+./tools/smoke-matrix.sh --self-test
+```
+
+It feeds the harness a config that is valid JSON and invalid schema — a misspelled enum
+value, an unknown section, an unknown key, a wrong type, an unknown top-level key — and
+passes only when the run **fails**. It runs in CI immediately before the matrix it
+validates.
+
+The self-test has teeth of its own, which was also measured rather than assumed: appending
+`caelestia.settings` to `smoke-ignore.txt` — the one edit that would blind the matrix to
+exactly this — makes `--self-test` report FAIL.
+
+**The general rule:** when you add or inherit a gate, make it fail once on purpose before
+you trust a pass. `smoke-ignore.txt` deserves particular suspicion, because every line in it
+is a deliberate blindfold and a line that is slightly too broad is invisible.
+
+So the ignore list audits itself now too:
+
+```
+./tools/smoke-matrix.sh --audit-ignores
+```
+
+It reports how many log lines each pattern matched, and never fails the run — several
+entries are legitimately intermittent, so a zero is a prompt to check, not a verdict. Its
+first run found 8 of 11 patterns load-bearing and 3 matching nothing:
+
+- `caelestia.requests: \w+: request failed with error` — kept. The weather API 503s often
+  enough to have failed 5 of 12 runs in one sitting; a zero here means a good day.
+- the two `QObject: ... different thread` entries — deleted, and then **put back**. This is
+  the interesting one, and it is a mistake worth keeping written down.
+
+### The ignore entries I deleted and had to restore
+
+Both matched nothing across 12 runs, and both named a Qt-wide diagnostic rather than one
+known instance, so deleting them looked like restoring coverage at no cost. The matrix then
+ran 12/12 clean without them, which seemed to settle it.
+
+A later run failed **12/12** on exactly those two lines. The full message, which the earlier
+comment had never quoted, says what is actually happening:
+
+```
+QObject: Cannot create children for a parent that is in a different thread.
+(Parent is QGuiApplication, parent's thread is QThread, current thread is QQuickPixmapReader)
+```
+
+`QQuickPixmapReader` is Qt Quick's internal image-loading thread. The entry had been
+attributed to "QuickShare's worker thread during teardown" — which the message contradicts,
+and which nobody had checked. It fires beside the first image load, it is Qt's own code, and
+there is nothing here to fix.
+
+Two separate errors, and the second is the one that matters:
+
+1. **The attribution was never verified.** A one-line justification on an ignore entry is
+   worth exactly as much as the evidence behind it, and this one had none.
+2. **Zero matches is a sample, not a proof.** The condition is a race against startup timing.
+   Twelve quiet runs said the race had been landing the other way, not that it was gone —
+   and the thing that flipped it was unrelated: deleting four dead QML files changed startup
+   timing enough to change the outcome.
+
+So the audit question is sharper than "does this still fire" and sharper than "would I want
+to know if it came back". It is: **do I have a reason this condition cannot recur?** For a
+race, a run of quiet days is never that reason. Delete an entry when the code that produced
+it is gone, not when the log happens to be quiet.
+
+
+---
+
+## T24 — A `NOLINTNEXTLINE` silently detaches when you insert anything above its target
+
+**Symptom:** a suppression that has worked for months stops suppressing, and the check it
+was hiding reappears somewhere unrelated — or, worse, starts covering a different function.
+
+`NOLINTNEXTLINE` binds to *the literal next line*, comment lines included. It has no idea
+what function it was written for.
+
+Both failure modes happened here, in the same file:
+
+**Detached by an insertion.** `handlePayloadTransfer` carried a
+`NOLINTNEXTLINE(readability-function-cognitive-complexity)`. Extracting `sendOutgoingFile()`
+and placing it above `handlePayloadTransfer` put a new function *between* the comment and
+its target. The suppression then pointed at `sendOutgoingFile`'s leading comment line, which
+suppresses nothing at all, and `handlePayloadTransfer` was reported again. Nothing warned:
+an unused NOLINT is not a diagnostic by default.
+
+**Detached by a comment.** Four suppressions written as a two-line comment — the reason on
+the first line, `NOLINTNEXTLINE` on the second — were fine, but four written the other way
+round, with prose *after* the marker, silently did nothing.
+
+**What to do instead.** Prefer removing the cause. Every cognitive-complexity suppression in
+this tree is gone now, not because they were re-anchored but because both functions were
+split: 28 → under 5 for `onServiceResolved`, 70 → 9 for `handlePayloadTransfer`. When a
+suppression is genuinely right, keep it on the line immediately above its target with the
+explanation *above* the marker, never between it and the code.
+
+The reason this is worth a trap rather than a note: a detached suppression fails in the
+direction that looks like a new bug. The check fires on code that has not changed, on a
+commit that did not touch it, and the natural reading is that the refactor caused it.
+
+---
+
+## T25 — `qs ipc call` always exits 0, including when it did nothing
+
+**Symptom:** a script drives the shell over IPC, checks `$?` after every call, reports
+success, and half the calls never ran.
+
+Measured against a live shell:
+
+| call | output | exit code |
+|---|---|---|
+| `ipc call wallpaper get` | the wallpaper path | **0** |
+| `ipc call wallpaper getNoSuchThing` | `Function not found.` | **0** |
+| `ipc call noSuchTarget nope` | `Target not found.` | **0** |
+| `ipc call mpris getActive` (arity) | `Too few arguments provided (1 required but 0 were provided.)` | **0** |
+
+The error goes to the output. The exit status is success in every case. So `if ! out=$(... )`
+is not a check, and neither is `set -e`.
+
+The smoke drive made this maximally invisible by redirecting both streams to `/dev/null`,
+which is reasonable for a drive — the point is to exercise code, not to read results — right
+up until a call is wrong. Two were, the day the drive was extended past the panels:
+`mpris getActive` takes a property name and `hypr cycleSpecialWorkspace` takes a direction,
+and both had been called bare. They exercised nothing and said nothing.
+
+`check_ipc` in `smoke-matrix.sh` now runs every call in the drive and greps the *output* for
+`Target not found.`, `Function not found.` and `arguments provided`, failing the run if any
+appears. Verified with a deliberate typo, which the harness reports as
+`ipc call 'wallpaper getNoSuchThing': Function not found.`
+
+**What this bought immediately.** With all 54 IPC functions enumerated and the drive
+converted, the six presets still pass — which establishes something that was only assumed:
+`IpcHandler` targets are registered unconditionally, so turning a feature off does not remove
+its IPC surface. A drive that calls `launcher openEmoji` under the `all-off` preset is still
+making a real call.
+
+**The general shape, again:** a tool that reports failure on a channel you are not reading is
+indistinguishable from a tool that works. Check what a tool does on bad input before trusting
+what it says on good input.
+
+---
+
+## T26 — Shell commands built by string concatenation, with remote data in them
+
+**Symptom:** a wallpaper whose filename contains an apostrophe does nothing, or worse.
+
+`Process.command` and `Quickshell.execDetached` both take an argv list, so a shell is
+optional — but fourteen sites built one anyway by concatenating values into a `sh -c`
+string. Single quotes around the value were the only barrier, and a `'` in the value ends
+the quoting and returns to shell syntax. Measured, with the payload `'; touch pwned.txt;
+echo '`:
+
+```
+old:  sh -c "... echo '$VALUE' > 'out.txt'"      -> pwned.txt created; arbitrary command ran
+new:  sh -c '... printf "%s\n" "$2" > "$3"' sh "$VALUE" out.txt
+                                                  -> nothing ran; out.txt holds the value verbatim
+```
+
+**Where the value comes from decides how bad it is.** Ten sites were changed, in three tiers:
+
+| site | value | origin |
+|---|---|---|
+| `WallhavenSearcher.qml` download, move | `wallpaper.path`, `wallpaper.id` | **`JSON.parse` of the wallhaven.cc API response** |
+| `Wallpapers.qml` ×3, `WallpaperItem.qml` | a wallpaper path | a filename on the user's disk |
+| `Clipboard.qml` ×2, `ClipItem.qml` | cache dir, cliphist id | local — and `imageCacheDir` was not even quoted |
+
+The Wallhaven pair is the one that matters: those values are attacker-influenced in the
+ordinary sense, not just awkward.
+
+**The fix is the pattern already in the tree.** `services/Nmcli.qml` was doing it right in
+one place: `["sh", "-c", script, "sh", a, b]` passes `a` and `b` as `$1` and `$2`, which the
+shell never parses as syntax. Where no shell is needed at all — the Wallhaven download was
+just `curl` — the argv form replaces `sh` entirely.
+
+`tools/shell-safety.py` now enforces it, and runs in `lint.yml` beside the dead-signal
+check because it needs no build either. Against the tree before the fix it reports 15 sites;
+against the tree after, none. The allowlist is keyed by file and by a snippet of the line
+rather than by line number, so it does not rot when something above it moves, and every entry
+carries its reason.
+
+Writing that checker took three attempts, and the two failures are the interesting part:
+
+- Reading only the *literal* missed `"echo '" + value + "' > f"`, where the value is
+  concatenated **outside** the quotes.
+- Reading the whole *line* flagged the correctly-written calls, because a positional argument
+  like `` `${Paths.state}/wallpaper` `` sits after the script and looks exactly like
+  interpolation into it.
+
+Neither mistake is visible from the output — one under-reports, the other cries wolf on the
+fix. It has to parse the script argument as one expression, stopping at the comma that ends
+it. Checked both ways before being believed.
+
+**Not everything with `sh -c` is a bug.** Four uses are correct by design and were left
+alone: `Keybinds.qml` runs the user's own keybind commands, which is the feature; the Hypr
+config pages write user config through quoted heredocs; and `ArpcPage.qml` and
+`BarGithub.qml` already pass secrets as `"--", token` with `<<< "$1"`. The question to ask
+is not "is there a shell" but "does any value reach it as syntax".
+
+**One instance was found and deliberately left.** `modules/launcher/items/CalcItem.qml`
+interpolates the launcher's calculator expression into `fish -C "exec qalc -i '...'"`. A
+value does reach the shell as syntax there, so it belongs on this list — but the value is
+what the user just typed into their own launcher, and the launcher already runs arbitrary
+commands by design, so no boundary is crossed. What is left is a robustness nit: an
+apostrophe in an expression breaks the calculator. Fixing it properly means escaping for
+*fish* rather than POSIX quoting rules, in a code path that spawns an interactive terminal
+and so cannot be exercised by the harness. Recorded rather than changed blind.
+
+---
+
+## T27 — QuickShare can send but cannot receive: the prompt is never instantiated
+
+**Symptom:** send a file from the shell and it works. Send one *to* the shell and nothing
+appears, ever.
+
+The C++ side of the incoming path is complete:
+
+```cpp
+// quickshare_service.hpp
+void incomingTransferRequested(const QString& deviceName, const QString& fileName, qint64 fileSize);
+void incomingTransferPinReady(const QString& pinCode);
+Q_INVOKABLE void acceptIncomingTransfer();
+Q_INVOKABLE void rejectIncomingTransfer();
+```
+
+Both signals are emitted, from `onNewConnection`. **Nothing in QML handles either**, and
+nothing calls accept or reject, so an incoming transfer sits waiting for a confirmation that
+can never arrive.
+
+`modules/notifications/QuickSharePrompt.qml` is the UI for exactly this, complete with
+Accept and Decline wired to those two invokables — and it is instantiated nowhere. It also
+writes `QuickShare.hasPendingTransfer`, which is not a property of the service: the only two
+references to that name in either tree are the two inside this file.
+
+**This is inherited, not a merge regression.** It is equally dead in `dim-ghub/midnight-shell`:
+the file exists, nothing instantiates it, and `hasPendingTransfer` is undefined there too. Our
+merge carried it over faithfully.
+
+**Why it is recorded rather than fixed.** Wiring it needs a `hasPendingTransfer` (or the
+equivalent state in QML), a decision about where the prompt lives in the panel graph (T1),
+and dismissal and timeout behaviour. None of that can be exercised from here: the only
+trigger is a real phone sending a real file, and the loopback in
+`tools/tests/ukey2-loopback.cpp` cannot stand in, because it drives the crypto rather
+than the transport. Shipping an untested modal into the notification layer is worse than the
+present state, which at least fails visibly as "nothing happens".
+
+`tools/dead-qml.py` allowlists the file rather than deleting it, so the design survives
+and the gap stays visible.
+
+### The sweep that found it
+
+Four MiDnight-only files were unreferenced; a fifth appeared once the first four went, because
+dead code was keeping it alive. `components/images/CachingVideo.qml` was the sole user of
+`services/VideoWallpaperPlayer.qml`, and both were already dead in MiDnight.
+
+Removed: `CachingVideo.qml` (superseded — `Wallpaper.qml` plus `WallpaperPauser.qml` own that
+behaviour now), `VideoWallpaperPlayer.qml` (its orphan), `BadAppleController.qml` (superseded
+by `BadApplePlayer`), `TestComponent.qml` (27 lines of scaffolding that pops a red window).
+
+Kept: `components/misc/Ref.qml`, which is unused in **all three** upstreams including upstream
+itself, since the C++ `ServiceRef` replaced it. That one is upstream's to delete; removing it
+here trades eight dead lines for a delete/modify conflict on every merge that touches it.
+
+---
+
+## T28 — Fifteen config keys accept a value and do nothing
+
+**Symptom:** you set something in `shell.json`, the shell accepts it without complaint, and
+nothing changes. There is no warning, because the key *is* in the compiled schema — it simply
+has no reader.
+
+The schema declares 349 keys. Fifteen are read by nothing, in QML or C++:
+
+| keys | class | what happened |
+|---|---|---|
+| `videoWallpaperPauseOnFullscreen`, `...OnTiled`, `...OnAllDisplays`, `videoWallpaperSoundEnabled`, `videoWallpaperMuteOnMedia` | `BackgroundConfig` | **superseded, and provably so.** Their only reader was `components/images/CachingVideo.qml`, itself never instantiated. `services/WallpaperPauser.qml` replaced them with `manualPause`, `pauseOnBattery`, `pauseOnWindowOverlap` and `hwDecoder`, persisted through QtCore `Settings` rather than `shell.json`. |
+| `activeOllamaModel`, `activeProvider`, `defaultProvider`, `ollamaModel`, `orionModel`, `saveChatHistory`, `snapToDefaultOllama` | `AiConfig` | the feature exists (`modules/sidebar/AiAssistant.qml`), so these may be half-wired rather than debris. |
+| `screenCounts` | `ShimejiConfig` | unknown |
+| `tabIndicatorHeight` | `DashboardTokens` | unknown |
+| `wsIcons` | `BarWorkspaces` | unknown |
+
+**Not removed, deliberately.** Deleting a key is user-visible: an existing `shell.json`
+containing it starts emitting `Unknown option`, and the smoke matrix treats that as a
+failure. That is the right outcome for a key that is genuinely gone, and the wrong one for a
+key someone is halfway through wiring. The `videoWallpaper` five have an airtight story; the
+`AiConfig` seven do not, and guessing at another person's unfinished feature is how you
+delete groundwork.
+
+Recorded here so the next person touching video wallpaper or the AI assistant starts from
+evidence instead of rediscovering it.
+
+### The sweep is now a checker
+
+`tools/dead-config.py` does this automatically and runs in `verify.sh` and in
+`lint.yml`, so a sixteenth dead key fails CI rather than waiting to be noticed. The fifteen
+below are allowlisted there with their reasons. What follows is the algorithm it implements,
+kept because the three false-positive classes are the interesting part.
+
+Two defects in the first version of that checker are worth knowing about, because both made it
+report a clean tree for the wrong reason:
+
+- it counted a key literally named `name`, picked up from
+  `#define CONFIG_ENUM_PROPERTY(Type, name, defaultVal)` in `common.hpp`. A phantom key looks
+  live the moment any QML writes `.name`.
+- it saw none of the 18 `FEATURE`/`VARIANT` flags, because those are one-argument wrappers
+  around `CONFIG_GLOBAL_PROPERTY` and a regex hunting `CONFIG_` macros never matches them. The
+  schema header claims "a flag exists here only once something reads it"; until that regex was
+  fixed, nothing enforced it.
+
+Both were found by planting a dead key and watching the checker stay green (T23).
+
+### How to re-run the sweep by hand
+
+Extract every `CONFIG_*PROPERTY(type, name, …)` from `plugin/src/Aether/Config/*.hpp`, then
+look for `.name` or `"name"` in the QML and for the bare name in C++ **excluding the
+declaration lines themselves**. Three things it must handle, each of which produced a false
+positive first time:
+
+- **C++ consumers.** A QML-only sweep called `logout`, `shutdown`, `italic`, `vaxes`,
+  `lyricsBackend` and `configLoaded` dead; all six are read from C++.
+- **Dynamic access.** `modules/background/Wallpaper.qml` reads
+  `Config.background["wallpaperRecolor"]`. String-literal subscripts are caught by the
+  `"name"` check; a computed one would not be, and there are none today.
+- **The declaration itself.** Searching C++ for the bare name matches the `CONFIG_PROPERTY`
+  line, so every key looks live unless those lines are excluded.
+
+---
+
+## T29 — Upstream's CI image is private, so inherited CI cannot run on any fork
+
+**Symptom:** every containerised job fails in about 25 seconds, before running a single
+step of your code, with:
+
+```
+docker pull ghcr.io/caelestia-dots/shell-arch-env:latest
+Error response from daemon: denied
+##[error]Docker pull failed with exit code 1
+```
+
+Six of the eight jobs use `container: image: ghcr.io/caelestia-dots/shell-arch-env:latest`.
+That package is private to the `caelestia-dots` org — an anonymous manifest fetch returns
+**401** and GHCR refuses to issue a pull token at all. Upstream's own runners can pull it
+because their `GITHUB_TOKEN` belongs to the owning org. A fork's cannot, and no amount of
+`packages: read` on the fork's token changes that.
+
+So the CI this project inherited was never going to run here. It looked configured, the
+workflow files were all present and valid, and it failed at `Initialize containers` every
+time.
+
+**The fix is to own the image.** `update-image.yml` carries the entire Dockerfile inline and
+pushes to `ghcr.io/${{ github.repository_owner }}/shell-arch-env:latest`, so enabling it in a
+fork publishes to that fork's namespace. It shipped as `.disabled`; it is now enabled, and
+the six container jobs point at `${{ github.repository_owner }}` rather than a hardcoded
+name, so this works for the next fork too without edits.
+
+**Two packages had to be added**, and they matter beyond the plumbing: upstream's image has
+neither `protobuf` nor `lm_sensors`, because upstream's tree has no QuickShare. `protobuf`
+is needed for the six generated `.pb.cc`, and `lm_sensors` provides the `libsensors` that
+`plugin/cmake/sensorslib.cmake` resolves `Sensors::Sensors` to. **Upstream's image could
+never have built this tree even if it were public** — which is worth knowing before
+concluding that a green upstream CI says anything about this fork.
+
+The job also needs `credentials:` on the container. A fork's `GITHUB_TOKEN` can read its own
+owner's packages, but only if the workflow hands it to the docker login.
+
+### The image reference must be a lowercase literal
+
+`${{ github.repository_owner }}` preserves case — it is `YoavR1`, not `yoavr1` — and Docker
+rejects an uppercase registry reference outright:
+
+```
+ERROR: failed to build: invalid tag "ghcr.io/YoavR1/shell-arch-env:latest":
+repository name must be lowercase
+```
+
+The two sides have to be fixed differently, which is easy to get wrong:
+
+- **The build tag** can be lowercased at run time, because a step runs before it is used:
+  `echo "IMAGE_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> "$GITHUB_ENV"`.
+- **`container: image:` cannot.** It is resolved before any step in the job exists, and
+  GitHub's expression language has no `toLower()`. It must be a literal.
+
+So the six container jobs carry `ghcr.io/yoavr1/shell-arch-env:latest` spelled out, and a
+fork edits exactly that one string. The first attempt used the expression in both places on
+the assumption that it was portable; it is portable only where a step can preprocess it.
+
+---
+
+## T30 — Three of my own checkers reported a clean tree from an empty file list
+
+**Symptom:** in CI, and only in CI:
+
+```
+dead-signals.py     209 signal(s) checked, 0 with no reachable emitter
+shell-safety.py       0 shell invocation(s), 0 allowlisted, 0 building the script from a value
+dead-qml.py           0 QML file(s), 0 allowlisted, 0 unreferenced
+check-index-modes.sh  index modes ok
+```
+
+Two of those numbers are zero because there was nothing to check, and all three passed.
+
+The container runs as root while the checkout is owned by another uid, so git refuses
+everything with `detected dubious ownership`, `git ls-files` prints nothing and exits 128 —
+and a checker that iterates that output finds no files, reports no problems, and exits 0.
+`dead-signals.py` was unaffected only because it walks the filesystem with `rglob` instead.
+
+This is the exact defect these tools exist to find (T23), sitting in the tools. It cannot be
+caught by running them locally, where git always works.
+
+**Both halves are fixed, and both are needed.**
+
+*The checkers* now treat a failed or empty listing as an error. `tracked_files()` in the two
+Python tools and the `git ls-files -s` guard in the shell one exit non-zero with the git
+error and the `safe.directory` hint. Verified with a stub `git` that fails on `ls-files`:
+exit 2, 1 and 1, with a real git unchanged at 0.
+
+*The workflows* add `git config --global --add safe.directory "$GITHUB_WORKSPACE"` before the
+checkers, so the underlying problem is gone rather than merely detected.
+
+**Testing the guard took two attempts, which is its own lesson.** The first stub failed only
+when `$1` was `ls-files`. The Python tools invoke `git -C <root> ls-files …`, so `$1` is `-C`,
+the stub fell through to the real git, and the tools passed — making a working guard look
+broken. When a probe says a fix did not work, check the probe before the fix.
+
+**The general rule: zero inputs is a broken checker, never a clean tree.** Any tool that
+reports "N problems in M files" must refuse to report success when M is zero.
+
+---
+
+## T31 — Two more ways upstream's CI cannot validate this tree
+
+Both surfaced on the first CI run that got far enough to execute real work, and both have
+the same shape as T29: upstream's pipeline is correct *for upstream's tree*.
+
+### clang-tidy needs a build first, because protoc has not run
+
+```
+plugin/src/.../QuickShareConnection.hpp:7:10: error: 'wire_format.pb.h' file not found
+plugin/src/.../QuickShareCrypto.cpp:26:10: error: 'securemessage.pb.h' file not found
+```
+
+`lint-cpp` configures and then runs `run-clang-tidy` directly. A bare configure has not run
+protoc, so none of the six generated `.pb.h` exist, every QuickShare translation unit fails
+to parse, and clang-tidy then emits a cascade of **spurious** findings on the wreckage —
+`method can be made static`, `pointee can be declared const` — none of which reproduce
+locally. Upstream's job has no build step because upstream's tree has no protobuf.
+
+`tools/verify.sh` already built before linting for exactly this reason; the workflow
+now does the same. The lesson generalises: when clang-tidy reports findings that a local run
+does not, check whether the translation unit parsed at all before believing any of them.
+
+### sway carries a file capability the container cannot grant
+
+```
+/usr/sbin/sway cap_sys_nice=ep
+/usr/sbin/sway: Operation not permitted        (exit 126)
+setsid: failed to execute sway: Operation not permitted
+```
+
+Arch's sway ships with `cap_sys_nice=ep`. Docker's default capability bounding set has no
+`CAP_SYS_NICE`, and `execve` of a binary carrying an **effective** file capability outside
+the bounding set fails with `EPERM` — so the failure happens before sway executes a single
+instruction, and the message comes from `setsid` rather than from sway.
+
+That last detail is what made it hard to read: `setsid: failed to execute sway` looks like a
+problem with the harness's launch line. It is not. `setcap -r` on the binary after install
+fixes it — sway wants `CAP_SYS_NICE` only for realtime scheduling, which a headless boot gate
+does not need, and dropping it works regardless of how the runner is configured, unlike
+`--cap-add`.
+
+**Diagnosing this took one probe step and no guesses.** `getcap` plus `sway --version` in the
+job printed the capability and the exit code, which is the entire answer. When an error is an
+`execve` failure rather than program output, print what you are about to execute.
+
+---
+
+## T32 — The CI container is a harsher environment than a nested compositor, and it found a real bug
+
+The first smoke run that actually reached the matrix on headless sway failed all six
+presets. Almost all of it was environment: no session bus, no system bus, no logind session,
+and none of `ddcutil`, `nmcli` or `hyprctl`. `smoke-ignore-headless.txt` exists for exactly
+this and is only read under `--compositor sway`, so those entries cost nothing on a real
+desktop, where every one of them is a genuine signal.
+
+One line was not environment:
+
+```
+WARN scene: @utils/SysInfo.qml[22:-1]: TypeError: Cannot call method 'split' of null
+```
+
+```qml
+readonly property string shell: Quickshell.env("SHELL").split("/").pop()
+```
+
+`$SHELL` is unset in a container, and `Quickshell.env` returns null rather than an empty
+string, so `.split()` throws. This is **not** a CI-only defect: a systemd service, a display
+manager session, or any process without a login shell hits it identically. The line directly
+above it already guards the same risk with `||`, which is what makes it a slip rather than a
+design choice.
+
+Guarded with `?.split("/").pop() ?? ""`. A sweep for the same shape — a method called
+straight on `Quickshell.env(...)` — found no other instance.
+
+**Why this is worth its own entry.** The nested-Hyprland matrix on a workstation cannot find
+this class of bug, because a workstation has `$SHELL`, a session bus and the hardware tools.
+Anything that reads the environment and assumes it is populated will pass there and fail in
+a container, a VM, or a minimal session — which is where users of a shell actually run into
+it. The CI leg is narrower in what it exercises and *wider* in what it can expose.
+
+The ignore entries were checked against the real log lines rather than written from memory,
+and the check included confirming that the `SysInfo` TypeError is still reported — an ignore
+list that swallowed it would have hidden the only real finding in the run.
+
+---
+
+## T33 — `forActive()` returns null by contract, and all 23 callers dereferenced it
+
+`services/ShellState.qml` is explicit about it:
+
+```qml
+function forActive(): ScreenState {
+    const mon = Hypr.focusedMonitor;
+    for (const s of states.instances)
+        if (Hypr.monitorFor(s.modelData) === mon)
+            return s;
+    return null;                     // <-- documented, and reachable
+}
+```
+
+`Visibilities.getForActive()` forwards it unchanged. A sweep of every call site found
+**23 of 23 dereferencing the result without a check**, across `modules/Shortcuts.qml` (20),
+`OsIcon.qml`, `NotificationsStatus.qml` and `Toggles.qml`.
+
+Two of them surfaced in CI on headless sway:
+
+```
+WARN scene: @modules/Shortcuts.qml[243:-1]: TypeError: Value is null and could not be converted to an object
+WARN scene: @modules/Shortcuts.qml[274:-1]: TypeError: Value is null and could not be converted to an object
+```
+
+Only two, because only those two paths happen to be driven by the IPC pass. The other 21 are
+the same bug waiting for a different keybind.
+
+**Why this was not put in the ignore list.** The headless list legitimately carries
+Hyprland-absence entries — `Unable to connect to Hyprland socket` and friends — and this
+failure is downstream of exactly that, so hiding it would have been consistent-looking. It is
+still an unguarded null dereference, which is a defect on any compositor: `focusedMonitor`
+is also null during startup before a monitor is focused, and across monitor hotplug. The sway
+run did not create the bug, it exercised it.
+
+All 23 now guard, in the style the handlers already used for `root.hasFullscreen`, with the
+return each function actually needs — `""` for `list()`, `"unknown"` for `isOpen()`, bare
+`return` for the rest.
+
+**The general point.** A function whose body contains `return null` has that in its contract,
+and a sweep for callers is worth doing the moment you see one. Finding the first instance by
+accident says nothing about how many there are: here the ratio was 2 observed to 23 present.
+
+### The guards then revealed that the sway leg was driving nothing
+
+With the crashes gone, the next run reported something quieter and worse:
+
+```
+WARN caelestia.qml.shortcuts: Drawer "dashboard" does not exist
+```
+
+`toggle()` tested `list().split("\n").includes(drawer)` first, and the guard makes `list()`
+return `""` when there is no active screen — so no drawer name is ever in that list and every
+toggle reported the wrong reason. The message blamed the drawer for the absence of a screen.
+
+Which exposed the real problem: `forActive()` returned null for the **entire** sway run, so
+the IPC drive had been a no-op there all along. Six presets booted and nothing was toggled.
+That is a gate that looks like coverage and is not — the same shape as T23, arrived at from a
+different direction.
+
+Two changes, both narrow:
+
+- `forActive()` and `componentsForActive()` fall back to the sole screen when there is
+  exactly one. `Hypr.focusedMonitor` is null during startup, across hotplug, and for any run
+  under another compositor; with one screen there is still only one answer to "the active
+  screen". With several screens and nothing focused there is no honest answer, so null stands
+  and the callers' guards still matter.
+- `toggle()` checks for the screen, then the drawer, in that order, so the warning names the
+  thing that is actually wrong.
+
+The lesson worth keeping: **fixing a crash can turn a loud failure into a quiet one.** The
+TypeErrors were at least visible. Had the guards been added without reading what replaced
+them, the sway leg would have gone green while testing less than before.
+
+### And once it was really driving, a third bug appeared
+
+```
+WARN scene: @modules/sidebar/News.qml[35:-1]: Error: Invalid write to global property "isFetching"
+```
+
+```qml
+xhr.onreadystatechange = function () {
+    ...
+    isFetching = false;          // writes a *global*, not the component's property
+};
+```
+
+A plain `function ()` has its own scope, so the component's properties are not visible inside
+it and QML rejects the assignment at runtime. The assignments in `fetchNews`'s own body a few
+lines above are fine — a QML function body does resolve against the component — which is what
+makes the two look identical and behave differently. Qualified with `root.`; a sweep for bare
+assignments inside `= function (…) {` callbacks found no other instance.
+
+This one had never run before: the news fetch only happens when the sidebar opens, and the
+sidebar only opened once `forActive()` stopped returning null.
+
+**That is the shape of every round of this.** Each fix peeled back a layer of environment
+noise or a crash, and something real was underneath it: `$SHELL` unset, then 23 unguarded
+null dereferences, then a drive that was silently doing nothing, then a QML scope error, then
+two more once the drive was actually opening panels. None of them are reachable from the
+nested-Hyprland matrix on a workstation.
+
+### The last two, both about things that are only sometimes there
+
+```
+@modules/sidebar/News.qml[41:-1]:      TypeError: Value is null and could not be converted to an object
+@modules/areapicker/Picker.qml[42:-1]: TypeError: Cannot read property 'name' of undefined
+```
+
+*News* — `root` itself was null. The XHR outlives the component: the drive opens the sidebar,
+the fetch starts, the drive closes it, the `Item` is destroyed, and the reply lands in a dead
+closure. A real race anywhere, needing only that the sidebar be closed inside the request
+window — which the drive does deterministically and a person rarely would.
+
+**And the first fix for it was wrong**, which is the more useful half of this entry. Guarding
+with `if (!root) return;` looks sufficient and is not: an object part way through teardown is
+still **truthy** while its methods have already gone, so the guard passes and the call fails
+one line later.
+
+```
+TypeError: Property 'parseNews' ... is not a function
+QQmlVMEMetaObject: Internal error - attempted to evaluate a function in an invalid context
+```
+
+That reached CI and failed 1 of 6 presets — intermittent, because it depends on where in
+teardown the reply lands. The guard was asking whether the object *exists*; the question is
+whether it is still *usable*.
+
+Testing the corpse is the wrong shape regardless. `Component.onDestruction` now aborts the
+request, so the callback cannot reach a dead component at all, and the callback checks
+`root.pendingRequest !== xhr` — which asks the real question ("is this still the request the
+live component is waiting for") and incidentally handles a superseded request too, which
+neither earlier version did.
+
+*Picker* — `mon.lastIpcObject.specialWorkspace` was assumed present. The binding already
+guarded `!mon`, which is the easy half: a monitor object can exist with an **empty**
+`lastIpcObject`, during startup before the first IPC reply and for an entire run under a
+compositor that is not Hyprland. Guarding the container and not its contents is a recurring
+shape here, and it is worth checking for whenever a guard already exists — the presence of
+one makes the missing one look handled.
+
+Both fixed with optional chaining and an early return, and both verified 12/12 locally under
+Hyprland, where neither condition arises.
+
+---
+
+## T34 — A fork's build reported upstream's version and upstream's commit
+
+`caelestia --version` on a build of this tree printed:
+
+```
+Version: 2.4.0
+Git revision: 750e67d93ac12b264cb8cbc3a1f2b8f429c923c2
+```
+
+That revision is `caelestia-dots/shell`'s HEAD. It is not in this repository at all — it is
+the string a user would paste into a bug report, naming code they are not running.
+
+The cause is one line near the top of `CMakeLists.txt`:
+
+```cmake
+set(REMOTE_REPO_URL "https://github.com/caelestia-dots/shell.git")
+```
+
+`VERSION` came from `git ls-remote --tags` against that URL and `GIT_REVISION` from
+`git ls-remote HEAD` against it. Correct for upstream, wrong for every fork, and it also
+made a plain `cmake -B build` require network access.
+
+Both now prefer the local checkout — `git describe --tags --abbrev=0` and `git rev-parse
+HEAD` — and fall back to the remote query only when there is no `.git`, which is the case
+that path was really for: a source tarball. Offline configures work as a side effect.
+
+The version *number* happens to be unchanged at 2.4.0, because Phase 2 merged upstream's
+tags along with its commits, so the nearest local tag is upstream's newest. Only the
+revision moved — which is the half that identifies the build.
+
+**What this cost me, and the lesson.** Four places in this repository — `crypto-test.sh`,
+`plugin-test.sh`, `verify.sh` and the README — carried a note saying "VERSION and
+GIT_REVISION are parsed from *remote* tags, and this repo has no remote yet, so a bare
+configure is a FATAL_ERROR". I wrote that from reading the word "remote" in the CMake and
+never ran the bare configure to check. It was wrong twice over: the remote is upstream's
+hardcoded URL rather than this repo's, so having no `origin` was never the issue, and a bare
+configure had always worked whenever the network was up. Passing `-DVERSION= -DGIT_REVISION=`
+was still harmless and is what CI does, so nothing failed — the explanation was simply
+fiction, repeated four times, and it took a passing test to expose it.
+
+**Reading code tells you what it says. Only running it tells you what it does.**
+
+---
+
+## T35 — `git push origin <branch>` succeeds while pushing nothing
+
+**Symptom:** every push reports success, the working tree is clean, and the commits are not
+on the remote.
+
+After PR #1 was merged I checked out `main` and kept working. The push command in my hands
+still said:
+
+```
+git push -q origin phase3/feature-flags
+```
+
+`phase3/feature-flags` had not moved, so that is a valid, successful, **empty** push. Two
+commits' worth of asset work sat unpushed while three consecutive pushes reported success,
+and — worse — CI never ran on them. `gh pr checks 1` kept returning green for the *merged*
+PR, so the staleness looked like confirmation.
+
+Three things conspired, and each is worth recognising on its own:
+
+- **A no-op push is not an error.** There is nothing for git to complain about.
+- **`-q` hides the one line that would have shown it.** Without `-q`, a real push prints
+  `9f9b6db0..e702406a  main -> main`; an empty one prints `Everything up-to-date`.
+- **The status query was pinned to a merged PR.** Checks on a merged PR never change again,
+  so it answers with history and looks like an answer about now.
+
+**What to do instead.** Push the branch you are on — `git push origin HEAD` — or check
+`git status -sb`, which prints `## main...origin/main [ahead 2]`. The local backup was
+unaffected because `git push backup --all` pushes every branch, which is why the work was
+never actually at risk.
+
+The general shape is the one this file keeps returning to: *a command that reports success
+for doing nothing is indistinguishable from one that did the work.* It is the same failure
+as the checkers that passed on an empty file list (T30) and the gate that could not fail
+(T23), arriving this time through a shell command rather than a script.
+
+---
+
+## T36 — The QML gate linted an hours-old snapshot of the tree
+
+`tools/qml-lint.sh` needs a `.qmlls.ini` to tell `qmllint` where our types live.
+Quickshell writes one as a **symlink into a VFS directory** — a *copy* of the QML tree made
+at the moment the shell booted:
+
+```
+.qmlls.ini -> /run/user/1000/quickshell/vfs/31ac3acb.../.qmlls.ini
+```
+
+The script regenerated it only when it was missing:
+
+```sh
+if [ ! -s .qmlls.ini ]; then    # regenerates ONLY when missing or empty
+```
+
+A stale-but-valid link therefore survived forever, and the linter resolved types against a
+snapshot of the tree as it had been hours earlier. Two consequences, in opposite directions:
+
+- **a newly added file does not exist.** Importing `services/Hotspot.qml` produced eight
+  `Unqualified access [unqualified]` warnings on `HotspotPage.qml` — against a correct file.
+  Every one was noise from a snapshot taken before the import.
+- **a deleted file still resolves.** The gate keeps passing code that references a type that
+  is gone. This is the dangerous direction, and it is silent.
+
+Fixed by regenerating when the snapshot no longer matches the tree. Two tests, because
+neither alone is sufficient:
+
+- **mtime** — any `.qml` newer than the link. Catches additions and edits. It must use
+  `git ls-files --cached --others --exclude-standard`: plain `git ls-files` lists only
+  *tracked* files, and a freshly imported `.qml` is untracked at exactly the moment it needs
+  to be picked up. Keying on tracked files alone misses the one case the check exists for,
+  and *appears* to work because some unrelated file is usually newer.
+- **path set** — the `.qml` paths on disk versus those in the VFS. mtime is structurally
+  blind to a deletion: removing a file leaves every survivor older than the link.
+
+Verified in both directions by adding and then removing a `pragma Singleton` probe under
+`services/` and checking the VFS contents each time.
+
+## T37 — `--check` was not a flag, and a "dry run" rewrote 243 files
+
+`tools/qml-section-order.py` writes by default and takes `--dry-run`/`-n`. It parsed
+its arguments like this:
+
+```python
+args = [a for a in sys.argv[1:] if not a.startswith("-")]
+dry_run = "--dry-run" in sys.argv or "-n" in sys.argv
+```
+
+Anything beginning with `-` that was not one of those two was **silently discarded**. So
+`--check` — the obvious guess, and the spelling the sibling checker's own docs use — parsed
+as "no flags at all", and a run intended to *measure* a blast radius rewrote 243 of 367
+files. It reported the damage in the past tense, `rewrote 243 of 367 file(s)`, which read as
+the dry-run summary it was supposed to be.
+
+Nothing was lost — the changes were cosmetic and `git checkout --` restored them — but one
+file showed the rewrite was not purely whitespace: a comment moved across a blank line and
+re-attached itself to the *next* member, so a note about `anchors.fill` came to sit above
+`layer.enabled` and now documents the wrong thing.
+
+Unknown flags are now a usage error (exit 2) and `--check` is a real dry-run alias. For any
+tool that writes by default, an unrecognised flag must never degrade to "write everything".
+
+## T38 — `qmlformat` on `PATH` is not the `qmlformat` the gate runs
+
+```
+$ which qmlformat && qmlformat --version
+/usr/bin/qmlformat
+qmlformat 1.0
+$ /usr/lib/qt6/bin/qmlformat --version
+qmlformat 6.11.2
+```
+
+`check-format.yml` and `tools/verify.sh` both call the absolute Qt6 path. Typing the
+bare name gets a different binary with a different idea of correct formatting, so files
+formatted by hand with `qmlformat -i` come out *drifted* against the gate — which is how
+three freshly formatted files failed the format check immediately after being formatted.
+Always use `/usr/lib/qt6/bin/qmlformat`, as the scripts do.
+
+## T39 — Fixing a rule the sibling checker already fixes
+
+Chasing T36 I started teaching `qml-section-order.py` to insert the blank line that
+`missing-section-separator` wants. Two things were wrong with that, and both are worth
+remembering before extending either tool.
+
+First, `scripts/qml-lint-conventions.py` **already has** `fix_section_separators()` and a
+`--fix` mode. Our tool exists for exactly one reason: `section-order` is the rule upstream's
+checker reports but cannot fix. Anything else it "fixes" is duplicated logic that can drift.
+
+Second, it *did* drift, immediately. Reusing the tool's existing `join()` — whose blank-line
+rule is the stricter aesthetic one, blanking around any multiline member even inside a
+single section — would have rewritten **243 of 367 files and 858 bodies the gate does not
+object to**. A hand-written narrow version still disagreed at 12 sites, because this tool
+classifies attached properties (`Layout.fillWidth: ...`) as bindings while the checker
+returns `None` for them and cannot see them at all. The fixer saw a section transition where
+the gate saw nothing.
+
+Churning upstream-shaped files to satisfy a rule the gate is not enforcing buys nothing and
+costs merge conflicts against three upstreams. Run `qml-lint-conventions.py --fix`.
+
+## T40 — The presets README claimed a guarantee the matrix does not check
+
+`presets/README.md` said of the `all-on`/`all-off` pair:
+
+> they prove a flag gates *instantiation* rather than visibility, because the components a
+> preset turns off report zero instantiations, not zero visible pixels
+
+Nothing measures that. `run_preset()` in `smoke-matrix.sh` asserts exactly three things: the
+shell is still alive when the timeout fires (`rc == 124`), the log carries no `ERROR` or
+`WARN` surviving `filter_ignored`, and every IPC call driven by `drive_shell` answers. There
+is no instantiation count anywhere in the harness, and no component reports one.
+
+So `all-off` proves a disabled feature does not *break* or *warn*. A feature gated with
+`visible: false` — precisely the mistake the rule exists to prevent — passes `all-off` and
+`all-on` both.
+
+The claim is now corrected in place rather than deleted, because the underlying rule is
+still right; it is enforced by review (the `feature-import` skill, the `qml-reviewer` agent)
+rather than by the harness. A real instantiation census is worth building.
+
+This is the third time in this project a documented guarantee turned out to be unmeasured —
+after the gate that could not fail (T23) and the checkers that passed on an empty file list
+(T30). The pattern is worth stating plainly: **a sentence in a README asserting that a gate
+proves something is not evidence that it does.** Read the assertion in the script.
+
+## T41 — OP's hotspot ships one Wi-Fi password for every install, and logs it
+
+Three findings in `services/Hotspot.qml`, all in the credential path, found while importing
+it. None is as severe as the pattern lock (T3, D10) — the user has to deliberately start an
+access point — but the first is a real vulnerability and the fix is a deletion.
+
+**A published default PSK.** The service declared:
+
+```qml
+property string password: "caelestia1234"
+```
+
+`start()` passes that to `nmcli device wifi hotspot ... password <psk>`. The important part
+is what the constant displaces. From `nmcli(1)`:
+
+> password — password to use for the created hotspot. **If not provided, nmcli will generate
+> a password.**
+
+So NetworkManager's behaviour is already correct: omit the argument and every install gets
+its own WPA key. OP's constant *overrides* that per-install secret with a value published in
+a public GPL repository. Anyone in radio range who has read the source is on the network,
+and on the LAN behind it. Fixed by making the default empty — a deletion, not a mechanism.
+No RNG is needed in QML, because the one in NetworkManager was there all along.
+
+**The generated key was logged in plaintext.** `startProc`'s stdout handler did:
+
+```qml
+console.log("[Hotspot stdout]", line);
+```
+
+and printing the password is exactly what that stdout is *for* — `nmcli -s dev wifi hotspot`
+is the documented way to learn a generated one. So the WPA PSK went into the shell log and
+the journal on every start. The handler is now empty.
+
+**The generated key never reached the user.** Nothing re-read the connection after a
+successful start, so with no default password the settings field would have stayed blank and
+the user would have had no way to see what nmcli chose. `onExited` now calls
+`readSavedConfig()` on success; `readConfigProc` already runs `nmcli -s` and populates the
+field, which the page renders masked with a reveal toggle.
+
+The general shape: **a hardcoded credential is worth checking against what the tool does
+without it.** Here the "default" was not filling a gap, it was overwriting a better answer.
+
+## T42 — Fixing the version for a bare build left every gate build reporting nothing
+
+T34 fixed a fork that reported *upstream's* version and *upstream's* commit, by preferring
+the local checkout. It did not fix the other caller. `tools/verify.sh` and
+`.github/workflows/build.yml` both configure with
+
+```
+-DVERSION= -DGIT_REVISION=
+```
+
+on purpose, so the gate never touches the network and does not depend on how the tree is
+tagged. But `-DVERSION=` makes the variable **defined and empty**, and both detection blocks
+in `CMakeLists.txt` are guarded by `if(NOT DEFINED VERSION)`. Defined-but-empty skips them
+both, so `project(caelestia-shell VERSION ${VERSION} ...)` received no value at all:
+
+```
+CMake Warning at CMakeLists.txt:80 (project):
+  VERSION keyword not followed by a value or was followed by a value that
+  expanded to nothing.
+```
+
+That warning is printed on every configure in the gate and in CI, and it is not cosmetic:
+`extras/version.cpp` prints `VERSION` and `GIT_REVISION` verbatim, so every gate- and
+CI-built binary answered `caelestia --version` with two empty lines.
+
+Fixed by substituting placeholders immediately before `project()` — `0.0.0` and `unknown` —
+rather than by falling back to detection. Falling back would reintroduce exactly the network
+dependency the empty values exist to avoid: with no tags, local detection fails through to
+the remote `git ls-remote` query. A build that says `0.0.0` is honest about being an
+unversioned build; one that says nothing looks broken.
+
+Both paths are verified, because fixing one had already broken the other once:
+
+| configure | version | revision |
+|---|---|---|
+| bare | `2.4.0` | the real local HEAD |
+| `-DVERSION= -DGIT_REVISION=` | `0.0.0` | `unknown` |
+
+The shell's own version -- `CUtils.version`, which the About page and the Software rows show --
+is a second string on top of those placeholders: the top-level CMakeLists derives it from a
+local `git describe` and bakes it into `AETHER_VERSION`, so the gate keeps its no-network
+property. Without it every gate-built shell reported `v0.0.0`, which names nothing a bug
+report could be checked against. `extras/version.cpp` keeps printing the raw placeholders.
+
+The format is SemVer with the distance from the last release tag as the pre-release counter:
+
+| state | `CUtils.version` |
+|---|---|
+| HEAD is the tag | `2.5.0` |
+| 978 commits past `v2.5.0` | `2.6.0-dev.978+g8867aae` |
+| ... with uncommitted changes | `2.6.0-dev.978+g8867aae-dirty` |
+| no reachable tag (shallow clone) | `0.0.0-dev.<commit count>+g<sha>` |
+
+It replaced a bare `r<short sha>`, which told you which commit you had but never which build
+was newer: a sha has no order, and SemVer deliberately ignores build metadata (`+<sha>`) when
+comparing. `dev.N` is a numeric pre-release identifier, which SemVer *does* order, so two
+builds compare by themselves and both still name their commit. Bumping the tag's minor number
+names the release the build is heading for; a tagged checkout is exact and keeps no counter.
+
+The lesson is narrower than T34's and worth keeping separate: **a variable can be set and
+still be empty, and `if(NOT DEFINED)` does not notice.** The guard has to match how callers
+actually pass the value, not how you imagine they do.
+
+## T43 — A pairing agent that claims the default role and cannot answer
+
+`scripts/bt-agent.py` does not merely offer to handle pairing:
+
+```python
+manager.RegisterAgent(AGENT_PATH, AGENT_CAPABILITY)
+manager.RequestDefaultAgent(AGENT_PATH)
+```
+
+`RequestDefaultAgent` makes it the **system** BlueZ pairing agent for the session. Every
+pairing request on the machine is then routed to this process, and to no other.
+
+OP starts it at shell init — `shell.qml` has `Component.onCompleted: void(BtAgent.active)`,
+commented "Force BtAgent singleton to initialize at startup" — while mounting the dialog that
+answers it in exactly one place: `modules/nexus/pages/bluetooth/BluetoothPairing.qml`. So for
+the whole time the Nexus Bluetooth pairing page is *not* open, which is essentially always,
+the agent holds the default role with no UI able to respond. A pairing request arriving in
+that window — a phone initiating to this machine — is taken from whatever agent would
+otherwise have served it and then left unanswered until BlueZ times out.
+
+The failure is worse than not having an agent, because it is *silent* and it displaces a
+working one. Nothing logs, nothing prompts; pairing simply stops working, and it looks like a
+Bluetooth problem rather than a shell one.
+
+Fixed here by tying the agent's lifetime to the dialog's, not to the shell's:
+
+- the dialog is a `Loader` in `modules/nexus/Nexus.qml`, gated on `aether.features.btAgent`,
+  overlaying the whole Nexus window rather than one page. `PageBase` takes a single
+  `default property Item contentChild` and cannot host a sibling overlay, so the page was
+  never the right host anyway — mounting it there is what forced OP's narrow scope.
+- there is no eager load in `modules/ServiceLoader.qml`. Loading the dialog is what creates
+  the `BtAgent` singleton, which is what spawns the Python process, which is what registers
+  with BlueZ. One chain, one switch.
+
+The tradeoff is stated rather than hidden: we answer pairing requests while the Nexus window
+is open, and the rest of the time the desktop's own agent keeps the role it already had.
+That is a smaller feature than OP appears to offer, and a working one instead of a broken one.
+
+The general shape, and the reason this is worth a trap rather than a commit message: **taking
+over a system-wide role is a commitment to service it.** Registering as the handler for
+something is not a passive optimisation, and the cost of holding a role you cannot fulfil is
+paid by the user, silently, in a subsystem they will not think to blame.
+
+**What is not verified.** The smoke matrix boots with `btAgent` on and passes, which proves
+the schema accepts the key (an unknown one warns, and the matrix fails on warnings) and that
+nothing regressed. It does not exercise the agent at all: the matrix never opens the Nexus
+window, so the `Loader` never activates and the Python process never starts. `bt-agent.py`
+is checked only for parsing and byte-compilation, and `python-dbus`/`python-gobject` are
+confirmed importable.
+
+Actually pairing a device is untested, and deliberately so: the only way to test it is to run
+the agent, which claims the machine's default pairing agent role and would disrupt whatever
+holds it. That needs a real device and a person watching, like the QuickShare receive path
+(T27). Do not read a green matrix as evidence that pairing works.
+
+## T44 — The component audit missed a dual implementation, and the flag already gated it
+
+`AGENTS.md`'s "Component reality" table is the evidence behind D3 — feature flags rather than
+implementation selectors — because the forks were found to be ~90% disjoint, with only four
+components implemented by both. One row was wrong:
+
+```
+| Overview | 12 files | — | no — only OP |
+```
+
+MiDnight ships `modules/drawers/WorkspaceOverview.qml`. It is 447 lines. It has been in this
+tree since Phase 0, because MiDnight is the D1 baseline, and `aether.features.overview` has
+been gating it from `modules/Shortcuts.qml` this whole time — both the `workspaceOverview`
+shortcut and the `toggle("workspaceDrawer")` IPC path.
+
+So the flag named after OP's feature has, since it was introduced, been switching MiDnight's.
+Nothing misbehaved, and that is the point: a boolean called `overview` gating *an* overview
+looks correct from every direction except a file listing.
+
+Both are workspace overviews — MiDnight's shows each workspace's windows with drag-to-move and
+click-to-focus, OP's adds a carousel and an all-windows grid. Different designs of the same
+component, which is exactly what the table means by a dual site. There are five, not four.
+
+The consequence is a piece of work *not* done. The `feature-import` skill listed Overview as a
+straightforward OP import, and importing those 12 files behind `aether.features.overview` would
+have produced two overviews fighting over one boolean — the implementation-registry design D3
+and D5 exist to prevent. It is now marked "do not import": either leave it, or promote
+`overview` to `aether.variants` in Phase 7 (four entries to five, inside D4's cap of ~6). The
+list was later trimmed to three when the lock centre proved unimportable (D10).
+
+How it was found is worth keeping. Not by auditing the table, but by asking a mechanical
+question before starting the next import — *which flags have consumers, and do the directories
+they name exist?* `modules/overview/` was absent while `features.overview` had a live consumer.
+A flag whose feature directory does not exist is either dead or pointing somewhere unexpected,
+and it takes one command to ask:
+
+```sh
+for f in <flags>; do grep -rl "features\.$f\b" --include='*.qml' modules/ services/ shell.qml; done
+```
+
+**A locked decision is only as good as the audit under it, and audits are checkable.** D3's
+conclusion survives — the forks really are mostly disjoint, and four-versus-five dual sites does
+not change the design. The table under it needed a correction, and AGENTS.md's "do not
+re-litigate without new evidence" is a bar to clear, not a door that is closed.
+
+### The same question found a larger error in the work plan
+
+Asking it of the rest of the `feature-import` skill's "Known import notes" turned up three more
+rows describing work that does not exist. Every `midnight` row was already in the tree:
+
+| row | claim | reality |
+|---|---|---|
+| Wallpaper features | "`services/Wallpapers.qml` is 125→486 lines … needs the merged CLI" | **525 lines in this tree.** Upstream 125, MiDnight 486, merged forward in Phase 2. |
+| Clipboard / emoji | "Launcher entries; needs CLI subcommands" | `modules/launcher/services/{Clipboard,Emojis}.qml` present, both flags gating them. |
+| Shimeji / Bad Apple / Dino | "46 + 74 + 8 asset files with unresolved licensing" | `modules/shimeji/` present, all three flags gated; the encumbered assets were removed and replaced with generated originals earlier. |
+
+The cause is structural rather than careless, which is why it is worth recording. **D1 makes
+MiDnight the baseline**, so every MiDnight feature arrived with the Phase 0 fork and was merged
+forward in Phase 2. A table of "features from the forks" is only a work list for the *other*
+fork; for the baseline it is a description of what is already here. Both halves read
+identically, and nothing in the table said which was which.
+
+What survives in those rows is the residual: `--extract-thumbs` and the clipboard/emoji
+subcommands live in `caelestia-dots/cli`, a **separate repository** (D6), not in this one. That
+is a real dependency, and it is the actual reason those features are not finished — not a
+pending import.
+
+Net effect on the plan: of nine rows, two are done (Hotspot, BtAgent), three were never work,
+one is blocked on security (pattern lock, T3/D10), two need a design decision before any port
+(Dock, Overview — both collide with a flag that already gates MiDnight's version), and two are
+genuinely open (GPU detection, theme manager). The roadmap was roughly half description.
+
+## T45 — I filtered `Info:` out of the QML gate and called it clean
+
+`lint-qml` failed on PR #4 with one line:
+
+```
+Info: services/BtAgent.qml:8:1: Unused import [unused-imports]
+import qs.services
+```
+
+`tools/qml-lint.sh` had reported this correctly, locally, before the push. It was not
+seen because of how it was *checked*:
+
+```sh
+./tools/qml-lint.sh 2>&1 | grep -E '^(Warning|Error)' || echo "clean"
+```
+
+qmllint emits three severities and that grep matches two. CI's rule is
+`test -z "$lint_out" || exit 1` — **any** output fails, `Info` included. So the filter dropped
+exactly the diagnostic that mattered and printed the word "clean".
+
+The script's own contract was right all along: it `cat`s the output and exits non-zero if the
+file is non-empty. Running it and reading `$?` would have caught this; wrapping it in a grep
+replaced its verdict with a different, weaker one.
+
+**Check a gate by its exit status, not by grepping its output.** A gate that already knows how
+to fail does not need help deciding, and any filter placed between it and the verdict is a
+second, unreviewed gate — one written in the moment, with no test, and biased toward the answer
+that lets work proceed. This is the same shape as T23 (a gate that could not fail), T30
+(checkers passing on an empty file list) and T35 (`git push` reporting success while pushing
+nothing): *the check passed* and *the check was performed* are different claims.
+
+The finding itself was real and pre-existing. `Toaster` is a C++ type registered by
+`plugin/src/Aether/toaster.cpp`, so it arrives with `import Aether`; `BtAgent.qml` uses
+only that and `GlobalConfig`, and OP's `import qs.services` was dead in the source. Removed.
+
+## T46 — The pairing agent outlived every shell that started it
+
+Running the smoke matrix a few times left this behind:
+
+```
+$ pgrep -af bt-agent.py
+231891 /usr/bin/python3 -u .../scripts/bt-agent.py
+233168 /usr/bin/python3 -u .../scripts/bt-agent.py
+233807 /usr/bin/python3 -u .../scripts/bt-agent.py
+248661 ... 249927 ... 250566 ...
+```
+
+Six orphans, one per run. Each had called `RequestDefaultAgent` and so held the **system**
+BlueZ pairing agent role, and none of them was reachable any more: the shell that owned their
+control socket was gone. Every shell restart leaks another, and the newest one wins the role
+while the previous five sit on the bus. On a developer's machine that is six stray processes;
+on a user's, it is pairing that silently stops working after the first shell restart, in the
+way T43 describes, except now caused by *our* own leftovers.
+
+`bt-agent.py` handles `SIGTERM` correctly -- it unregisters from BlueZ and quits. Nobody was
+sending it one. Quickshell does not reliably reap this child when it is itself killed, which
+is exactly what `timeout -s TERM` does to it at the end of every matrix run.
+
+Fixed inside the agent rather than by hoping the parent tidies up, because the agent is the
+one process that knows it must not outlive its owner:
+
+```python
+libc.prctl(PR_SET_PDEATHSIG, signal.SIGTERM, 0, 0, 0)
+if os.getppid() == 1:      # parent died in the fork/exec window; the signal is already lost
+    sys.exit(0)
+```
+
+Linux-only, which is fine -- this shell does not run anywhere else. The existing signal
+handler then unregisters on the way out, so the role returns to the desktop's own agent.
+
+Verified by spawning the agent from a parent that is then killed, and checking `/proc/<pid>`
+two seconds later: alive before, gone after.
+
+Two general points worth keeping:
+
+- **A child that claims a system-wide role must own its own lifetime.** Relying on the parent
+  to clean up means every abnormal exit -- a crash, a `kill -9`, a test harness -- leaves the
+  role held by something that cannot serve it.
+- **The leak was invisible to every gate.** The matrix passed 6/6 while doing this, because it
+  measures the shell's log, not what the shell leaves running. It was found by looking at
+  `pgrep` after a run, on a hunch, not by any check in this repository.
+
+### The first fix did not work, and the orphans said why
+
+`PR_SET_PDEATHSIG` alone was not enough. It was verified in isolation -- spawn a child from a
+Python parent, kill the parent, watch the child go -- and it passed. Under quickshell it does
+not: a later matrix run left a fresh orphan, reparented to `systemd --user`. The signal fires on
+the death of the *thread* that forked the child, and Qt's spawn path gives no guarantee about
+which thread that is. **A mechanism verified on a stand-in parent is not verified for the real
+one.**
+
+The replacement watches `os.getppid()` from a daemon thread and acts when it changes, which is
+indifferent to how the process was started or which signal killed the shell.
+
+Its first draft raised `SIGTERM` at itself so the existing handler could unregister from BlueZ
+cleanly. The orphans then demonstrated why that is not enough either:
+
+```
+$ kill -TERM 231891 233168 233807 248661 249927 250566
+$ ps -eo pid,args | grep -c bt-agent
+6
+```
+
+**All six ignored SIGTERM and needed SIGKILL.** A Python signal handler only runs between
+bytecodes, and this process spends its life inside GLib's main loop in C, so the signal is
+accepted and never acted on. A watchdog that politely requests an exit it cannot enforce is the
+exact bug it exists to fix. It now asks, waits three seconds, and calls `os._exit(0)`.
+
+Verified the way the first attempt was not: full matrix runs, counting agent processes
+afterwards. Zero.
+
+## T47 — Adding an enumerator has two homes, and only one of them fails loudly
+
+Adding `Intel` to `GpuType` touches two places, and they fail in opposite ways.
+
+The config side is safe. Enums are serialised **by name** -- `EnumCodec::encode` writes
+`m_metaEnum` keys and `decode` compares strings case-insensitively -- so an existing
+`shell.json` saying `"gpuType": "nvidia"` keeps working wherever the enumerator sits, and an
+unknown name is rejected with a diagnostic rather than silently mapped to whatever now
+occupies that slot.
+
+`modules/nexus/pages/ServicesPage.qml` is not:
+
+```qml
+// GPU types, ordered to match config::GpuType (Auto, Nvidia, Generic, None)
+readonly property list<MenuItem> gpuItems: [ ... ]
+```
+
+That list is indexed by **ordinal**. Insert an enumerator anywhere but the end and every entry
+after it labels the wrong type -- the dropdown reads "Generic" and sets `None` -- and nothing
+detects it. Not the compiler, which never sees the QML; not `qmllint`, which sees a valid list
+of `MenuItem`; not the smoke matrix, which boots the page fine because the list is the right
+*length*. The only symptom is a settings menu that lies.
+
+So `Intel` is appended rather than slotted next to `Nvidia` where it reads better, and the
+comment in both files now says the list is ordinal-coupled and must be appended to.
+
+The general shape: **serialising by name buys safety at the persistence layer and none at all
+in a UI that indexes by position.** When a type is duplicated as a literal list somewhere, the
+duplicate is the copy that will rot, and its only protection is a comment pointing at the
+original.
+
+## T48 — The local QML gate passed on output that fails CI
+
+`tools/qml-lint.sh` ended like this:
+
+```sh
+[ "$size" -eq 0 ] && exit 0
+exit "${rc:-1}"          # rc is qmllint's own exit code
+```
+
+Empty output passes; anything else defers to qmllint. That looks careful and is wrong, because
+**qmllint exits 0 when every diagnostic it printed is `Info`-level**. So the script printed
+
+```
+Info: modules/launcher/items/ThemeItem.qml:6:1: Unused import [unused-imports]
+```
+
+and exited **0**. CI's rule is `test -z "$lint_out" || exit 1` — *any* output fails — so the same
+tree passed locally and failed `lint-qml` in CI. Twice.
+
+This is the sequel to T45 and the more serious half of it. There the mistake was mine: I wrapped
+the gate in `grep -E '^(Warning|Error)'`, which dropped `Info`. The fix was "check a gate by its
+exit status, not by grepping its output" — and that fix would not have helped here, because the
+exit status itself was wrong. A gate can only be trusted as a verdict if its exit code encodes
+the same contract the real gate enforces.
+
+Fixed by making any output exit 1, matching lint.yml verbatim. The tree was already clean under
+the stricter rule, so nothing else moved.
+
+**Both directions of a gate need a test.** T23 established that a gate nobody has watched fail is
+not known to work; this adds the other half — a gate nobody has watched *pass on known-bad input*
+is not known to be strict enough. The `--self-test` in `smoke-matrix.sh` does exactly that for the
+matrix.
+
+`qml-lint.sh` now has one too, and its probe is deliberately an **Info-level** finding — an
+unused `import QtQml` in an `Item`. A Warning-level probe would have passed even with the bug
+present and proved nothing; a self-test has to exercise the boundary the gate actually got
+wrong. Validated by putting the bug back and watching it fail:
+
+```
+$ # final line changed back to `exit "${rc:-1}"`
+$ ./tools/qml-lint.sh --self-test
+FAIL self-test: the gate PASSED a file with a known Info-level finding.
+     It is not enforcing what lint.yml enforces (`test -z "$lint_out"`).
+```
+
+It runs in `verify.sh` and in `lint.yml`, so the gate's strictness is now itself gated.
+
+### A second, smaller trap in the same file
+
+The fix was a `// qmllint disable unused-imports` on the import line. It was originally written
+as a comment block *above* the import — and `scripts/qml-lint-conventions.py --fix` rewrites the
+import block and drops comments inside it, so the disable silently vanished and left an orphaned
+`// qmllint enable` behind. The directive has to be **inline on the line it applies to**, which
+survives both that fixer and `qmlformat`.
+
+And a third, found by the newly-strict gate within a minute of fixing it: the explanatory
+comment written to document all this began "qmllint does not count a type used only in ...",
+and **any comment whose text begins with the linter's name is parsed as a directive**. That
+sentence became a directive with unknown categories `not` and `count`:
+
+```
+Warning: ThemeItem.qml:12:7: qmllint directive on unknown category "not" [invalid-lint-directive]
+```
+
+Keep the tool's name out of the leading position when writing prose about it. The stricter
+exit code paid for itself immediately.
+
+Also verified inline rather than assumed: the disable survives a `--fix` pass followed by
+`qmlformat -i`, which is the sequence that destroyed the block-comment form.
+
+
+## T49 — One GPU's name beside another GPU's usage
+
+The dashboard on a hybrid laptop -- an Intel HD 4000 iGPU and an AMD Radeon HD 8750M dGPU --
+read:
+
+```
+GPU  HD 4000     68°C     Usage 0%
+```
+
+Every part of that is produced correctly and the whole is wrong. The name and the number come
+from **different graphics cards**.
+
+`Gpu::finishNameSource` picked the type like this:
+
+```cpp
+if (!name.isEmpty())              setType(Nvidia);
+else if (!m_busyFiles.isEmpty())  setType(Generic);   // <- taken
+else                              setType(intelGtDirs().isEmpty() ? None : Intel);
+```
+
+`gpu_busy_percent` is an amdgpu attribute, so `m_busyFiles` held the *discrete* card and the
+type resolved to `Generic` before the Intel branch was ever reached. Usage therefore came from
+the AMD card, which is runtime-suspended whenever nothing is using it and reads a flat 0
+forever. The **name** came from `glxinfo -B`, which reports whatever holds the GL context --
+the Intel iGPU, because that is what Hyprland composites on. `lspci` would have agreed with
+glxinfo for a different reason: it lists the integrated GPU first, since its PCI slot is lower.
+
+Two fixes, because there are two faults:
+
+- **Prefer a card that is awake.** Busy files whose `device/power/runtime_status` reads
+  `suspended` are dropped before the type is chosen, so a sleeping dGPU no longer shadows a
+  working iGPU. When the discrete card wakes for a game it is preferred again, which is the
+  right answer in both states.
+- **Name the card the numbers come from.** When a `Generic` card is selected its PCI slot is
+  recorded, and the `lspci` parse prefers the line for that slot instead of the first display
+  controller. Single-GPU machines are unaffected: with no preference set the old behaviour is
+  exactly what runs.
+
+**This was unreachable in development.** The dev machine is a VMware VM whose adapter exposes
+no `gpu_busy_percent`, no `gt` directory and no rc6 counter, so `m_busyFiles` was always empty
+and the branch that shadowed Intel could never be taken. It took a real laptop with two GPUs,
+and it was found by reading a photograph of a dashboard rather than by any gate in this
+repository.
+
+A diagnostic mistake is worth recording alongside it, because it nearly sent the fix the wrong
+way. Asked to look for the counter, I suggested:
+
+```sh
+find /sys/class/drm/ -name '*rc6*'      # printed nothing
+```
+
+`/sys/class/drm/card1` is a **symlink**, and `find` does not follow symlinks without `-L`. The
+file was there the whole time. The output said "this hardware has no rc6 counter", the truth
+was "this command cannot see it", and the next step would have been to add legacy sysfs paths
+that were never needed. Use `find -L` under `/sys/class`, or list the resolved directory.
+
+## T50 — A frozen counter reads as 100% busy, and looks entirely plausible
+
+With the hybrid-GPU fix from T49 in place, the same laptop then reported:
+
+```
+GPU  HD 4000     73°C     Usage 100%
+```
+
+The name was right, the temperature was right, and the number was nonsense: the machine was
+idle. The hardware said so plainly once asked:
+
+```
+rc6_enable: 1
+rc6 before/after 5s: 2500 -> 2500   (delta 0 ms)
+freq act/min/max: 350 / 350 / 1100
+```
+
+`rc6_residency_ms` counts milliseconds the GPU spent asleep, and usage is
+`1 - (delta_rc6 / delta_wall)`. The counter was **frozen at 2500** -- it accumulates briefly
+after boot on this Ivy Bridge and then stops while a display is being driven, despite
+`rc6_enable` reading 1. A delta of zero makes that formula return exactly 1.0, every tick,
+forever. Meanwhile the frequency files said the GPU was pinned at its minimum, 350 of 350-1100,
+which is as idle as a GPU gets.
+
+The fix is not "fall back when the delta is zero", and the reason is worth keeping. **A
+genuinely saturated GPU never sleeps either, and produces exactly the same zero delta.** The
+two cases are indistinguishable in a single sample. What separates them is history: a working
+counter advances sooner or later; a broken one never does. So rc6 is trusted only after it has
+been *seen to move*, and until then the frequency estimate carries the reading -- which is the
+correct answer in both ambiguous cases anyway, since a busy GPU also clocks up.
+
+Two things this is worth remembering for:
+
+- **A plausible number is not a validated one.** 0% was obviously suspicious and got
+  investigated (T49). 100% was equally wrong and looked like a real reading of a real load.
+  The frozen counter was found only because the owner said "everything looked weird" and ran
+  three `cat`s.
+- **Deriving a rate from a monotonic counter needs a liveness check.** The counter existing,
+  being readable, and being nominally enabled were all true here and none of them meant it was
+  counting. `rc6_enable: 1` is documentation of intent, not evidence of function.
+
+## T51 — I fixed the hybrid GPU by deleting the evidence
+
+The T49 fix preferred a GPU that was awake, like this:
+
+```cpp
+m_busyFiles.removeIf([](const QString& f) { return isRuntimeSuspended(cardDirFor(f)); });
+```
+
+`m_busyFiles` is enumerated **once at construction**, with a comment saying so -- "the card set
+is static at runtime". Removing entries from it is permanent. And the removal ran inside
+`finishNameSource`, which happens once, at startup.
+
+On the test laptop the discrete card was awake at that moment, so it survived the filter and
+the type resolved to `Generic`. A minute later it suspended. Nothing re-evaluated: usage kept
+reading a sleeping card's `gpu_busy_percent`, `gpuPciAverageTemp()` found no readable sensor,
+and the temperature fell to **0 °C and stayed there** -- while the CPU-package fallback sat
+unused, because it is keyed on the type being `Intel` and the type was still `Generic`.
+
+Three separate mistakes, worth separating:
+
+- **Destructive filtering of a cached enumeration.** The suspended entries were not skipped,
+  they were deleted, so the dGPU could never be chosen again even after waking. The fix filters
+  into a new list at the point of use and leaves `m_busyFiles` intact.
+- **A one-shot decision about dynamic state.** Runtime PM status changes constantly; resolving
+  the type once at startup and never again cannot be right. `tick()` now checks whether the
+  resolved type still matches reality and re-resolves when it does not -- which also re-runs
+  the name probe, keeping the name and the numbers describing the same device.
+- **Re-resolution had to be rate-limited.** `resolveGpu()` spawns `nvidia-smi`, `glxinfo` and
+  `lspci`. A card flapping at tick rate would spawn them every tick, so there is a 5s floor.
+
+The pattern, and the reason this is the third GPU trap in a row: **each fix was verified
+against the state the machine happened to be in when I looked.** T49 was found in one state,
+T50 in another, and this one only appeared a minute after boot, when the hardware changed state
+on its own. Hardware that has modes needs testing in each mode, and "it looked right when I
+checked" is the weakest evidence in this file.
+
+### The live version oscillated, and the fix was to stop tracking state at all
+
+Re-resolving on suspend transitions worked -- and produced a dashboard that swapped which GPU
+it was describing roughly every half minute, as the discrete card slept and woke on its own.
+Correct on each tick, useless as a display.
+
+The mistake was the choice of signal. `runtime_status` answers "is this card awake", which is
+dynamic by nature, so any rule built on it inherits the flapping. The question actually worth
+asking is "which card is on the screen", and that is answered by connector ownership:
+
+```
+/sys/class/drm/card1-LVDS-1  -> ../../devices/pci0000:00/0000:00:02.0/drm/card1/...
+/sys/class/drm/card1-DP-1    card1-HDMI-A-1    card1-VGA-1
+```
+
+All four connectors belong to `card1`, the Intel chip. `card0`, the AMD one, owns none -- it is
+a muxless render-offload device that drives no display and does nothing unless `DRI_PRIME`
+targets it. The card with the connectors is the one the compositor renders on, its numbers are
+always live, and **connector ownership does not change while the shell runs**.
+
+So the suspend tracking, the tick-time re-resolve and the rate limiter that guarded it were all
+deleted. The selection is static again and reads as four plain cases: a display-owning card
+with a busy file, an Intel `gt` when the screen belongs to the iGPU, a busy file with no
+connectors anywhere (headless or offload-only), and nothing.
+
+**A dynamic signal produced a dynamic bug.** Two fixes were spent making the flapping
+well-behaved before asking whether the thing being tracked was the right thing to track.
+
+## T52 — An import brought a system dependency the dev machine already had
+
+`modules/lock/PowerConfirm.qml` came from OP using `FastBlur` and `OpacityMask`, both from
+`Qt5Compat.GraphicalEffects`. Every local gate passed: qmllint clean, conventions clean, smoke
+matrix 7/7. CI then failed *everything*:
+
+```
+Warning: PowerConfirm.qml:96:13: unknown grouped property scope anchors. [unqualified]
+  all-off          FAIL  (exited early, rc=255)
+  all-on           FAIL  (exited early, rc=255)      ... all seven
+```
+
+`Qt5Compat.GraphicalEffects` ships in `qt6-5compat`. That package is installed on the
+development machine and is not in the CI container, so locally the types resolved and the shell
+ran, while in CI qmllint could not resolve `FastBlur` -- reporting its `anchors` as an unknown
+grouped property, which reads like a syntax error and is nothing of the kind -- and the shell
+failed to load at all.
+
+**The local gate cannot see this class of problem by construction.** It runs on a machine that
+has whatever the developer has installed. A dependency added by an import is invisible until it
+runs somewhere that does not have it, which is exactly what a clean container is for.
+
+Fixed by removing the dependency rather than adding it to the image. `MultiEffect` does blur and
+masking in one, is already imported in that file via `QtQuick.Effects`, and is what the rest of
+this tree uses -- `modules/background/DesktopLyrics.qml` blurs a wallpaper with
+`blurEnabled`/`maskSource` in exactly this shape. `PowerConfirm` was the only file in the tree
+importing `Qt5Compat` at all.
+
+Worth a check before importing anything: **which QML modules does this file import that nothing
+else in the tree imports?** A one-line audit answers it, and the only remaining answer here is
+`QtCore`, which comes with `qt6-base` and is already a declared dependency:
+
+```sh
+grep -rhoE '^import [A-Z][A-Za-z0-9.]+' --include='*.qml' . | awk '{print $2}' | sort -u \
+  | grep -vE '^(QtQuick|QtQml|Quickshell|Caelestia|QtMultimedia|M3Shapes)'
+```
+
+## T53 — Two shells were running, and the one being debugged was not the one on screen
+
+Three symptoms were reported from a real laptop: the variant selectors did nothing, the
+notification centre did not work, and `>settings` in the launcher opened nothing. They looked
+like three bugs in the feature system. They were one fact about the machine:
+
+```
+pid  881: qs -c caelestia -n -d              started 13:40 by systemd --user
+pid 6045: qs -p /home/yoav/caelestia-hybrid  started 13:58 by hand
+```
+
+Two Quickshell instances. `881` is the **packaged `midnight-shell-git`**, autostarted from
+`execs.lua` via `caelestia shell -d`. `6045` is the fork. The bar, dock and notifications on
+screen belonged to the package; the config being edited belonged to the fork.
+
+`-c caelestia` selects a config *by name*, searching each XDG config dir for
+`quickshell/caelestia/shell.qml`. With no `~/.config/quickshell/caelestia`, it finds
+`/etc/xdg/quickshell/caelestia` — the package. Every `caelestia` CLI subcommand does this:
+
+```py
+subprocess.check_output(["qs", "-c", "caelestia", *args])   # caelestia/subcommands/shell.py
+```
+
+So on any machine with the package installed, `caelestia shell <anything>` talks to the
+package, not to a fork run with `-p`. This is the same shape as T18, where qmllint silently
+resolved imports against the installed `midnight-shell-git` instead of the tree.
+
+The notification centre was the clearest consequence. Only one process can own
+`org.freedesktop.Notifications`, and `busctl --user list` says which:
+
+```
+org.freedesktop.Notifications   881 qs   yoav :1.24
+```
+
+`881` won it at login, seventeen minutes before the fork started. The fork's notification
+server bound nothing and received nothing. Nothing in its log said so, because losing that
+race is not an error.
+
+**Before debugging any user-visible behaviour, establish which instance is on screen.** One
+command settles it:
+
+```sh
+for p in $(pgrep -x qs); do echo "$p: $(tr '\0' ' ' < /proc/$p/cmdline)"; done
+```
+
+The fix is to make the name resolve to the fork, so the CLI, the autostart and every
+`caelestia:` global shortcut agree with each other:
+
+```sh
+ln -s ~/caelestia-hybrid ~/.config/quickshell/caelestia
+```
+
+The user config dir precedes `/etc/xdg` in XDG search order, so this wins without touching the
+package. The fork also needs `QML2_IMPORT_PATH` and `CAELESTIA_LIB_DIR` exported from the
+compositor env — `direnv` supplies them on `cd`, and a shell started by systemd has neither.
+
+## T54 — A feature gated on a flag that nothing could set
+
+`aether.variants.dock` selected between MiDnight's bar section and OP's panel, and selecting
+OP's did nothing at all. The gate was correct:
+
+```qml
+readonly property bool shouldBeActive: screenState.dock && Config.dock.enabled && ...
+```
+
+`screenState.dock` appeared seven times in the tree. Every one was `= false`. The show path
+lived in OP's `modules/drawers/Interactions.qml`, which was deferred during the import as T1/T2
+risk — the file carries the panel alias and anchor graph — and was never brought back. The
+import shipped a dock that could hide seven ways and appear none.
+
+Every static gate passed, and would pass again. `dead-qml.py` sees the file referenced,
+`dead-config.py` sees the key read, `dead-signals.py` sees no orphan signal, and the smoke
+matrix boots the shell without error because a dock that never shows raises nothing. The
+feature was unreachable, not broken, and unreachable code is silent.
+
+This is what the `feature-import` skill's step 6 asks for and what a headless matrix cannot
+give: boot with the feature **on** and confirm it initialises. "The preset loads" is not that.
+
+The mechanical form of the question generalises past the dock, and is worth asking of any
+imported feature whose flag is a `bool` written by one side and read by another:
+
+```sh
+# For a state flag the UI depends on -- does anything ever turn it on?
+grep -rn 'screenState\.<flag> *= *true' --include='*.qml' .
+```
+
+An empty result for a flag that has readers is the bug. Compare with T44, where the opposite
+held: `features.overview` had a live consumer while the directory it appeared to name did not
+exist.
+
+## T55 — Restarting the shell while the session is locked strands the session
+
+Killing the shell to pick up a QML change is routine. Doing it while the screen is locked
+is not: the lock surface belongs to the shell, and Hyprland treats the process disappearing
+while a `WlSessionLock` is held as the lockscreen crashing. What is left is a compositor that
+is still locked with nothing able to unlock it:
+
+```
+Oopsie daisy, it looks like you locked your screen but the lockscreen app died :(
+```
+
+Recovery is a single command, but it needs a shell on the box -- another tty, or ssh:
+
+```sh
+hyprctl --instance 0 eval 'hl.clear_crashed_lockscreen()'   # lua config
+hyprctl --instance 0 dispatch clearcrashedlockscreen        # conf config
+```
+
+The trap is that laptops lock themselves. A session that was unlocked when a test run started
+can be locked twenty minutes later, so "I know the screen is unlocked" is not something to
+remember, it is something to check immediately before the kill:
+
+```sh
+[ "$(qs -c caelestia ipc call lock isLocked)" = "true" ] && { echo "locked, refusing"; exit 1; }
+```
+
+Two related consequences of the same idle behaviour, both of which cost time here:
+
+- **`grim` hangs, it does not fail**, when the display is in DPMS off. There is no error and no
+  timeout; the screenshot simply never returns. Wake the output first with
+  `hyprctl dispatch 'hl.dsp.dpms("on")'`, and put a `timeout` around `grim` regardless.
+- **A locked screen invalidates every pointer test**, because the lock surface takes all input.
+  `hw-verify.sh` refuses to run its hover block when locked for this reason.
+
+And one that is not about idling at all: **a modal with a pointer grab swallows hover.** The
+shell's own polkit prompt is the common one, and on this machine NetworkManager's Wi-Fi scan
+policy raised it repeatedly. Every hover assertion failed for two full runs, looking exactly
+like broken hover, until a screenshot showed the dialog sitting there. If every pointer test
+fails at once, photograph the screen before believing any of them.
+
+## T56 — Restarting the shell over ssh moves it out of the graphical session
+
+The shell was restarted many times while verifying on hardware, with the obvious command:
+
+```sh
+setsid qs -c caelestia -n -d
+```
+
+Run from an ssh login, that puts the shell in the **ssh session's** cgroup, not the
+compositor's. `loginctl` tells the difference plainly:
+
+```
+Hyprland   XDG_SESSION_ID=2    seat0  tty1        Active=yes
+qs         XDG_SESSION_ID=101  -      Remote=yes  Type=tty
+```
+
+polkit authorises by session. NetworkManager's `wifi.scan` action ships
+`<allow_active>yes</allow_active>`, so a shell in the seat's active session is never asked
+anything. A shell in an ssh session is not that session, so the same scan starts raising an
+authentication prompt — one that had never appeared before and looks like a shell bug.
+
+The prompt is the expensive part. It is a `caelestia-polkit` layer surface, 1296x748 on
+overlay level 3, above `caelestia-drawers` on level 2. It takes every pointer event, so **every
+hover assertion in `hw-verify.sh` fails while it is up**, and a screenshot of the desktop comes
+back solid black. Two full verification runs were read as "hover is broken" before
+`hyprctl layers` showed what was actually on screen.
+
+Restart the shell as a child of the compositor, which is in the right session:
+
+```sh
+hyprctl dispatch 'hl.dsp.exec_cmd("qs -c caelestia -n -d")'        # lua config
+hyprctl dispatch exec 'qs -c caelestia -n -d'                      # conf config
+```
+
+Note that the compositor's own environment is whatever it had at login, so a shell spawned this
+way does not pick up later edits to `env.lua`. Pass what it needs inline until the next
+compositor restart:
+
+```sh
+hyprctl dispatch 'hl.dsp.exec_cmd("env QML2_IMPORT_PATH=... CAELESTIA_LIB_DIR=... qs -c caelestia -n -d")'
+```
+
+`hw-verify.sh` now checks both conditions before it asserts anything about hover: that the
+shell's `XDG_SESSION_ID` matches the compositor's, and that no `polkit` or `lockscreen` surface
+is holding a grab. Either one makes the pointer results meaningless, and both used to fail
+silently — which is the same shape as T55, and the reason that file now refuses rather than
+reports.
+
+## T57 — Warping the cursor is not input, and a hover suite built on it measures nothing
+
+`hw-verify.sh` drove its hover tests by warping the pointer:
+
+```sh
+hyprctl dispatch 'hl.dsp.cursor.move({x=683, y=766})'
+```
+
+The cursor moves. `hyprctl cursorpos` confirms it. No motion event reaches any surface, so
+`onPositionChanged` in `modules/drawers/Interactions.qml` never runs and no drawer opens.
+
+One command proves it, and is worth keeping because "did that generate an event?" is otherwise
+unanswerable from outside:
+
+```sh
+# With input:follow_mouse = 1, focus follows real motion. Warp between two windows:
+hyprctl dispatch 'hl.dsp.cursor.move({x=400, y=700})'; hyprctl activewindow -j
+hyprctl dispatch 'hl.dsp.cursor.move({x=1000, y=700})'; hyprctl activewindow -j
+# Same window both times => the warp delivered nothing.
+```
+
+What made this expensive is that the suite did not fail consistently. It passed sometimes, and
+each pass had a different false cause:
+
+- **A drawer left open by the previous run.** `hover_test` asserted the drawer ended open, never
+  that it started closed, so an already-open dashboard passed without hover doing anything.
+- **A person using the machine.** Real mouse movement during a run does deliver motion, so the
+  suite passed whenever someone happened to touch the trackpad.
+
+And it failed sometimes for a third reason unrelated to either: **the session locks mid-run.**
+The idle timeout was 180s, and nothing the suite does resets the idle timer -- a warp is not
+input for that purpose either -- so a run longer than the timeout locks partway through, and
+the lock surface takes every pointer event from that point on. The lock was checked once,
+before the hover block, so a lock arriving between two tests was invisible.
+
+Three different causes, all producing "hover is broken", none of them about the shell. The dock
+worked the whole time; it was verified by hand with `ydotool` and a screenshot while all this
+was going on.
+
+The fixes, all in `hw-verify.sh`:
+
+- hover goes through `move_for_real`, which positions with a warp and lands the last 24 pixels
+  with relative `ydotool` moves, so a real event arrives at the destination;
+- without `ydotoold` the hover tests **skip and say what they need**, rather than failing on a
+  method that cannot work;
+- the shell's own idle inhibitor is held for the run and restored on exit;
+- `lock isLocked` is re-checked per test, not once;
+- a drawer that is already open is closed first, and the test skips as vacuous if it will not.
+
+The general lesson is T23 again, in its sharpest form: this checker reported *both* false
+passes and false failures, from three independent causes, for a feature that worked. A check
+whose result does not depend on what it claims to measure is worse than no check, because it
+sends you looking for the bug in the wrong place -- and it did, twice.
+
+## T58 — qmllint checks nothing about singleton members, and this tree is 49 singletons
+
+A one-line change referenced `Paths.shortenHome(Paths.wallsdir)`. Verifying it the usual way --
+break the name on purpose, confirm the gate objects -- produced nothing:
+
+```sh
+sed -i 's/Paths\.shortenHome/Paths.shortenHomeXX/' modules/nexus/pages/wallandstyle/WallpaperSelect.qml
+./tools/qml-lint.sh; echo $?     # 0. No diagnostic. No mention of the file.
+```
+
+It is not specific to `Paths`. Injecting `Colours.paletteXX.m3outlineYY` into a file produced
+three bogus member accesses and **zero findings, exit 0**.
+
+The cause is that no `qs.*` module has a `qmldir`. Only two exist in the whole tree
+(`modules/nexus/pages/background`, `.../hyprland`), both hand-written for something else, and
+nothing generates one. Without it qmllint never resolves the type behind `Paths` or `Colours`,
+so it cannot know what members they have, and it says nothing rather than guessing. This is the
+same root cause as the note in `aether-conventions` that `import ".."` does not carry
+qmldir singleton registration -- the consequence is just much larger than it looks.
+
+Why it matters more than a typo class usually would: **QML is silent about this at runtime
+too.** A stale `Colours.foo` evaluates to `undefined`, a binding on it produces an empty string
+or a zero size, and the symptom is a panel that renders blank. Nothing is logged. Renaming a
+singleton member is a routine change here, and neither the gate nor the running shell will tell
+you what you broke.
+
+`tools/singleton-members.py` closes it. It resolves each `Singleton.member` reference
+against the singleton's own file, and is deliberately narrow so a finding is always real:
+
+- only the **first** member of a chain -- `Colours.palette.m3outline` checks `palette` and
+  stops, because resolving `palette`'s type means implementing QML's type system;
+- only singletons whose members can be **fully enumerated**: those rooted at `QtObject`,
+  `Singleton` or `Item`. Six of the 49 are built on `Searcher` or a plugin type whose members
+  are not readable here, and every reference to those is skipped rather than guessed at;
+- `component Foo: ...` counts as a member, because `Singleton.Foo` is how a nested type is
+  reached. Missing this produced 30-odd false positives in the first draft.
+
+It checks 2617 references across 43 singletons. Validated by renaming `Paths.shortenHome`,
+which flagged its four callers -- the exact scenario it exists for.
+
+The one real finding was already known: `QuickSharePrompt.qml` assigns to
+`QuickShare.hasPendingTransfer`, which nothing declares. `dead-qml.py` already allowlists that
+file and says so in its reason. That the new checker rediscovered it independently is the best
+evidence available that it works.
+
+## T59 — Editing a script while it is running produces a failure that is not real
+
+`verify.sh` reported a syntax error mid-run:
+
+```
+./tools/verify.sh: line 111: syntax error near unexpected token `done'
+```
+
+`bash -n tools/verify.sh` said the file was fine, before and after. Both were true.
+
+Bash does not read a script into memory. It reads and executes incrementally, remembering a
+byte offset, and re-reads from that offset when it needs the next command. Inserting two lines
+near the top of a script that is thirty seconds into a twenty-minute run shifts everything after
+the insertion point, so the next read resumes in the middle of a construct -- here, inside the
+`for` loop that runs the `-Werror` legs, landing on its `done`.
+
+The failure is indistinguishable from a real one in the log, and re-running makes it vanish,
+which is the worst combination: it looks flaky. It happened here because the gate takes long
+enough that carrying on with other work during it feels free, and the obvious other work was
+wiring a new self-test into that same file.
+
+**Do not edit any script while a run of it is in flight, or any script that run invokes.**
+The second half was learned the hard way a few hours after the first. `verify.sh` calls each
+checker *twice* -- once for its output, once for its exit code:
+
+```sh
+step "settings paths"; ./tools/settings-paths.sh | tail -1; ./tools/settings-paths.sh >/dev/null || fail=1
+```
+
+Editing `settings-paths.sh` between those two calls produced a run where every step printed a
+passing line and the verdict was still RED, with nothing in the log to explain it. The first
+call had already printed its clean result; the second ran a half-written file.
+
+Editing files a run only *reads* is fine -- the checkers re-read the tree per invocation, and
+`traps.md` is not executed. If a change to a runner is needed mid-run, either wait, or copy it:
+`cp verify.sh /tmp/v.sh && /tmp/v.sh` detaches the running copy from the file being edited.
+
+The same applies to `smoke-matrix.sh` and `hw-audit.sh`, both of which run for minutes.
+
+## T60 — A fixed sleep before the IPC drive made the smoke matrix fail under load
+
+The matrix reported `FAIL 1/14 run(s) failed` twice in one day. Neither reproduced: re-running
+the same fourteen on a quiet machine gave `PASS all 14 run(s) clean` both times. Two properties
+made it expensive to chase.
+
+**It left no evidence.** `verify.sh` piped the matrix through `tail -3`, so the output was the
+verdict and nothing else -- not even which of the fourteen failed. And the harness deleted the
+run's log in exactly the branch that had failed:
+
+```sh
+failures=$((failures + 1))
+[ "$KEEP_LOGS" = 1 ] || rm -f "$log"     # the IPC branch, and only this one
+```
+
+An early exit kept its log; an IPC failure did not. So the most common failure was the one that
+destroyed its own evidence.
+
+**The likeliest cause is a duration, not a bug — but this was not reproduced, and the
+distinction matters.** `drive_shell()` began with `sleep 6`, then started calling IPC.
+`check_ipc` counts this as a failure:
+
+```
+Target not found.
+```
+
+which is exactly what `qs ipc call` returns while the shell is still loading and has not
+registered its `IpcHandler`s yet. Six seconds is enough on an idle machine. It is not always
+enough on one running ssh sessions, screenshots and a hardware audit at the same time, which
+is what this machine was doing on both occasions.
+
+The fix is to wait for the condition rather than for a length of time -- poll `drawers list`
+until the target exists, with a 45s ceiling that reports itself as a real failure:
+
+```sh
+while :; do
+    probe=$("${ipc[@]}" drawers list 2>&1)
+    printf '%s' "$probe" | grep -qE '^(Target|Function) not found\.' || break
+    ...
+done
+```
+
+**What was actually established, and what was not.** Established: the failure happened twice,
+both times while this machine was busy with unrelated work; it never reproduced; and no log
+survived, which places it in the IPC branch, because that was the only branch deleting its own
+log. Also established: `qs ipc call` really does answer `Target not found.` before the shell
+registers its handlers, and `check_ipc` really does count that as a failure — so a too-short
+wait produces exactly this signature.
+
+Not established: that the wait was in fact too short on those two occasions. An A/B was run —
+the old `sleep 6` restored verbatim, under two CPU burners on a four-core machine, load average
+above 3 — and it passed 14/14, as did the polling version under the same load. So CPU pressure
+alone does not reproduce it. The original failures happened under *mixed* load (ssh sessions,
+screenshots, a hardware audit), which is I/O and scheduling pressure of a different shape, and
+that was not recreated.
+
+The change is still right, on its own terms rather than as a proven fix: **waiting for a
+condition is strictly better than waiting for a duration**, and a fixed sleep before an
+assertion is load-dependent by construction — it fails on the busiest machines, which are
+usually the ones running the most other work, CI included. But if this recurs, the fixed sleep
+has been ruled out as the whole story, and the kept log will say what the actual failure was.
+T57 is the same mistake from the other direction, where warping the cursor was assumed to
+deliver an event and did not.
+
+`verify.sh` now prints the full smoke log on failure and keeps it, and the harness keeps the
+log on the IPC branch too.
+
+## T61 — The lock screen authenticates correctly, and the IPC beside it does not
+
+Two facts about `modules/lock/`, both worth knowing before Phase 8 touches it.
+
+**PAM authentication works.** Verified on hardware, both directions, which matters because only
+one direction is a test:
+
+```
+lock                       -> isLocked = true
+type "definitely-not-the-password", Enter  -> isLocked = true    (rejected)
+type the real password, Enter              -> isLocked = false   (accepted)
+```
+
+A lock screen that never unlocks would also "reject" a wrong password, so the second line alone
+proves nothing. Both were needed.
+
+**`qs ipc call lock unlock` does not authenticate at all.** The handler is three lines:
+
+```qml
+function unlock(): void {
+    lock.unlock();
+}
+```
+
+No PAM, no prompt. Any process running as the user can defeat the lock screen. All three
+upstreams ship this identically -- `caelestia-dots/shell` included -- so it is inherited design
+rather than something this fork introduced, and it is defensible on the usual threat model: the
+lock screen guards against someone at the keyboard, not against code already running as you,
+which could read the session's files anyway.
+
+It is recorded because it is easy to meet this handler while working on D10 and conclude the
+lock screen is already compromised, or to "fix" it and break `caelestia shell lock unlock` for
+everyone. Neither is right. If Phase 8 ever hardens the lock, this is a separate decision from
+the pattern-lock one, and diverging from upstream here needs its own reason.
+
+Note also what this does **not** say. D10 blocks OP's *pattern* lock, which is a different
+thing: a plaintext pattern with `patternAvailable` hardcoded true, calling `lock.unlock()` to
+skip PAM entirely. That code is not in this tree (T3), and the fact that PAM works here says
+nothing about it.
+
+## T62 — The settings' Global scope wrote to a layer nothing reads
+
+Changing the taskbar position in the settings did nothing. Everything about the interaction
+said it had worked: the dropdown showed the new value, the override marker appeared next to
+the label, and a config file was written. The bar did not move -- not live, and not after a
+restart.
+
+`forScreen(screen)` resolves which config layer a settings page writes to, and the Nexus
+monitor selector passes `""` for its "Global" scope:
+
+```qml
+readonly property var targetConfig: GlobalConfig.forScreen(nState.targetScreen)   // "" for Global
+```
+
+The resolver had no case for an empty name, so it went to the layer registry, which built a
+layer for a monitor called `""`. Its file is `monitors/shell.json` -- written on every change,
+and read by nothing, because real screen layers fall back to the **root**, not to it. Per
+monitor scope worked throughout, which is why this presented as "the position setting is
+broken" rather than "one scope of every setting is broken".
+
+**It is a merge defect, and neither upstream has it.** The two halves come from different
+projects:
+
+| piece | where it comes from |
+|---|---|
+| `MonitorTargetSelector.qml`, which passes `""` for Global | MiDnight only |
+| the rewritten `forScreen`, with no empty-name case | upstream only, via the Phase 2 config rewrite |
+
+MiDnight's own resolver opens with exactly the missing line:
+
+```cpp
+GlobalConfig* MonitorConfigManager::configForScreen(const QString& screen) {
+    if (screen.isEmpty())
+        return GlobalConfig::instance();
+```
+
+Upstream never hits the gap because upstream ships no monitor selector. MiDnight never hits it
+because MiDnight never took the rewrite -- it is still on the old plugin layout. Only a tree
+carrying both does. This is the exact failure mode D1 and the Phase 2 catch-up were supposed to
+manage, and it survived because **a merge can drop an invariant that neither side's tests
+cover**: upstream has no test needing the empty case, and MiDnight's code that needed it was
+replaced wholesale.
+
+`tools/config-scope-test.sh` now asserts the resolver's semantics against the real
+plugin, in an isolated `XDG_CONFIG_HOME`. Six invariants, and the important property is that
+they are about the **resolver**, not about any key -- so one test covers all 372 config keys at
+once, which is the only tractable way to answer "does every setting actually apply". Validated
+by removing the guard and rebuilding: 4 of the 6 fail.
+
+The lesson generalises past config. **A gate that checks "the write raised no error" is not
+checking that the write did anything.** `hw-audit.sh` flipped every feature flag and every
+variant and reported 51 ok while this was broken, because nothing it did compared a written
+value against the value a consumer reads.
+
+## T63 — The "setting with no consumer" check could not be made to fail, so it was dropped
+
+After T62, the obvious next question was the last mechanically-checkable class: a settings
+control whose value nothing outside the settings UI reads. Valid path, correct scope, no
+effect. A first pass reported **0 of 277 settings paths** with no consumer, which looked like
+good news.
+
+It was not news at all. The check treated a path as consumed if any *ancestor* was referenced
+outside `modules/nexus`, and ten top-level config nodes are referenced bare:
+
+```
+ai  background  bar  border  general  launcher  lock  services  shimeji  sidebar
+```
+
+So every `bar.*` setting counted as consumed because something, somewhere, mentions
+`Config.bar`. Deleting the only real consumer of `bar.showOnHover` did not produce a finding.
+A second attempt -- excluding the key's own `CONFIG_PROPERTY` line from the C++ search, which
+was a real bug and worth fixing -- did not help either, for the same reason.
+
+The ancestor rule cannot simply be removed. `Config.bar` is legitimately passed to components
+that read several fields off it, so a bare node reference really can mean any child is
+consumed. The imprecision is in the question, not the implementation.
+
+**So the check was dropped rather than shipped.** A gate that reports zero because it cannot
+see the condition is worse than no gate, because it is read as evidence (T23) -- and this one
+would have reported a confident `0 with no consumer` forever. The rule this project has used
+all day applies to deleting a checker as much as to writing one: if it cannot be made to fail
+on a real instance, it does not go in.
+
+What survives is the part that *is* precise, and validated by making it fail: every path the
+settings UI names must exist in the schema dumped from the running plugin
+(`settings-paths.sh`, 787 references against 867 paths). Whether a consumer then honours the
+value is not answerable by static analysis, and is left to the hardware audit and to use.
+
+## T64 — Killing the session corrupts the git repository, twice in a day
+
+Twice in one session `git log` stopped working entirely:
+
+```
+error: object file .git/objects/11/bc5d803562876fac10511afa1ba19c1d3e6ba7 is empty
+fatal: bad object HEAD
+```
+
+Five to seven objects, all **zero length**, including the commit `HEAD`, `main` and
+`origin/main` all pointed at. Both times the working tree was untouched and the disk had 80GB
+free, so it is not corruption in the usual sense: the object files were *created and never
+written*, which is what happens when a process dies between `open()` and the data reaching
+disk. Both times followed the session process being killed.
+
+Recovery is straightforward as long as the work was pushed, and is worth writing down because
+the instinct in the moment is to reclone:
+
+```sh
+git ls-remote origin refs/heads/main          # confirm the commit exists remotely FIRST
+find .git/objects -type f -size 0             # the empty ones, and only those
+# move them aside rather than delete, then:
+git fetch origin '+refs/heads/*:refs/remotes/origin/*'
+git fsck --no-progress                        # "dangling" lines are normal; errors are not
+```
+
+`git ls-remote` needs no local objects, so it works on a repository too broken to run
+`git log`. Check it before touching anything -- if the commit is not on the remote, the
+quarantined objects are the only copy and deleting them loses work.
+
+The mitigation is a config setting rather than a habit. Git does not fsync loose objects by
+default, which is a deliberate speed trade-off that assumes processes are not killed mid-write:
+
+```sh
+git config core.fsync objects,derived-metadata,reference
+git config core.fsyncMethod fsync
+```
+
+Set on this repo, the CLI repo and the laptop's checkout. It costs a little write throughput
+and removes the window entirely.
+
+The general lesson for this project: **push early.** Both recoveries were painless only because
+every commit had already been pushed, so the remote was a complete copy. A long unpushed
+sequence of commits would have been lost outright.
+
+## T65 — Three gates are needed to say a setting works, and each proves a different third
+
+T62 was a setting that could be changed, was stored correctly, and did nothing. Working out
+what would have caught it is more useful than the fix, because it maps out what "this setting
+works" actually decomposes into:
+
+| question | gate | how it can fail |
+|---|---|---|
+| does the path exist? | `settings-paths.sh` | a typo or a renamed key writes nowhere |
+| does the write reach the right node? | `config-scope-test.sh` | **T62** -- an empty scope resolved to a layer nothing reads |
+| does a stored value change anything? | `hw-effects.sh` | a consumer that ignores it, or was never wired |
+
+None of the three subsumes another, and no single one would have caught T62 on its own. In
+particular `hw-effects.sh` would **not** have: it writes the config *file* directly, and
+writing the file worked throughout the bug -- it was the UI's write path that went astray. The
+scope test covers that path, because it writes through `GlobalConfig.forScreen("")` exactly as
+the settings pages do.
+
+**What `hw-effects.sh` observes, and what that does not include.** It reads Hyprland's
+`reserved` (left, top, right, bottom) -- the space layer surfaces claim -- which tracks the
+bar's exclusive zone exactly:
+
+```
+position=top  [10, 60, 10, 10]      persistent=false [10, 10, 10, 10]
+position=left [60, 10, 10, 10]      thickness=24     [24, 88, 24, 24]
+```
+
+That measures one specific consumer: `modules/drawers/Exclusions.qml`, which keys each edge's
+exclusive zone on `Config.bar.position`. It does **not** prove the bar is painted at that edge.
+A regression in the bar's visual anchoring that left the exclusions intact would pass. Proving
+where pixels land needs a screenshot and a person, which is the boundary this harness stops at.
+
+Validating it took two attempts, and the failed one is the point. Breaking the four
+`when: Config.bar.position === ...` states in `ContentWindow.qml` changed nothing the suite
+could see -- those states set `anchors.*Margin`, not the edge, so it was not a regression in
+what was being measured. Only breaking `Exclusions.qml` produced failures (5 of 6). **A fault
+injection that does not fail the suite has not validated it; it has found the wrong fault.**
+
+The general shape, and the reason this is worth writing down rather than just fixing: a setting
+crosses three boundaries between the click and the effect -- UI to node, node to store, store to
+consumer -- and a gate that watches one boundary reports success no matter what happens at the
+other two. T62 sat at the second, and gates existed for neither the second nor the third.
+## T66 — Input methods reach layer surfaces through Qt's plugin, not text-input-v3
+
+Symptom: Chinese/Japanese input works everywhere else on the session, and typing *Latin*
+into the launcher works, but pressing the IME toggle there produces nothing. fcitx5's
+`diagnose` shows its focused input context on the previously focused window (for example a
+terminal), never on `org.quickshell`.
+
+Two independent facts about this shell combine into that:
+
+1. **The drawers live on one persistent wlr-layer-shell surface.** `modules/drawers/ContentWindow.qml`
+   is created once at startup with `keyboardFocus` flipping between `None` and `OnDemand`, and
+   it takes the keyboard through `HyprlandFocusGrab` when a drawer opens. The grab delivers
+   *key events* -- which is why typing and Escape work -- but it is not a surface focus, and
+   Hyprland does not forward `zwp_text_input_v3` to layer surfaces at all. Measured with
+   `WAYLAND_DEBUG=1`: the client creates the text-input object once and never receives
+   `enter`. A toplevel in the same process (the Nexus window) does receive it, and the IME works
+   there, which is what made the difference visible.
+2. Qt's own input-context plugin talks to the IME over D-Bus and does not need the compositor
+   to route anything, so it works on a layer surface -- but only if `QT_IM_MODULE` names it.
+   With the variable unset (the default on Wayland, and how this session was configured), Qt
+   picks the text-input protocol instead and the page is silent.
+
+The fix is in the **session environment**, not in the shell:
+
+```lua
+-- ~/.config/hypr/hyprland/env.lua
+hl.env("QT_IM_MODULE", "fcitx")   -- or "ibus"
+hl.env("XMODIFIERS", "@im=fcitx") -- XWayland apps
+```
+
+A QML pragma cannot do this: `//@ pragma Env QT_IM_MODULE=fcitx` looks plausible and was
+tried, but Qt creates its platform input context when `QGuiApplication` is constructed, before
+Quickshell reads `shell.qml`, so the module is already chosen. Measured: with the pragma in
+place and the variable absent from the process environment, typing in the launcher stayed
+Latin (`fcitx5-remote -n` unchanged, no preedit); with the same shell started by
+`QT_IM_MODULE=fcitx caelestia shell -d`, fcitx pinyin and emoji candidates commit into the
+search field. `fcitx5-diagnose` also then lists an `org.quickshell` input context with
+`focus:1`.
+
+Two more things, both measured on a real session after the module was set:
+
+**The plugin itself works**, in the layer-surface launcher and in the Nexus window alike. With
+the shell's input context focused, `fcitx5-diagnose` shows `program:qs frontend:dbus focus:1`.
+Toggling with `Ctrl+Space` and typing gives a normal preedit and candidate list in the search
+field. The earlier symptom of a preedit that committed after one keystroke came from the
+text-input-v3 path, which never had a focused surface to compose on.
+
+**A modifier-only trigger key does not reach fcitx through the Qt plugin.** This session's
+fcitx was configured with `Control+Shift+Shift_L`; pressing it in the shell changed nothing,
+while `Ctrl+Space` toggled between `keyboard-us` and `rime` immediately (verified over D-Bus:
+`CurrentInputMethod` and `State` move together). Use a trigger with a real key in it --
+`Ctrl+Space` is the usual choice -- if an IME has to work in a Quickshell surface.
+
+For a fresh input context fcitx also starts on the group's `DefaultIM`
+(`~/.config/fcitx5/profile`); this session had `keyboard-us`, so even an activated IME typed
+Latin until it was changed to `rime`. fcitx rewrites that file on exit, so edit it while the
+daemon is stopped (`fcitx5-remote -e`, edit, `fcitx5 -d`).
+
+The related warning, `qt.qpa.wayland.textinput: Trying to disable X but Y is focused`, is
+QtWayland's own bookkeeping about which surface it thinks has the text-input object. It is a
+consequence of several surfaces existing in one process and is not itself the fault. The
+`TextInput` warnings do not indicate whether an IME is working; the `fcitx5-diagnose` focus
+list does.
+
+## T67 — Text jitters during panel animations because it is re-rasterised every frame
+
+Every animated panel moves by a fractional amount: `offsetScale` is a `real`, and it drives
+`anchors.margins`, `height` or `x` (`modules/launcher/Wrapper.qml`,
+`modules/sidebar/Wrapper.qml`, the popout `ClipWrapper`). Text is drawn with
+`Text.NativeRendering` (`components/StyledText.qml`), which is what makes 1×-scale text crisp:
+it disables subpixel glyph positioning and snaps each glyph to whole device pixels.
+
+Those two together are the bug. The panel's position changes smoothly, the glyphs inside do
+not: each frame Qt re-rasterises the text at a freshly rounded position, so a label appears to
+jump one pixel at a time while the panel slides. On a 1× display it is most visible on small
+labels and icons, and it looks like "pixel jitter" rather than motion blur. Upstream has the
+same report in caelestia-dots/shell discussion #1841 ("Text tearing inside animating panels"),
+unanswered; their PR #1271 fixed exactly this mechanism once, for icons, by making the size an
+integer.
+
+The fix is to stop re-rasterising: put the animated panel root in a Qt layer.
+
+```qml
+layer.enabled: true
+layer.smooth: true
+```
+
+The panel is rendered into a texture once, at an integer position, and the *texture* is what
+moves. Glyphs keep their pixel-snapped rasterisation for the whole animation, and
+`layer.smooth` makes the sampler bilinear instead of nearest, which is the difference between
+subpixel slide and visible stepping.
+
+Two details that cost an earlier attempt (reverted in `118e0082`):
+
+- **`layer.smooth` is not the default.** Without it the layer texture is sampled with nearest
+  filtering, which looks like the same jitter it was meant to remove -- the stepping just moves
+  from the glyphs to the whole panel. Set both.
+- **Leave the layer on permanently, do not scope it to `offsetScale > 0 && offsetScale < 1`.**
+  Enabling a layer allocates a texture and re-rasterises the item at that instant; doing it on
+  the first frame of the animation re-rasterises exactly when the motion starts, which is a
+  visible pop, and it re-rasterises again on the way back. A panel that is always layered costs
+  one FBO and never switches.
+
+The trade-off is real: while moving, the panel is a filtered texture, so text is very slightly
+soft, and it snaps back to 1:1 at rest -- **but only if the layer's rectangle is a whole number
+of pixels wide and sits on a whole pixel**. Otherwise the texture is resampled permanently, and
+the panel is soft even after the animation, which is the complaint that produced this note's
+second half.
+
+The bar popouts were exactly that case, because their geometry is computed rather than anchored
+to integers: measured at rest, a tray menu sat at `25.245, 847.353` with an implicit size of
+`476.733 x 586` -- a quarter-pixel translation plus a 0.27px stretch across the width. Both come
+from the same places: the width is derived from font metrics, and the cross-axis position from
+`(parent - height) / 2`.
+
+`ClipWrapper` now rounds its own `x`/`y`, gives the popout `Math.ceil(implicitWidth/Height)` and
+places it from the bar edge by whole pixels, replacing the four anchored states with explicit
+`x`/`y` bindings (the slide term is the same `(-size - 5) * offsetScale`). The same popout then
+measures `60, 845` with `475 x 586`, so the layer is a 1:1 blit at rest.
+
+The other panels were measured rather than assumed, because rounding is not free (it shifts
+content by up to a pixel): the launcher settles at `989, 897` with `632 x 533`, the OSD at
+`2488, 548` with `62 x 344`, toasts at `2132, 1346` with `406 x 77` -- all integral already,
+because their sizes and centring happen to land on whole pixels. Do not "round everything" by
+reflex; measure the panel, and round the ones that are actually fractional.
+
+For the remaining motion-phase softness -- a panel that is moving is a texture sampled between
+texels, and bilinear loses edge contrast doing it -- the panels now use a Catmull-Rom resampling
+shader: `components/effects/BicubicLayer.qml` as `layer.effect`, with the fragment shader in
+`plugin/src/Aether/Shaders/bicubic.frag`. At whole-pixel alignment it is the identity, so the
+static result above is unchanged; while moving, the cubic kernel reconstructs closer to the
+original rasterisation.
+
+Three things that shader has to get right, all learned the hard way:
+
+- **The kernel must be the identity on the pixel grid.** The widely-copied "textureBicubic"
+  snippet assumes edge-based coordinates and lands half a texel off when fed Qt's
+  pixel-centre `qt_TexCoord0`, so the panel goes soft instead of sharp. Compute the texel
+  space as `uv * textureSize - 0.5`, split it into `floor` and the fraction, and weight the
+  four taps at `-1, 0, +1, +2` with the Catmull-Rom polynomial: at fraction 0 that is
+  `(0, 1, 0, 0)`, so a panel at rest is byte-for-byte what it was without the effect (measured:
+  Laplacian deviation 0.06025 with, 0.06019 without).
+- **The sampler size comes from `textureSize(source, 0)`, never from the item's size.** The layer
+  texture is rounded to whole pixels while the item can be fractional, so a size passed in from
+  QML drifts the texel grid by a fraction per pixel -- a periodic checkerboard over the whole
+  panel, which reads as "the panel is behind a mesh veil". `textureSize()` cannot disagree with
+  the texture it is sampling, on any display scale.
+- **Catmull-Rom has negative lobes.** On premultiplied alpha that can push a channel below zero
+  and ring around high-contrast edges, so clamp the result at zero.
+
+The `.qsb` is compiled by `qt_add_shaders` in the `Aether.Shaders` module and only reaches the QML
+engine's resource table when something imports it, which is why `BicubicLayer.qml` carries an
+otherwise-unused `import Aether.Shaders` (with a matching `qmllint disable`). Without it the
+shader URL resolves to nothing and `layer.effect` has no program to run.
+
+Sharp layers also exposed the blob deformation's landing. `BlobRect` runs an underdamped spring
+on the deformation matrix and snapped it to identity once the matrix values were small
+(`delta < 0.004`), which is a fixed *relative* threshold: the matrix scales the panel about its
+centre, so that snap moved an edge by `delta * size / 2` -- about 1px on a 476px popout and
+several px on a wide launcher. Blurred text hid it; sharp text does not, and it reads as the font
+being corrected a frame after the panel lands. The threshold is now pixel-aware
+(`delta * halfSize < 0.1`), so the snap happens below a tenth of a pixel and the settle is
+monotonic. The tail is a few frames longer, entirely sub-pixel.
+
+This is a mitigation, not a fix for the underlying behaviour: the text is still native-rendered,
+it is just no longer re-rendered per frame.
+
+## T68 — A property must not share a notify signal with the property its own binding reads
+
+`Tokens` is an attached property (`QQuickAttachedPropertyPropagator`), and nearly every member
+notified `sourceChanged`, because almost all of them are views onto the per-screen config. That
+was fine while the only writer was `inheritScreen`. It stopped being fine when the Nexus window
+gained a per-window type scale:
+
+```qml
+contentItem.Tokens.fontScale: contentItem.Tokens.sizes.nexus.textScale
+```
+
+The binding reads `Tokens.sizes` (NOTIFY `sourceChanged`) and writes `Tokens.fontScale`, which
+was *also* NOTIFY `sourceChanged`. So writing the property emitted the signal that the binding
+depends on: Qt saw the binding dirty itself during evaluation and warned
+
+```
+Binding loop detected for property "fontScale"
+```
+
+even though the value never changed and the binding settled after one extra pass. The fix is a
+notify signal per property rather than one shared one:
+
+- `fontScale` → `fontScaleChanged`
+- `font` → `fontChanged`, since the returned `FontTokens` object changes with the factor; and
+  `inheritScreen` emits it too, because a new screen means a new config to read the fonts from.
+- everything still genuinely keyed to the screen keeps `sourceChanged`.
+
+The rule generalises: an attached or C++ property that is designed to be bound to another
+property of the same object needs its own notify. A shared signal makes any such binding
+self-dirty, which is invisible at rest but warns the moment the object is created — that is why
+this one only showed up when the settings window opened.
+
+## T69 — An image without a source size is decoded at file resolution, and kept
+
+A 7680x4320 wallpaper is 33MB on disk and 132MB decoded (RGBA). Qt decodes at the size you ask
+for, and `Image.sourceSize` is what asks; leave it unset and the whole file lands in memory.
+Four places were doing that, and together they held roughly 500MB once the shell had settled:
+
+- `CachingAnimatedImage` had no `sourceSize`, and `Wallpaper.qml` bound its `source` to
+  `img.verifiedPath` whether or not the wallpaper was animated. AnimatedImage keeps decoded
+  frames, so a static PNG cost 130MB for an item that was `visible: false` the whole time.
+  Gate the `source` on the actual type, and cap `sourceSize` for the genuine animated case.
+- `WorkspaceOverview` builds the workspace preview from
+  `Wallpapers.getThumbnailPath(Wallpapers.current)`, which only returns a thumbnail for
+  *videos*; a static wallpaper arrives as its path, and the `Image` had no `sourceSize`.
+  Every workspace card decoded the wallpaper whole.
+- `CachingImage` computed `sourceSize` from `width * dpr`, which is 0 before layout. The
+  provider reads 0x0 as "no constraint" and returns the original file -- a full-resolution
+  decode that then sat in the pixmap cache. Wait for a real size, and give `sourceSize` a floor
+  of one pixel so "not laid out yet" never means "no constraint".
+- `CachingImageResponse`'s cache-miss fallback returned `QImage(path)` even when a size *was*
+  requested: the caller got its image, but only after allocating the whole file. Decode with
+  `QImageReader::setScaledSize` instead, and let the cache job produce the exact crop.
+
+The tell is an anonymous mapping the size of the source's pixel count with `0xFF` in every
+fourth byte: a decoded ARGB image. `LD_PRELOAD`-ing a malloc shim that records `backtrace()`
+for allocations over a few MB, then dumping the live set on `SIGUSR1`, names the decoder in
+one run. The fixes took the shell from ~1.25GB RSS / 1.63GB peak to ~0.77GB / 1.02GB with the
+same 8K wallpaper, and removed the full-resolution reads from the startup log.
+
+## T70 — A required property on a child fails the whole page push, not the child
+
+Pressing a Nexus row did nothing, the window title stayed on the parent page, and the log said:
+
+```
+QML StackPage at @modules/nexus/PageCompRegistry.qml[155:13]:
+  push: Property flickable was marked as required but not set.
+```
+
+The page itself compiled and linted clean. The culprit was a scrollbar: `StyledScrollBar` declares
+`required property Flickable flickable`, and it had been attached with
+`ScrollBar.vertical: StyledScrollBar {}` to a `TextEdit`. A TextEdit scrolls itself and is not a
+Flickable, so the attached property never set the requirement; the failure only appears when
+StackView instantiates the page.
+
+Two ways out: attach `ScrollBar.vertical` to the surrounding `Flickable` instead, or instantiate the
+bar directly (`StyledScrollBar { flickable: flick }`) inside the Flickable. The second is what the
+editor page does, because its scrollbar should follow the Flickable while the text view keeps its
+own scrolling.
+
+The same trap applies to `lua-language-server`'s `Undefined global` diagnostics: the message uses
+backticks (`Undefined global \`hl\`.`), not quotes, so the client-side filter has to match the
+backticked form. Hyprland injects `hl`/`vars` as globals and the server in this distribution ignores
+the `diagnostics.globals` setting sent over LSP.
+
+## T71 — A platform theme is not a `QObject`, and its file watcher must outlive the constructor
+
+`QPlatformTheme` is a `Q_GADGET`, not a `QObject`. A plugin that derives from it directly cannot
+carry `Q_OBJECT`, cannot own a `QTimer`, and cannot be the receiver of a `connect`. The class has
+to inherit from both, with `QObject` first: moc needs the QObject base to generate the metaobject,
+and the palette/font overrides still dispatch through the `QPlatformTheme` base. qtengine does the
+same, which is why its `.hpp` lists `public QObject, public QGenericUnixTheme`.
+
+The second half is quieter. A `QFileSystemWatcher` created inside the platform theme's constructor
+accepts the path — `addPath` returns true, `files()` lists it — and then never fires again. The
+theme is constructed while `QGuiApplication` is still being set up, before the event loop runs,
+and the watcher's socket notifier is attached to nothing. The symptom is a theme that applies
+perfectly at startup and ignores every later change, with no error anywhere.
+
+The fix is one deferred call:
+
+```cpp
+reload();  // palette() is asked for synchronously, so the first read cannot wait
+QMetaObject::invokeMethod(this, &AetherTheme::startWatching, Qt::QueuedConnection);
+```
+
+with the watcher, the debounce timer and the `m_started` flag created there, followed by one more
+`reload()` to catch whatever changed in between. qtengine reaches the same shape through a queued
+`applySettings` and a singleton watcher for the same reason.
+
+Verified by running a Qt Widgets probe application under `QT_QPA_PLATFORMTHEME=aether`, rewriting
+`scheme.json` while it ran, and watching it print the new palette — and by screenshotting Dolphin,
+which is the only check that shows the theme reached a real application rather than a probe.
+
+Two smaller facts about the same plugin, both of which produced a working build and a silently
+wrong look:
+
+- `QSettings` maps a bare `[General]` section onto the root, so `value("General/theme")` returns an
+  empty string from a file that contains `[General]\ntheme=…`. Kvantum's config is read with a
+  four-line parser instead, and `tools/tests/qt-theme.cpp` pins the section handling: point
+  the parser at the wrong key and four of its cases fail.
+- Kvantum looks for themes in `~/.config/Kvantum` and `/usr/share/Kvantum` and nowhere else. A theme
+  under `$XDG_DATA_HOME/Kvantum` is ignored, and the style silently falls back to built-in
+  placeholder colours (`#3d3d3e`) — which looks like "the plugin is half working" rather than
+  "the theme was not found". The engine therefore requires `<theme>/<theme>.kvconfig` to exist
+  before handing the style over.
+
+A third fact about the same plugin, and the one that cost the most: **KDE applications do not paint
+from `QPalette`**. Dolphin's places panel asks `KColorScheme`, which prefers the
+`KDE_COLOR_SCHEME_PATH` application property and otherwise falls back to a scheme of its own. Our
+theme set a correct palette and never set that property, so the sidebar drew dark text on a dark
+background while every probe of `QApplication::palette()` — and every pixel of the window
+background — said the colours were right. `KDE_COLOR_SCHEME_PATH` now points at
+`~/.local/state/caelestia/aether.colors`, which `Colours.qml` regenerates through
+`scripts/aether-colors.py` whenever the scheme loads. The engine only reads it: a platform theme
+is instantiated once per Qt application, and a shared file that every application rewrites at
+startup is the wrong shape even when the bytes end up equal.
+
+Two wrong turns are worth recording. The first was blaming Kvantum: a paired screenshot showed the
+two windows differing, and the palette probe said they could not, so one of the two was measuring
+the wrong thing — it was the probe. The second was blaming translucency: with the theme's
+`translucent_windows` off, both windows rendered identically at peak white, which looked like
+proof until the same test ran with it on and the difference came back. A metric that moves when
+you change an unrelated setting is not the cause.
+
+The lesson is the one the rest of this file keeps repeating: measure the thing the user is looking
+at, in the widget that draws it, not a proxy that is convenient to print.

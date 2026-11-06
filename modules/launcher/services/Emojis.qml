@@ -15,7 +15,7 @@ QtObject {
 
     property Process reader: Process {
         running: false
-        command: ["cat", Quickshell.shellPath("hybrid/cli/aether_cli/data/emojis.txt")]
+        command: ["cat", Quickshell.shellPath("cli/aether_cli/data/emojis.txt")]
         stdout: StdioCollector {
             onStreamFinished: {
                 const result = [];

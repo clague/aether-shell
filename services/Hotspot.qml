@@ -141,7 +141,7 @@ Singleton {
         // Nexus page, whose entry point is hidden -- but this timer runs `nmcli` forever at
         // 10s once it starts, so a stray reference must not silently cost a process every
         // ten seconds for a feature the user has switched off.
-        running: GlobalConfig.hybrid.features.hotspot
+        running: GlobalConfig.aether.features.hotspot
         onTriggered: {
             root.refreshStatus();
             if (root.active) {

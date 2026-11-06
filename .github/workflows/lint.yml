@@ -44,12 +44,12 @@ jobs:
 
       # Proves the QML gate still rejects Info-level output, which is what this job enforces
       # with `test -z "$lint_out"`. It did not, once: qmllint exits 0 when every diagnostic it
-      # printed is Info-level, so hybrid/tools/qml-lint.sh reported a clean tree while this job
+      # printed is Info-level, so tools/qml-lint.sh reported a clean tree while this job
       # failed on the same files. See trap T48. Placed after Build because the gate needs
       # build/qml for its import paths -- putting it with the no-build checkers failed here
       # with "build/qml missing", which is this comment's reason for existing.
       - name: Self-test the QML gate
-        run: ./hybrid/tools/qml-lint.sh --self-test
+        run: ./tools/qml-lint.sh --self-test
 
       # One implementation, not a second copy of the argument construction. The copy that
       # used to sit here omitted `--bare --import disable`, so Qt's default import directory
@@ -60,7 +60,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          ./hybrid/tools/qml-lint.sh 2>&1 | tee .lint-output.txt
+          ./tools/qml-lint.sh 2>&1 | tee .lint-output.txt
 
       - name: Report QML lint failures
         if: failure()
@@ -102,16 +102,16 @@ jobs:
 
       # Need no build, so they run first and fail in seconds rather than after a configure.
       - name: Check for dead signals
-        run: ./hybrid/tools/dead-signals.py
+        run: ./tools/dead-signals.py
 
       - name: Check shell command construction
-        run: ./hybrid/tools/shell-safety.py
+        run: ./tools/shell-safety.py
 
       - name: Check for unreferenced QML
-        run: ./hybrid/tools/dead-qml.py
+        run: ./tools/dead-qml.py
 
       - name: Check for config keys nothing reads
-        run: ./hybrid/tools/dead-config.py
+        run: ./tools/dead-config.py
 
       - name: Configure
         run: |

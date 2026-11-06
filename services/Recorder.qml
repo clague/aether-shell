@@ -67,15 +67,15 @@ Singleton {
             // forever) and `aether record` blocks on its toasts / region
             // selection, which would serialize every later command behind it.
             if (running && root.needsStop) {
-                Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "record"]);
+                Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "record"]);
                 props.running = false;
                 props.paused = false;
                 Audio.playVideoStop();
             } else if (running && root.needsPause) {
-                Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "record", "-p"]);
+                Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "record", "-p"]);
                 props.paused = !props.paused;
             } else if (!running && root.needsStart) {
-                Quickshell.execDetached([Quickshell.shellPath("hybrid/bin/aether"), "record", ...root.startArgs]);
+                Quickshell.execDetached([Quickshell.shellPath("bin/aether"), "record", ...root.startArgs]);
                 props.running = true;
                 props.paused = false;
                 props.elapsed = 0;

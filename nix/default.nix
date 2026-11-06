@@ -38,7 +38,7 @@
   version = "1.0.0";
 
   qs = quickshell.withModules [qt6.qtimageformats qt6.qtmultimedia m3shapes];
-  # The in-tree command surface (hybrid/bin/aether) imports these two at runtime.
+  # The in-tree command surface (bin/aether) imports these two at runtime.
   cliPython = python3.withPackages (ps: [ps.materialyoucolor ps.pillow]);
 
   runtimeDeps =
@@ -156,7 +156,7 @@ in
       # Hyprland can only call a name; QML calls the same file by path. The wrapper is what
       # puts materialyoucolor and Pillow on PATH -- a plain symlink would use the system python.
       makeWrapper ${cliPython}/bin/python3 $out/bin/aether \
-        --add-flags "$out/share/aether-shell/hybrid/bin/aether" \
+        --add-flags "$out/share/aether-shell/bin/aether" \
         --prefix PATH : "${lib.makeBinPath runtimeDeps}"
 
       mkdir -p $out/lib

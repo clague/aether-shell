@@ -1,7 +1,7 @@
 #!/bin/sh
 # Askpass helper: show the shell's password dialog and print what was typed.
 #
-# Point SSH_ASKPASS and SUDO_ASKPASS at this file; see hybrid/docs/askpass.md.
+# Point SSH_ASKPASS and SUDO_ASKPASS at this file; see docs/askpass.md.
 set -eu
 
 prompt="${1:-Password}"

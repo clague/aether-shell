@@ -13,7 +13,7 @@ upstream **Caelestia**. One shell, one config, one CLI — features toggled, not
 > This is a merge of three GPL-3.0 projects: [caelestia-dots/shell](https://github.com/caelestia-dots/shell)
 > (upstream), [dim-ghub/midnight-shell](https://github.com/dim-ghub/midnight-shell) (the
 > baseline), and [OVERxPOWERED/op-caelestia-shell](https://github.com/OVERxPOWERED/op-caelestia-shell).
-> See [Credits](#credits) and `hybrid/docs/provenance.md`.
+> See [Credits](#credits) and `docs/provenance.md`.
 
 ## Features
 
@@ -23,7 +23,7 @@ Wallhaven; desktop lyrics; theme packs; the Pomodoro timer and scratchpad; the l
 confirmation; the Dino game in the notification dock; and MiDnight's dock and Shimeji, which keep
 their own **Enabled** switch on their settings pages.
 
-Only features that cost something when switched on keep a `hybrid.features` flag. Each one has a
+Only features that cost something when switched on keep a `aether.features` flag. Each one has a
 toggle on the Nexus page that uses it:
 
 | flag | default | where the switch lives |
@@ -35,7 +35,7 @@ toggle on the Nexus page that uses it:
 | `btAgent` | on | Connected devices |
 
 Three components genuinely exist in both forks — the audio popout, the workspace overview and the
-dock. Those live under `hybrid.variants` rather than `hybrid.features`, because the choice there is
+dock. Those live under `aether.variants` rather than `aether.features`, because the choice there is
 *which* implementation, not whether; their selectors are on the Audio, Taskview and Dock pages
 respectively. A fourth, the lock centre, is a genuine dual site but its OP side depends on the
 pattern lock this project rejects (D10), so it has no key until that is resolved.
@@ -51,7 +51,7 @@ scheme the shell is displaying instead of a separate palette from KDE or `qtengi
 change reaches them without a restart.
 
 It is opt-in. A system install lands in `${prefix}/lib/qt6/plugins/platformthemes`; for a checkout,
-run `./hybrid/tools/install-qt-theme.sh`, then set the two environment variables in
+run `./tools/install-qt-theme.sh`, then set the two environment variables in
 `~/.config/caelestia/hypr-user.lua` (not in the shared Hyprland config):
 
 ```sh
@@ -61,7 +61,7 @@ hl.env("QT_PLUGIN_PATH", (os.getenv("HOME") or "") .. "/.local/lib/qt6/plugins")
 
 It is a plugin, so it is rebuilt with the shell and must be rebuilt after a Qt upgrade —
 `install-qt-theme.sh` re-copies the fresh build, and a system install is redone by the package
-manager. See D12 in `hybrid/docs/architecture.md`.
+manager. See D12 in `docs/architecture.md`.
 
 #### Kvantum
 
@@ -100,7 +100,7 @@ scheme change, so a choice written there survives only until the next one.
 <details><summary id="dependencies">Dependencies</summary>
 
 -   `python-materialyoucolor` and `python-pillow` — the in-tree command surface
-    (`hybrid/bin/aether`) uses them for the dynamic palette and wallpaper thumbnails. No
+    (`bin/aether`) uses them for the dynamic palette and wallpaper thumbnails. No
     `caelestia` binary is needed; the subcommands this shell uses live in the checkout.
 -   `fuzzel` and `cliphist` — only for deleting one clipboard entry. Searching and copying
     the history is the launcher's own view.
@@ -152,7 +152,7 @@ cmake --build build
 sudo cmake --install build
 
 # Put the command surface on PATH: Hyprland can only call a name.
-./hybrid/tools/install-cli.sh
+./tools/install-cli.sh
 ```
 
 `~/.local/bin` must be on the session's `PATH` before Hyprland starts: `execs.lua` starts the
@@ -196,8 +196,8 @@ the CLI, which most functionality needs — use the `with-cli` package instead.
 
 ### Development
 
-`hybrid/tools/dev-shell.sh` runs the shell from the working tree against an isolated config
-and state directory, so it never touches a running session. See `hybrid/docs/` for the
+`tools/dev-shell.sh` runs the shell from the working tree against an isolated config
+and state directory, so it never touches a running session. See `docs/` for the
 architecture, the known traps, and the verification gate.
 
 ## Components
@@ -308,7 +308,7 @@ to something other than that default:
 
 ## Usage
 
-You can start the shell by running `caelestia shell -d` (preferred) or `qs -c caelestia -n -d`.
+You can start the shell by running `aether shell -d` (preferred) or `qs -p . -n -d`.
 You may omit `-d` from the command to keep the shell attached to the current terminal if necessary,
 though you likely want it to be detached (so it doesn't close when the terminal is closed).
 
@@ -322,13 +322,13 @@ If using the entire caelestia dots, the keybinds are already configured for you.
 Otherwise, [this file](https://github.com/caelestia-dots/caelestia/blob/main/hypr/hyprland/keybinds.lua#L52-L67)
 contains an example on how to use global shortcuts.
 
-All IPC commands can be accessed via `caelestia shell ...`, for example:
+All IPC commands can be accessed via `aether shell ...`, for example:
 
 ```sh
-caelestia shell mpris getActive trackTitle
+aether shell mpris getActive trackTitle
 ```
 
-You can view the list of available IPC commands by running `caelestia shell -s`.
+You can view the list of available IPC commands by running `aether shell -s`.
 
 ### PFP/Wallpapers
 
@@ -339,8 +339,8 @@ The wallpapers for the wallpaper switcher are read from `~/Pictures/Wallpapers`
 by default. To change it, modify `paths.wallpaperDir` in `~/.config/caelestia/shell.json`.
 
 To set the wallpaper, you can type `>wallpaper` in the launcher to open the wallpaper switcher.
-Alternatively, you can also use `caelestia wallpaper -f <path_to_wallpaper>` to set the wallpaper directly.
-Use `caelestia wallpaper -h` for more info about this command.
+Alternatively, you can also use `aether wallpaper -f <path_to_wallpaper>` to set the wallpaper directly.
+Use `aether wallpaper -h` for more info about this command.
 
 ## Updating
 
@@ -352,7 +352,7 @@ cmake --build build
 sudo cmake --install build
 ```
 
-Restart the shell afterwards with `caelestia shell -d` (or `caelestia shell kill` first, if
+Restart the shell afterwards with `aether shell -d` (or `aether shell -k` first, if
 one is already running).
 
 ## Uninstalling
@@ -373,14 +373,14 @@ All configuration options belong in `~/.config/caelestia/shell.json`. This file 
 default; you must create it manually. Options that you omit from the config file will use their default
 values.
 
-### The hybrid section
+### The Aether section
 
-`hybrid` is the only part of the schema that is not upstream's. It holds the cost-bearing feature
+`aether` is the only part of the schema that is not upstream's. It holds the cost-bearing feature
 flags and the fork variants described under [Features](#features):
 
 ```json
 {
-    "hybrid": {
+    "aether": {
         "features": {
             "overview": true,
             "videoWallpaper": true,
@@ -405,7 +405,7 @@ Where there is something to create, a flag prevents it being created rather than
 `overview` off the overlay is never built, not merely invisible. A few flags gate only a control's
 visibility, where nothing separate exists to create.
 
-`hybrid` is global. Per-monitor overrides do not apply to it, because a feature flag per monitor is
+`aether` is global. Per-monitor overrides do not apply to it, because a feature flag per monitor is
 meaningless.
 
 ### Per-monitor configuration
@@ -466,20 +466,20 @@ keys you changed; clearing a key (the trash icon on a row) restores the value fr
 
 Some options need variables that upstream's `variables.lua` does not define — the gaps/border and
 opacity ones exist there already, but glass, motion and the overview blur rule do not. The complete
-config files (full copies with those additions merged in, not fragments) live in `hybrid/hypr/`:
+config files (full copies with those additions merged in, not fragments) live in `hypr/`:
 
 | path | goes into |
 |---|---|
-| `hybrid/hypr/hyprland.lua` | `~/.config/hypr/hyprland.lua` |
-| `hybrid/hypr/variables.lua` | `~/.config/hypr/variables.lua` |
-| `hybrid/hypr/hyprland/` | `~/.config/hypr/hyprland/` |
-| `hybrid/hypr/utils/` | `~/.config/hypr/utils/` |
-| `hybrid/hypr/scheme/default.lua` | `~/.config/hypr/scheme/default.lua` |
+| `hypr/hyprland.lua` | `~/.config/hypr/hyprland.lua` |
+| `hypr/variables.lua` | `~/.config/hypr/variables.lua` |
+| `hypr/hyprland/` | `~/.config/hypr/hyprland/` |
+| `hypr/utils/` | `~/.config/hypr/utils/` |
+| `hypr/scheme/default.lua` | `~/.config/hypr/scheme/default.lua` |
 
 The tree carries every module that consumes a variable Nexus writes, so the Hyprland settings
 pages work against it as-is. Copy it over the dotfiles checkout, leaving the user-owned
 `hypr-user.lua` and `hyprmoncfg-monitors.lua` in place. Keep it in sync with that checkout;
-`hybrid/hypr/README.md` maps every Nexus setting to the key it writes. If a key is missing the
+`hypr/README.md` maps every Nexus setting to the key it writes. If a key is missing the
 setting still applies live, it just does not survive a Hyprland restart.
 
 ### Example configuration
@@ -1481,17 +1481,17 @@ is editing the source.
 
 ### I want to disable \_\_\_ feature!
 
-Most of what the two forks added is a flag under `hybrid.features` — see
-[Features](#features), or open the Hybrid page in the settings app. Everything else is under
+Most of what the two forks added is a flag under `aether.features` — see
+[Features](#features), or open the feature's own settings page. Everything else is under
 [configuring](#configuring). If there is no corresponding option, make a feature request.
 ### How do I make my colour scheme change to match my wallpaper?
 
-Set a wallpaper via `>wallpaper` in the launcher or `caelestia wallpaper`, and set the scheme to the dynamic scheme via 
-`>scheme` in the launcher or `caelestia scheme set`, e.g.:
+Set a wallpaper via `>wallpaper` in the launcher or `aether wallpaper`, and set the scheme to the dynamic scheme via
+`>scheme` in the launcher or `aether scheme set`, e.g.:
 
 ```sh
-caelestia wallpaper -f <path_to_wallpaper>
-caelestia scheme set -n dynamic
+aether wallpaper -f <path_to_wallpaper>
+aether scheme set -n dynamic
 ```
 
 ### My wallpapers aren't showing up in the launcher!
@@ -1502,7 +1502,7 @@ the launcher only shows an odd number of wallpapers at one time. If you only hav
 
 ## Credits
 
-This shell is a merge of three GPL-3.0 projects, and everything below the hybrid layer is
+This shell is a merge of three GPL-3.0 projects, and everything below the Aether layer is
 their work:
 
 -   [caelestia-dots/shell](https://github.com/caelestia-dots/shell) — the upstream this
@@ -1513,7 +1513,7 @@ their work:
 -   [OVERxPOWERED/op-caelestia-shell](https://github.com/OVERxPOWERED/op-caelestia-shell) —
     the overview, the dock, the theme manager, the hotspot and Bluetooth agent work.
 
-`hybrid/docs/provenance.md` records which files came from where, file by file.
+`docs/provenance.md` records which files came from where, file by file.
 
 Thanks to the Hyprland Discord community (especially the homies in #rice-discussion) for all the help and suggestions
 for improving these dots!

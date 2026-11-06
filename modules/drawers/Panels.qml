@@ -281,7 +281,7 @@ Item {
         anchors.left: parent.left
     }
 
-    // OP's dock, the second implementation of hybrid.variants.dock. The root is unconditional
+    // OP's dock, the second implementation of aether.variants.dock. The root is unconditional
     // for the same reason WorkspaceOverview's is: Regions.qml and ContentWindow.qml bind to it,
     // and a conditional root would leave those on a null (T1). Its own shouldBeActive carries
     // the variant, so with MiDnight's dock selected it never activates, offsetScale stays 1,

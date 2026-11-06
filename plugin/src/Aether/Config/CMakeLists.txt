@@ -17,7 +17,7 @@ qml_module(aether-config
         audioconfig.hpp
         aiconfig.hpp
         enums.hpp
-        hybridconfig.hpp
+        aetherconfig.hpp
         qtconfig.hpp
         backgroundconfig.hpp
         barconfig.hpp
