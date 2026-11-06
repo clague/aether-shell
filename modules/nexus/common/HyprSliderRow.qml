@@ -1,5 +1,6 @@
 pragma ComponentBehavior: Bound
 
+import QtQuick
 import qs.services
 import qs.modules.nexus.common
 
@@ -12,6 +13,7 @@ SliderRow {
     property real from: 0
     property real to: 1
     property real step: 0.1
+    property real pendingValue: 0
 
     function currentValue(): var {
         return HyprVars.vars[root.varKey] !== undefined ? HyprVars.vars[root.varKey] : HyprVars.defaults[root.varKey];
@@ -32,12 +34,28 @@ SliderRow {
         return v !== undefined ? Number(v).toFixed(root.step < 1 ? 2 : 0) : "";
     }
 
+    Component.onDestruction: {
+        if (saveTimer.running)
+            HyprVars.saveVar(root.varKey, root.pendingValue);
+    }
+
+    // A drag fires onMoved once per pixel. Each save rewrites hypr-vars.lua, and the file watcher
+    // then reloads it into the binding above, so the slider used to fight itself. One write per
+    // pause instead.
     onMoved: v => {
         let mapped = root.from + v * (root.to - root.from);
         mapped = Math.round(mapped / root.step) * root.step;
         if (root.step >= 1)
             mapped = Math.round(mapped);
         // Limit the decimals so float noise does not end up in the config file
-        HyprVars.saveVar(root.varKey, Number(mapped.toFixed(root.step < 1 ? 2 : 0)));
+        root.pendingValue = Number(mapped.toFixed(root.step < 1 ? 2 : 0));
+        saveTimer.restart();
+    }
+
+    Timer {
+        id: saveTimer
+
+        interval: 150
+        onTriggered: HyprVars.saveVar(root.varKey, root.pendingValue)
     }
 }

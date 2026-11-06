@@ -17,6 +17,7 @@
 #include <qquickitemgrabresult.h>
 #include <qquickwindow.h>
 #include <qregularexpression.h>
+#include <qsavefile.h>
 #include <qsettings.h>
 #include <qstandardpaths.h>
 #include <qtconcurrentrun.h>
@@ -181,14 +182,19 @@ bool CUtils::writeFile(const QString& path, const QString& content) {
     // parent would turn "persist this setting" into a silent no-op.
     QDir().mkpath(QFileInfo(path).absolutePath());
 
-    QFile file(path);
+    // A temporary plus a rename, not a truncate: a crash or a full disk in the middle used to
+    // leave the file short, and hypr-vars.lua is required by Hyprland's own config.
+    QSaveFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         qCWarning(lcCUtils) << "writeFile: failed to open" << path;
         return false;
     }
     QTextStream out(&file);
     out << content;
-    file.close();
+    if (!file.commit()) {
+        qCWarning(lcCUtils) << "writeFile: failed to commit" << path;
+        return false;
+    }
     return true;
 }
 

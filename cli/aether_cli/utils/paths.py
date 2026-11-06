@@ -26,8 +26,10 @@ def _migrate_legacy(old: Path, new: Path) -> None:
     if new.exists() or not old.is_dir():
         return
     try:
-        shutil.copytree(old, new)
-    except OSError:
+        # symlinks=True: copytree would otherwise follow a link to a directory, and a loop in
+        # the old tree would recurse until Python gives up.
+        shutil.copytree(old, new, symlinks=True)
+    except (OSError, shutil.Error):
         pass
 
 

@@ -15,13 +15,10 @@ import qs.modules.nexus.common
 PageBase {
     id: root
 
-    property var vars: ({})
+    // One writer, one parser: the page used to keep its own copy and they drifted.
+    readonly property var vars: HyprVars.vars
 
-    property var defaults: ({})
-
-    readonly property string configPath: Quickshell.env("HOME") + "/.config/aether/hypr-vars.lua"
-
-    readonly property string defaultsPath: Quickshell.env("HOME") + "/.config/hypr/variables.lua"
+    readonly property var defaults: HyprVars.defaults
 
     // Two actions on one key combination is a silent failure: Hyprland fires whichever
     // bind it reaches first and reports nothing, so the only symptom is a shortcut that
@@ -139,328 +136,6 @@ PageBase {
         return root.keyLabels[key] ?? root.prettyVarName(key);
     }
 
-    function saveVar(key, val) {
-        if (typeof val === "boolean")
-            val = val ? "true" : "false";
-        else if (typeof val === "string" && !val.startsWith("rgba"))
-            val = '"' + val + '"';
-
-        let content = "";
-        if (CUtils.fileExists(configPath)) {
-            content = CUtils.readFile(configPath);
-        }
-        if (!content) {
-            content = "return {\n}";
-        }
-
-        let currentVars = {};
-        let lines = content.split("\n");
-        for (let i = 0; i < lines.length; i++) {
-            let match = lines[i].match(/^\s*([a-zA-Z0-9_]+)\s*=\s*(.+?)\s*,?$/);
-            if (match && match[1] !== "return" && match[1] !== "local") {
-                currentVars[match[1]] = match[2];
-            }
-        }
-
-        currentVars[key] = val;
-
-        let needsScheme = false;
-        for (let k in currentVars) {
-            if (String(currentVars[k]).includes("scheme."))
-                needsScheme = true;
-        }
-
-        let newContent = needsScheme ? 'local scheme = require("scheme.current")\n\nreturn {\n' : 'return {\n';
-        let written = {};
-
-        let schema = [
-            {
-                cat: "Apps",
-                keys: ["terminal", "browser", "editor", "fileExplorer", "audioSettings"]
-            },
-            {
-                cat: "Keyboard",
-                keys: ["kbLayout", "kbVariant", "kbOptions", "repeatRate", "repeatDelay", "numlockByDefault"]
-            },
-            {
-                cat: "Mouse",
-                keys: ["followMouse", "sensitivity", "accelProfile", "naturalScroll", "middleButtonEmulation"]
-            },
-            {
-                cat: "Touchpad",
-                keys: ["touchpadNaturalScroll", "touchpadDisableTyping", "touchpadScrollFactor"]
-            },
-            {
-                cat: "Gestures",
-                keys: ["gestureFingers", "workspaceSwipeFingers", "gestureFingersMore", "workspaceSwipeDistance", "workspaceSwipeCancelRatio", "workspaceSwipeMinSpeed", "workspaceSwipeDirLock", "workspaceSwipeCreateNew"]
-            },
-            {
-                cat: "Blur",
-                keys: ["blurEnabled", "blurSpecialWs", "blurPopups", "blurInputMethods", "blurSize", "blurPasses", "blurXray"]
-            },
-            {
-                cat: "Shadow",
-                keys: ["shadowEnabled", "shadowRange", "shadowRenderPower", "shadowColour"]
-            },
-            {
-                cat: "Gaps",
-                keys: ["workspaceGaps", "windowGapsIn", "windowGapsOut", "singleWindowGapsOut"]
-            },
-            {
-                cat: "Window behaviour",
-                keys: ["allowTearing", "resizeOnBorder", "preserveSplit", "smartSplit", "smartResizing"]
-            },
-            {
-                cat: "Window styling",
-                keys: ["windowOpacity", "windowRounding", "windowRoundingPower", "windowBorderSize", "activeWindowBorderColour", "inactiveWindowBorderColour", "dimInactive", "dimStrength"]
-            },
-            {
-                cat: "Misc",
-                keys: ["volumeStep", "cursorTheme", "cursorSize", "sleepGestureCmd", "vrr", "disableHyprlandLogo", "focusOnActivate", "middleClickPaste", "sessionLockXray", "mouseMoveEnablesDpms", "keyPressEnablesDpms", "animateManualResizes", "animateMouseWindowdragging"]
-            },
-            {
-                cat: "Workspaces",
-                keys: ["kbMoveWinToWs", "kbMoveWinToWsGroup", "kbGoToWs", "kbGoToWsGroup", "kbNextWs", "kbPrevWs"]
-            },
-            {
-                cat: "Window Group",
-                keys: ["kbWindowGroupCycleNext", "kbWindowGroupCyclePrev", "kbUngroup", "kbToggleGroup"]
-            },
-            {
-                cat: "Window Action",
-                keys: ["kbMoveWindow", "kbResizeWindow", "kbWindowPip", "kbPinWindow", "kbWindowFullscreen", "kbWindowBorderedFullscreen", "kbToggleWindowFloating", "kbCloseWindow"]
-            },
-            {
-                cat: "Special workspaces toggles",
-                keys: ["kbSpecialWs", "kbSystemMonitorWs", "kbMusicWs", "kbCommunicationWs", "kbTodoWs"]
-            },
-            {
-                cat: "Apps (Keybinds)",
-                keys: ["kbTerminal", "kbBrowser", "kbEditor", "kbFileExplorer"]
-            },
-            {
-                cat: "Misc (Keybinds)",
-                keys: ["kbSession", "kbShowSidebar", "kbClearNotifs", "kbShowPanels", "kbLock", "kbRestoreLock"]
-            }
-        ];
-
-        for (let c = 0; c < schema.length; c++) {
-            let cat = schema[c];
-            let catHasVars = false;
-
-            for (let k = 0; k < cat.keys.length; k++) {
-                let kName = cat.keys[k];
-                if (currentVars[kName] !== undefined) {
-                    if (!catHasVars) {
-                        newContent += "    -- " + cat.cat + "\n";
-                        catHasVars = true;
-                    }
-                    newContent += "    " + kName.padEnd(26) + " = " + currentVars[kName] + ",\n";
-                    written[kName] = true;
-                }
-            }
-            if (catHasVars)
-                newContent += "\n";
-        }
-
-        let customHasVars = false;
-        for (let kName in currentVars) {
-            if (!written[kName]) {
-                if (!customHasVars) {
-                    newContent += "    -- Custom\n";
-                    customHasVars = true;
-                }
-                newContent += "    " + kName.padEnd(26) + " = " + currentVars[kName] + ",\n";
-            }
-        }
-
-        newContent = newContent.replace(/\s+$/, "") + "\n}\n";
-
-        try {
-            CUtils.writeFile(configPath, newContent);
-        } catch (e) {
-            console.log("Could not write file natively yet: " + e);
-            Quickshell.execDetached(["bash", "-c", "cat << 'EOF' > " + configPath + "\n" + newContent + "\nEOF"]);
-        }
-        loadVars();
-    }
-
-    function deleteVar(key) {
-        if (!CUtils.fileExists(configPath))
-            return;
-        let content = CUtils.readFile(configPath);
-        if (!content)
-            return;
-
-        let currentVars = {};
-        let lines = content.split("\n");
-        for (let i = 0; i < lines.length; i++) {
-            let match = lines[i].match(/^\s*([a-zA-Z0-9_]+)\s*=\s*(.+?)\s*,?$/);
-            if (match && match[1] !== "return" && match[1] !== "local") {
-                currentVars[match[1]] = match[2];
-            }
-        }
-
-        if (currentVars[key] === undefined)
-            return;
-        delete currentVars[key];
-
-        let needsScheme = false;
-        for (let k in currentVars) {
-            if (String(currentVars[k]).includes("scheme."))
-                needsScheme = true;
-        }
-
-        let newContent = needsScheme ? 'local scheme = require("scheme.current")\n\nreturn {\n' : 'return {\n';
-        let written = {};
-
-        let schema = [
-            {
-                cat: "Apps",
-                keys: ["terminal", "browser", "editor", "fileExplorer", "audioSettings"]
-            },
-            {
-                cat: "Touchpad",
-                keys: ["touchpadDisableTyping", "touchpadScrollFactor", "gestureFingers", "workspaceSwipeFingers", "gestureFingersMore"]
-            },
-            {
-                cat: "Blur",
-                keys: ["blurEnabled", "blurSpecialWs", "blurPopups", "blurInputMethods", "blurSize", "blurPasses", "blurXray"]
-            },
-            {
-                cat: "Shadow",
-                keys: ["shadowEnabled", "shadowRange", "shadowRenderPower", "shadowColour"]
-            },
-            {
-                cat: "Gaps",
-                keys: ["workspaceGaps", "windowGapsIn", "windowGapsOut", "singleWindowGapsOut"]
-            },
-            {
-                cat: "Window styling",
-                keys: ["windowOpacity", "windowRounding", "windowBorderSize", "activeWindowBorderColour", "inactiveWindowBorderColour"]
-            },
-            {
-                cat: "Misc",
-                keys: ["volumeStep", "cursorTheme", "cursorSize", "sleepGestureCmd"]
-            },
-            {
-                cat: "Workspaces",
-                keys: ["kbMoveWinToWs", "kbMoveWinToWsGroup", "kbGoToWs", "kbGoToWsGroup", "kbNextWs", "kbPrevWs"]
-            },
-            {
-                cat: "Window Group",
-                keys: ["kbWindowGroupCycleNext", "kbWindowGroupCyclePrev", "kbUngroup", "kbToggleGroup"]
-            },
-            {
-                cat: "Window Action",
-                keys: ["kbMoveWindow", "kbResizeWindow", "kbWindowPip", "kbPinWindow", "kbWindowFullscreen", "kbWindowBorderedFullscreen", "kbToggleWindowFloating", "kbCloseWindow"]
-            },
-            {
-                cat: "Special workspaces toggles",
-                keys: ["kbSpecialWs", "kbSystemMonitorWs", "kbMusicWs", "kbCommunicationWs", "kbTodoWs"]
-            },
-            {
-                cat: "Apps (Keybinds)",
-                keys: ["kbTerminal", "kbBrowser", "kbEditor", "kbFileExplorer"]
-            },
-            {
-                cat: "Misc (Keybinds)",
-                keys: ["kbSession", "kbShowSidebar", "kbClearNotifs", "kbShowPanels", "kbLock", "kbRestoreLock"]
-            }
-        ];
-
-        for (let c = 0; c < schema.length; c++) {
-            let cat = schema[c];
-            let catHasVars = false;
-
-            for (let k = 0; k < cat.keys.length; k++) {
-                let kName = cat.keys[k];
-                if (currentVars[kName] !== undefined) {
-                    if (!catHasVars) {
-                        newContent += "    -- " + cat.cat + "\n";
-                        catHasVars = true;
-                    }
-                    newContent += "    " + kName.padEnd(26) + " = " + currentVars[kName] + ",\n";
-                    written[kName] = true;
-                }
-            }
-            if (catHasVars)
-                newContent += "\n";
-        }
-
-        let customHasVars = false;
-        for (let kName in currentVars) {
-            if (!written[kName]) {
-                if (!customHasVars) {
-                    newContent += "    -- Custom\n";
-                    customHasVars = true;
-                }
-                newContent += "    " + kName.padEnd(26) + " = " + currentVars[kName] + ",\n";
-            }
-        }
-
-        newContent = newContent.replace(/\s+$/, "") + "\n}\n";
-
-        try {
-            CUtils.writeFile(configPath, newContent);
-        } catch (e) {
-            console.log("Could not write file natively yet: " + e);
-            Quickshell.execDetached(["bash", "-c", "cat << 'EOF' > " + configPath + "\n" + newContent + "\nEOF"]);
-        }
-        loadVars();
-    }
-
-    function loadVars() {
-        let defContent = CUtils.readFile(defaultsPath);
-        let dVars = {};
-        if (defContent) {
-            let dLines = defContent.split("\n");
-            for (let i = 0; i < dLines.length; i++) {
-                let line = dLines[i].trim();
-                let match = line.match(/^([a-zA-Z0-9_]+)\s*=\s*(.+?)\s*,?$/);
-                if (match) {
-                    let key = match[1], val = match[2];
-                    if (val === "true")
-                        val = true;
-                    else if (val === "false")
-                        val = false;
-                    else if (val.startsWith("\"") && val.endsWith("\""))
-                        val = val.substring(1, val.length - 1);
-                    else if (!isNaN(parseFloat(val)))
-                        val = parseFloat(val);
-                    dVars[key] = val;
-                }
-            }
-        }
-        root.defaults = dVars;
-
-        let content = "";
-        if (CUtils.fileExists(configPath)) {
-            content = CUtils.readFile(configPath);
-        }
-        let newVars = {};
-        if (content) {
-            let textLines = content.split("\n");
-            for (let i = 0; i < textLines.length; i++) {
-                let line = textLines[i].trim();
-                let match = line.match(/^([a-zA-Z0-9_]+)\s*=\s*(.+?)\s*,?$/);
-                if (match) {
-                    let key = match[1], val = match[2];
-                    if (val === "true")
-                        val = true;
-                    else if (val === "false")
-                        val = false;
-                    else if (val.startsWith("\"") && val.endsWith("\""))
-                        val = val.substring(1, val.length - 1);
-                    else if (!isNaN(parseFloat(val)))
-                        val = parseFloat(val);
-                    newVars[key] = val;
-                }
-            }
-        }
-        root.vars = newVars;
-    }
-
     title: Tr.tr("Keybinds")
     isSubPage: true
 
@@ -470,7 +145,7 @@ PageBase {
         } else {
             Hypr.extras.batchMessage(["keyword submap record", "keyword bind ,XF86LaunchA,submap,reset", "keyword submap reset"]);
         }
-        loadVars();
+        HyprVars.loadVars();
     }
 
     ColumnLayout {
@@ -833,6 +508,7 @@ PageBase {
 
         StateLayer {
             id: stateLayer
+
             anchors.fill: parent
             onClicked: {
                 kroot.recording = !kroot.recording;
@@ -852,6 +528,7 @@ PageBase {
 
         RowLayout {
             id: contentRow
+
             anchors.fill: parent
             anchors.margins: Tokens.padding.medium
             anchors.leftMargin: Tokens.padding.largeIncreased
@@ -877,7 +554,7 @@ PageBase {
                         type: IconButton.Text
                         font: Tokens.font.icon.small
                         visible: root.vars[kroot.varKey] !== undefined
-                        onClicked: root.deleteVar(kroot.varKey)
+                        onClicked: HyprVars.deleteVar(kroot.varKey)
                     }
 
                     Item {
@@ -905,6 +582,7 @@ PageBase {
 
                 BlobGroup {
                     id: blobGroup
+
                     color: kroot.recording || stateLayer.containsMouse ? Colours.palette.m3secondaryContainer : Colours.palette.m3surfaceContainerHighest
                     smoothing: kroot.Tokens.rounding.medium
                     cornerFill: false
@@ -916,6 +594,7 @@ PageBase {
 
                 BlobRect {
                     id: btnRect
+
                     anchors.fill: parent
                     anchors.margins: (stateLayer.containsMouse ? -Tokens.padding.extraSmall : 0) + (kroot.recording ? -Tokens.padding.extraSmall : 0)
                     group: blobGroup
@@ -934,12 +613,14 @@ PageBase {
 
                 Item {
                     id: btn
+
                     anchors.centerIn: parent
                     implicitWidth: implicitHeight
                     implicitHeight: icon.implicitHeight + Tokens.padding.extraSmall * 2
 
                     MaterialIcon {
                         id: icon
+
                         anchors.centerIn: parent
                         text: kroot.recording ? "stop_circle" : "screen_record"
                         color: kroot.recording || stateLayer.containsMouse ? Colours.palette.m3onSecondaryContainer : Colours.palette.m3onSurfaceVariant
@@ -1022,7 +703,7 @@ PageBase {
                     modifierOnly = false;
                     mods.push(keyStr);
                     let finalBind = mods.join(" + ");
-                    root.saveVar(kroot.varKey, finalBind);
+                    HyprVars.saveVar(kroot.varKey, finalBind);
                     kroot.recording = false;
                     Hypr.dispatch(Hypr.usingLua ? 'hl.dsp.submap("reset")' : "submap reset");
                     event.accepted = true;
@@ -1053,7 +734,7 @@ PageBase {
 
                 if (isModKey && modifierOnly && lastMods.length > 0) {
                     let finalBind = lastMods.join(" + ");
-                    root.saveVar(kroot.varKey, finalBind);
+                    HyprVars.saveVar(kroot.varKey, finalBind);
                     kroot.recording = false;
                     Hypr.dispatch(Hypr.usingLua ? 'hl.dsp.submap("reset")' : "submap reset");
                     event.accepted = true;

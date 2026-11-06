@@ -24,6 +24,10 @@ void copyDir(const QString& from, const QString& to) {
     QDir().mkpath(to);
     const auto entries = source.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden);
     for (const QFileInfo& entry : entries) {
+        // A symlink to a directory is recursed into by isDir(), so one `self -> .` in the old
+        // config turns the first start into a stack overflow.
+        if (entry.isSymLink())
+            continue;
         const QString target = to + u'/' + entry.fileName();
         if (entry.isDir())
             copyDir(entry.absoluteFilePath(), target);
