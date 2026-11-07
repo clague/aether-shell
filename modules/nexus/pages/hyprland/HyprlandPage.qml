@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Aether.Config
 import Aether.I18n
+import qs.services
 import qs.modules.nexus.common
 
 PageBase {
@@ -14,6 +15,17 @@ PageBase {
         anchors.top: parent.top
         width: root.cappedWidth
         spacing: Tokens.spacing.extraSmall / 2
+
+        InfoRow {
+            first: true
+            last: true
+            visible: !Hypr.configInstalled
+            Layout.fillWidth: true
+            Layout.bottomMargin: Tokens.spacing.large
+            icon: "warning"
+            label: Tr.tr("Aether's Hyprland config is not installed")
+            subtext: Tr.tr("The pages below write hypr-vars.lua, and only Aether's hyprland.lua reads it. Run `aether hypr install` once; it backs up ~/.config/hypr and links the config in place.")
+        }
 
         NavRow {
             first: true

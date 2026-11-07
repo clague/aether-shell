@@ -1,5 +1,23 @@
 # Hyprland config the shell expects
 
+## Installing it
+
+```sh
+aether hypr install
+```
+
+Links the five entries below into `~/.config/hypr` and moves the existing directory to
+`~/.config/hypr.aether-backup.<timestamp>`. The entries are linked one by one, not the
+directory: `scheme/` and everything you keep next to it stay real directories, because Hyprland
+writes `scheme/current.lua` there and `hyprmoncfg` drops its generated file next to it.
+`aether hypr install` is idempotent -- a second run finds the links and does nothing.
+
+Do it before using **Nexus → Hyprland**: those pages write `~/.config/aether/hypr-vars.lua`, and
+only this `hyprland.lua` reads it. Nothing else copies the tree for you; the package ships it at
+`/usr/share/aether-shell/hypr`, a checkout keeps it at `hypr/`.
+
+## What it is
+
 The shell never edits `~/.config/hypr` itself. The one file it writes is
 `~/.config/aether/hypr-vars.lua`, the override table that the dotfiles' `hyprland.lua` merges
 into `variables`:

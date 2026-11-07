@@ -7,7 +7,7 @@ management or were replaced by Hyprland Lua, and clipboard/emoji are the launche
 import sys
 from argparse import ArgumentParser, Namespace
 
-from aether_cli.subcommands import clipboard, record, scheme, screenshot, shell, wallpaper
+from aether_cli.subcommands import clipboard, hypr, record, scheme, screenshot, shell, wallpaper
 from aether_cli.utils.paths import wallpapers_dir
 from aether_cli.utils.scheme import get_scheme_names, scheme_variants
 from aether_cli.utils.wallpaper import get_wallpaper
@@ -177,6 +177,15 @@ def parse_args() -> tuple[ArgumentParser, Namespace]:
     delete = command.add_parser("clipboard", help="delete a clipboard history entry")
     delete.set_defaults(cls=clipboard.Command)
     delete.add_argument("-d", "--delete", action="store_true", help="delete from clipboard history")
+
+    hypr_parser = command.add_parser("hypr", help="manage Hyprland's side of the shell")
+    hypr_command = hypr_parser.add_subparsers(title="subcommands")
+
+    hypr_install = hypr_command.add_parser(
+        "install",
+        help="link Aether's Hyprland config into ~/.config/hypr, backing up what is there",
+    )
+    hypr_install.set_defaults(cls=hypr.Command)
 
     ipc = command.add_parser("ipc", help="call a shell IPC target")
     ipc.set_defaults(cls=None)

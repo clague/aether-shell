@@ -209,6 +209,23 @@ def canvas(scale):
 print(canvas(1.0) == (430, 330) and canvas(0.99) == (426, 326) and canvas(0.5) == (400, 300))' "$ROOT")
 check "shadow scale shrinks the reach like Hyprland" "True" "$scale"
 
+# `aether hypr install` owns a destructive step (moving ~/.config/hypr), so the layout it
+# produces and the backup it promises are checked here.
+mkdir -p "$XDG_CONFIG_HOME/hypr/scheme"
+printf 'return { user = true }\n' >"$XDG_CONFIG_HOME/hypr/hyprland.lua"
+printf 'return {}\n' >"$XDG_CONFIG_HOME/hypr/scheme/current.lua"
+"$AETHER" hypr install >"$work/hypr-install.out" 2>&1
+check "hypr install links hyprland.lua" "$ROOT/hypr/hyprland.lua" "$(readlink "$XDG_CONFIG_HOME/hypr/hyprland.lua")"
+check "hypr install links the module directory" "$ROOT/hypr/hyprland" "$(readlink "$XDG_CONFIG_HOME/hypr/hyprland")"
+check "hypr install keeps scheme a real directory" "yes" "$([ -d "$XDG_CONFIG_HOME/hypr/scheme" ] && [ ! -L "$XDG_CONFIG_HOME/hypr/scheme" ] && echo yes)"
+check "hypr install links scheme/default.lua" "$ROOT/hypr/scheme/default.lua" "$(readlink "$XDG_CONFIG_HOME/hypr/scheme/default.lua")"
+check "hypr install keeps the old scheme colours" "return {}" "$(cat "$XDG_CONFIG_HOME/hypr/scheme/current.lua")"
+backup=$(ls -d "$XDG_CONFIG_HOME"/hypr.aether-backup.* 2>/dev/null | head -1)
+check "hypr install backs the old config up" "return { user = true }" "$(cat "$backup/hyprland.lua" 2>/dev/null)"
+"$AETHER" hypr install >"$work/hypr-install-again.out" 2>&1
+check "hypr install is idempotent" "1" "$(ls -d "$XDG_CONFIG_HOME"/hypr.aether-backup.* 2>/dev/null | wc -l)"
+grep -q "already points at" "$work/hypr-install-again.out" && checks=$((checks + 1))
+
 if "$AETHER" screenshot -w 1 -r >"$work/window-region.out" 2>&1; then
     echo "FAIL: --window and --region were accepted together" >&2
     exit 1

@@ -265,6 +265,7 @@ QtObject {
         { kind: "row", page: 4, sub: 0, label: Tr.tr("Vertical offset"), subtext: Tr.tr("Shadow offset in pixels"), section: Tr.tr("Custom frame"), subTitle: Tr.tr("Screenshots"), kw: [] },
         { kind: "row", page: 4, sub: 0, label: Tr.tr("Shadow colour"), subtext: Tr.tr("Hex or rgba() colour"), section: Tr.tr("Custom frame"), subTitle: Tr.tr("Screenshots"), kw: [] },
         { kind: "page", page: 5, sub: 0, label: Tr.tr("Hyprland"), subtext: Tr.tr("Window manager configuration"), section: "", subTitle: "", kw: [] },
+        { kind: "row", page: 5, sub: 0, label: Tr.tr("Aether's Hyprland config is not installed"), subtext: Tr.tr("The pages below write hypr-vars.lua, and only Aether's hyprland.lua reads it. Run `aether hypr install` once; it backs up ~/.config/hypr and links the config in place."), section: "", subTitle: Tr.tr("Hyprland"), kw: [] },
         { kind: "row", page: 5, sub: 0, label: Tr.tr("Saved in hypr-vars.lua"), subtext: Tr.tr("The settings above write overrides to hypr-vars.lua; Hyprland reads it at startup. Clear a row to remove its override."), section: "", subTitle: Tr.tr("Hyprland"), kw: [] },
         { kind: "row", page: 5, sub: 0, label: Tr.tr("User configuration"), subtext: Tr.tr("Edit hypr-user.lua for anything not covered above"), section: "", subTitle: Tr.tr("Hyprland"), kw: [] },
         { kind: "page", page: 5, sub: 1, label: Tr.tr("Window effects"), subtext: "", section: "", subTitle: Tr.tr("Window effects"), kw: [] },

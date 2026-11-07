@@ -11,8 +11,9 @@ ssh / sudo ──> scripts/askpass.sh ──> aether:askpass IPC ──> dialog 
 ## Setup
 
 The package puts the helper on `PATH` as `aether-askpass`, a symlink to
-`/etc/xdg/quickshell/aether/scripts/askpass.sh`, so the environment does not need the path into
-the package tree:
+`/etc/xdg/quickshell/aether/scripts/askpass.sh`, and `hypr/hyprland/env.lua` exports both
+variables, so an installed config needs nothing here at all. Set them yourself only if you run
+a config that is not the one from `aether hypr install`:
 
 ```sh
 export SSH_ASKPASS=aether-askpass

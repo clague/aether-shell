@@ -9348,3 +9348,10 @@ msgstr "窗口截图边框：圆角、边框和阴影"
 #: modules/
 msgid "Window frame"
 msgstr "窗口边框"
+
+#: modules/
+msgid "Aether's Hyprland config is not installed"
+msgstr "尚未安装 Aether 的 Hyprland 配置"
+#: modules/
+msgid "The pages below write hypr-vars.lua, and only Aether's hyprland.lua reads it. Run `aether hypr install` once; it backs up ~/.config/hypr and links the config in place."
+msgstr "下面的页面写入 hypr-vars.lua，而只有 Aether 的 hyprland.lua 会读取它。运行一次 `aether hypr install`：它会备份 ~/.config/hypr，再把配置链接进去。"

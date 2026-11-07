@@ -3,6 +3,10 @@
 `PKGBUILD` for `aether-shell-git`. It is not part of the CMake install: AUR keeps its own git
 repository, so this directory is the source of truth and is copied there.
 
+After installing, `aether hypr install` links the shipped config into `~/.config/hypr` (see the
+post-install message). It is not automatic: a package must not rewrite the user's compositor
+config.
+
 ## Build and install locally
 
 ```sh

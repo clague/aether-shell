@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 import Quickshell.Io
+import Aether
 import Aether.I18n
 import Aether.Services
 import qs.components.misc
@@ -15,6 +16,11 @@ Singleton {
     readonly property var workspaces: Hyprland.workspaces
     readonly property var monitors: Hyprland.monitors
     readonly property bool usingLua: Hyprland.usingLua
+
+    // Whether ~/.config/hypr is the config this repository ships. The Nexus pages write
+    // hypr-vars.lua, and only that hyprland.lua reads it, so they do nothing without it.
+    readonly property string configPath: Quickshell.env("HOME") + "/.config/hypr/hyprland.lua"
+    property bool configInstalled: false
 
     readonly property HyprlandToplevel activeToplevel: {
         const t = Hyprland.activeToplevel;
@@ -221,5 +227,14 @@ Singleton {
         id: extras
 
         usingLua: Hyprland.usingLua
+    }
+
+    // Watched rather than read once, so installing the config from another terminal clears the
+    // warning in Nexus without a restart.
+    FileView {
+        path: root.configPath
+        watchChanges: true
+        onLoaded: root.configInstalled = CUtils.readFile(root.configPath).includes("hypr-vars")
+        onFileChanged: root.configInstalled = CUtils.fileExists(root.configPath) && CUtils.readFile(root.configPath).includes("hypr-vars")
     }
 }

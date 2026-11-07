@@ -104,15 +104,27 @@ The package is on the AUR as [`aether-shell-git`](https://aur.archlinux.org/pack
 yay -S aether-shell-git          # or paru, or your AUR helper of choice
 ```
 
-It installs the shell to `/etc/xdg/quickshell/aether`, the `aether` command to `/usr/bin`, and
-prints the Hyprland autostart line when it finishes. Everything lives under `aether` paths, so it
-can coexist with `caelestia-shell-git`.
+It installs the shell to `/etc/xdg/quickshell/aether`, the `aether` command (and
+`aether-askpass`) to `/usr/bin`, and the Hyprland reference config to
+`/usr/share/aether-shell/hypr`. Everything lives under `aether` paths, so it can coexist with
+`caelestia-shell-git`.
 
-> [!IMPORTANT]
-> The shell is one half of the setup. The Hyprland side — keybinds, window rules, environment —
-> lives in [`hypr/`](hypr/README.md). Copy it next to your config, or take just the
-> `hl.dsp.global(...)` binds from `hypr/hyprland/keybinds.lua`, and the `aether:*` shortcuts the
-> shell exposes go live.
+The shell is one half of the setup. The other half is the Hyprland config, and one command
+installs it:
+
+```sh
+aether hypr install
+```
+
+It links the package's config into `~/.config/hypr` and moves whatever was there to
+`~/.config/hypr.aether-backup.<timestamp>`, so `mv` puts it back. **Do this before using
+Nexus → Hyprland:** those pages write `~/.config/aether/hypr-vars.lua`, and only this config
+reads it. Without it the pages save settings that never reach Hyprland, and the page says so.
+
+Your own tweaks belong in `~/.config/aether/hypr-user.lua`, which loads last and which
+**Nexus → Hyprland → User configuration** edits. Port what you still need from the backup there
+and delete the backup. [`hypr/README.md`](hypr/README.md) has the layout and the variables the
+settings pages write.
 
 ### From source
 
@@ -390,8 +402,8 @@ You can start the shell by running `aether shell -d` (preferred) or `qs -p . -n 
 You may omit `-d` from the command to keep the shell attached to the current terminal if necessary,
 though you likely want it to be detached (so it doesn't close when the terminal is closed).
 
-If you copied the Hyprland config from [`hypr/`](hypr/README.md), the shell is started on login
-by the `hl.on("hyprland.start", ...)` function there, and the keybinds are already wired.
+After `aether hypr install`, Hyprland starts the shell on login from `hyprland/execs.lua`, and
+the keybinds are already wired.
 
 ### Shortcuts/IPC
 

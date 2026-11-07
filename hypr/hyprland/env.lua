@@ -17,3 +17,12 @@ hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 
 -- Others
 hl.env("_JAVA_AWT_WM_NONREPARENTING", "1")
+
+-- Password prompts and Qt theming, so a default install needs no hand-written exports.
+-- aether-askpass is the helper the package and tools/install-cli.sh put on PATH; SSH still
+-- uses the terminal when one is attached, and SSH_ASKPASS_REQUIRE=force changes that.
+hl.env("SSH_ASKPASS", "aether-askpass")
+hl.env("SUDO_ASKPASS", "aether-askpass")
+-- The Qt platform theme plugin ships with the shell; Nexus > Look & feel > Qt applications
+-- owns the widget style. A checkout needs ./tools/install-qt-theme.sh first.
+hl.env("QT_QPA_PLATFORMTHEME", "aether")
